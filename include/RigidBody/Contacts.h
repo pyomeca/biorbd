@@ -80,7 +80,7 @@ public:
 
     size_t AddConstraint(
         size_t bodyId,
-        const utils::Vector3d &bodPoint,
+        const utils::Vector3d &bodyPoint,
         const utils::String& axis,
         const utils::String& name,
         const utils::String& parentName);
@@ -309,13 +309,6 @@ public:
         bool updateKin = true);
 
 protected:
-    /// 
-    /// \brief Swap the status of the axes provided, that is adding x, y or z if it is not there and remove them otherwise.
-    /// This effectively transform an allowed axes set to a axes to remove set, or vice versa.
-    /// \param axesToSwap a vector of up to three values (being "x", "y" or "z")
-    utils::String swapAxes(
-        const utils::String& axesToSwap) const;
-
     std::shared_ptr<size_t> m_nbreConstraint; ///< Number of constraints
     std::shared_ptr<bool> m_isBinded; ///< If the model is ready
     std::shared_ptr<std::vector<rigidbody::NodeSegment>> m_rigidContacts; ///< The rigid contacts declared in the model (copy of RBDL information)

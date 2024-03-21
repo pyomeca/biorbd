@@ -260,7 +260,6 @@ void rigidbody::ExternalForceSet::combineTranslationalForces(
             pointOfApplication.parent(),
             pointOfApplication.isTechnical(),
             pointOfApplication.isAnatomical(),
-            pointOfApplication.axesToRemove(),
             pointOfApplication.parentId()
         );
             
@@ -298,27 +297,19 @@ void rigidbody::ExternalForceSet::combineSoftContactForces(
 
 utils::SpatialVector rigidbody::ExternalForceSet::transportForceAtOrigin(
     const utils::Vector3d& force,
-    const rigidbody::NodeSegment& pointOfApplication
-) const
+    const rigidbody::NodeSegment& pointOfApplication) const
 {
-    // Fill only if direction is enabled
-    utils::Vector3d newForce(0., 0., 0.);
-    for (auto axis : pointOfApplication.availableAxesIndices()){
-        newForce.block(axis, 0, 1, 1) = force.block(axis, 0, 1, 1);
-    }
-
     // Transport to Origin (Bour's formula)
     utils::SpatialVector out(0., 0., 0., 0., 0., 0.);
-    out.block(0, 0, 3, 1) = newForce.cross(-pointOfApplication);
-    out.block(3, 0, 3, 1) = newForce;
+    out.block(0, 0, 3, 1) = force.cross(-pointOfApplication);
+    out.block(3, 0, 3, 1) = force;
 
     return out;
 }
 
 utils::SpatialVector rigidbody::ExternalForceSet::transportAtOrigin(
     const utils::SpatialVector& v,
-    const rigidbody::NodeSegment& pointOfApplication
-) const
+    const rigidbody::NodeSegment& pointOfApplication) const
 {
     // Transport to Origin (Bour's formula)
     utils::SpatialVector out(transportForceAtOrigin(v.force(), pointOfApplication));

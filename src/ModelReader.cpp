@@ -381,7 +381,6 @@ void Reader::readModelFile(
                 utils::Vector3d pos(0,0,0);
                 bool technical = true;
                 bool anatomical = false;
-                utils::String axesToRemove;
                 while(file.read(property_tag) && property_tag.tolower().compare("endmarker"))
                     if (!property_tag.tolower().compare("parent")) {
                         // Dynamically find the parent number
@@ -395,12 +394,9 @@ void Reader::readModelFile(
                         file.read(technical);
                     } else if (!property_tag.tolower().compare("anatomical")) {
                         file.read(anatomical);
-                    } else if (!property_tag.tolower().compare("axestoremove")) {
-                        file.read(axesToRemove);
                     }
 
-                model->addMarker(pos, name, parent_str, technical, anatomical, axesToRemove,
-                                 static_cast<int>(parent_int));
+                model->addMarker(pos, name, parent_str, technical, anatomical, static_cast<int>(parent_int));
             } else if (!main_tag.tolower().compare("mimu") && version >= 4) {
                 utils::Error::raise("MIMU is no more the right tag, change it to IMU!");
             } else if (!main_tag.tolower().compare("imu")

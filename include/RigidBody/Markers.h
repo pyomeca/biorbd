@@ -62,7 +62,6 @@ public:
     /// \param parentName The name of the segment the marker is attached on
     /// \param technical If the marker is technical
     /// \param anatomical If the marker is anatomical
-    /// \param axesToRemove Axes to remove while projecting the marker
     /// \param id The index of the parent segment
     ///
     void addMarker(
@@ -71,7 +70,6 @@ public:
         const utils::String &parentName,
         bool technical,
         bool anatomical,
-        const utils::String& axesToRemove,
         int id = -1
     );
 
@@ -84,14 +82,6 @@ public:
         size_t index,
         const NodeSegment &pos
     );
-
-    ///
-    /// \brief Return the marker of index idx
-    /// \param idx The marker we want to return
-    /// \return The marker
-    ///
-    const NodeSegment& marker(
-        size_t idx) const;
 
     ///
     /// \brief Return the markers on a segment
@@ -123,66 +113,55 @@ public:
     /// \brief Compute and return the position of a marker at given Q in the global reference frame
     /// \param Q The generalized coordinates
     /// \param node The position of the marker in its parent reference frame
-    /// \param removeAxis If there are axis to remove from the position variables
     /// \param updateKin If the model should be updated
     /// \return The marker in the global reference frame
     ///
     NodeSegment marker(
         const GeneralizedCoordinates& Q,
         const NodeSegment& node,
-        bool removeAxis=true,
         bool updateKin = true);
 
     ///
     /// \brief Compute and return the position of the marker of index idx at given Q in the global reference frame
     /// \param Q The generalized coordinates
     /// \param idx The index of the marker in the marker set
-    /// \param removeAxis If there are axis to remove from the position variables
     /// \param updateKin If the model should be updated
     /// \return The marker idx in the global reference frame
     ///
     NodeSegment marker(
         const GeneralizedCoordinates& Q,
         size_t  idx,
-        bool removeAxis=true,
         bool updateKin = true);
 
     ///
     /// \brief Return a marker of index idx in the marker set
     /// \param idx The index of the marker
-    /// \param removeAxis If there are axis to remove from the position variables
     /// \return The marker of index idx
     ///
-    NodeSegment marker(
-        size_t  idx,
-        bool removeAxis);
+    const NodeSegment& marker(
+        size_t  idx) const;
 
     ///
     /// \brief Return all the markers at a given Q in the global reference frame
     /// \param Q The generalized coordinates
-    /// \param removeAxis If there are axis to remove from the position variables
     /// \param updateKin If the model should be updated
     /// \return All the markers in the global reference frame
     ///
     std::vector<NodeSegment> markers(
         const GeneralizedCoordinates &Q,
-        bool removeAxis = true,
         bool updateKin = true);
 
     ///
     /// \brief Return a copy of all the markers in their respective parent reference frame
-    /// \param removeAxis If there are axis to remove from the position variables
     /// \return All the markers
     ///
-    std::vector<NodeSegment> markers(
-        bool removeAxis = true);
+    std::vector<NodeSegment> markers();
 
     ///
     /// \brief Return the linear velocity of a marker
     /// \param Q The generalized coordinates
     /// \param Qdot The generalized velocities
     /// \param idx The index of the marker in the marker set
-    /// \param removeAxis If there are axis to remove from the position variables
     /// \param updateKin If the model should be updated
     /// \return The linear velocity of a marker
     ///
@@ -190,7 +169,6 @@ public:
         const GeneralizedCoordinates &Q,
         const GeneralizedVelocity &Qdot,
         size_t idx,
-        bool removeAxis = true,
         bool updateKin = true);
 
     ///
@@ -198,7 +176,6 @@ public:
     /// \param Q The generalized coordinates
     /// \param Qdot The generalized velocities
     /// \param idx The index of the marker in the marker set
-    /// \param removeAxis If there are axis to remove from the position variables
     /// \param updateKin If the model should be updated
     /// \return The angular velocity of a marker
     ///
@@ -206,35 +183,30 @@ public:
         const GeneralizedCoordinates &Q,
         const GeneralizedVelocity &Qdot,
         size_t idx,
-        bool removeAxis = true,
         bool updateKin = true);
 
     ///
     /// \brief Return the linear velocity of all the markers
     /// \param Q The generalized coordinates
     /// \param Qdot The generalized velocities
-    /// \param removeAxis If there are axis to remove from the position variables
     /// \param updateKin If the model should be updated
     /// \return The linear velocity of all the markers
     ///
     std::vector<NodeSegment> markersVelocity(
         const GeneralizedCoordinates &Q,
         const GeneralizedVelocity &Qdot,
-        bool removeAxis=true,
         bool updateKin = true);
 
     ///
     /// \brief Return the angular velocity of all the markers
     /// \param Q The generalized coordinates
     /// \param Qdot The generalized velocities
-    /// \param removeAxis If there are axis to remove from the position variables
     /// \param updateKin If the model should be updated
     /// \return The angular velocity of all the markers
     ///
     std::vector<NodeSegment> markersAngularVelocity(
         const GeneralizedCoordinates &Q,
         const GeneralizedVelocity &Qdot,
-        bool removeAxis=true,
         bool updateKin = true);
 
     ///
@@ -243,7 +215,6 @@ public:
     /// \param Qdot The generalized velocities
     /// \param Qddot The generalized accelerations
     /// \param idx The index of the marker in the marker set
-    /// \param removeAxis If there are axis to remove from the position variables
     /// \param updateKin If the model should be updated
     /// \return The acceleration of a marker
     ///
@@ -252,7 +223,6 @@ public:
         const GeneralizedVelocity &Qdot,
         const rigidbody::GeneralizedAcceleration &Qddot,
         size_t idx,
-        bool removeAxis = true,
         bool updateKin = true);
 
 
@@ -261,7 +231,6 @@ public:
     /// \param Q The generalized coordinates
     /// \param Qdot The generalized velocities
     /// \param Qddot The generalized velocities
-    /// \param removeAxis If there are axis to remove from the position variables
     /// \param updateKin If the model should be updated
     /// \return The acceleration of all the markers
     ///
@@ -269,61 +238,50 @@ public:
         const GeneralizedCoordinates &Q,
         const GeneralizedVelocity &Qdot,
         const rigidbody::GeneralizedAcceleration &dQdot,
-        bool removeAxis=true,
         bool updateKin = true);
 
     ///
     /// \brief Return all the technical markers at a given Q in the global reference frame
     /// \param Q The generalized coordinates
-    /// \param removeAxis If there are axis to remove from the position variables
     /// \param updateKin If the model should be updated
     /// \return A vector of all the technical markers
     ///
     std::vector<NodeSegment> technicalMarkers(
         const GeneralizedCoordinates &Q,
-        bool removeAxis=true,
         bool updateKin = true);
 
     ///
     /// \brief Return the technical markers in their respective parent reference frame
-    /// \param removeAxis If there are axis to remove from the position variables
     /// \return A vector of all the technical markers in their parent reference frame
     ///
-    std::vector<NodeSegment> technicalMarkers(
-        bool removeAxis=true);
+    std::vector<NodeSegment> technicalMarkers() const;
 
     ///
     /// \brief Return all the anatomical markers at a given Q in the global reference frame
     /// \param Q The generalized coordinates
-    /// \param removeAxis If there are axis to remove from the position variables
     /// \param updateKin If the model should be updated
     /// \return A vector of all the anatomical markers
     ///
     std::vector<NodeSegment> anatomicalMarkers(
         const GeneralizedCoordinates &Q,
-        bool removeAxis=true,
         bool updateKin = true);
 
     ///
     /// \brief Return the anatomical markers in their respective parent reference frame
-    /// \param removeAxis If there are axis to remove from the position variables
     /// \return A vector of all the anatomical markers in their parent reference frame
     ///
-    std::vector<NodeSegment> anatomicalMarkers(
-        bool removeAxis=true);
+    std::vector<NodeSegment> anatomicalMarkers() const;
 
     ///
     /// \brief Return all the markers of the segment idx at a given Q in the global reference frame
     /// \param Q The generalized coordinates
     /// \param idx The index of the segment
-    /// \param removeAxis If there are axis to remove from the position variables
     /// \param updateKin If the model should be updated
     /// \return All the markers of the segment idx
     ///
     std::vector<NodeSegment> segmentMarkers(
         const GeneralizedCoordinates &Q,
         size_t idx,
-        bool removeAxis=true,
         bool updateKin = true);
 
     ///
@@ -362,25 +320,21 @@ public:
     ///
     /// \brief Return the jacobian of the markers
     /// \param Q The generalized coordinates
-    /// \param removeAxis If there are axis to remove from the position variables
     /// \param updateKin If the model should be updated
     /// \return The jacobian of the markers
     ///
     std::vector<utils::Matrix> markersJacobian(
         const GeneralizedCoordinates &Q,
-        bool removeAxis=true,
         bool updateKin = true);
 
     ///
     /// \brief Return the jacobian of the technical markers
     /// \param Q The generalized coordinates
-    /// \param removeAxis If there are axis to remove from the position variables
     /// \param updateKin If the model should be updated
     /// \return The jacobian of the technical markers
     ///
     std::vector<utils::Matrix> technicalMarkersJacobian(
         const GeneralizedCoordinates &Q,
-        bool removeAxis=true,
         bool updateKin = true);
 
     ///
@@ -403,27 +357,23 @@ public:
     /// \param markers The markers to track
     /// \param Qinit The initial guess for the generalized coordinates
     /// \param Q The generalized coordinates that tracks the markers
-    /// \param removeAxes If the markers should be projected on the axes
     ///
     bool inverseKinematics(
         const std::vector<NodeSegment>& markers,
         const GeneralizedCoordinates& Qinit,
-        GeneralizedCoordinates &Q,
-        bool removeAxes=true);
+        GeneralizedCoordinates &Q);
 #endif
 
 protected:
     ///
     /// \brief Compute the jacobian of the markers
     /// \param Q The generalized coordinates
-    /// \param removeAxis If there are axis to remove from the position variables
     /// \param updateKin If the model should be updated
     /// \param lookForTechnical Check if only technical markers are to be computed
     /// \return The jacobian of the markers
     ///
     std::vector<utils::Matrix> markersJacobian(
         const GeneralizedCoordinates &Q,
-        bool removeAxis,
         bool updateKin,
         bool lookForTechnical); // Retourne la jacobienne des markers
 
