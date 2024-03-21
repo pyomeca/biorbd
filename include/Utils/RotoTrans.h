@@ -6,14 +6,6 @@
 #include "rbdl/rbdl_math.h"
 #include "Utils/Scalar.h"
 
-namespace RigidBodyDynamics
-{
-namespace Math
-{
-struct SpatialTransform;
-}
-}
-
 #include "biorbdConfig.h"
 
 namespace BIORBD_NAMESPACE
@@ -29,6 +21,7 @@ class String;
 class Vector;
 class Rotation;
 class Vector3d;
+class SpatialTransform;
 
 ///
 /// \brief Homogenous matrix to describe translations and rotations simultaneously
@@ -109,7 +102,7 @@ public:
     /// \param st Spatial Transform vector
     ///
     RotoTrans(
-        const RigidBodyDynamics::Math::SpatialTransform& st);
+        const utils::SpatialTransform& st);
 
 #ifdef BIORBD_USE_EIGEN3_MATH
 
@@ -184,7 +177,7 @@ public:
     /// \return The matrix of RotoTrans
     ///
     static RotoTrans fromSpatialTransform(
-        const RigidBodyDynamics::Math::SpatialTransform& st);
+        const utils::SpatialTransform& st);
 
     ///
     /// \brief Create a RotoTrans from Euler angles

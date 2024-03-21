@@ -12,6 +12,7 @@
 #include "Utils/UtilsEnum.h"
 #include "Utils/String.h"
 #include "Utils/Error.h"
+#include "Utils/SpatialVector.h"
 
 using namespace BIORBD_NAMESPACE;
 

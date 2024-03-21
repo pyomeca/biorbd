@@ -19,6 +19,7 @@ class Vector;
 class Vector3d;
 class Range;
 class SpatialVector;
+class SpatialTransform;
 }
 
 namespace rigidbody
@@ -319,52 +320,28 @@ public:
     );
 
     ///
-    /// \brief Return the joint coordinate system (JCS) in global reference frame at a given Q
-    /// \return The JCS in global reference frame
-    ///
-    /// This function assumes kinematics has been already updated
-    ///
-    std::vector<utils::RotoTrans> allGlobalJCS() const;
-
-    ///
     /// \brief Return the joint coordinate system (JCS) for the segment in global reference frame at a given Q
     /// \param Q The generalized coordinates
     /// \param name The name of the segment
+    /// \param updateKin If the kinematics should be updated
     /// \return The JCS of the segment in global reference frame at a given Q
     ///
     utils::RotoTrans globalJCS(
         const GeneralizedCoordinates &Q,
-        const utils::String &name);
+        const utils::String &name, 
+        bool updateKin = true);
 
     ///
     /// \brief Return the joint coordinate system (JCS) for the segment idx in global reference frame at a given Q
     /// \param Q The generalized coordinates
     /// \param idx The index of the segment
+    /// \param updateKin If the kinematics should be updated
     /// \return The JCS of the segment idx in global reference frame at a given Q
     ///
     utils::RotoTrans globalJCS(
         const GeneralizedCoordinates &Q,
-        size_t idx);
-
-    ///
-    /// \brief Return the joint coordinate system (JCS) for the segment in global reference
-    /// \param name The name of the segment
-    /// \return The JCS of the segment in global reference frame
-    ///
-    /// This function assumes kinematics has been already updated
-    ///
-    utils::RotoTrans globalJCS(
-        const utils::String &name) const;
-
-    ///
-    /// \brief Return the joint coordinate system (JCS) for the segment idx in global reference
-    /// \param idx The index of the segment
-    /// \return The JCS of the segment idx in global reference frame
-    ///
-    /// This function assumes kinematics has been already updated
-    ///
-    utils::RotoTrans globalJCS(
-        size_t idx) const;
+        size_t idx, 
+        bool updateKin = true);
 
     ///
     /// \brief Return all the joint coordinate system (JCS) in its parent reference frame
@@ -650,6 +627,37 @@ public:
     utils::Vector3d CoM(
         const GeneralizedCoordinates &Q,
         bool updateKin=true);
+
+    /// 
+    /// \brief Interface to CalcCenterOfMass. It is pretty much useless in Eigen, but fixes an issue in Casadi 
+    /// where RBDL changes internal variables which creates a free variables issue
+    /// \param Q The current joint positions
+    /// \param QDot The current joint velocities
+    /// \param QDDot (optional input) The current joint accelerations
+    /// \param mass (output) total mass of the model
+    /// \param com (output) location of the Center of Mass of the model in base coordinates
+    /// \param comVelocity (optional output) linear velocity of the COM in base coordinates
+    /// \param comAcceleration (optional output) linear acceleration of the COM in base coordinates
+    /// \param angularMomentum (optional output) angular momentum of the model at the COM in base coordinates
+    /// \param changeOfAngularMomentum (optional output) change of angular momentum of the model at the COM in base coordinates
+    /// \param updateKinematics (optional input) whether the kinematics should be updated (defaults to true)
+    /// 
+    /// \note When wanting to compute com_acceleration or change_of_angular
+    /// momentum one has to provide QDDot. In all other cases one can use NULL
+    /// as argument for QDDot.
+    /// 
+    void CalcCenterOfMass(
+        const rigidbody::GeneralizedCoordinates& Q,
+        const rigidbody::GeneralizedVelocity& QDot,
+        const rigidbody::GeneralizedAcceleration* QDDot,
+        utils::Scalar& mass,
+        utils::Vector3d& com,
+        utils::Vector3d* comVelocity = NULL,
+        utils::Vector3d* comAcceleration = NULL,
+        utils::Vector3d* angularMomentum = NULL,
+        utils::Vector3d* changeOfAngularMomentum = NULL,
+        bool updateKinematics = true
+    );
 
     ///
     /// \brief Return the position of the center of mass of each segment
@@ -952,7 +960,7 @@ public:
         const GeneralizedCoordinates &Q,
         size_t segmentIdx,
         const utils::Matrix3d &rotation,
-        RigidBodyDynamics::Math::MatrixNd &G,
+        utils::Matrix &G,
         bool updateKin);
 
     ///
@@ -1256,20 +1264,10 @@ protected:
     /// \param updateKin If the kinematics of the model should be computed
     /// \return The JCS of the segment in global reference frame
     ///
-    RigidBodyDynamics::Math::SpatialTransform CalcBodyWorldTransformation(
+    utils::SpatialTransform CalcBodyWorldTransformation(
         const GeneralizedCoordinates &Q,
         const size_t segmentIdx,
         bool updateKin = true);
-
-    ///
-    /// \brief Calculate the joint coordinate system (JCS) in global of a specified segment
-    /// \param segmentIdx The index of the segment
-    /// \return The JCS in global
-    ///
-    /// This function assumes that the kinematics was previously updated
-    ///
-    RigidBodyDynamics::Math::SpatialTransform CalcBodyWorldTransformation(
-        const size_t segmentIdx) const;
 
     ///
     /// \brief Return the mesh vertices of segment idx

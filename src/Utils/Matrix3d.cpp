@@ -13,6 +13,13 @@ utils::Matrix3d::Matrix3d() :
 }
 
 utils::Matrix3d::Matrix3d(
+    const utils::Matrix3d& other) :
+    RigidBodyDynamics::Math::Matrix3d(other)
+{
+
+}
+
+utils::Matrix3d::Matrix3d(
     const utils::Scalar &v00, const utils::Scalar &v01, const utils::Scalar &v02,
     const utils::Scalar &v10, const utils::Scalar &v11, const utils::Scalar &v12,
     const utils::Scalar &v20, const utils::Scalar &v21, const utils::Scalar &v22) :

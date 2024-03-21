@@ -3,9 +3,10 @@
 
 #include <rbdl/Model.h>
 #include <rbdl/Kinematics.h>
-#include "Utils/String.h"
-#include "Utils/Matrix.h"
 #include "Utils/Error.h"
+#include "Utils/Matrix.h"
+#include "Utils/String.h"
+#include "Utils/SpatialVector.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedAcceleration.h"
