@@ -22,8 +22,8 @@ rigidbody::Segment::Segment() :
     m_seqT(std::make_shared<utils::String>()),
     m_seqR(std::make_shared<utils::String>()),
     m_QRanges(std::make_shared<std::vector<utils::Range>>()),
-    m_QDotRanges(std::make_shared<std::vector<utils::Range>>()),
-    m_QDDotRanges(std::make_shared<std::vector<utils::Range>>()),
+    m_QdotRanges(std::make_shared<std::vector<utils::Range>>()),
+    m_QddotRanges(std::make_shared<std::vector<utils::Range>>()),
     m_nbDof(std::make_shared<size_t>(0)),
     m_nbQdot(std::make_shared<size_t>(0)),
     m_nbQddot(std::make_shared<size_t>(0)),
@@ -54,8 +54,8 @@ rigidbody::Segment::Segment(
     const utils::String &seqT,
     const utils::String &seqR,
     const std::vector<utils::Range>& QRanges,
-    const std::vector<utils::Range>& QDotRanges,
-    const std::vector<utils::Range>& QDDotRanges,
+    const std::vector<utils::Range>& QdotRanges,
+    const std::vector<utils::Range>& QddotRanges,
     const rigidbody::SegmentCharacteristics& characteristics,
     const RigidBodyDynamics::Math::SpatialTransform& cor
 ) :
@@ -66,8 +66,8 @@ rigidbody::Segment::Segment(
     m_seqT(std::make_shared<utils::String>(seqT)),
     m_seqR(std::make_shared<utils::String>(seqR)),
     m_QRanges(std::make_shared<std::vector<utils::Range>>()),
-    m_QDotRanges(std::make_shared<std::vector<utils::Range>>()),
-    m_QDDotRanges(std::make_shared<std::vector<utils::Range>>()),
+    m_QdotRanges(std::make_shared<std::vector<utils::Range>>()),
+    m_QddotRanges(std::make_shared<std::vector<utils::Range>>()),
     m_nbDof(std::make_shared<size_t>(0)),
     m_nbQdot(std::make_shared<size_t>(0)),
     m_nbQddot(std::make_shared<size_t>(0)),
@@ -90,7 +90,7 @@ rigidbody::Segment::Segment(
 {
     setType();
     // Call proper functions
-    setDofs(model, seqT, seqR, QRanges, QDotRanges, QDDotRanges);
+    setDofs(model, seqT, seqR, QRanges, QdotRanges, QddotRanges);
 }
 rigidbody::Segment::Segment(
     rigidbody::Joints& model,
@@ -99,8 +99,8 @@ rigidbody::Segment::Segment(
     const utils::String
     &seqR, // Cardan sequence to classify the rotation DoF
     const std::vector<utils::Range>& QRanges,
-    const std::vector<utils::Range>& QDotRanges,
-    const std::vector<utils::Range>& QDDotRanges,
+    const std::vector<utils::Range>& QdotRanges,
+    const std::vector<utils::Range>& QddotRanges,
     const rigidbody::SegmentCharacteristics&
     characteristics, // Mass, Center of mass of segment, Inertia of segment, etc.
     const RigidBodyDynamics::Math::SpatialTransform&
@@ -114,8 +114,8 @@ rigidbody::Segment::Segment(
     m_seqT(std::make_shared<utils::String>()),
     m_seqR(std::make_shared<utils::String>(seqR)),
     m_QRanges(std::make_shared<std::vector<utils::Range>>()),
-    m_QDotRanges(std::make_shared<std::vector<utils::Range>>()),
-    m_QDDotRanges(std::make_shared<std::vector<utils::Range>>()),
+    m_QdotRanges(std::make_shared<std::vector<utils::Range>>()),
+    m_QddotRanges(std::make_shared<std::vector<utils::Range>>()),
     m_nbDof(std::make_shared<size_t>(0)),
     m_nbQdot(std::make_shared<size_t>(0)),
     m_nbQddot(std::make_shared<size_t>(0)),
@@ -138,7 +138,7 @@ rigidbody::Segment::Segment(
 {
     setType();
     // Call proper functions
-    setDofs(model, "", seqR, QRanges, QDotRanges, QDDotRanges);
+    setDofs(model, "", seqR, QRanges, QdotRanges, QddotRanges);
 }
 
 rigidbody::Segment rigidbody::Segment::DeepCopy() const
@@ -157,8 +157,8 @@ void rigidbody::Segment::DeepCopy(const
     *m_seqT = *other.m_seqT;
     *m_seqR = *other.m_seqR;
     *m_QRanges = *other.m_QRanges;
-    *m_QDotRanges = *other.m_QDotRanges;
-    *m_QDDotRanges = *other.m_QDDotRanges;
+    *m_QdotRanges = *other.m_QdotRanges;
+    *m_QddotRanges = *other.m_QddotRanges;
     *m_nbDof = *other.m_nbDof;
     *m_nbQdot = *other.m_nbQdot;
     *m_nbQddot = *other.m_nbQddot;
@@ -266,15 +266,15 @@ rigidbody::Segment::QRanges() const
 }
 
 const std::vector<utils::Range>&
-rigidbody::Segment::QDotRanges() const
+rigidbody::Segment::QdotRanges() const
 {
-    return *m_QDotRanges;
+    return *m_QdotRanges;
 }
 
 const std::vector<utils::Range>&
-rigidbody::Segment::QDDotRanges() const
+rigidbody::Segment::QddotRanges() const
 {
-    return *m_QDDotRanges;
+    return *m_QddotRanges;
 }
 
 utils::RotoTrans rigidbody::Segment::localJCS() const
@@ -315,8 +315,8 @@ void rigidbody::Segment::setDofs(
     const utils::String &seqT,
     const utils::String &seqR,
     const std::vector<utils::Range>& QRanges,
-    const std::vector<utils::Range>& QDotRanges,
-    const std::vector<utils::Range>& QDDotRanges)
+    const std::vector<utils::Range>& QdotRanges,
+    const std::vector<utils::Range>& QddotRanges)
 {
     determineIfRotIsQuaternion(seqR);
     setSequence(seqT, seqR);
@@ -334,18 +334,18 @@ void rigidbody::Segment::setDofs(
     *m_QRanges = QRanges;
 
     utils::Error::check(
-        QDotRanges.size() == 0 ||
-        QDotRanges.size() == seqT.length() + nRot ||
-        (QDotRanges.size() == 3 && m_isQuaternion),
-        "QDotRanges and number of dof must be equal");
-    *m_QDotRanges = QDotRanges;
+        QdotRanges.size() == 0 ||
+        QdotRanges.size() == seqT.length() + nRot ||
+        (QdotRanges.size() == 3 && m_isQuaternion),
+        "QdotRanges and number of dof must be equal");
+    *m_QdotRanges = QdotRanges;
 
     utils::Error::check(
-        QDDotRanges.size() == 0 ||
-        QDDotRanges.size() == seqT.length() + nRot ||
-        (QDDotRanges.size() == 3 && m_isQuaternion),
-        "QDDotRanges and number of dof must be equal");
-    *m_QDDotRanges = QDDotRanges;
+        QddotRanges.size() == 0 ||
+        QddotRanges.size() == seqT.length() + nRot ||
+        (QddotRanges.size() == 3 && m_isQuaternion),
+        "QddotRanges and number of dof must be equal");
+    *m_QddotRanges = QddotRanges;
     setJoints(model);
 }
 

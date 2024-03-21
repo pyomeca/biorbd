@@ -18,8 +18,9 @@
 using namespace BIORBD_NAMESPACE;
 
 #ifndef BIORBD_USE_CASADI_MATH
-void Writer::writeModel(Model & model,
-                                const utils::Path& pathToWrite)
+void Writer::writeModel(
+    Model & model,
+    const utils::Path& pathToWrite)
 {
     utils::String sep("\t"); // separator in the file
     utils::String com("//"); // commentaire

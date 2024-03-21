@@ -147,14 +147,14 @@ size_t rigidbody::Joints::AddSegment(
     const utils::String &translationSequence,
     const utils::String &rotationSequence,
     const std::vector<utils::Range>& QRanges,
-    const std::vector<utils::Range>& QDotRanges,
-    const std::vector<utils::Range>& QDDotRanges,
+    const std::vector<utils::Range>& QdotRanges,
+    const std::vector<utils::Range>& QddotRanges,
     const rigidbody::SegmentCharacteristics& characteristics,
     const utils::RotoTrans& referenceFrame)
 {
     rigidbody::Segment tp(
         *this, segmentName, parentName, translationSequence,
-        rotationSequence, QRanges, QDotRanges, QDDotRanges, characteristics,
+        rotationSequence, QRanges, QdotRanges, QddotRanges, characteristics,
         utils::SpatialTransform(referenceFrame.rot().transpose(), referenceFrame.trans())
     );
     if (this->GetBodyId(parentName.c_str()) == std::numeric_limits<unsigned int>::max()) {
@@ -179,8 +179,8 @@ size_t rigidbody::Joints::AddSegment(
     const utils::String &parentName,
     const utils::String &seqR,
     const std::vector<utils::Range>& QRanges,
-    const std::vector<utils::Range>& QDotRanges,
-    const std::vector<utils::Range>& QDDotRanges,
+    const std::vector<utils::Range>& QdotRanges,
+    const std::vector<utils::Range>& QddotRanges,
     const rigidbody::SegmentCharacteristics& characteristics,
     const utils::RotoTrans& referenceFrame)
 {
@@ -190,8 +190,8 @@ size_t rigidbody::Joints::AddSegment(
         parentName, 
         seqR, 
         QRanges, 
-        QDotRanges, 
-        QDDotRanges,
+        QdotRanges, 
+        QddotRanges,
         characteristics, 
         utils::SpatialTransform(referenceFrame.rot().transpose(), referenceFrame.trans())
     );
@@ -427,17 +427,17 @@ utils::Vector3d rigidbody::Joints::CalcBodyToBaseCoordinates(
 
 utils::Vector3d rigidbody::Joints::CalcPointVelocity(
     const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedVelocity& Qdot,
     utils::String segmentName,
     const utils::Vector3d& pointInLocal,
     bool updateKinematics)
 {
-    return this->CalcPointVelocity(Q, QDot, this->GetBodyId(segmentName.c_str()), pointInLocal, updateKinematics);
+    return this->CalcPointVelocity(Q, Qdot, this->GetBodyId(segmentName.c_str()), pointInLocal, updateKinematics);
 }
 
 utils::Vector3d rigidbody::Joints::CalcPointVelocity(
     const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedVelocity& Qdot,
     unsigned int bodyId,
     const utils::Vector3d& pointInLocal,
     bool updateKinematics)
@@ -449,22 +449,22 @@ utils::Vector3d rigidbody::Joints::CalcPointVelocity(
     rigidbody::Joints& model = *this;
 #endif
 
-    return RigidBodyDynamics::CalcPointVelocity(model, Q, QDot, bodyId, pointInLocal, updateKinematics);
+    return RigidBodyDynamics::CalcPointVelocity(model, Q, Qdot, bodyId, pointInLocal, updateKinematics);
 }
 
 utils::SpatialVector rigidbody::Joints::CalcPointVelocity6D(
     const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedVelocity& Qdot,
     utils::String segmentName,
     const utils::Vector3d& pointInLocal,
     bool updateKinematics)
 {
-    return this->CalcPointVelocity6D(Q, QDot, this->GetBodyId(segmentName.c_str()), pointInLocal, updateKinematics);
+    return this->CalcPointVelocity6D(Q, Qdot, this->GetBodyId(segmentName.c_str()), pointInLocal, updateKinematics);
 }
 
 utils::SpatialVector rigidbody::Joints::CalcPointVelocity6D(
     const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedVelocity& Qdot,
     unsigned int bodyId,
     const utils::Vector3d& pointInLocal,
     bool updateKinematics)
@@ -476,25 +476,25 @@ utils::SpatialVector rigidbody::Joints::CalcPointVelocity6D(
     rigidbody::Joints& model = *this;
 #endif
 
-    return RigidBodyDynamics::CalcPointVelocity6D(model, Q, QDot, bodyId, pointInLocal, updateKinematics);
+    return RigidBodyDynamics::CalcPointVelocity6D(model, Q, Qdot, bodyId, pointInLocal, updateKinematics);
 }
 
 
 utils::Vector3d rigidbody::Joints::CalcPointAcceleration(
     const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& QDot,
-    const rigidbody::GeneralizedAcceleration& QDDot,
+    const rigidbody::GeneralizedVelocity& Qdot,
+    const rigidbody::GeneralizedAcceleration& Qddot,
     utils::String segmentName,
     const utils::Vector3d& pointInLocal,
     bool updateKinematics)
 {
-    return this->CalcPointAcceleration(Q, QDot, QDDot, this->GetBodyId(segmentName.c_str()), pointInLocal, updateKinematics);
+    return this->CalcPointAcceleration(Q, Qdot, Qddot, this->GetBodyId(segmentName.c_str()), pointInLocal, updateKinematics);
 }
 
 utils::Vector3d rigidbody::Joints::CalcPointAcceleration(
     const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& QDot,
-    const rigidbody::GeneralizedAcceleration& QDDot,
+    const rigidbody::GeneralizedVelocity& Qdot,
+    const rigidbody::GeneralizedAcceleration& Qddot,
     unsigned int bodyId,
     const utils::Vector3d& pointInLocal,
     bool updateKinematics)
@@ -506,7 +506,7 @@ utils::Vector3d rigidbody::Joints::CalcPointAcceleration(
     rigidbody::Joints& model = *this;
 #endif
 
-    return RigidBodyDynamics::CalcPointAcceleration(model, Q, QDot, QDDot, bodyId, pointInLocal, updateKinematics);
+    return RigidBodyDynamics::CalcPointAcceleration(model, Q, Qdot, Qddot, bodyId, pointInLocal, updateKinematics);
 }
 
 utils::Matrix rigidbody::Joints::CalcPointJacobian(
@@ -767,6 +767,7 @@ utils::Vector3d rigidbody::Joints::CoMdot(
     // Return the velocity of CoM
     return com_dot;
 }
+
 utils::Vector3d rigidbody::Joints::CoMddot(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot,
@@ -778,10 +779,8 @@ utils::Vector3d rigidbody::Joints::CoMddot(
 #endif
     utils::Scalar mass;
     utils::Vector3d com, com_ddot;
-    RigidBodyDynamics::Utils::CalcCenterOfMass(
-        *this, Q, Qdot, &Qddot, mass, com, nullptr, &com_ddot,
-        nullptr, nullptr, updateKin);
-
+    this->CalcCenterOfMass(
+        Q, Qdot, &Qddot, mass, com, nullptr, &com_ddot, nullptr, nullptr, updateKin);
 
     // Return the acceleration of CoM
     return com_ddot;
@@ -811,17 +810,37 @@ utils::Matrix rigidbody::Joints::CoMJacobian(
 
 void rigidbody::Joints::CalcCenterOfMass(
     const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& QDot,
-    const rigidbody::GeneralizedAcceleration* QDDot,
+    const rigidbody::GeneralizedVelocity& Qdot,
+    const rigidbody::GeneralizedAcceleration* Qddot,
     utils::Scalar& mass,
     utils::Vector3d& com,
     utils::Vector3d* comVelocity,
     utils::Vector3d* comAcceleration,
     utils::Vector3d* angularMomentum,
     utils::Vector3d* changeOfAngularMomentum,
-    bool updateKinematics 
-) {
-    // TODO
+    bool updateKinematics ) 
+{
+#ifdef BIORBD_USE_CASADI_MATH
+    rigidbody::Joints model = this->DeepCopy();
+    updateKinematics = true;
+#else
+    rigidbody::Joints& model = *this;
+#endif
+
+    RigidBodyDynamics::Utils::CalcCenterOfMass(
+        model, 
+        Q, 
+        Qdot, 
+        Qddot, 
+        mass, 
+        com, 
+        comVelocity, 
+        comAcceleration, 
+        angularMomentum, 
+        changeOfAngularMomentum, 
+        updateKinematics
+    );
+
 }
 
 std::vector<rigidbody::NodeSegment> rigidbody::Joints::CoMbySegment(
@@ -895,8 +914,7 @@ utils::Vector3d rigidbody::Joints::CoMdotBySegment(
 }
 
 
-std::vector<utils::Vector3d>
-rigidbody::Joints::CoMddotBySegment(
+std::vector<utils::Vector3d> rigidbody::Joints::CoMddotBySegment(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot,
     const rigidbody::GeneralizedAcceleration &Qddot,
@@ -904,7 +922,7 @@ rigidbody::Joints::CoMddotBySegment(
 {
     std::vector<utils::Vector3d> out;
     for (size_t i=0; i<m_segments->size(); ++i) {
-        out.push_back(CoMddotBySegment(Q,Qdot,Qddot,i,updateKin));
+        out.push_back(CoMddotBySegment(Q, Qdot, Qddot, i, updateKin));
         updateKin = false;
     }
     return out;
@@ -1149,14 +1167,14 @@ size_t rigidbody::Joints::nbQuat() const
 
 rigidbody::GeneralizedVelocity rigidbody::Joints::computeQdot(
     const rigidbody::GeneralizedCoordinates &Q,
-    const rigidbody::GeneralizedCoordinates &QDot,
+    const rigidbody::GeneralizedCoordinates &Qdot,
     const utils::Scalar &k_stab)
 {
-    rigidbody::GeneralizedVelocity QDotOut(static_cast<int>(Q.size()));
-    // Verify if there are quaternions, if not the derivate is directly QDot
+    rigidbody::GeneralizedVelocity QdotOut(static_cast<int>(Q.size()));
+    // Verify if there are quaternions, if not the derivate is directly Qdot
     if (!m_nRotAQuat) {
-        QDotOut = QDot;
-        return QDotOut;
+        QdotOut = Qdot;
+        return QdotOut;
     }
     unsigned int cmpQuat(0);
     unsigned int cmpDof(0);
@@ -1169,34 +1187,34 @@ rigidbody::GeneralizedVelocity rigidbody::Joints::computeQdot(
                 Q.block(cmpDof + static_cast<unsigned int>(segment_i.nbDofTrans()), 0, 3, 1),
                 k_stab);
 
-            // QDot for translation is actual QDot
-            QDotOut.block(cmpDof, 0, static_cast<unsigned int>(segment_i.nbDofTrans()), 1)
-                = QDot.block(cmpDof, 0, static_cast<unsigned int>(segment_i.nbDofTrans()), 1);
+            // Qdot for translation is actual Qdot
+            QdotOut.block(cmpDof, 0, static_cast<unsigned int>(segment_i.nbDofTrans()), 1)
+                = Qdot.block(cmpDof, 0, static_cast<unsigned int>(segment_i.nbDofTrans()), 1);
 
             // Get the 4d derivative for the quaternion part
-            quat_tp.derivate(QDot.block(cmpDof+ static_cast<unsigned int>(segment_i.nbDofTrans()), 0, 3, 1));
-            QDotOut.block(cmpDof+ static_cast<unsigned int>(segment_i.nbDofTrans()), 0, 3, 1) = quat_tp.block(1,0,3,1);
-            QDotOut(Q.size()- static_cast<unsigned int>(*m_nRotAQuat+cmpQuat)) = quat_tp(
+            quat_tp.derivate(Qdot.block(cmpDof+ static_cast<unsigned int>(segment_i.nbDofTrans()), 0, 3, 1));
+            QdotOut.block(cmpDof+ static_cast<unsigned int>(segment_i.nbDofTrans()), 0, 3, 1) = quat_tp.block(1,0,3,1);
+            QdotOut(Q.size()- static_cast<unsigned int>(*m_nRotAQuat+cmpQuat)) = quat_tp(
                         0);// Placer dans le vecteur de sortie
 
             // Increment the number of done quaternions
             ++cmpQuat;
         } else {
             // If it's a normal, do what it usually does
-            QDotOut.block(cmpDof, 0, static_cast<unsigned int>(segment_i.nbDof()), 1) =
-                QDot.block(cmpDof, 0, static_cast<unsigned int>(segment_i.nbDof()), 1);
+            QdotOut.block(cmpDof, 0, static_cast<unsigned int>(segment_i.nbDof()), 1) =
+                Qdot.block(cmpDof, 0, static_cast<unsigned int>(segment_i.nbDof()), 1);
         }
         cmpDof += static_cast<unsigned int>(segment_i.nbDof());
     }
-    return QDotOut;
+    return QdotOut;
 }
 
 utils::Scalar rigidbody::Joints::KineticEnergy(
         const rigidbody::GeneralizedCoordinates &Q,
-        const rigidbody::GeneralizedVelocity &QDot,
+        const rigidbody::GeneralizedVelocity &Qdot,
         bool updateKin)
 {
-    return RigidBodyDynamics::Utils::CalcKineticEnergy(*this, Q, QDot, updateKin);
+    return RigidBodyDynamics::Utils::CalcKineticEnergy(*this, Q, Qdot, updateKin);
 }
 
 
@@ -1209,112 +1227,112 @@ utils::Scalar rigidbody::Joints::PotentialEnergy(
 
 utils::Scalar rigidbody::Joints::Lagrangian(
         const rigidbody::GeneralizedCoordinates &Q,
-        const rigidbody::GeneralizedVelocity &QDot,
+        const rigidbody::GeneralizedVelocity &Qdot,
         bool updateKin)
 {
-    return RigidBodyDynamics::Utils::CalcKineticEnergy(*this, Q, QDot, updateKin) - RigidBodyDynamics::Utils::CalcPotentialEnergy(*this, Q, updateKin);
+    return RigidBodyDynamics::Utils::CalcKineticEnergy(*this, Q, Qdot, updateKin) - RigidBodyDynamics::Utils::CalcPotentialEnergy(*this, Q, updateKin);
 }
 
 
 utils::Scalar rigidbody::Joints::TotalEnergy(
         const rigidbody::GeneralizedCoordinates &Q,
-        const rigidbody::GeneralizedVelocity &QDot,
+        const rigidbody::GeneralizedVelocity &Qdot,
         bool updateKin)
 {
-    return RigidBodyDynamics::Utils::CalcKineticEnergy(*this, Q, QDot, updateKin) + RigidBodyDynamics::Utils::CalcPotentialEnergy(*this, Q, updateKin);;
+    return RigidBodyDynamics::Utils::CalcKineticEnergy(*this, Q, Qdot, updateKin) + RigidBodyDynamics::Utils::CalcPotentialEnergy(*this, Q, updateKin);;
 }
 
 rigidbody::GeneralizedTorque rigidbody::Joints::InverseDynamics(
     const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& QDot,
-    const rigidbody::GeneralizedAcceleration& QDDot
+    const rigidbody::GeneralizedVelocity& Qdot,
+    const rigidbody::GeneralizedAcceleration& Qddot
 )
 {
     rigidbody::ExternalForceSet forceSet(static_cast<BIORBD_NAMESPACE::Model&>(*this));
-    return InverseDynamics(Q, QDot, QDDot, forceSet);
+    return InverseDynamics(Q, Qdot, Qddot, forceSet);
 }
 rigidbody::GeneralizedTorque rigidbody::Joints::InverseDynamics(
     const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& QDot,
-    const rigidbody::GeneralizedAcceleration& QDDot,
+    const rigidbody::GeneralizedVelocity& Qdot,
+    const rigidbody::GeneralizedAcceleration& Qddot,
     rigidbody::ExternalForceSet& externalForces
 )
 {
     rigidbody::GeneralizedTorque Tau(nbGeneralizedTorque());
-    auto fExt = externalForces.computeRbdlSpatialVectors(Q, QDot);
-    RigidBodyDynamics::InverseDynamics(*this, Q, QDot, QDDot, Tau, &fExt);
+    auto fExt = externalForces.computeRbdlSpatialVectors(Q, Qdot);
+    RigidBodyDynamics::InverseDynamics(*this, Q, Qdot, Qddot, Tau, &fExt);
     return Tau;
 }
 
 rigidbody::GeneralizedTorque rigidbody::Joints::NonLinearEffect(
     const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& QDot
+    const rigidbody::GeneralizedVelocity& Qdot
 )
 {
     rigidbody::ExternalForceSet forceSet(static_cast<BIORBD_NAMESPACE::Model&>(*this));
-    return NonLinearEffect(Q, QDot, forceSet);
+    return NonLinearEffect(Q, Qdot, forceSet);
 }
 rigidbody::GeneralizedTorque rigidbody::Joints::NonLinearEffect(
     const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedVelocity& Qdot,
     rigidbody::ExternalForceSet& externalForces
 )
 {
     rigidbody::GeneralizedTorque Tau(*this);
-    auto fExt = externalForces.computeRbdlSpatialVectors(Q, QDot);
-    RigidBodyDynamics::NonlinearEffects(*this, Q, QDot, Tau, &fExt);
+    auto fExt = externalForces.computeRbdlSpatialVectors(Q, Qdot);
+    RigidBodyDynamics::NonlinearEffects(*this, Q, Qdot, Tau, &fExt);
     return Tau;
 }
 
 rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamics(
     const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedVelocity& Qdot,
     const rigidbody::GeneralizedTorque& Tau
 )
 {
     rigidbody::ExternalForceSet forceSet(static_cast<BIORBD_NAMESPACE::Model&>(*this));
-    return ForwardDynamics(Q, QDot, Tau, forceSet);
+    return ForwardDynamics(Q, Qdot, Tau, forceSet);
 }
 rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamics(
     const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedVelocity& Qdot,
     const rigidbody::GeneralizedTorque& Tau,
     rigidbody::ExternalForceSet& externalForces
 )
 {
-    rigidbody::GeneralizedAcceleration QDDot(*this);
-    auto fExt = externalForces.computeRbdlSpatialVectors(Q, QDot, true);
+    rigidbody::GeneralizedAcceleration Qddot(*this);
+    auto fExt = externalForces.computeRbdlSpatialVectors(Q, Qdot, true);
 
 #ifdef BIORBD_USE_CASADI_MATH
     rigidbody::Joints model = this->DeepCopy();
 #else
     rigidbody::Joints& model = *this;
 #endif
-    RigidBodyDynamics::ForwardDynamics(model, Q, QDot, Tau, QDDot, &fExt);
-    return QDDot;
+    RigidBodyDynamics::ForwardDynamics(model, Q, Qdot, Tau, Qddot, &fExt);
+    return Qddot;
 }
 
 rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamicsFreeFloatingBase(
     const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& QDot,
-    const rigidbody::GeneralizedAcceleration& QJointsDDot)
+    const rigidbody::GeneralizedVelocity& Qdot,
+    const rigidbody::GeneralizedAcceleration& QddotJoints)
 {
 
-    utils::Error::check(QJointsDDot.size() == this->nbQddot() - this->nbRoot(),
-                        "Size of QDDotJ must be equal to number of QDDot - number of root coordinates.");
+    utils::Error::check(QddotJoints.size() == this->nbQddot() - this->nbRoot(),
+                        "Size of QddotJ must be equal to number of Qddot - number of root coordinates.");
     
     utils::Error::check(this->nbRoot() > 0, "Must have a least one degree of freedom on root.");
 
-    rigidbody::GeneralizedAcceleration QDDot(this->nbQddot());
+    rigidbody::GeneralizedAcceleration Qddot(this->nbQddot());
     rigidbody::GeneralizedAcceleration QRootDDot;
     rigidbody::GeneralizedTorque MassMatrixNlEffects;
 
     utils::Matrix massMatrixRoot = this->massMatrix(Q).block(0, 0, static_cast<unsigned int>(this->nbRoot()), static_cast<unsigned int>(this->nbRoot()));
 
-    QDDot.block(0, 0, static_cast<unsigned int>(this->nbRoot()), 1) = utils::Vector(this->nbRoot()).setZero();
-    QDDot.block(static_cast<unsigned int>(this->nbRoot()), 0, static_cast<unsigned int>(this->nbQddot()-this->nbRoot()), 1) = QJointsDDot;
+    Qddot.block(0, 0, static_cast<unsigned int>(this->nbRoot()), 1) = utils::Vector(this->nbRoot()).setZero();
+    Qddot.block(static_cast<unsigned int>(this->nbRoot()), 0, static_cast<unsigned int>(this->nbQddot()-this->nbRoot()), 1) = QddotJoints;
 
-    MassMatrixNlEffects = InverseDynamics(Q, QDot, QDDot);
+    MassMatrixNlEffects = InverseDynamics(Q, Qdot, Qddot);
 
 #ifdef BIORBD_USE_CASADI_MATH
     auto linsol = casadi::Linsol("linsol", "symbolicqr", massMatrixRoot.sparsity());
@@ -1329,36 +1347,36 @@ rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamicsFreeFloatin
 
 rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamicsConstraintsDirect(
     const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedVelocity& Qdot,
     const rigidbody::GeneralizedTorque& Tau
 )
 {
     rigidbody::Contacts CS = dynamic_cast<rigidbody::Contacts*>(this)->getConstraints();
-    return ForwardDynamicsConstraintsDirect(Q, QDot, Tau, CS);
+    return ForwardDynamicsConstraintsDirect(Q, Qdot, Tau, CS);
 }
 rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamicsConstraintsDirect(
     const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedVelocity& Qdot,
     const rigidbody::GeneralizedTorque& Tau,
     rigidbody::ExternalForceSet& externalForces
 )
 {
     rigidbody::Contacts CS = dynamic_cast<rigidbody::Contacts*>(this)->getConstraints();
-    return this->ForwardDynamicsConstraintsDirect(Q, QDot, Tau, CS, externalForces);
+    return this->ForwardDynamicsConstraintsDirect(Q, Qdot, Tau, CS, externalForces);
 }
 rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamicsConstraintsDirect(
     const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedVelocity& Qdot,
     const rigidbody::GeneralizedTorque& Tau,
     rigidbody::Contacts& CS
 )
 {
     rigidbody::ExternalForceSet forceSet(static_cast<BIORBD_NAMESPACE::Model&>(*this));
-    return ForwardDynamicsConstraintsDirect(Q, QDot, Tau, CS, forceSet);
+    return ForwardDynamicsConstraintsDirect(Q, Qdot, Tau, CS, forceSet);
 }
 rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamicsConstraintsDirect(
     const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedVelocity& Qdot,
     const rigidbody::GeneralizedTorque& Tau,
     rigidbody::Contacts& CS,
     rigidbody::ExternalForceSet& externalForces
@@ -1367,51 +1385,51 @@ rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamicsConstraints
 #ifdef BIORBD_USE_CASADI_MATH
     bool updateKin = true;
 #else
-    UpdateKinematicsCustom(&Q, &QDot);
+    UpdateKinematicsCustom(&Q, &Qdot);
     bool updateKin = false;  // Put this in parameters??
 #endif
 
-    rigidbody::GeneralizedAcceleration QDDot(*this);
-    auto fExt = externalForces.computeRbdlSpatialVectors(Q, QDot, true);
-    RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*this, Q, QDot, Tau, CS, QDDot, updateKin, &fExt);
-    return QDDot;
+    rigidbody::GeneralizedAcceleration Qddot(*this);
+    auto fExt = externalForces.computeRbdlSpatialVectors(Q, Qdot, true);
+    RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*this, Q, Qdot, Tau, CS, Qddot, updateKin, &fExt);
+    return Qddot;
 }
 
 utils::Vector rigidbody::Joints::ContactForcesFromForwardDynamicsConstraintsDirect(
     const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedVelocity& Qdot,
     const rigidbody::GeneralizedTorque& Tau
 )
 {
     rigidbody::ExternalForceSet forceSet(static_cast<BIORBD_NAMESPACE::Model&>(*this));
-    return ContactForcesFromForwardDynamicsConstraintsDirect(Q, QDot, Tau, forceSet);
+    return ContactForcesFromForwardDynamicsConstraintsDirect(Q, Qdot, Tau, forceSet);
 }
 utils::Vector rigidbody::Joints::ContactForcesFromForwardDynamicsConstraintsDirect(
     const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedVelocity& Qdot,
     const rigidbody::GeneralizedTorque& Tau,
     rigidbody::ExternalForceSet& externalForces
 )
 {
     rigidbody::Contacts CS = dynamic_cast<rigidbody::Contacts*> (this)->getConstraints();
-    this->ForwardDynamicsConstraintsDirect(Q, QDot, Tau, CS, externalForces);
+    this->ForwardDynamicsConstraintsDirect(Q, Qdot, Tau, CS, externalForces);
     return CS.getForce();
 }
 
 rigidbody::GeneralizedVelocity rigidbody::Joints::ComputeConstraintImpulsesDirect(
     const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& QDotPre
+    const rigidbody::GeneralizedVelocity& QdotPre
 )
 {
     rigidbody::Contacts CS = dynamic_cast<rigidbody::Contacts*>(this)->getConstraints();
     if (CS.nbContacts() == 0) {
-        return QDotPre;
+        return QdotPre;
     } else {
         CS = dynamic_cast<rigidbody::Contacts*>(this)->getConstraints();
 
-        rigidbody::GeneralizedVelocity QDotPost(*this);
-        RigidBodyDynamics::ComputeConstraintImpulsesDirect(*this, Q, QDotPre, CS, QDotPost);
-        return QDotPost;
+        rigidbody::GeneralizedVelocity QdotPost(*this);
+        RigidBodyDynamics::ComputeConstraintImpulsesDirect(*this, Q, QdotPre, CS, QdotPost);
+        return QdotPost;
     }
 }
 

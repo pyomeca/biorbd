@@ -88,14 +88,14 @@ public:
     /// \brief Get the force in a spatial vector at the origin of the world base coordinates
     /// \param model The model
     /// \param Q The Generalized Coordinates
-    /// \param QDot The Generalized velocities
+    /// \param Qdot The Generalized velocities
     /// \param updateKin If the kinematics should be updated
     /// \return The Spatial vector
     ///
     virtual utils::SpatialVector computeForceAtOrigin(
             Joints& model,
             const GeneralizedCoordinates& Q,
-            const GeneralizedVelocity& QDot,
+            const GeneralizedVelocity& Qdot,
             bool updateKin = true);
 
     ///

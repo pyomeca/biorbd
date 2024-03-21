@@ -156,12 +156,12 @@ public:
     ///
     /// \brief Update all the muscles (positions, jacobian, etc.)
     /// \param Q The generalized coordinates
-    /// \param QDot The generalized velocities
+    /// \param Qdot The generalized velocities
     /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
     ///
     void updateMuscles(
         const rigidbody::GeneralizedCoordinates& Q,
-        const rigidbody::GeneralizedVelocity& QDot,
+        const rigidbody::GeneralizedVelocity& Qdot,
         bool updateKin);
 
     ///
@@ -177,12 +177,12 @@ public:
     /// \brief Update by hand all the muscles (positions, jacobian, velocity, etc.)
     /// \param musclePointsInGlobal The muscle points in global reference frame
     /// \param jacoPointsInGlobal The jacobian points in global reference frame
-    /// \param QDot The generalized velocities
+    /// \param Qdot The generalized velocities
     ///
     void updateMuscles(
         std::vector<std::vector<utils::Vector3d>>& musclePointsInGlobal,
         std::vector<utils::Matrix>& jacoPointsInGlobal,
-        const rigidbody::GeneralizedVelocity& QDot);
+        const rigidbody::GeneralizedVelocity& Qdot);
 
     ///
     /// \brief Get the vector of state that must be used to update states
@@ -212,7 +212,7 @@ public:
     /// \brief Compute the muscular joint torque
     /// \param F The force vector of all the muscles
     /// \param Q The generalized coordinates
-    /// \param QDot The generalized velocities
+    /// \param Qdot The generalized velocities
     ///
     /// This function updates the muscles and then performs the computation for
     /// the muscular joint torque is done from virtual power:
@@ -226,7 +226,7 @@ public:
     rigidbody::GeneralizedTorque muscularJointTorque(
         const utils::Vector& F,
         const rigidbody::GeneralizedCoordinates& Q,
-        const rigidbody::GeneralizedVelocity& QDot);
+        const rigidbody::GeneralizedVelocity& Qdot);
 
     ///
     /// \brief Compute the muscular joint torque
@@ -248,7 +248,7 @@ public:
     /// \brief Compute the muscular joint torque
     /// \param emg The dynamic state to compute the force vector
     /// \param Q The generalized coordinates (not needed if updateKin is false)
-    /// \param QDot The generalized velocities (not needed if updateKin is false)
+    /// \param Qdot The generalized velocities (not needed if updateKin is false)
     ///
     /// The computation for the muscular joint torque is done from virtual power:
     ///
@@ -259,7 +259,7 @@ public:
     rigidbody::GeneralizedTorque muscularJointTorque(
         const std::vector<std::shared_ptr<State>>& emg,
         const rigidbody::GeneralizedCoordinates& Q,
-        const rigidbody::GeneralizedVelocity& QDot);
+        const rigidbody::GeneralizedVelocity& Qdot);
 
     ///
     /// \brief Interface that returns in a vector all the activations dot
@@ -299,13 +299,13 @@ public:
     /// \brief Compute and return the muscle forces
     /// \param emg The dynamic state
     /// \param Q The generalized coordinates
-    /// \param QDot The generalized velocities
+    /// \param Qdot The generalized velocities
     /// \return The muscle forces
     ///
     utils::Vector muscleForces(
         const std::vector<std::shared_ptr<State>>& emg,
         const rigidbody::GeneralizedCoordinates& Q,
-        const rigidbody::GeneralizedVelocity& QDot);
+        const rigidbody::GeneralizedVelocity& Qdot);
 
     ///
     /// \brief Return the total number of muscle groups

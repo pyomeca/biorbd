@@ -134,13 +134,13 @@ void Reader::readModelFile(
                 bool isMeshSet(false);
                 int segmentByFile(-1); // -1 non setté, 0 pas par file, 1 par file
                 std::vector<utils::Range> QRanges;
-                std::vector<utils::Range> QDotRanges;
-                std::vector<utils::Range> QDDotRanges;
+                std::vector<utils::Range> QdotRanges;
+                std::vector<utils::Range> QddotRanges;
                 bool isRangeQSet(
                     false); // Ranges must be done only after translation AND rotations tags
-                bool isRangeQDotSet(
+                bool isRangeQdotSet(
                     false); // Ranges must be done only after translation AND rotations tags
-                bool isRangeQDDotSet(
+                bool isRangeQddotSet(
                     false); // Ranges must be done only after translation AND rotations tags
                 while(file.read(property_tag) && property_tag.tolower().compare("endsegment")) {
                     if (!property_tag.tolower().compare("parent")) {
@@ -151,13 +151,13 @@ void Reader::readModelFile(
                         }
                     } else if (!property_tag.tolower().compare("translations")) {
                         utils::Error::check(!isRangeQSet, "Translations must appear before the rangesq tag");
-                        utils::Error::check(!isRangeQDotSet, "Translations must appear before the rangesqdot tag");
-                        utils::Error::check(!isRangeQDDotSet,"Translations must appear before the rangesqddot tag");
+                        utils::Error::check(!isRangeQdotSet, "Translations must appear before the rangesqdot tag");
+                        utils::Error::check(!isRangeQddotSet,"Translations must appear before the rangesqddot tag");
                         file.read(trans);
                     } else if (!property_tag.tolower().compare("rotations")) {
                         utils::Error::check(!isRangeQSet, "Rotations must appear before the rangesq tag");
-                        utils::Error::check(!isRangeQDotSet, "Rotations must appear before the rangesqdot tag");
-                        utils::Error::check(!isRangeQDDotSet, "Rotations must appear before the rangesqddot tag");
+                        utils::Error::check(!isRangeQdotSet, "Rotations must appear before the rangesqdot tag");
+                        utils::Error::check(!isRangeQddotSet, "Rotations must appear before the rangesqddot tag");
                         file.read(rot);
                     } else if (
                         !property_tag.tolower().compare("ranges") || 
@@ -189,10 +189,9 @@ void Reader::readModelFile(
                         for (size_t i=0; i<trans.length() + rotLength; ++i) {
                             file.read(min);
                             file.read(max);
-                            QDotRanges.push_back(
-                                utils::Range (min, max));
+                            QdotRanges.push_back(utils::Range (min, max));
                         }
-                        isRangeQDotSet = true;
+                        isRangeQdotSet = true;
                     } else if (!property_tag.tolower().compare("rangesqddot")) {
                         double min, max;
                         size_t rotLength(0);
@@ -205,10 +204,9 @@ void Reader::readModelFile(
                         for (size_t i=0; i<trans.length() + rotLength; ++i) {
                             file.read(min);
                             file.read(max);
-                            QDDotRanges.push_back(
-                                utils::Range (min, max));
+                            QddotRanges.push_back(utils::Range (min, max));
                         }
-                        isRangeQDDotSet = true;
+                        isRangeQddotSet = true;
                     } else if (!property_tag.tolower().compare("mass")) {
                         file.read(mass, variable);
                     } else if (!property_tag.tolower().compare("inertia") || !property_tag.tolower().compare("inertiamatrix")) {
@@ -320,7 +318,7 @@ void Reader::readModelFile(
                         }
                     }
                 }
-                if (!isRangeQDotSet) {
+                if (!isRangeQdotSet) {
                     size_t rotLength(0);
                     if (rot.compare("q")) {
                         // If not a quaternion
@@ -329,11 +327,10 @@ void Reader::readModelFile(
                         rotLength = 3;
                     }
                     for (size_t i=0; i<trans.length() + rotLength; ++i) {
-                        QDotRanges.push_back(
-                            utils::Range (-M_PI*10, M_PI*10));
+                        QdotRanges.push_back(utils::Range (-M_PI*10, M_PI*10));
                     }
                 }
-                if (!isRangeQDDotSet) {
+                if (!isRangeQddotSet) {
                     size_t rotLength(0);
                     if (rot.compare("q")) {
                         // If not a quaternion
@@ -342,8 +339,7 @@ void Reader::readModelFile(
                         rotLength = 3;
                     }
                     for (size_t i=0; i<trans.length() + rotLength; ++i) {
-                        QDDotRanges.push_back(
-                            utils::Range (-M_PI*100, M_PI*100));
+                        QddotRanges.push_back(utils::Range (-M_PI*100, M_PI*100));
                     }
                 }
                 rigidbody::SegmentCharacteristics characteristics(mass, com, inertia, mesh);
@@ -353,8 +349,8 @@ void Reader::readModelFile(
                     trans, 
                     rot, 
                     QRanges, 
-                    QDotRanges,
-                    QDDotRanges, 
+                    QdotRanges,
+                    QddotRanges, 
                     characteristics, 
                     RT
                 );

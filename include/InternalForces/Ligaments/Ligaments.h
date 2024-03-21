@@ -120,7 +120,7 @@ public:
     /// \brief Compute the ligament joint torque
     /// \param F The force vector of all the ligaments
     /// \param Q The generalized coordinates
-    /// \param QDot The generalized velocities
+    /// \param Qdot The generalized velocities
     ///
     /// This function updates the ligaments and then performs the computation for
     /// the ligament joint torque is done from virtual power:
@@ -134,12 +134,12 @@ public:
     rigidbody::GeneralizedTorque ligamentsJointTorque(
         const utils::Vector& F,
         const rigidbody::GeneralizedCoordinates& Q,
-        const rigidbody::GeneralizedVelocity& QDot);
+        const rigidbody::GeneralizedVelocity& Qdot);
 
     ///
     /// \brief Compute the ligament joint torque
     /// \param Q The generalized coordinates
-    /// \param QDot The generalized velocities
+    /// \param Qdot The generalized velocities
     ///
     /// This function updates the ligaments and then performs the computation for
     /// the ligament joint torque is done from virtual power:
@@ -152,7 +152,7 @@ public:
     ///
     rigidbody::GeneralizedTorque ligamentsJointTorque(
         const rigidbody::GeneralizedCoordinates& Q,
-        const rigidbody::GeneralizedVelocity& QDot);
+        const rigidbody::GeneralizedVelocity& Qdot);
 
     ///
     /// \brief Return the previously computed ligament length jacobian
@@ -179,12 +179,12 @@ public:
     /// \brief Compute and return the ligament forces
     /// \param emg The dynamic state
     /// \param Q The generalized coordinates
-    /// \param QDot The generalized velocities
+    /// \param Qdot The generalized velocities
     /// \return The ligament forces
     ///
     utils::Vector ligamentForces(
         const rigidbody::GeneralizedCoordinates& Q,
-        const rigidbody::GeneralizedVelocity& QDot);
+        const rigidbody::GeneralizedVelocity& Qdot);
 
     ///
     /// \brief Return the total number of ligament
@@ -217,12 +217,12 @@ public:
     ///
     /// \brief Update all the ligaments (positions, jacobian, etc.)
     /// \param Q The generalized coordinates
-    /// \param QDot The generalized velocities
+    /// \param Qdot The generalized velocities
     /// \param updateKin Update kinematics (0: don't update, 1:only ligaments, [2: both kinematics and ligaments])
     ///
     void updateLigaments(
         const rigidbody::GeneralizedCoordinates& Q,
-        const rigidbody::GeneralizedVelocity& QDot,
+        const rigidbody::GeneralizedVelocity& Qdot,
         bool updateKin);
 
     ///
@@ -238,12 +238,12 @@ public:
     /// \brief Update by hand all the ligaments (positions, jacobian, velocity, etc.)
     /// \param ligamentPointsInGlobal The ligament points in global reference frame
     /// \param jacoPointsInGlobal The jacobian points in global reference frame
-    /// \param QDot The generalized velocities
+    /// \param Qdot The generalized velocities
     ///
     void updateLigaments(
         std::vector<std::vector<utils::Vector3d>>& ligamentPointsInGlobal,
         std::vector<utils::Matrix>& jacoPointsInGlobal,
-        const rigidbody::GeneralizedVelocity& QDot);
+        const rigidbody::GeneralizedVelocity& Qdot);
 
 
 protected:

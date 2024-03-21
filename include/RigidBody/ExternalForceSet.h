@@ -158,7 +158,7 @@ namespace BIORBD_NAMESPACE
             /// 
             /// \brief The forces in a rbdl compatible format. This won't work if useTranslationalForces useSoftContacts is set to true
             /// \param Q The generalized coordinates
-            /// \param QDot The generalized velocity
+            /// \param Qdot The generalized velocity
             /// \param updateKin If the kinematics of the model should be computed
             /// 
             std::vector<RigidBodyDynamics::Math::SpatialVector> computeRbdlSpatialVectors();
@@ -166,7 +166,7 @@ namespace BIORBD_NAMESPACE
             /// 
             /// \brief The forces in a rbdl compatible format. This won't work if useSoftContacts is set to true
             /// \param Q The generalized coordinates
-            /// \param QDot The generalized velocity
+            /// \param Qdot The generalized velocity
             /// \param updateKin If the kinematics of the model should be computed
             /// 
             std::vector<RigidBodyDynamics::Math::SpatialVector> computeRbdlSpatialVectors(
@@ -177,12 +177,12 @@ namespace BIORBD_NAMESPACE
             /// 
             /// \brief The forces in a rbdl compatible format. 
             /// \param Q The generalized coordinates
-            /// \param QDot The generalized velocity
+            /// \param Qdot The generalized velocity
             /// \param updateKin If the kinematics of the model should be computed
             /// 
             std::vector<RigidBodyDynamics::Math::SpatialVector> computeRbdlSpatialVectors(
                 const rigidbody::GeneralizedCoordinates& Q,
-                const rigidbody::GeneralizedVelocity& QDot,
+                const rigidbody::GeneralizedVelocity& Qdot,
                 bool updateKin = true
             );
 
@@ -204,12 +204,12 @@ namespace BIORBD_NAMESPACE
             /// 
             /// \brief The forces in a rbdl compatible format. 
             /// \param Q The generalized coordinates
-            /// \param QDot The generalized velocity
+            /// \param Qdot The generalized velocity
             /// \param updateKin If the kinematics of the model should be computed
             /// 
             std::vector<utils::SpatialVector> computeSpatialVectors(
                 const rigidbody::GeneralizedCoordinates& Q,
-                const rigidbody::GeneralizedVelocity& QDot,
+                const rigidbody::GeneralizedVelocity& Qdot,
                 bool updateKin = true
             );
 #endif // !SWIG
@@ -248,14 +248,14 @@ namespace BIORBD_NAMESPACE
             ///
             /// \brief Add the soft contact forces to the internal Set.
             /// \param Q The Generalized coordinates. 
-            /// \param QDot The Generalized velocity. 
+            /// \param Qdot The Generalized velocity. 
             /// \param out The vector of SpatialVector to fill
             /// 
             /// Note: as this is an internal method, even though Q is passed, it is assumed update kinematics was already done.
             /// 
             void combineSoftContactForces(
                 const rigidbody::GeneralizedCoordinates& Q,
-                const rigidbody::GeneralizedVelocity& QDot,
+                const rigidbody::GeneralizedVelocity& Qdot,
                 std::vector<utils::SpatialVector>& out
             ) const;
 

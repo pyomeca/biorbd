@@ -39,8 +39,8 @@ public:
     /// \param seqT Sequence of the translations
     /// \param seqR Angle sequence of the Euler rotations
     /// \param QRanges Ranges of the translations and rotations dof. The length of QRanges must be equal to length of translations and rotations
-    /// \param QDotRanges Ranges of the translations and rotations dof velocity. The length of QDotRanges must be equal to length of translations and rotations
-    /// \param QDDotRanges Ranges of the translations and rotations dof acceleration. The length of QDDotRanges must be equal to length of translations and rotations
+    /// \param QdotRanges Ranges of the translations and rotations dof velocity. The length of QdotRanges must be equal to length of translations and rotations
+    /// \param QddotRanges Ranges of the translations and rotations dof acceleration. The length of QddotRanges must be equal to length of translations and rotations
     /// \param characteristics of the segment (mass, center of mass, inertia, etc.)
     /// \param cor Transformation in parent reference frame
     ///
@@ -51,8 +51,8 @@ public:
         const utils::String &seqT,
         const utils::String &seqR,
         const std::vector<utils::Range>& QRanges,
-        const std::vector<utils::Range>& QDotRanges,
-        const std::vector<utils::Range>& QDDotRanges,
+        const std::vector<utils::Range>& QdotRanges,
+        const std::vector<utils::Range>& QddotRanges,
         const SegmentCharacteristics& characteristics,
         const RigidBodyDynamics::Math::SpatialTransform& cor);
 
@@ -63,8 +63,8 @@ public:
     /// \param parentName The name of the parent segment
     /// \param seqR Angle sequence of the Euler rotations
     /// \param QRanges Ranges of the translations and rotations dof. The length of QRanges must be equal to length of translations and rotations
-    /// \param QDotRanges Ranges of the translations and rotations dof velocity. The length of QDotRanges must be equal to length of translations and rotations
-    /// \param QDDotRanges Ranges of the translations and rotations dof acceleration. The length of QDDotRanges must be equal to length of translations and rotations
+    /// \param QdotRanges Ranges of the translations and rotations dof velocity. The length of QdotRanges must be equal to length of translations and rotations
+    /// \param QddotRanges Ranges of the translations and rotations dof acceleration. The length of QddotRanges must be equal to length of translations and rotations
     /// \param characteristics of the segment (mass, center of mass, inertia, etc.)
     /// \param cor Transformation in parent reference frame
     ///
@@ -74,8 +74,8 @@ public:
         const utils::String &parentName,
         const utils::String &seqR,
         const std::vector<utils::Range>& QRanges,
-        const std::vector<utils::Range>& QDotRanges,
-        const std::vector<utils::Range>& QDDotRanges,
+        const std::vector<utils::Range>& QdotRanges,
+        const std::vector<utils::Range>& QddotRanges,
         const SegmentCharacteristics& characteristics,
         const RigidBodyDynamics::Math::SpatialTransform& cor);
 
@@ -127,14 +127,14 @@ public:
     /// \return The ranges for all the dof velocity, translations and rotations respectively
     ///
     const std::vector<utils::Range>&
-    QDotRanges() const;
+    QdotRanges() const;
 
     ///
     /// \brief Return the ranges for all the dof acceleration, translations and rotations respectively
     /// \return The ranges for all the dofa acceleration, translations and rotations respectively
     ///
     const std::vector<utils::Range>&
-    QDDotRanges() const;
+    QddotRanges() const;
 
     ///
     /// \brief Return the number of DoF of the segment
@@ -282,16 +282,16 @@ protected:
     /// \param seqT Sequence of the translations
     /// \param seqR Angle sequence of the Euler rotations
     /// \param QRanges Ranges of the translations and rotations dof. The length of QRanges must be equal to length of translations and rotations
-    /// \param QDotRanges Ranges of the translations and rotations dof velocity. The length of QDotRanges must be equal to length of translations and rotations
-    /// \param QDDotRanges Ranges of the translations and rotations dof acceleration. The length of QDDotRanges must be equal to length of translations and rotations
+    /// \param QdotRanges Ranges of the translations and rotations dof velocity. The length of QdotRanges must be equal to length of translations and rotations
+    /// \param QddotRanges Ranges of the translations and rotations dof acceleration. The length of QddotRanges must be equal to length of translations and rotations
     ///
     void setDofs(
         rigidbody::Joints& model,
         const utils::String &seqT,
         const utils::String &seqR,
         const std::vector<utils::Range>& QRanges,
-        const std::vector<utils::Range>& QDotRanges,
-        const std::vector<utils::Range>& QDDotRanges);
+        const std::vector<utils::Range>& QdotRanges,
+        const std::vector<utils::Range>& QddotRanges);
 
     ///
     /// \brief Set the total number of DoF
@@ -305,8 +305,8 @@ protected:
     std::shared_ptr<utils::String> m_seqT;  ///< Translation sequence
     std::shared_ptr<utils::String> m_seqR;  ///< Euler rotation sequence
     std::shared_ptr<std::vector<utils::Range>> m_QRanges;  ///< Minimum and maximum coordinate values that each dof should hold. This is only prescriptive and can be ignored when setting the GeneralizedCoordinates
-    std::shared_ptr<std::vector<utils::Range>> m_QDotRanges;  ///< Minimum and maximum velocity values that each dof should hold. This is only prescriptive and can be ignored when setting the GeneralizedVelocities
-    std::shared_ptr<std::vector<utils::Range>> m_QDDotRanges;  ///< Minimum and maximum acceleration values that each dof should hold. This is only prescriptive and can be ignored when setting the GeneralizedAccelerations
+    std::shared_ptr<std::vector<utils::Range>> m_QdotRanges;  ///< Minimum and maximum velocity values that each dof should hold. This is only prescriptive and can be ignored when setting the GeneralizedVelocities
+    std::shared_ptr<std::vector<utils::Range>> m_QddotRanges;  ///< Minimum and maximum acceleration values that each dof should hold. This is only prescriptive and can be ignored when setting the GeneralizedAccelerations
     std::shared_ptr<size_t> m_nbDof;   ///< Number of degrees of freedom
     std::shared_ptr<size_t> m_nbQdot;  ///< Number of generalized velocities
     std::shared_ptr<size_t> m_nbQddot;  ///< Number of generalized accelerations

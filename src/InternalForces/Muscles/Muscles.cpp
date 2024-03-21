@@ -158,11 +158,11 @@ rigidbody::GeneralizedTorque
 internal_forces::muscles::Muscles::muscularJointTorque(
     const utils::Vector &F,
     const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& QDot)
+    const rigidbody::GeneralizedVelocity& Qdot)
 {
 
     // Update the muscular position
-    updateMuscles(Q, QDot, true);
+    updateMuscles(Q, Qdot, true);
 
     return muscularJointTorque(F);
 }
@@ -180,9 +180,9 @@ rigidbody::GeneralizedTorque
 internal_forces::muscles::Muscles::muscularJointTorque(
     const std::vector<std::shared_ptr<internal_forces::muscles::State>>& emg,
     const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& QDot)
+    const rigidbody::GeneralizedVelocity& Qdot)
 {
-    return muscularJointTorque(muscleForces(emg, Q, QDot));
+    return muscularJointTorque(muscleForces(emg, Q, Qdot));
 }
 
 utils::Vector internal_forces::muscles::Muscles::activationDot(
@@ -224,10 +224,10 @@ utils::Vector internal_forces::muscles::Muscles::muscleForces(
 utils::Vector internal_forces::muscles::Muscles::muscleForces(
     const std::vector<std::shared_ptr<internal_forces::muscles::State>> &emg,
     const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& QDot)
+    const rigidbody::GeneralizedVelocity& Qdot)
 {
     // Update the muscular position
-    updateMuscles(Q, QDot, true);
+    updateMuscles(Q, Qdot, true);
 
     return muscleForces(emg);
 }
@@ -279,7 +279,7 @@ size_t internal_forces::muscles::Muscles::nbMuscles() const
 
 void internal_forces::muscles::Muscles::updateMuscles(
     const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedVelocity& Qdot,
     bool updateKin)
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
@@ -299,7 +299,7 @@ void internal_forces::muscles::Muscles::updateMuscles(
 
     for (auto group : *m_mus) // muscle group
         for (size_t j=0; j<group.nbMuscles(); ++j) {
-            group.muscle(j).updateOrientations(model, Q, QDot, updateKinTP);
+            group.muscle(j).updateOrientations(model, Q, Qdot, updateKinTP);
 #ifndef BIORBD_USE_CASADI_MATH
             if (updateKinTP){
                 updateKinTP=1;
@@ -341,13 +341,16 @@ void internal_forces::muscles::Muscles::updateMuscles(
 void internal_forces::muscles::Muscles::updateMuscles(
     std::vector<std::vector<utils::Vector3d>>& musclePointsInGlobal,
     std::vector<utils::Matrix> &jacoPointsInGlobal,
-    const rigidbody::GeneralizedVelocity& QDot)
+    const rigidbody::GeneralizedVelocity& Qdot)
 {
     size_t cmpMuscle = 0;
     for (auto group : *m_mus) // muscle  group
         for (size_t j=0; j<group.nbMuscles(); ++j) {
-            group.muscle(j).updateOrientations(musclePointsInGlobal[cmpMuscle],
-                                               jacoPointsInGlobal[cmpMuscle], QDot);
+            group.muscle(j).updateOrientations(
+                musclePointsInGlobal[cmpMuscle],
+                jacoPointsInGlobal[cmpMuscle], 
+                Qdot
+            );
             ++cmpMuscle;
         }
 }

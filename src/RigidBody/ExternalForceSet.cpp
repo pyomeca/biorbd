@@ -96,7 +96,7 @@ void rigidbody::ExternalForceSet::addTranslationalForce(
 std::vector<RigidBodyDynamics::Math::SpatialVector> rigidbody::ExternalForceSet::computeRbdlSpatialVectors() {
     if (hasExternalForceInLocalReferenceFrame()) throw std::runtime_error("local reference frame requires Q when computing the Spatial Vectors");
     if (m_useTranslationalForces) throw std::runtime_error("useTranslationalForce requires Q when computing the Spatial Vectors");
-    if (m_useSoftContacts) throw std::runtime_error("useSoftContacts requires Q and QDot when computing the Spatial Vectors");
+    if (m_useSoftContacts) throw std::runtime_error("useSoftContacts requires Q and Qdot when computing the Spatial Vectors");
     return computeRbdlSpatialVectors(rigidbody::GeneralizedCoordinates(m_model), rigidbody::GeneralizedVelocity(m_model), false);
 }
 
@@ -104,16 +104,16 @@ std::vector<RigidBodyDynamics::Math::SpatialVector> rigidbody::ExternalForceSet:
     const rigidbody::GeneralizedCoordinates& Q,
     bool updateKin
 ) {
-    if (m_useSoftContacts) throw std::runtime_error("useSoftContacts requires QDot when computing the Spatial Vectors");
+    if (m_useSoftContacts) throw std::runtime_error("useSoftContacts requires Qdot when computing the Spatial Vectors");
     return computeRbdlSpatialVectors(Q, rigidbody::GeneralizedVelocity(m_model), updateKin);
 }
 
 std::vector<RigidBodyDynamics::Math::SpatialVector> rigidbody::ExternalForceSet::computeRbdlSpatialVectors(
     const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedVelocity& Qdot,
     bool updateKin
 ) {
-    std::vector<utils::SpatialVector> tp(computeSpatialVectors(Q, QDot, updateKin));
+    std::vector<utils::SpatialVector> tp(computeSpatialVectors(Q, Qdot, updateKin));
     std::vector<RigidBodyDynamics::Math::SpatialVector> out;
     for (const auto& value : tp) {
         out.push_back(value);
@@ -124,7 +124,7 @@ std::vector<RigidBodyDynamics::Math::SpatialVector> rigidbody::ExternalForceSet:
 std::vector<utils::SpatialVector> rigidbody::ExternalForceSet::computeSpatialVectors() {
     if (hasExternalForceInLocalReferenceFrame()) throw std::runtime_error("local reference frame requires Q when computing the Spatial Vectors");
     if (m_useTranslationalForces) throw std::runtime_error("useTranslationalForce requires Q when computing the Spatial Vectors");
-    if (m_useSoftContacts) throw std::runtime_error("useSoftContacts requires Q and QDot when computing the Spatial Vectors");
+    if (m_useSoftContacts) throw std::runtime_error("useSoftContacts requires Q and Qdot when computing the Spatial Vectors");
     return computeSpatialVectors(rigidbody::GeneralizedCoordinates(m_model), rigidbody::GeneralizedVelocity(m_model), false);
 }
 
@@ -132,13 +132,13 @@ std::vector<utils::SpatialVector> rigidbody::ExternalForceSet::computeSpatialVec
     const rigidbody::GeneralizedCoordinates& Q,
     bool updateKin
 ) {
-    if (m_useSoftContacts) throw std::runtime_error("useSoftContacts requires QDot when computing the Spatial Vectors");
+    if (m_useSoftContacts) throw std::runtime_error("useSoftContacts requires Qdot when computing the Spatial Vectors");
     return computeSpatialVectors(Q, rigidbody::GeneralizedVelocity(), updateKin);
 }
 
 std::vector<utils::SpatialVector> rigidbody::ExternalForceSet::computeSpatialVectors(
     const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedVelocity& Qdot,
     bool updateKin    
 ) 
 {
@@ -146,7 +146,7 @@ std::vector<utils::SpatialVector> rigidbody::ExternalForceSet::computeSpatialVec
     updateKin = true;
 #endif
     if (updateKin) {
-        m_model.UpdateKinematicsCustom(&Q, m_useSoftContacts ? &QDot : nullptr, nullptr);
+        m_model.UpdateKinematicsCustom(&Q, m_useSoftContacts ? &Qdot : nullptr, nullptr);
     }
 
     std::vector<utils::SpatialVector> out;
@@ -155,7 +155,7 @@ std::vector<utils::SpatialVector> rigidbody::ExternalForceSet::computeSpatialVec
     }
     if (hasExternalForceInLocalReferenceFrame()) combineLocalReferenceFrameForces(Q, out);
     if (m_useTranslationalForces) combineTranslationalForces(Q, out);
-    if (m_useSoftContacts) combineSoftContactForces(Q, QDot, out);
+    if (m_useSoftContacts) combineSoftContactForces(Q, Qdot, out);
 
     return out;
 }
@@ -270,7 +270,7 @@ void rigidbody::ExternalForceSet::combineTranslationalForces(
 
 void rigidbody::ExternalForceSet::combineSoftContactForces(
     const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedVelocity& Qdot,
     std::vector<utils::SpatialVector>& out
 ) const
 {
@@ -291,7 +291,7 @@ void rigidbody::ExternalForceSet::combineSoftContactForces(
         size_t dofIndex = segment.getLastDofIndexInGeneralizedCoordinates(m_model) + 1;
 
         // Add the force to the force vector (do not subtract 1 because 0 is the base)
-        out[dofIndex] += contact.computeForceAtOrigin(m_model, Q, QDot, updateKin);
+        out[dofIndex] += contact.computeForceAtOrigin(m_model, Q, Qdot, updateKin);
     }
 }
 
