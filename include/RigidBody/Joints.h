@@ -371,12 +371,12 @@ public:
     /// \param Q The generalized coordinates
     /// \param segmentName The name of the segment
     /// \param pointInLocal The point in the body
-    /// \param updateKinematics If the kinematics of the model should be computed (always true for casadi)
+    /// \param updateKin If the kinematics of the model should be computed (always true for casadi)
     utils::Vector3d rigidbody::Joints::CalcBodyToBaseCoordinates(
         const rigidbody::GeneralizedCoordinates& Q,
         utils::String segmentName,
         const utils::Vector3d &pointInLocal,
-        bool updateKinematics = true);
+        bool updateKin = true);
 
     ///
     /// \brief Interface to call CalcBodyToBaseCoordinates. It is pretty much useless in Eigen, but 
@@ -384,12 +384,12 @@ public:
     /// \param Q The generalized coordinates
     /// \param bodyId The index of the segment (obtainable with GetBodyId)
     /// \param pointInLocal The point in the body
-    /// \param updateKinematics If the kinematics of the model should be computed (always true for casadi)
+    /// \param updateKin If the kinematics of the model should be computed (always true for casadi)
     utils::Vector3d rigidbody::Joints::CalcBodyToBaseCoordinates(
         const rigidbody::GeneralizedCoordinates& Q,
         unsigned int bodyId,
         const utils::Vector3d &pointInLocal,
-        bool updateKinematics = true);
+        bool updateKin = true);
 
     /// 
     /// \brief Interface to call CalcPointVelocity. It is pretty much useless in Eigen, but 
@@ -398,13 +398,13 @@ public:
     /// \param Qdot The generalized velocities
     /// \param segmentName The name of the segment
     /// \param pointInLocal The point in the body
-    /// \param updateKinematics If the kinematics of the model should be computed (always true for casadi)
+    /// \param updateKin If the kinematics of the model should be computed (always true for casadi)
     utils::Vector3d rigidbody::Joints::CalcPointVelocity(
         const rigidbody::GeneralizedCoordinates& Q,
         const rigidbody::GeneralizedVelocity& Qdot,
         utils::String segmentName,
         const utils::Vector3d& pointInLocal,
-        bool updateKinematics = true
+        bool updateKin = true
     );
 
     /// 
@@ -414,13 +414,13 @@ public:
     /// \param Qdot The generalized velocities
     /// \param bodyId The index of the segment (obtainable with GetBodyId)
     /// \param pointInLocal The point in the body
-    /// \param updateKinematics If the kinematics of the model should be computed (always true for casadi)
+    /// \param updateKin If the kinematics of the model should be computed (always true for casadi)
     utils::Vector3d rigidbody::Joints::CalcPointVelocity(
         const rigidbody::GeneralizedCoordinates& Q,
         const rigidbody::GeneralizedVelocity& Qdot,
         unsigned int bodyId,
         const utils::Vector3d& pointInLocal,
-        bool updateKinematics = true
+        bool updateKin = true
     );
 
     /// 
@@ -430,13 +430,13 @@ public:
     /// \param Qdot The generalized velocities
     /// \param segmentName The name of the segment
     /// \param pointInLocal The point in the body
-    /// \param updateKinematics If the kinematics of the model should be computed (always true for casadi)
+    /// \param updateKin If the kinematics of the model should be computed (always true for casadi)
     utils::SpatialVector rigidbody::Joints::CalcPointVelocity6D(
         const rigidbody::GeneralizedCoordinates& Q,
         const rigidbody::GeneralizedVelocity& Qdot,
         utils::String segmentName,
         const utils::Vector3d& pointInLocal,
-        bool updateKinematics = true
+        bool updateKin = true
     );
 
     /// 
@@ -446,13 +446,13 @@ public:
     /// \param Qdot The generalized velocities
     /// \param bodyId The index of the segment (obtainable with GetBodyId)
     /// \param pointInLocal The point in the body
-    /// \param updateKinematics If the kinematics of the model should be computed (always true for casadi)
+    /// \param updateKin If the kinematics of the model should be computed (always true for casadi)
     utils::SpatialVector rigidbody::Joints::CalcPointVelocity6D(
         const rigidbody::GeneralizedCoordinates& Q,
         const rigidbody::GeneralizedVelocity& Qdot,
         unsigned int bodyId,
         const utils::Vector3d& pointInLocal,
-        bool updateKinematics = true
+        bool updateKin = true
     );
 
     /// 
@@ -463,14 +463,14 @@ public:
     /// \param Qddot The generalized accelerations
     /// \param segmentName The name of the segment
     /// \param pointInLocal The point in the body
-    /// \param updateKinematics If the kinematics of the model should be computed (always true for casadi)
+    /// \param updateKin If the kinematics of the model should be computed (always true for casadi)
     utils::Vector3d rigidbody::Joints::CalcPointAcceleration(
         const rigidbody::GeneralizedCoordinates& Q,
         const rigidbody::GeneralizedVelocity& Qdot,
         const rigidbody::GeneralizedAcceleration& Qddot,
         utils::String segmentName,
         const utils::Vector3d& pointInLocal,
-        bool updateKinematics = true
+        bool updateKin = true
     );
 
     /// 
@@ -481,14 +481,14 @@ public:
     /// \param Qddot The generalized accelerations
     /// \param bodyId The index of the segment (obtainable with GetBodyId)
     /// \param pointInLocal The point in the body
-    /// \param updateKinematics If the kinematics of the model should be computed (always true for casadi)
+    /// \param updateKin If the kinematics of the model should be computed (always true for casadi)
     utils::Vector3d rigidbody::Joints::CalcPointAcceleration(
         const rigidbody::GeneralizedCoordinates& Q,
         const rigidbody::GeneralizedVelocity& Qdot,
         const rigidbody::GeneralizedAcceleration& Qddot,
         unsigned int bodyId,
         const utils::Vector3d& pointInLocal,
-        bool updateKinematics = true
+        bool updateKin = true
     );
 
     ///
@@ -498,12 +498,12 @@ public:
     /// \param Q The generalized coordinates/// 
     /// \param segmentName The name of the segment
     /// \param pointInLocal The point in the body
-    /// \param updateKinematics If the kinematics of the model should be computed (always true for casadi)
+    /// \param updateKin If the kinematics of the model should be computed (always true for casadi)
     utils::Matrix CalcPointJacobian(
         const rigidbody::GeneralizedCoordinates& Q,
         utils::String segmentName,
         const utils::Vector3d& pointInLocal,
-        bool updateKinematics = true
+        bool updateKin = true
     );
 
     ///
@@ -513,12 +513,12 @@ public:
     /// \param Q The generalized coordinates
     /// \param bodyId The index of the segment (obtainable with GetBodyId)
     /// \param pointInLocal The point in the body
-    /// \param updateKinematics If the kinematics of the model should be computed (always true for casadi)
+    /// \param updateKin If the kinematics of the model should be computed (always true for casadi)
     utils::Matrix CalcPointJacobian(
         const rigidbody::GeneralizedCoordinates& Q,
         unsigned int bodyId,
         const utils::Vector3d& pointInLocal,
-        bool updateKinematics = true
+        bool updateKin = true
     );
 
     // ------------------------------------- //
@@ -553,7 +553,7 @@ public:
     /// \param comAcceleration (optional output) linear acceleration of the COM in base coordinates
     /// \param angularMomentum (optional output) angular momentum of the model at the COM in base coordinates
     /// \param changeOfAngularMomentum (optional output) change of angular momentum of the model at the COM in base coordinates
-    /// \param updateKinematics (optional input) whether the kinematics should be updated (defaults to true)
+    /// \param updateKin (optional input) whether the kinematics should be updated (defaults to true)
     /// 
     /// \note When wanting to compute com_acceleration or change_of_angular
     /// momentum one has to provide Qddot. In all other cases one can use NULL
@@ -569,7 +569,7 @@ public:
         utils::Vector3d* comAcceleration = NULL,
         utils::Vector3d* angularMomentum = NULL,
         utils::Vector3d* changeOfAngularMomentum = NULL,
-        bool updateKinematics = true
+        bool updateKin = true
     );
 
     ///

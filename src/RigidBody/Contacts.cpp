@@ -144,10 +144,8 @@ size_t rigidbody::Contacts::AddLoopConstraint(
     ++*m_nbLoopConstraint;
     return RigidBodyDynamics::ConstraintSet::AddLoopConstraint(
         static_cast<unsigned int>(body_id_predecessor), static_cast<unsigned int>(body_id_successor),
-               RigidBodyDynamics::Math::SpatialTransform(X_predecessor.rot(),
-                       X_predecessor.trans()),
-               RigidBodyDynamics::Math::SpatialTransform(X_successor.rot(),
-                       X_successor.trans()),
+               RigidBodyDynamics::Math::SpatialTransform(X_predecessor.rot(), X_predecessor.trans()),
+               RigidBodyDynamics::Math::SpatialTransform(X_successor.rot(), X_successor.trans()),
                utils::SpatialVector(axis),
                enableStabilization, stabilizationParam, name.c_str());
 }
@@ -172,9 +170,9 @@ std::vector< utils::SpatialVector > rigidbody::Contacts::calcLoopConstraintForce
     bool resolveAllInRootFrame = true;
 
     // outputs
-    std::vector< unsigned int > constraintBodyIdsOutput;
-    std::vector< RigidBodyDynamics::Math::SpatialVector > updatedConstraintForcesOutput;
-    std::vector< RigidBodyDynamics::Math::SpatialTransform > updatedConstraintBodyFramesOutput;
+    std::vector<unsigned int> constraintBodyIdsOutput;
+    std::vector<RigidBodyDynamics::Math::SpatialVector> updatedConstraintForcesOutput;
+    std::vector<RigidBodyDynamics::Math::SpatialTransform> updatedConstraintBodyFramesOutput;
 
     // retrieve the model and the contacts
     rigidbody::Contacts CS = dynamic_cast<rigidbody::Contacts*>(this)->getConstraints();

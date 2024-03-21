@@ -13,6 +13,7 @@ namespace utils
 {
 class RotoTrans;
 class Range;
+class SpatialTransform;
 }
 
 namespace rigidbody
@@ -54,7 +55,7 @@ public:
         const std::vector<utils::Range>& QdotRanges,
         const std::vector<utils::Range>& QddotRanges,
         const SegmentCharacteristics& characteristics,
-        const RigidBodyDynamics::Math::SpatialTransform& cor);
+        const utils::SpatialTransform& cor);
 
     ///
     /// \brief Construct a Segment
@@ -77,7 +78,7 @@ public:
         const std::vector<utils::Range>& QdotRanges,
         const std::vector<utils::Range>& QddotRanges,
         const SegmentCharacteristics& characteristics,
-        const RigidBodyDynamics::Math::SpatialTransform& cor);
+        const utils::SpatialTransform& cor);
 
     ///
     /// \brief Create a deep copy of Segment
@@ -274,7 +275,7 @@ protected:
     ///
     void setType();
 
-    std::shared_ptr<RigidBodyDynamics::Math::SpatialTransform> m_cor; ///< Attitude of the segment in parent reference frame
+    std::shared_ptr<utils::SpatialTransform> m_cor; ///< Attitude of the segment in parent reference frame
 
     ///
     /// \brief Set the DoF
@@ -390,10 +391,8 @@ protected:
     ///
     void setDofCharacteristicsOnLastBody();
 
-    std::shared_ptr<SegmentCharacteristics>
-            m_characteristics;///< Non-used virtual segment; it allows to "save" the data and to avoid the use of multiple intermediate variables
-    std::shared_ptr<std::vector<SegmentCharacteristics>>
-            m_dofCharacteristics;  ///< Variable containing the inertial data and other from each segment (on a 6DoF segment, 0 to 4 should be empty and 5 filled)
+    std::shared_ptr<SegmentCharacteristics> m_characteristics;///< Non-used virtual segment; it allows to "save" the data and to avoid the use of multiple intermediate variables
+    std::shared_ptr<std::vector<SegmentCharacteristics>> m_dofCharacteristics;  ///< Variable containing the inertial data and other from each segment (on a 6DoF segment, 0 to 4 should be empty and 5 filled)
 
 
 };

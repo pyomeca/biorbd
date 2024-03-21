@@ -404,25 +404,25 @@ utils::Vector3d rigidbody::Joints::CalcBodyToBaseCoordinates(
     const rigidbody::GeneralizedCoordinates& Q,
     utils::String segmentName,
     const utils::Vector3d &pointInLocal,
-    bool updateKinematics)
+    bool updateKin)
 {
-    return this->CalcBodyToBaseCoordinates(Q, this->GetBodyId(segmentName.c_str()), pointInLocal, updateKinematics);
+    return this->CalcBodyToBaseCoordinates(Q, this->GetBodyId(segmentName.c_str()), pointInLocal, updateKin);
 }
 
 utils::Vector3d rigidbody::Joints::CalcBodyToBaseCoordinates(
     const rigidbody::GeneralizedCoordinates& Q,
     unsigned int bodyId,
     const utils::Vector3d &pointInLocal,
-    bool updateKinematics)
+    bool updateKin)
 {
 #ifdef BIORBD_USE_CASADI_MATH
     rigidbody::Joints model = this->DeepCopy();
-    updateKinematics = true;
+    updateKin = true;
 #else
     rigidbody::Joints& model = *this;
 #endif
 
-    return RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, bodyId, pointInLocal, updateKinematics);
+    return RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, bodyId, pointInLocal, updateKin);
 }
 
 utils::Vector3d rigidbody::Joints::CalcPointVelocity(
@@ -430,9 +430,9 @@ utils::Vector3d rigidbody::Joints::CalcPointVelocity(
     const rigidbody::GeneralizedVelocity& Qdot,
     utils::String segmentName,
     const utils::Vector3d& pointInLocal,
-    bool updateKinematics)
+    bool updateKin)
 {
-    return this->CalcPointVelocity(Q, Qdot, this->GetBodyId(segmentName.c_str()), pointInLocal, updateKinematics);
+    return this->CalcPointVelocity(Q, Qdot, this->GetBodyId(segmentName.c_str()), pointInLocal, updateKin);
 }
 
 utils::Vector3d rigidbody::Joints::CalcPointVelocity(
@@ -440,16 +440,16 @@ utils::Vector3d rigidbody::Joints::CalcPointVelocity(
     const rigidbody::GeneralizedVelocity& Qdot,
     unsigned int bodyId,
     const utils::Vector3d& pointInLocal,
-    bool updateKinematics)
+    bool updateKin)
 {
 #ifdef BIORBD_USE_CASADI_MATH
     rigidbody::Joints model = this->DeepCopy();
-    updateKinematics = true;
+    updateKin = true;
 #else
     rigidbody::Joints& model = *this;
 #endif
 
-    return RigidBodyDynamics::CalcPointVelocity(model, Q, Qdot, bodyId, pointInLocal, updateKinematics);
+    return RigidBodyDynamics::CalcPointVelocity(model, Q, Qdot, bodyId, pointInLocal, updateKin);
 }
 
 utils::SpatialVector rigidbody::Joints::CalcPointVelocity6D(
@@ -457,9 +457,9 @@ utils::SpatialVector rigidbody::Joints::CalcPointVelocity6D(
     const rigidbody::GeneralizedVelocity& Qdot,
     utils::String segmentName,
     const utils::Vector3d& pointInLocal,
-    bool updateKinematics)
+    bool updateKin)
 {
-    return this->CalcPointVelocity6D(Q, Qdot, this->GetBodyId(segmentName.c_str()), pointInLocal, updateKinematics);
+    return this->CalcPointVelocity6D(Q, Qdot, this->GetBodyId(segmentName.c_str()), pointInLocal, updateKin);
 }
 
 utils::SpatialVector rigidbody::Joints::CalcPointVelocity6D(
@@ -467,16 +467,16 @@ utils::SpatialVector rigidbody::Joints::CalcPointVelocity6D(
     const rigidbody::GeneralizedVelocity& Qdot,
     unsigned int bodyId,
     const utils::Vector3d& pointInLocal,
-    bool updateKinematics)
+    bool updateKin)
 {
 #ifdef BIORBD_USE_CASADI_MATH
     rigidbody::Joints model = this->DeepCopy();
-    updateKinematics = true;
+    updateKin = true;
 #else
     rigidbody::Joints& model = *this;
 #endif
 
-    return RigidBodyDynamics::CalcPointVelocity6D(model, Q, Qdot, bodyId, pointInLocal, updateKinematics);
+    return RigidBodyDynamics::CalcPointVelocity6D(model, Q, Qdot, bodyId, pointInLocal, updateKin);
 }
 
 
@@ -486,9 +486,9 @@ utils::Vector3d rigidbody::Joints::CalcPointAcceleration(
     const rigidbody::GeneralizedAcceleration& Qddot,
     utils::String segmentName,
     const utils::Vector3d& pointInLocal,
-    bool updateKinematics)
+    bool updateKin)
 {
-    return this->CalcPointAcceleration(Q, Qdot, Qddot, this->GetBodyId(segmentName.c_str()), pointInLocal, updateKinematics);
+    return this->CalcPointAcceleration(Q, Qdot, Qddot, this->GetBodyId(segmentName.c_str()), pointInLocal, updateKin);
 }
 
 utils::Vector3d rigidbody::Joints::CalcPointAcceleration(
@@ -497,43 +497,43 @@ utils::Vector3d rigidbody::Joints::CalcPointAcceleration(
     const rigidbody::GeneralizedAcceleration& Qddot,
     unsigned int bodyId,
     const utils::Vector3d& pointInLocal,
-    bool updateKinematics)
+    bool updateKin)
 {
 #ifdef BIORBD_USE_CASADI_MATH
     rigidbody::Joints model = this->DeepCopy();
-    updateKinematics = true;
+    updateKin = true;
 #else
     rigidbody::Joints& model = *this;
 #endif
 
-    return RigidBodyDynamics::CalcPointAcceleration(model, Q, Qdot, Qddot, bodyId, pointInLocal, updateKinematics);
+    return RigidBodyDynamics::CalcPointAcceleration(model, Q, Qdot, Qddot, bodyId, pointInLocal, updateKin);
 }
 
 utils::Matrix rigidbody::Joints::CalcPointJacobian(
     const rigidbody::GeneralizedCoordinates& Q,
     utils::String segmentName,
     const utils::Vector3d& pointInLocal,
-    bool updateKinematics)
+    bool updateKin)
 {
-    return this->CalcPointJacobian(Q, this->GetBodyId(segmentName.c_str()), pointInLocal, updateKinematics);
+    return this->CalcPointJacobian(Q, this->GetBodyId(segmentName.c_str()), pointInLocal, updateKin);
 }
 
 utils::Matrix rigidbody::Joints::CalcPointJacobian(
     const rigidbody::GeneralizedCoordinates& Q,
     unsigned int bodyId,
     const utils::Vector3d& pointInLocal,
-    bool updateKinematics)
+    bool updateKin)
 {
 #ifdef BIORBD_USE_CASADI_MATH
     rigidbody::Joints model = this->DeepCopy();
-    updateKinematics = true;
+    updateKin = true;
 #else
     rigidbody::Joints& model = *this;
 #endif
 
     utils::Matrix out(3, this->nbQ());
     out.setZero();
-    RigidBodyDynamics::CalcPointJacobian(model, Q, bodyId, pointInLocal, out, updateKinematics);
+    RigidBodyDynamics::CalcPointJacobian(model, Q, bodyId, pointInLocal, out, updateKin);
     return out;
 }
 
@@ -614,11 +614,15 @@ utils::Matrix rigidbody::Joints::massMatrix (
     bool updateKin)
 {
 #ifdef BIORBD_USE_CASADI_MATH
+    rigidbody::Joints model = this->DeepCopy();
     updateKin = true;
+#else
+    rigidbody::Joints& model = *this;
 #endif
+
     utils::Matrix massMatrix(static_cast<unsigned int>(nbQ()), static_cast<unsigned int>(nbQ()));
     massMatrix.setZero();
-    RigidBodyDynamics::CompositeRigidBodyAlgorithm(*this, Q, massMatrix, updateKin);
+    RigidBodyDynamics::CompositeRigidBodyAlgorithm(model, Q, massMatrix, updateKin);
     return massMatrix;
 }
 
@@ -774,9 +778,6 @@ utils::Vector3d rigidbody::Joints::CoMddot(
     const rigidbody::GeneralizedAcceleration &Qddot,
     bool updateKin)
 {
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = true;
-#endif
     utils::Scalar mass;
     utils::Vector3d com, com_ddot;
     this->CalcCenterOfMass(
@@ -807,7 +808,6 @@ utils::Matrix rigidbody::Joints::CoMJacobian(
     return JacTotal;
 }
 
-
 void rigidbody::Joints::CalcCenterOfMass(
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& Qdot,
@@ -818,11 +818,11 @@ void rigidbody::Joints::CalcCenterOfMass(
     utils::Vector3d* comAcceleration,
     utils::Vector3d* angularMomentum,
     utils::Vector3d* changeOfAngularMomentum,
-    bool updateKinematics ) 
+    bool updateKin ) 
 {
 #ifdef BIORBD_USE_CASADI_MATH
     rigidbody::Joints model = this->DeepCopy();
-    updateKinematics = true;
+    updateKin = true;
 #else
     rigidbody::Joints& model = *this;
 #endif
@@ -838,7 +838,7 @@ void rigidbody::Joints::CalcCenterOfMass(
         comAcceleration, 
         angularMomentum, 
         changeOfAngularMomentum, 
-        updateKinematics
+        updateKin
     );
 
 }
@@ -1045,17 +1045,20 @@ utils::Vector3d rigidbody::Joints::CalcAngularMomentum (
     const rigidbody::GeneralizedVelocity &Qdot,
     bool updateKin)
 {
-    utils::Vector3d com,  angularMomentum;
+    utils::Vector3d com, angularMomentum;
     utils::Scalar mass;
-
-    // Calculate the angular momentum with the function of the
-    // position of the center of mass
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = true;
-#endif
-    RigidBodyDynamics::Utils::CalcCenterOfMass(
-        *this, Q, Qdot, nullptr, mass, com, nullptr, nullptr,
-        &angularMomentum, nullptr, updateKin);
+    this->CalcCenterOfMass(
+        Q, 
+        Qdot, 
+        nullptr, 
+        mass, 
+        com, 
+        nullptr, 
+        nullptr, 
+        &angularMomentum, 
+        nullptr, 
+        updateKin
+    );
     return angularMomentum;
 }
 
@@ -1065,19 +1068,20 @@ utils::Vector3d rigidbody::Joints::CalcAngularMomentum (
     const rigidbody::GeneralizedAcceleration &Qddot,
     bool updateKin)
 {
-    // Definition of the variables
     utils::Vector3d com,  angularMomentum;
     utils::Scalar mass;
-
-    // Calculate the angular momentum with the function of the
-    // position of the center of mass
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = true;
-#endif
-    RigidBodyDynamics::Utils::CalcCenterOfMass(
-        *this, Q, Qdot, &Qddot, mass, com, nullptr, nullptr,
-        &angularMomentum, nullptr, updateKin);
-
+    this->CalcCenterOfMass(
+        Q, 
+        Qdot, 
+        &Qddot, 
+        mass, 
+        com, 
+        nullptr, 
+        nullptr,
+        &angularMomentum, 
+        nullptr, 
+        updateKin
+    );
     return angularMomentum;
 }
 
@@ -1087,15 +1091,20 @@ rigidbody::Joints::CalcSegmentsAngularMomentum (
     const rigidbody::GeneralizedVelocity &Qdot,
     bool updateKin)
 {
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = true;
-#endif
-
     utils::Scalar mass;
     utils::Vector3d com;
-    RigidBodyDynamics::Utils::CalcCenterOfMass (
-        *this, Q, Qdot, nullptr, mass, com, nullptr,
-        nullptr, nullptr, nullptr, updateKin);
+    this->CalcCenterOfMass (
+        Q, 
+        Qdot, 
+        nullptr, 
+        mass, 
+        com, 
+        nullptr, 
+        nullptr, 
+        nullptr, 
+        nullptr, 
+        updateKin
+    );
     utils::SpatialTransform X_to_COM (RigidBodyDynamics::Math::Xtrans(com));
 
     std::vector<utils::Vector3d> h_segment;
@@ -1115,7 +1124,6 @@ rigidbody::Joints::CalcSegmentsAngularMomentum (
         h = X_to_COM.applyAdjoint (h);
         h_segment.push_back(utils::Vector3d(h[0],h[1],h[2]));
     }
-
 
     return h_segment;
 }
@@ -1127,15 +1135,20 @@ rigidbody::Joints::CalcSegmentsAngularMomentum (
     const rigidbody::GeneralizedAcceleration &Qddot,
     bool updateKin)
 {
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = true;
-#endif
-
     utils::Scalar mass;
     utils::Vector3d com;
-    RigidBodyDynamics::Utils::CalcCenterOfMass (*this, Q, Qdot, &Qddot, mass, com,
-            nullptr, nullptr, nullptr, nullptr,
-            updateKin);
+    this->CalcCenterOfMass (
+        Q, 
+        Qdot, 
+        &Qddot, 
+        mass, 
+        com,
+        nullptr, 
+        nullptr, 
+        nullptr, 
+        nullptr,
+        updateKin
+    );
     utils::SpatialTransform X_to_COM (RigidBodyDynamics::Math::Xtrans(com));
 
     std::vector<utils::Vector3d> h_segment;
@@ -1155,7 +1168,6 @@ rigidbody::Joints::CalcSegmentsAngularMomentum (
         h = X_to_COM.applyAdjoint (h);
         h_segment.push_back(utils::Vector3d(h[0],h[1],h[2]));
     }
-
 
     return h_segment;
 }
@@ -1214,7 +1226,14 @@ utils::Scalar rigidbody::Joints::KineticEnergy(
         const rigidbody::GeneralizedVelocity &Qdot,
         bool updateKin)
 {
-    return RigidBodyDynamics::Utils::CalcKineticEnergy(*this, Q, Qdot, updateKin);
+#ifdef BIORBD_USE_CASADI_MATH
+    rigidbody::Joints model = this->DeepCopy();
+    updateKin = true;
+#else
+    rigidbody::Joints& model = *this;
+#endif
+
+    return RigidBodyDynamics::Utils::CalcKineticEnergy(model, Q, Qdot, updateKin);
 }
 
 
@@ -1222,7 +1241,14 @@ utils::Scalar rigidbody::Joints::PotentialEnergy(
         const rigidbody::GeneralizedCoordinates &Q,
         bool updateKin)
 {
-    return RigidBodyDynamics::Utils::CalcPotentialEnergy(*this, Q, updateKin);
+#ifdef BIORBD_USE_CASADI_MATH
+    rigidbody::Joints model = this->DeepCopy();
+    updateKin = true;
+#else
+    rigidbody::Joints& model = *this;
+#endif
+
+    return RigidBodyDynamics::Utils::CalcPotentialEnergy(model, Q, updateKin);
 }
 
 utils::Scalar rigidbody::Joints::Lagrangian(
@@ -1230,7 +1256,16 @@ utils::Scalar rigidbody::Joints::Lagrangian(
         const rigidbody::GeneralizedVelocity &Qdot,
         bool updateKin)
 {
-    return RigidBodyDynamics::Utils::CalcKineticEnergy(*this, Q, Qdot, updateKin) - RigidBodyDynamics::Utils::CalcPotentialEnergy(*this, Q, updateKin);
+#ifdef BIORBD_USE_CASADI_MATH
+    rigidbody::Joints model = this->DeepCopy();
+    updateKin = true;
+#else
+    rigidbody::Joints& model = *this;
+#endif
+
+    utils::Scalar kinetic(RigidBodyDynamics::Utils::CalcKineticEnergy(model, Q, Qdot, updateKin));
+    utils::Scalar potential(RigidBodyDynamics::Utils::CalcPotentialEnergy(model, Q, false));
+    return kinetic - potential;
 }
 
 
@@ -1239,7 +1274,16 @@ utils::Scalar rigidbody::Joints::TotalEnergy(
         const rigidbody::GeneralizedVelocity &Qdot,
         bool updateKin)
 {
-    return RigidBodyDynamics::Utils::CalcKineticEnergy(*this, Q, Qdot, updateKin) + RigidBodyDynamics::Utils::CalcPotentialEnergy(*this, Q, updateKin);;
+#ifdef BIORBD_USE_CASADI_MATH
+    rigidbody::Joints model = this->DeepCopy();
+    updateKin = true;
+#else
+    rigidbody::Joints& model = *this;
+#endif
+
+    utils::Scalar kinetic(RigidBodyDynamics::Utils::CalcKineticEnergy(model, Q, Qdot, updateKin));
+    utils::Scalar potential(RigidBodyDynamics::Utils::CalcPotentialEnergy(model, Q, false));
+    return kinetic + potential;
 }
 
 rigidbody::GeneralizedTorque rigidbody::Joints::InverseDynamics(
@@ -1258,9 +1302,15 @@ rigidbody::GeneralizedTorque rigidbody::Joints::InverseDynamics(
     rigidbody::ExternalForceSet& externalForces
 )
 {
+#ifdef BIORBD_USE_CASADI_MATH
+    rigidbody::Joints model = this->DeepCopy();
+#else
+    rigidbody::Joints& model = *this;
+#endif
+
     rigidbody::GeneralizedTorque Tau(nbGeneralizedTorque());
     auto fExt = externalForces.computeRbdlSpatialVectors(Q, Qdot);
-    RigidBodyDynamics::InverseDynamics(*this, Q, Qdot, Qddot, Tau, &fExt);
+    RigidBodyDynamics::InverseDynamics(model, Q, Qdot, Qddot, Tau, &fExt);
     return Tau;
 }
 
@@ -1278,9 +1328,15 @@ rigidbody::GeneralizedTorque rigidbody::Joints::NonLinearEffect(
     rigidbody::ExternalForceSet& externalForces
 )
 {
-    rigidbody::GeneralizedTorque Tau(*this);
+#ifdef BIORBD_USE_CASADI_MATH
+    rigidbody::Joints model = this->DeepCopy();
+#else
+    rigidbody::Joints& model = *this;
+#endif
+
+    rigidbody::GeneralizedTorque Tau(model);
     auto fExt = externalForces.computeRbdlSpatialVectors(Q, Qdot);
-    RigidBodyDynamics::NonlinearEffects(*this, Q, Qdot, Tau, &fExt);
+    RigidBodyDynamics::NonlinearEffects(model, Q, Qdot, Tau, &fExt);
     return Tau;
 }
 
@@ -1300,14 +1356,14 @@ rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamics(
     rigidbody::ExternalForceSet& externalForces
 )
 {
-    rigidbody::GeneralizedAcceleration Qddot(*this);
-    auto fExt = externalForces.computeRbdlSpatialVectors(Q, Qdot, true);
-
 #ifdef BIORBD_USE_CASADI_MATH
     rigidbody::Joints model = this->DeepCopy();
 #else
     rigidbody::Joints& model = *this;
 #endif
+    
+    rigidbody::GeneralizedAcceleration Qddot(model);
+    auto fExt = externalForces.computeRbdlSpatialVectors(Q, Qdot, true);
     RigidBodyDynamics::ForwardDynamics(model, Q, Qdot, Tau, Qddot, &fExt);
     return Qddot;
 }
@@ -1354,6 +1410,7 @@ rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamicsConstraints
     rigidbody::Contacts CS = dynamic_cast<rigidbody::Contacts*>(this)->getConstraints();
     return ForwardDynamicsConstraintsDirect(Q, Qdot, Tau, CS);
 }
+
 rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamicsConstraintsDirect(
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& Qdot,
@@ -1364,6 +1421,7 @@ rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamicsConstraints
     rigidbody::Contacts CS = dynamic_cast<rigidbody::Contacts*>(this)->getConstraints();
     return this->ForwardDynamicsConstraintsDirect(Q, Qdot, Tau, CS, externalForces);
 }
+
 rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamicsConstraintsDirect(
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& Qdot,
@@ -1374,6 +1432,7 @@ rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamicsConstraints
     rigidbody::ExternalForceSet forceSet(static_cast<BIORBD_NAMESPACE::Model&>(*this));
     return ForwardDynamicsConstraintsDirect(Q, Qdot, Tau, CS, forceSet);
 }
+
 rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamicsConstraintsDirect(
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& Qdot,
@@ -1383,15 +1442,15 @@ rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamicsConstraints
 )
 {
 #ifdef BIORBD_USE_CASADI_MATH
-    bool updateKin = true;
+    rigidbody::Joints model = this->DeepCopy();
 #else
-    UpdateKinematicsCustom(&Q, &Qdot);
-    bool updateKin = false;  // Put this in parameters??
+    rigidbody::Joints& model = *this;
 #endif
+    bool updateKin = true;
 
-    rigidbody::GeneralizedAcceleration Qddot(*this);
+    rigidbody::GeneralizedAcceleration Qddot(model);
     auto fExt = externalForces.computeRbdlSpatialVectors(Q, Qdot, true);
-    RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*this, Q, Qdot, Tau, CS, Qddot, updateKin, &fExt);
+    RigidBodyDynamics::ForwardDynamicsConstraintsDirect(model, Q, Qdot, Tau, CS, Qddot, updateKin, &fExt);
     return Qddot;
 }
 
@@ -1425,10 +1484,16 @@ rigidbody::GeneralizedVelocity rigidbody::Joints::ComputeConstraintImpulsesDirec
     if (CS.nbContacts() == 0) {
         return QdotPre;
     } else {
-        CS = dynamic_cast<rigidbody::Contacts*>(this)->getConstraints();
+#ifdef BIORBD_USE_CASADI_MATH
+        rigidbody::Joints model = this->DeepCopy();
+#else
+        rigidbody::Joints& model = *this;
+#endif
 
-        rigidbody::GeneralizedVelocity QdotPost(*this);
-        RigidBodyDynamics::ComputeConstraintImpulsesDirect(*this, Q, QdotPre, CS, QdotPost);
+        CS = dynamic_cast<rigidbody::Contacts*>(&model)->getConstraints();
+
+        rigidbody::GeneralizedVelocity QdotPost(model);
+        RigidBodyDynamics::ComputeConstraintImpulsesDirect(model, Q, QdotPre, CS, QdotPost);
         return QdotPost;
     }
 }
@@ -1469,16 +1534,18 @@ utils::Vector3d rigidbody::Joints::bodyAngularVelocity (
 {
     utils::Vector3d com, angularMomentum;
     utils::Scalar mass;
-    // utils::Matrix3d body_inertia;
-
-    // Calculate the angular velocity of the model around it's center of
-    // mass from the angular momentum and the body inertia
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = true;
-#endif
-    RigidBodyDynamics::Utils::CalcCenterOfMass(
-        *this, Q, Qdot, nullptr, mass, com, nullptr, nullptr,
-        &angularMomentum, nullptr, updateKin);
+    this->CalcCenterOfMass(
+        Q, 
+        Qdot, 
+        nullptr, 
+        mass, 
+        com, 
+        nullptr, 
+        nullptr,
+        &angularMomentum, 
+        nullptr, 
+        updateKin
+    );
     utils::Matrix3d body_inertia = bodyInertia (Q, updateKin);
         
 #ifdef BIORBD_USE_CASADI_MATH
@@ -1538,11 +1605,16 @@ void rigidbody::Joints::CalcMatRotJacobian(
 #endif
 
 #ifdef BIORBD_USE_CASADI_MATH
+    rigidbody::Joints model = this->DeepCopy();
     updateKin = true;
+#else
+    rigidbody::Joints& model = *this;
 #endif
+
     // update the Kinematics if necessary
     if (updateKin) {
-        UpdateKinematicsCustom (&Q, nullptr, nullptr);
+        model.UpdateKinematicsCustom (&Q, nullptr, nullptr);
+        updateKin = false;
     }
 
     assert (G.rows() == 9 && G.cols() == this->qdot_size );
@@ -1553,7 +1625,7 @@ void rigidbody::Joints::CalcMatRotJacobian(
     axes.push_back(utils::Vector3d(0,0,1));
     for (unsigned int iAxes=0; iAxes<3; ++iAxes) {
         utils::Matrix3d bodyMatRot (
-            RigidBodyDynamics::CalcBodyWorldOrientation (*this, Q, static_cast<unsigned int>(segmentIdx), false).transpose());
+            RigidBodyDynamics::CalcBodyWorldOrientation (model, Q, static_cast<unsigned int>(segmentIdx), updateKin).transpose());
         utils::SpatialTransform point_trans(
             utils::SpatialTransform (utils::Matrix3d::Identity(), bodyMatRot * rotation * *(axes.begin()+iAxes))
         );

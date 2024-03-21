@@ -5,14 +5,6 @@
 #include <memory>
 #include "Utils/Matrix3d.h"
 
-namespace RigidBodyDynamics
-{
-namespace Math
-{
-struct SpatialTransform;
-}
-}
-
 #include "biorbdConfig.h"
 
 namespace BIORBD_NAMESPACE
@@ -24,6 +16,7 @@ class NodeSegment;
 
 namespace utils
 {
+class SpatialTransform;
 class String;
 class Vector;
 class Vector3d;
@@ -109,7 +102,7 @@ public:
     /// \param st Spatial Transform vector
     ///
     Rotation(
-        const RigidBodyDynamics::Math::SpatialTransform& st);
+        const utils::SpatialTransform& st);
 
     ///
     /// \brief Get a particular axis of the Rotation matrix
@@ -125,7 +118,7 @@ public:
     /// \return The matrix of Rotation
     ///
     static Rotation fromSpatialTransform(
-        const RigidBodyDynamics::Math::SpatialTransform& st);
+        const utils::SpatialTransform& st);
 
     ///
     /// \brief Create a Rotation from Euler angles

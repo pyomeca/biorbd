@@ -8,6 +8,7 @@
 #include "Utils/Vector3d.h"
 #include "Utils/RotoTrans.h"
 #include "Utils/Rotation.h"
+#include "Utils/SpatialTransform.h"
 #include "RigidBody/Joints.h"
 #include "RigidBody/Mesh.h"
 #include "RigidBody/SegmentCharacteristics.h"
@@ -18,7 +19,7 @@ using namespace BIORBD_NAMESPACE;
 rigidbody::Segment::Segment() :
     utils::Node(),
     m_idxInModel(std::make_shared<int>(-1)),
-    m_cor(std::make_shared<RigidBodyDynamics::Math::SpatialTransform>()),
+    m_cor(std::make_shared<utils::SpatialTransform>()),
     m_seqT(std::make_shared<utils::String>()),
     m_seqR(std::make_shared<utils::String>()),
     m_QRanges(std::make_shared<std::vector<utils::Range>>()),
@@ -57,12 +58,12 @@ rigidbody::Segment::Segment(
     const std::vector<utils::Range>& QdotRanges,
     const std::vector<utils::Range>& QddotRanges,
     const rigidbody::SegmentCharacteristics& characteristics,
-    const RigidBodyDynamics::Math::SpatialTransform& cor
+    const utils::SpatialTransform& cor
 ) :
 
     utils::Node(name, parentName),
     m_idxInModel(std::make_shared<int>(-1)),
-    m_cor(std::make_shared<RigidBodyDynamics::Math::SpatialTransform>(cor)),
+    m_cor(std::make_shared<utils::SpatialTransform>(cor)),
     m_seqT(std::make_shared<utils::String>(seqT)),
     m_seqR(std::make_shared<utils::String>(seqR)),
     m_QRanges(std::make_shared<std::vector<utils::Range>>()),
@@ -103,14 +104,14 @@ rigidbody::Segment::Segment(
     const std::vector<utils::Range>& QddotRanges,
     const rigidbody::SegmentCharacteristics&
     characteristics, // Mass, Center of mass of segment, Inertia of segment, etc.
-    const RigidBodyDynamics::Math::SpatialTransform&
+    const utils::SpatialTransform&
     cor //  Transformation from parent to child
  ):
 
 
     utils::Node(name, parentName),
     m_idxInModel(std::make_shared<int>(-1)),
-    m_cor(std::make_shared<RigidBodyDynamics::Math::SpatialTransform>(cor)),
+    m_cor(std::make_shared<utils::SpatialTransform>(cor)),
     m_seqT(std::make_shared<utils::String>()),
     m_seqR(std::make_shared<utils::String>(seqR)),
     m_QRanges(std::make_shared<std::vector<utils::Range>>()),
@@ -279,13 +280,12 @@ rigidbody::Segment::QddotRanges() const
 
 utils::RotoTrans rigidbody::Segment::localJCS() const
 {
-    return RigidBodyDynamics::Math::SpatialTransform(m_cor->E.transpose(), m_cor->r);
+    return utils::RotoTrans::fromSpatialTransform(*m_cor);
 }
 
 void  rigidbody::Segment::setLocalJCS(rigidbody::Joints& model, utils::RotoTrans &rototrans)
 {
-    *m_cor = RigidBodyDynamics::Math::SpatialTransform(
-                rototrans.rot().transpose(), rototrans.trans());
+    *m_cor = utils::SpatialTransform(rototrans.rot().transpose(), rototrans.trans());
     // we also modify RBDL spatial transform from parent to child
     model.X_T[*m_idxDof->begin()] = *m_cor;
 }
@@ -513,9 +513,7 @@ void rigidbody::Segment::setJoints(
     setJointAxis(); // Choose the axis order in relation to the selected sequence
 
 
-    RigidBodyDynamics::Math::SpatialTransform zero (
-        utils::Matrix3d::Identity(),
-        RigidBodyDynamics::Math::Vector3d(0,0,0));
+    utils::SpatialTransform zero;
     // Create the articulations (intra segment)
     m_idxDof->clear();
 
@@ -564,11 +562,11 @@ size_t rigidbody::Segment::getDofIdx(
     }
 
 
-    utils::Error::check(found,
-                                "Type should be \"Rot\" or \"Trans\" and axis "
-                                "should be \"X\", \"Y\" or \"Z\", e.g. "
-                                "\"RotY\" for Rotation around y or \"TransX\" "
-                                "for Translation on x");
+    utils::Error::check(
+        found,
+        "Type should be \"Rot\" or \"Trans\" and axis should be \"X\", \"Y\" or \"Z\", e.g. "
+        "\"RotY\" for Rotation around y or \"TransX\" for Translation on x"
+    );
 
     return idx;
 

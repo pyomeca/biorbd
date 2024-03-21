@@ -3,6 +3,7 @@
 
 #include "Utils/Error.h"
 #include "Utils/Vector3d.h"
+#include "Utils/SpatialTransform.h"
 #include "Utils/String.h"
 #include "Utils/Vector.h"
 #include "RigidBody/NodeSegment.h"
@@ -51,7 +52,7 @@ utils::Rotation::Rotation(
 }
 
 utils::Rotation::Rotation(
-    const RigidBodyDynamics::Math::SpatialTransform &st) :
+    const utils::SpatialTransform &st) :
     utils::Matrix3d(st.E)
 {
 
@@ -64,7 +65,7 @@ utils::Vector3d utils::Rotation::axe(size_t idx) const
 }
 
 utils::Rotation utils::Rotation::fromSpatialTransform(
-    const RigidBodyDynamics::Math::SpatialTransform& st)
+    const utils::SpatialTransform& st)
 {
     return st.E;
 }
