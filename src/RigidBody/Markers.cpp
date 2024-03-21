@@ -374,11 +374,10 @@ utils::Matrix rigidbody::Markers::markersJacobian(
 bool rigidbody::Markers::inverseKinematics(
     const std::vector<rigidbody::NodeSegment> &markers,
     const rigidbody::GeneralizedCoordinates &Qinit,
-    rigidbody::GeneralizedCoordinates &Q,)
+    rigidbody::GeneralizedCoordinates &Q)
 {
-    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>
-                                       (*this);
-    model.UpdateKinematicsCustom(&Q); // also assert for dimensions
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &> (*this);
+    model.UpdateKinematicsCustom(&Q); // also assert for dimensions of Q. Warning: this call would not work with casadi
 
     // Find the technical markers only (bodyPoint)
     std::vector<rigidbody::NodeSegment> bodyPoint(technicalMarkers());
@@ -400,8 +399,13 @@ bool rigidbody::Markers::inverseKinematics(
 
     // Call the base function
     return RigidBodyDynamics::InverseKinematics(
-               dynamic_cast<rigidbody::Joints &>(*this),
-               Qinit, bodyId, bodyPointEigen, markersInRbdl, Q);
+        dynamic_cast<rigidbody::Joints &>(*this),
+        Qinit, 
+        bodyId, 
+        bodyPointEigen, 
+        markersInRbdl, 
+        Q
+    );
 }
 #endif
 

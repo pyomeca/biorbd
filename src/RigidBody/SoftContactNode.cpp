@@ -74,17 +74,11 @@ utils::SpatialVector rigidbody::SoftContactNode::computeForceAtOrigin(
         const GeneralizedVelocity &Qdot,
         bool updateKin)
 {
-
-#ifdef BIORBD_USE_EIGEN3_MATH
-    if (updateKin){
-        model.UpdateKinematicsCustom(&Q, &Qdot);
-    }
-    updateKin = false;
-#endif
-
     unsigned int id = model.GetBodyId(parent().c_str());
-    utils::Vector3d x(model.CalcBodyToBaseCoordinates(Q, id, *this, updateKin));
     utils::Vector3d dx(rigidbody::NodeSegment(model.CalcPointVelocity(Q, Qdot, id, *this, updateKin)));
+    updateKin = false;
+
+    utils::Vector3d x(model.CalcBodyToBaseCoordinates(Q, id, *this, updateKin));
     utils::Vector3d angularVelocity(model.CalcPointVelocity6D(Q, Qdot, id, utils::Vector3d(0, 0, 0), updateKin).block(0, 0, 3, 1));
 
     utils::Vector3d force(computeForce(x, dx, angularVelocity));

@@ -543,7 +543,7 @@ utils::SpatialTransform rigidbody::Joints::CalcBodyWorldTransformation (
     bool updateKin)
 {
 #ifdef BIORBD_USE_CASADI_MATH
-    rigidbody::Joints model = model.DeepCopy();
+    rigidbody::Joints model = this->DeepCopy();
     updateKin = true;
 #else
     rigidbody::Joints& model = *this;
@@ -630,103 +630,108 @@ utils::Matrix rigidbody::Joints::massMatrixInverse (
     const rigidbody::GeneralizedCoordinates &Q,
     bool updateKin)
 {
+#ifdef BIORBD_USE_CASADI_MATH
+    rigidbody::Joints model = this->DeepCopy();
+    updateKin = true;
+#else
+    rigidbody::Joints& model = *this;
+#endif
+
     int i = 0; // for loop purpose
     int j = 0; // for loop purpose
-    utils::Matrix Minv(this->dof_count, this->dof_count);
+    utils::Matrix Minv(model.dof_count, model.dof_count);
     Minv.setZero();
 
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = true;
-#endif
     if (updateKin) {
-        UpdateKinematicsCustom(&Q, nullptr, nullptr);
+        model.UpdateKinematicsCustom(&Q, nullptr, nullptr);
+        updateKin = false;
     }
-    // First Forward Pass
-    for (i = 1; i < this->mBodies.size(); i++) {
 
-      this->I[i].setSpatialMatrix(this->IA[i]);
+    // First Forward Pass
+    for (i = 1; i < model.mBodies.size(); i++) {
+      model.I[i].setSpatialMatrix(model.IA[i]);
       }
     // End First Forward Pass
 
     // set F (n x 6 x n)
-    utils::Matrix F_i(6, this->dof_count);
+    utils::Matrix F_i(6, model.dof_count);
     F_i.setZero();
     // Fill a vector of matrix (6 x n)
     std::vector<utils::Matrix> F;
-    for (i = 1; i < this->mBodies.size(); i++)
+    for (i = 1; i < model.mBodies.size(); i++)
     {
         F.push_back(F_i);
     }
 
     // Backward Pass
     std::vector<std::vector<size_t>> subTrees = getDofSubTrees();
-    for (i = static_cast<int>(this->mBodies.size() - 1); i > 0; i--)
+    for (i = static_cast<int>(model.mBodies.size() - 1); i > 0; i--)
     {    
-        unsigned int q_index_i = static_cast<size_t>(this->mJoints[i].q_index);
+        unsigned int q_index_i = static_cast<size_t>(model.mJoints[i].q_index);
         const std::vector<size_t>& sub_tree = subTrees[q_index_i];
 
-        this->U[i] = this->IA[i] * this->S[i];
-        this->d[i] = this->S[i].dot(this->U[i]);
+        model.U[i] = model.IA[i] * model.S[i];
+        model.d[i] = model.S[i].dot(model.U[i]);
 
-        Minv(q_index_i, q_index_i) = 1.0 / (this->d[i]);
+        Minv(q_index_i, q_index_i) = 1.0 / (model.d[i]);
 
         for (j = 0; j < sub_tree.size(); j++) {
               const utils::SpatialVector& Ftemp = F[q_index_i].block(0, static_cast<unsigned int>(sub_tree[j]), 6, 1);
-              Minv(q_index_i, static_cast<unsigned int>(sub_tree[j])) -= (1.0/this->d[i]) * this->S[i].transpose() * Ftemp;
+              Minv(q_index_i, static_cast<unsigned int>(sub_tree[j])) -= (1.0/model.d[i]) * model.S[i].transpose() * Ftemp;
         }
 
-        size_t lambda = static_cast<size_t>(this->lambda[i]);
-        size_t lambda_q_i = static_cast<size_t>(this->mJoints[lambda].q_index);
+        size_t lambda = static_cast<size_t>(model.lambda[i]);
+        size_t lambda_q_i = static_cast<size_t>(model.mJoints[lambda].q_index);
         if (lambda != 0) {
             for (j = 0; j < sub_tree.size(); j++) {
-                F[q_index_i].block(0, static_cast<unsigned int>(sub_tree[j]), 6, 1) += this->U[i] * Minv.block(q_index_i, static_cast<unsigned int>(sub_tree[j]), 1, 1);
+                F[q_index_i].block(0, static_cast<unsigned int>(sub_tree[j]), 6, 1) += model.U[i] * Minv.block(q_index_i, static_cast<unsigned int>(sub_tree[j]), 1, 1);
 
-                F[lambda_q_i].block(0, static_cast<unsigned int>(sub_tree[j]), 6, 1) += this->X_lambda[i].toMatrixTranspose() * F[q_index_i].block(0, static_cast<unsigned int>(sub_tree[j]), 6, 1);
+                F[lambda_q_i].block(0, static_cast<unsigned int>(sub_tree[j]), 6, 1) += model.X_lambda[i].toMatrixTranspose() * F[q_index_i].block(0, static_cast<unsigned int>(sub_tree[j]), 6, 1);
             }
 
-            RigidBodyDynamics::Math::SpatialMatrix Ia = this->IA[i]
-                - this->U[i]
-                * (this->U[i] / this->d[i]).transpose();
+            RigidBodyDynamics::Math::SpatialMatrix Ia = model.IA[i]
+                - model.U[i]
+                * (model.U[i] / model.d[i]).transpose();
 
 #ifdef BIORBD_USE_CASADI_MATH
-          this->IA[lambda]
-            += this->X_lambda[i].toMatrixTranspose()
-            * Ia * this->X_lambda[i].toMatrix();
+          model.IA[lambda]
+            += model.X_lambda[i].toMatrixTranspose()
+            * Ia * model.X_lambda[i].toMatrix();
 
 #else
-          this->IA[lambda].noalias()
-            += this->X_lambda[i].toMatrixTranspose()
-            * Ia * this->X_lambda[i].toMatrix();
+          model.IA[lambda].noalias()
+            += model.X_lambda[i].toMatrixTranspose()
+            * Ia * model.X_lambda[i].toMatrix();
 #endif
         }
     }
     // End Backward Pass
 
     // Second Forward Pass
-    for (i = 1; i < this->mBodies.size(); i++) {
-      unsigned int q_index_i = this->mJoints[i].q_index;
-      unsigned int lambda = this->lambda[i];
-      unsigned int lambda_q_i = this->mJoints[lambda].q_index;
+    for (i = 1; i < model.mBodies.size(); i++) {
+      unsigned int q_index_i = model.mJoints[i].q_index;
+      unsigned int lambda = model.lambda[i];
+      unsigned int lambda_q_i = model.mJoints[lambda].q_index;
 
-      utils::SpatialTransform X_lambda = this->X_lambda[i];
+      utils::SpatialTransform X_lambda = model.X_lambda[i];
 
         if (lambda != 0){
-            for (j = q_index_i; j < static_cast<int>(this->dof_count); j++) {
+            for (j = q_index_i; j < static_cast<int>(model.dof_count); j++) {
                 utils::SpatialVector Ftemp = F[lambda_q_i].block(0, j, 6, 1);
                 Minv(q_index_i, j) -=
-                        (1.0/this->d[i]) * (this->U[i].transpose() * X_lambda.toMatrix()) * Ftemp;
+                        (1.0/model.d[i]) * (model.U[i].transpose() * X_lambda.toMatrix()) * Ftemp;
             }
 
         }
         // F[i,:,i:] = np.outer(S,Minv[i,i:]) // could be simplified (S * M[q_index_i,q_index_i:]^T)
-        for (j = q_index_i; j < static_cast<int>(this->dof_count); j++) {
-                    F[q_index_i].block(0, j, 6, 1) = this->S[i] * Minv.block(q_index_i, j, 1, 1); // outer product
+        for (j = q_index_i; j < static_cast<int>(model.dof_count); j++) {
+                    F[q_index_i].block(0, j, 6, 1) = model.S[i] * Minv.block(q_index_i, j, 1, 1); // outer product
         }
 
 
         if (lambda != 0){
             //  F[i,:,i:] += Xmat.transpose() * F[lambda,:,i:]
-            for (j = q_index_i; j < static_cast<int>(this->dof_count); j++) {
+            for (j = q_index_i; j < static_cast<int>(model.dof_count); j++) {
                 F[q_index_i].block(0, j, 6, 1) +=
                         X_lambda.toMatrix() * F[lambda_q_i].block(0, j, 6, 1);
             }
@@ -735,9 +740,9 @@ utils::Matrix rigidbody::Joints::massMatrixInverse (
     }
     // End of Second Forward Pass
     // Fill in full matrix (currently only upper triangular)
-    for (j = 0; j < static_cast<int>(this->dof_count); j++)
+    for (j = 0; j < static_cast<int>(model.dof_count); j++)
     {
-        for (i = 0; i < static_cast<int>(this->dof_count); i++)
+        for (i = 0; i < static_cast<int>(model.dof_count); i++)
         {
             if (j < i) {
                     Minv(i, j) = Minv(j, i);
@@ -753,9 +758,6 @@ utils::Vector3d rigidbody::Joints::CoMdot(
     const rigidbody::GeneralizedVelocity &Qdot,
     bool updateKin)
 {
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = true;
-#endif
     // For each segment, find the CoM
     utils::Vector3d com_dot(0,0,0);
 
@@ -1449,7 +1451,8 @@ rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamicsConstraints
     bool updateKin = true;
 
     rigidbody::GeneralizedAcceleration Qddot(model);
-    auto fExt = externalForces.computeRbdlSpatialVectors(Q, Qdot, true);
+    auto fExt = externalForces.computeRbdlSpatialVectors(Q, Qdot, updateKin);
+    updateKin = false;
     RigidBodyDynamics::ForwardDynamicsConstraintsDirect(model, Q, Qdot, Tau, CS, Qddot, updateKin, &fExt);
     return Qddot;
 }
@@ -1502,24 +1505,30 @@ utils::Matrix3d rigidbody::Joints::bodyInertia (
         const rigidbody::GeneralizedCoordinates &q,
         bool updateKin)
 {
-  if (updateKin) {
-    this->UpdateKinematicsCustom (&q);
+#ifdef BIORBD_USE_CASADI_MATH
+    rigidbody::Joints model = this->DeepCopy();
+    updateKin = true;
+#else
+    rigidbody::Joints& model = *this;
+#endif
+  
+    if (updateKin) {
+    model.UpdateKinematicsCustom (&q);
   }
 
-  for (size_t i = 1; i < this->mBodies.size(); i++) {
-    this->Ic[i] = this->I[i];
+  for (size_t i = 1; i < model.mBodies.size(); i++) {
+      model.Ic[i] = model.I[i];
   }
 
   RigidBodyDynamics::Math::SpatialRigidBodyInertia Itot;
 
-  for (size_t i = this->mBodies.size() - 1; i > 0; i--) {
-    size_t lambda = static_cast<size_t>(this->lambda[i]);
+  for (size_t i = model.mBodies.size() - 1; i > 0; i--) {
+    size_t lambda = static_cast<size_t>(model.lambda[i]);
 
     if (lambda != 0) {
-      this->Ic[lambda] = this->Ic[lambda] + this->X_lambda[i].applyTranspose (
-                           this->Ic[i]);
+      model.Ic[lambda] = model.Ic[lambda] + model.X_lambda[i].applyTranspose (model.Ic[i]);
     } else {
-      Itot = Itot + this->X_lambda[i].applyTranspose (this->Ic[i]);
+      Itot = Itot + model.X_lambda[i].applyTranspose (model.Ic[i]);
     }
   }
 
@@ -1546,7 +1555,7 @@ utils::Vector3d rigidbody::Joints::bodyAngularVelocity (
         nullptr, 
         updateKin
     );
-    utils::Matrix3d body_inertia = bodyInertia (Q, updateKin);
+    utils::Matrix3d body_inertia = this->bodyInertia (Q, updateKin);
         
 #ifdef BIORBD_USE_CASADI_MATH
     auto linsol = casadi::Linsol("linear_solver", "symbolicqr", body_inertia.sparsity());
@@ -1617,7 +1626,7 @@ void rigidbody::Joints::CalcMatRotJacobian(
         updateKin = false;
     }
 
-    assert (G.rows() == 9 && G.cols() == this->qdot_size );
+    assert (G.rows() == 9 && G.cols() == model.qdot_size );
 
     std::vector<utils::Vector3d> axes;
     axes.push_back(utils::Vector3d(1,0,0));
@@ -1631,60 +1640,48 @@ void rigidbody::Joints::CalcMatRotJacobian(
         );
 
         size_t reference_body_id = segmentIdx;
-        if (this->IsFixedBodyId(static_cast<unsigned int>(segmentIdx))) {
-            size_t fbody_id = segmentIdx - this->fixed_body_discriminator;
-            reference_body_id = this->mFixedBodies[fbody_id].mMovableParent;
+        if (model.IsFixedBodyId(static_cast<unsigned int>(segmentIdx))) {
+            size_t fbody_id = segmentIdx - model.fixed_body_discriminator;
+            reference_body_id = model.mFixedBodies[fbody_id].mMovableParent;
         }
         size_t j = reference_body_id;
 
         // e[j] is set to 1 if joint j contributes to the jacobian that we are
         // computing. For all other joints the column will be zero.
         while (j != 0) {
-            unsigned int q_index = this->mJoints[j].q_index;
-            // If it's not a DoF in translation (3 4 5 in this->S)
+            unsigned int q_index = model.mJoints[j].q_index;
+            // If it's not a DoF in translation (3 4 5 in model.S)
 #ifdef BIORBD_USE_CASADI_MATH
-            if (this->S[j].is_zero() && this->S[j](4).is_zero() && this->S[j](5).is_zero())
+            if (model.S[j].is_zero() && model.S[j](4).is_zero() && model.S[j](5).is_zero())
 #else
-            if (this->S[j](3)!=1.0 && this->S[j](4)!=1.0 && this->S[j](5)!=1.0)
+            if (model.S[j](3)!=1.0 && model.S[j](4)!=1.0 && model.S[j](5)!=1.0)
 #endif
             {
-                utils::SpatialTransform X_base = this->X_base[j];
+                utils::SpatialTransform X_base = model.X_base[j];
                 X_base.r = utils::Vector3d(0,0,0); // Remove all concept of translation (only keep the rotation matrix)
 
-                if (this->mJoints[j].mDoFCount == 3) {
+                if (model.mJoints[j].mDoFCount == 3) {
                     G.block(iAxes*3, q_index, 3, 3) 
-                        = ((point_trans * X_base.inverse()).toMatrix() * this->multdof3_S[j]).block(3,0,3,3);
+                        = ((point_trans * X_base.inverse()).toMatrix() * model.multdof3_S[j]).block(3,0,3,3);
                 } else {
                     G.block(iAxes*3,q_index, 3, 1) 
-                        = point_trans.apply(X_base.inverse().apply(this->S[j])).block(3,0,3,1);
+                        = point_trans.apply(X_base.inverse().apply(model.S[j])).block(3,0,3,1);
                 }
             }
-            j = this->lambda[j]; // Pass to parent segment
+            j = model.lambda[j]; // Pass to parent segment
         }
     }
 }
 
-utils::Matrix
-rigidbody::Joints::JacobianSegmentRotMat(
+utils::Matrix rigidbody::Joints::JacobianSegmentRotMat(
         const rigidbody::GeneralizedCoordinates &Q,
         size_t biorbdSegmentIdx,
         bool updateKin)
 {
-
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = true;
-#endif
-
     size_t segmentIdx = getBodyBiorbdIdToRbdlId(static_cast<int>(biorbdSegmentIdx));
 
     utils::Matrix jacobianMat(utils::Matrix::Zero(9, static_cast<unsigned int>(nbQ())));
-    CalcMatRotJacobian(
-        Q,
-        segmentIdx,
-        utils::Matrix3d::Identity(),
-        jacobianMat,
-        updateKin);
-
+    this->CalcMatRotJacobian(Q, segmentIdx, utils::Matrix3d::Identity(), jacobianMat, updateKin);
     return jacobianMat;
 }
 
