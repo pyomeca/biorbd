@@ -933,13 +933,13 @@ void rigidbody::Joints::CalcCenterOfMass(
     const rigidbody::GeneralizedAcceleration* QDDot,
     utils::Scalar& mass,
     utils::Vector3d& com,
-    utils::Vector3d* comVelocity = NULL,
-    utils::Vector3d* comAcceleration = NULL,
-    utils::Vector3d* angularMomentum = NULL,
-    utils::Vector3d* changeOfAngularMomentum = NULL,
-    bool updateKinematics = true
+    utils::Vector3d* comVelocity,
+    utils::Vector3d* comAcceleration,
+    utils::Vector3d* angularMomentum,
+    utils::Vector3d* changeOfAngularMomentum,
+    bool updateKinematics 
 ) {
-
+    // TODO
 }
 
 std::vector<rigidbody::NodeSegment> rigidbody::Joints::CoMbySegment(

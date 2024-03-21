@@ -196,15 +196,8 @@ const utils::RotoTrans& internal_forces::WrappingHalfCylinder::RT(
     const rigidbody::GeneralizedCoordinates& Q,
     bool updateKin)
 {
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = true;
-#endif
-    if (updateKin) {
-        model.UpdateKinematicsCustom(&Q);
-    }
-
     // Get the RotoTrans matrix of the cylinder in space
-    *m_RT = model.globalJCS(*m_parentName) * *m_RTtoParent;
+    *m_RT = model.globalJCS(Q, *m_parentName, updateKin) * *m_RTtoParent;
     return *m_RT;
 }
 

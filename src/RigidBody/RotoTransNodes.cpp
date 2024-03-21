@@ -123,17 +123,9 @@ utils::RotoTransNode rigidbody::RotoTransNodes::RT(
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
     rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = true;
-#endif
-    if (updateKin) {
-        model.UpdateKinematicsCustom (&Q);
-    }
 
     utils::RotoTransNode node = RT(idx);
-    size_t id = static_cast<size_t>(model.getBodyBiorbdId(node.parent()));
-
-    return model.globalJCS(id) * node;
+    return model.globalJCS(Q, node.parent(), updateKin) * node;
 }
 
 std::vector<utils::RotoTransNode>

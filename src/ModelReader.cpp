@@ -556,10 +556,6 @@ void Reader::readModelFile(
                     }
                 }
                 if (version == 1) {
-#ifndef BIORBD_USE_CASADI_MATH
-                    utils::Error::check(norm.norm() == 1.0,
-                                                "Normal of the contact must be provided" );
-#endif
                     model->AddConstraint(parent_int, pos, norm, name, parentName);
                 } else if (version >= 2) {
                     utils::Error::check(axis.compare(""), "Axis must be provided");

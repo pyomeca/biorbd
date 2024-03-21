@@ -56,31 +56,31 @@ public:
 
     ///
     /// \brief Add a constraint to the constraint set
-    /// \param body_id The body which is affected directly by the constraint
-    /// \param body_point The point that is constrained relative to the contact body
-    /// \param world_normal The normal along the constraint acts (in base coordinates)
+    /// \param bodyId The body which is affected directly by the constraint
+    /// \param bodyPoint The point that is constrained relative to the contact body
+    /// \param worldNormal The normal along the constraint acts (in base coordinates)
     /// \param name A human readable name
     /// \param name A human readable name of the parent (should correspond to the body_id)
     ///
     size_t AddConstraint(
-        size_t body_id,
-        const utils::Vector3d &body_point,
-        const utils::Vector3d &world_normal,
+        size_t bodyId,
+        const utils::Vector3d &bodyPoint,
+        const utils::Vector3d &worldNormal,
         const utils::String& name,
         const utils::String& parentName);
 
     ///
     /// \brief Add a constraint to the constraint set
-    /// \param body_id The body which is affected directly by the constraint
-    /// \param body_point The point that is constrained relative to the contact body
+    /// \param bodyId The body which is affected directly by the constraint
+    /// \param bodyPoint The point that is constrained relative to the contact body
     /// \param axis The axis along which the constraint acts
     /// \param name A human readable name
     /// \param name A human readable name of the parent (should correspond to the body_id)
     ///
 
     size_t AddConstraint(
-        size_t body_id,
-        const utils::Vector3d &body_point,
+        size_t bodyId,
+        const utils::Vector3d &bodPoint,
         const utils::String& axis,
         const utils::String& name,
         const utils::String& parentName);

@@ -112,18 +112,9 @@ rigidbody::IMU rigidbody::IMUs::IMU(
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
     rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = true;
-#endif
-    if (updateKin) {
-        model.UpdateKinematicsCustom (&Q);
-    }
 
     rigidbody::IMU node = IMU(idx);
-    size_t id = static_cast<size_t>(model.getBodyBiorbdId(
-                          node.parent()));
-
-    return model.globalJCS(id) * node;
+    return model.globalJCS(Q, node.parent(), updateKin) * node;
 }
 
 // Get the technical IMUs

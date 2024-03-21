@@ -51,20 +51,27 @@ void rigidbody::Contacts::DeepCopy(const rigidbody::Contacts
 }
 
 size_t rigidbody::Contacts::AddConstraint(
-    size_t body_id,
-    const utils::Vector3d& body_point,
-    const utils::Vector3d& world_normal,
+    size_t bodyId,
+    const utils::Vector3d& bodyPoint,
+    const utils::Vector3d& worldNormal,
     const utils::String& name,
     const utils::String& parentName
 )
 {
+#ifndef BIORBD_USE_CASADI_MATH
+#ifndef SKIP_ASSERT
+    utils::Error::check(worldNormal.norm() == 1.0, "Normal of the contact must be provided");
+
+#endif // !SKIP_ASSERT
+#endif // !BIORBD_USE_CASADI_MATH
+
     ++*m_nbreConstraint;
 
     // Check world_normal points to what axis
     utils::String axis = "";
-    SCALAR_TO_DOUBLE(has_x, world_normal[0]);
-    SCALAR_TO_DOUBLE(has_y, world_normal[1]);
-    SCALAR_TO_DOUBLE(has_z, world_normal[2]);
+    SCALAR_TO_DOUBLE(has_x, worldNormal[0]);
+    SCALAR_TO_DOUBLE(has_y, worldNormal[1]);
+    SCALAR_TO_DOUBLE(has_z, worldNormal[2]);
     if (has_x != 0){
         axis += "x";
     }
@@ -80,14 +87,14 @@ size_t rigidbody::Contacts::AddConstraint(
     );
     return static_cast<size_t>(
         RigidBodyDynamics::ConstraintSet::AddContactConstraint(
-            static_cast<unsigned int>(body_id), body_point, world_normal, name.c_str()
+            static_cast<unsigned int>(bodyId), bodyPoint, worldNormal, name.c_str()
         )
     );
 }
 
 size_t rigidbody::Contacts::AddConstraint(
-    size_t body_id,
-    const utils::Vector3d& body_point,
+    size_t bodyId,
+    const utils::Vector3d& bodyPoint,
     const utils::String& axis,
     const utils::String& name,
     const utils::String& parentName)
@@ -98,20 +105,20 @@ size_t rigidbody::Contacts::AddConstraint(
         if      (axis.tolower()[i] == 'x'){
             ret += static_cast<size_t>(
                 RigidBodyDynamics::ConstraintSet::AddContactConstraint(
-                    static_cast<unsigned int>(body_id), body_point, utils::Vector3d(1,0,0), (name + "_X").c_str()
+                    static_cast<unsigned int>(bodyId), bodyPoint, utils::Vector3d(1,0,0), (name + "_X").c_str()
                 )
             );
         }
         else if (axis.tolower()[i] == 'y'){
             ret += static_cast<size_t>(
                 RigidBodyDynamics::ConstraintSet::AddContactConstraint(
-                    static_cast<unsigned int>(body_id), body_point, utils::Vector3d(0,1,0), (name + "_Y").c_str())
+                    static_cast<unsigned int>(bodyId), bodyPoint, utils::Vector3d(0,1,0), (name + "_Y").c_str())
             );
         }
         else if (axis.tolower()[i] == 'z'){
             ret += static_cast<size_t>(
                 RigidBodyDynamics::ConstraintSet::AddContactConstraint(
-                    static_cast<unsigned int>(body_id), body_point, utils::Vector3d(0,0,1), (name + "_Z").c_str())
+                    static_cast<unsigned int>(bodyId), bodyPoint, utils::Vector3d(0,0,1), (name + "_Z").c_str())
             );
         }
         else {
@@ -294,8 +301,7 @@ utils::Vector3d rigidbody::Contacts::rigidContact(
     return model.CalcBodyToBaseCoordinates(Q, c.parentId(), c, updateKin);
 }
 
-std::vector<utils::Vector3d>
-rigidbody::Contacts::rigidContacts(
+std::vector<utils::Vector3d> rigidbody::Contacts::rigidContacts(
     const rigidbody::GeneralizedCoordinates &Q,
     bool updateKin)
 {
