@@ -152,8 +152,8 @@ void utils::Vector3d::operator=(
     *this = utils::Vector3d(other);
 }
 
-void utils::Vector3d::operator=(const RigidBodyDynamics::Math::Vector4d&
-                                        other)
+void utils::Vector3d::operator=(
+    const RigidBodyDynamics::Math::Vector4d& other)
 {
     *this = utils::Vector3d(other);
 }

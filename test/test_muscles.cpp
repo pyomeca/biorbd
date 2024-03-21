@@ -336,8 +336,7 @@ TEST(IdealizedActuator, copy)
             utils::Vector3d newPosition(1, 2, 3);
             utils::String oldName("MyNewName");
             utils::String newName("MyNewNewName");
-            rigidbody::NodeSegment newNode(newPosition, newName, "", true, true, "",
-                                                   0);
+            rigidbody::NodeSegment newNode(newPosition, newName, "", true, true, 0);
             {
                 const_cast<internal_forces::muscles::MuscleGeometry&>(idealizedActuator.position()).setOrigin(
                     newPosition);
@@ -2196,10 +2195,10 @@ TEST(FatigueDynamiqueState, DeepCopy)
     // Prepare the model
     Model model(modelPathForXiaDerivativeTest);
     rigidbody::GeneralizedCoordinates Q(model);
-    rigidbody::GeneralizedVelocity QDot(model);
+    rigidbody::GeneralizedVelocity Qdot(model);
     Q.setZero();
-    QDot.setZero();
-    model.updateMuscles(Q, QDot, true);
+    Qdot.setZero();
+    model.updateMuscles(Q, Qdot, true);
 
     {
         internal_forces::muscles::HillThelenTypeFatigable muscle(model.muscleGroup(
@@ -2747,14 +2746,14 @@ TEST(MuscleForce, force)
 {
     Model model(modelPathForMuscleForce);
     rigidbody::GeneralizedCoordinates Q(model);
-    rigidbody::GeneralizedVelocity QDot(model);
+    rigidbody::GeneralizedVelocity Qdot(model);
     Q = Q.setOnes()/10;
-    QDot = QDot.setOnes()/10;
+    Qdot = Qdot.setOnes()/10;
     std::vector<std::shared_ptr<internal_forces::muscles::State>> states;
     for (size_t i=0; i<model.nbMuscleTotal(); ++i) {
         states.push_back(std::make_shared<internal_forces::muscles::StateDynamics>(0, 0.2));
     }
-    model.updateMuscles(Q, QDot, true);
+    model.updateMuscles(Q, Qdot, true);
 
     const utils::Vector& F = model.muscleForces(states);
 
@@ -2772,10 +2771,10 @@ TEST(MuscleForce, torqueFromMuscles)
 {
     Model model(modelPathForMuscleForce);
     rigidbody::GeneralizedCoordinates Q(model);
-    rigidbody::GeneralizedVelocity QDot(model);
-    rigidbody::GeneralizedAcceleration QDDot(model);
+    rigidbody::GeneralizedVelocity Qdot(model);
+    rigidbody::GeneralizedAcceleration Qddot(model);
     Q.setOnes()/10;
-    QDot.setOnes()/10;
+    Qdot.setOnes()/10;
     std::vector<std::shared_ptr<internal_forces::muscles::State>> states;
     for (size_t i=0; i<model.nbMuscleTotal(); ++i) {
         states.push_back(std::make_shared<internal_forces::muscles::StateDynamics>(0, 0.2));
@@ -2784,17 +2783,17 @@ TEST(MuscleForce, torqueFromMuscles)
 
     rigidbody::GeneralizedTorque Tau(model);
     std::vector<double> TauExpected({-11.018675667414932, -4.6208345704133764});
-    Tau = model.muscularJointTorque(states, Q, QDot);
-    for (unsigned int i=0; i<QDDot.size(); ++i) {
+    Tau = model.muscularJointTorque(states, Q, Qdot);
+    for (unsigned int i=0; i<Qddot.size(); ++i) {
         SCALAR_TO_DOUBLE(val, Tau(i));
         EXPECT_NEAR(val, TauExpected[i], requiredPrecision);
     }
 
-    RigidBodyDynamics::ForwardDynamics(model, Q, QDot, Tau, QDDot);
-    std::vector<double> QDDotExpected({-21.778696890631039, -26.807322754152935});
-    for (unsigned int i=0; i<QDDot.size(); ++i) {
-        SCALAR_TO_DOUBLE(val, QDDot(i));
-        EXPECT_NEAR(val, QDDotExpected[i], requiredPrecision);
+    RigidBodyDynamics::ForwardDynamics(model, Q, Qdot, Tau, Qddot);
+    std::vector<double> QddotExpected({-21.778696890631039, -26.807322754152935});
+    for (unsigned int i=0; i<Qddot.size(); ++i) {
+        SCALAR_TO_DOUBLE(val, Qddot(i));
+        EXPECT_NEAR(val, QddotExpected[i], requiredPrecision);
     }
 }
 
@@ -3041,10 +3040,10 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaPointers)
     // Prepare the model
     Model model(modelPathForXiaDerivativeTest);
     rigidbody::GeneralizedCoordinates Q(model);
-    rigidbody::GeneralizedVelocity QDot(model);
+    rigidbody::GeneralizedVelocity Qdot(model);
     Q.setZero();
-    QDot.setZero();
-    model.updateMuscles(Q, QDot, true);
+    Qdot.setZero();
+    model.updateMuscles(Q, Qdot, true);
 
     {
         internal_forces::muscles::HillDeGrooteTypeFatigable muscle(model.muscleGroup(
@@ -3112,10 +3111,10 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaInterface)
     // Prepare the model
     Model model(modelPathForXiaDerivativeTest);
     rigidbody::GeneralizedCoordinates Q(model);
-    rigidbody::GeneralizedVelocity QDot(model);
+    rigidbody::GeneralizedVelocity Qdot(model);
     Q.setZero();
-    QDot.setZero();
-    model.updateMuscles(Q, QDot, true);
+    Qdot.setZero();
+    model.updateMuscles(Q, Qdot, true);
 
     {
         internal_forces::muscles::HillDeGrooteTypeFatigable muscle(model.muscleGroup(
@@ -3156,10 +3155,10 @@ TEST(MuscleFatigue, FatigueXiaDerivativeShallowViaCopy)
     // Prepare the model
     Model model(modelPathForXiaDerivativeTest);
     rigidbody::GeneralizedCoordinates Q(model);
-    rigidbody::GeneralizedVelocity QDot(model);
+    rigidbody::GeneralizedVelocity Qdot(model);
     Q.setZero();
-    QDot.setZero();
-    model.updateMuscles(Q, QDot, true);
+    Qdot.setZero();
+    model.updateMuscles(Q, Qdot, true);
 
     {
         internal_forces::muscles::HillDeGrooteTypeFatigable muscle(

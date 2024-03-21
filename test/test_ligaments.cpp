@@ -542,12 +542,12 @@ TEST(ligamentForce, force)
 {
     Model model(modelPathForGenericTest);
     rigidbody::GeneralizedCoordinates Q(model);
-    rigidbody::GeneralizedVelocity QDot(model);
+    rigidbody::GeneralizedVelocity Qdot(model);
     Q = Q.setOnes()/10;
-    QDot = QDot.setOnes()/10;
-    model.updateLigaments(Q, QDot, true);
+    Qdot = Qdot.setOnes()/10;
+    model.updateLigaments(Q, Qdot, true);
 
-    const utils::Vector& F = model.ligamentForces(Q, QDot);
+    const utils::Vector& F = model.ligamentForces(Q, Qdot);
 
     std::vector<double> ExpectedForce({
         500.00056194583868, 27.517183773325474, 139.51352848156762
@@ -562,23 +562,23 @@ TEST(LigamentTorque, torqueFromLigaments)
 {
     Model model(modelPathForGenericTest);
     rigidbody::GeneralizedCoordinates Q(model);
-    rigidbody::GeneralizedVelocity QDot(model);
-    rigidbody::GeneralizedAcceleration QDDot(model);
+    rigidbody::GeneralizedVelocity Qdot(model);
+    rigidbody::GeneralizedAcceleration Qddot(model);
     Q.setOnes()/10;
-    QDot.setOnes()/10;
+    Qdot.setOnes()/10;
     rigidbody::GeneralizedTorque Tau(model);
     std::vector<double> TauExpected({8.4576580134417226e-15, 3.0375576471800541});
-    Tau = model.ligamentsJointTorque(Q, QDot);
-    for (unsigned int i=0; i<QDDot.size(); ++i) {
+    Tau = model.ligamentsJointTorque(Q, Qdot);
+    for (unsigned int i=0; i<Qddot.size(); ++i) {
         SCALAR_TO_DOUBLE(val, Tau(i));
         EXPECT_NEAR(val, TauExpected[i], requiredPrecision);
     }
 
-    RigidBodyDynamics::ForwardDynamics(model, Q, QDot, Tau, QDDot);
-    std::vector<double> QDDotExpected({-29.605664255664376, 94.507026107190669});
-    for (unsigned int i=0; i<QDDot.size(); ++i) {
-        SCALAR_TO_DOUBLE(val, QDDot(i));
-        EXPECT_NEAR(val, QDDotExpected[i], requiredPrecision);
+    RigidBodyDynamics::ForwardDynamics(model, Q, Qdot, Tau, Qddot);
+    std::vector<double> QddotExpected({-29.605664255664376, 94.507026107190669});
+    for (unsigned int i=0; i<Qddot.size(); ++i) {
+        SCALAR_TO_DOUBLE(val, Qddot(i));
+        EXPECT_NEAR(val, QddotExpected[i], requiredPrecision);
     }
 }
 
