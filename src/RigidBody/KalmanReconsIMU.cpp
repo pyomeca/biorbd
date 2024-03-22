@@ -105,12 +105,12 @@ void rigidbody::KalmanReconsIMU::reconstructFrame(
     // Projected state
     const utils::Vector& xkm(*m_A * *m_xp);
     rigidbody::GeneralizedCoordinates Q_tp(xkm.topRows(*m_nbDof));
-    model.UpdateKinematicsCustom (&Q_tp, nullptr, nullptr);
+    Model& updatedModel = static_cast<Model&>(model.UpdateKinematicsCustom (&Q_tp));
 
     // Projected markers
-    const std::vector<rigidbody::IMU>& zest_tp = model.technicalIMU(Q_tp, false);
+    const std::vector<rigidbody::IMU>& zest_tp = updatedModel.technicalIMU(Q_tp, false);
     // Jacobian
-    std::vector<utils::Matrix> J_tp = model.TechnicalIMUJacobian(Q_tp, false);
+    std::vector<utils::Matrix> J_tp = updatedModel.TechnicalIMUJacobian(Q_tp, false);
 
     // Create only one matrix for zest and Jacobian
     utils::Matrix H(utils::Matrix::Zero(*m_nMeasure, *m_nbDof*3)); // 3*nCentrales => X,Y,Z ; 3*nbDof => Q, Qdot, Qddot
@@ -121,11 +121,14 @@ void rigidbody::KalmanReconsIMU::reconstructFrame(
         for (size_t j = 0; j < 9; ++j) { // Calculate the norm for the 9 components
             sum += IMUobs(i*9+j)*IMUobs(i*9+j);
         }
+
+        if (
 #ifdef BIORBD_USE_CASADI_MATH
-        if (true) { // If there is an IMU (no zero or NaN)
+            true
 #else
-        if (sum != 0.0 && !std::isnan(sum)) { // If there is an IMU (no zero or NaN)
+            sum != 0.0 && !std::isnan(sum)
 #endif
+        ){ // If there is an IMU (no zero or NaN)
             H.block(i*9,0,9,*m_nbDof) = J_tp[i];
             const utils::Rotation& rot = zest_tp[i].rot();
             for (size_t j = 0; j < 3; ++j) {

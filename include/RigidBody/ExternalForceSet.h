@@ -24,7 +24,7 @@ namespace BIORBD_NAMESPACE
         class GeneralizedVelocity;
         class NodeSegment;
         class RotoTransNodes;
-    
+        class Joints;
 
         ///
         /// \brief An External force set that can apply forces to the model while computing the dynamics
@@ -156,17 +156,14 @@ namespace BIORBD_NAMESPACE
 #ifndef SWIG
 
             /// 
-            /// \brief The forces in a rbdl compatible format. This won't work if useTranslationalForces useSoftContacts is set to true
-            /// \param Q The generalized coordinates
-            /// \param Qdot The generalized velocity
-            /// \param updateKin If the kinematics of the model should be computed
+            /// \brief The forces in a rbdl compatible format. This won't work if useTranslationalForces 
+            /// useSoftContacts is set to true
             /// 
             std::vector<RigidBodyDynamics::Math::SpatialVector> computeRbdlSpatialVectors();
 
             /// 
             /// \brief The forces in a rbdl compatible format. This won't work if useSoftContacts is set to true
             /// \param Q The generalized coordinates
-            /// \param Qdot The generalized velocity
             /// \param updateKin If the kinematics of the model should be computed
             /// 
             std::vector<RigidBodyDynamics::Math::SpatialVector> computeRbdlSpatialVectors(
@@ -223,30 +220,35 @@ namespace BIORBD_NAMESPACE
         protected:
             /// 
             /// \brief Add the forces expressed in the local reference to the internal Set.
+            /// \param model The joint model
             /// \param Q The Generalized coordinates. 
             /// \param out The vector of SpatialVector to fill
             /// 
             /// Note: as this is an internal method, even though Q is passed, it is assumed update kinematics was already done.
             /// 
             void combineLocalReferenceFrameForces(
+                rigidbody::Joints& model,
                 const rigidbody::GeneralizedCoordinates& Q,
                 std::vector<utils::SpatialVector>& out
             );
 
             /// 
             /// \brief Add the translational forces to the internal Set.
+            /// \param model The joint model
             /// \param Q The Generalized coordinates. 
             /// \param out The vector of SpatialVector to fill
             /// 
             /// Note: as this is an internal method, even though Q is passed, it is assumed update kinematics was already done.
             /// 
             void combineTranslationalForces(
+                rigidbody::Joints& model,
                 const rigidbody::GeneralizedCoordinates& Q,
                 std::vector<utils::SpatialVector>& out
             ) const;
 
             ///
             /// \brief Add the soft contact forces to the internal Set.
+            /// \param model The joint model
             /// \param Q The Generalized coordinates. 
             /// \param Qdot The Generalized velocity. 
             /// \param out The vector of SpatialVector to fill
@@ -254,6 +256,7 @@ namespace BIORBD_NAMESPACE
             /// Note: as this is an internal method, even though Q is passed, it is assumed update kinematics was already done.
             /// 
             void combineSoftContactForces(
+                Model& model,
                 const rigidbody::GeneralizedCoordinates& Q,
                 const rigidbody::GeneralizedVelocity& Qdot,
                 std::vector<utils::SpatialVector>& out

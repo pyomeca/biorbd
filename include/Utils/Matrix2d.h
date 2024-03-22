@@ -26,16 +26,6 @@ public:
     ///
     Matrix2d();
 
-    ///
-    /// \brief Rotation Construct a generic 2d matrix by elements
-    /// \param v00 Row 0, Col 0
-    /// \param v01 Row 0, Col 1
-    /// \param v10 Row 1, Col 0
-    /// \param v11 Row 1, Col 1
-    ///
-    Matrix2d(const Scalar& v00, const Scalar& v01,
-             const Scalar& v10, const Scalar& v11);
-
 
 #ifdef BIORBD_USE_EIGEN3_MATH
     ///

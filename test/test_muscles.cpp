@@ -350,14 +350,10 @@ TEST(IdealizedActuator, copy)
                 EXPECT_STREQ(insertion.utils::Node::name().c_str(), oldName.c_str());
             }
             {
-                const_cast<internal_forces::muscles::MuscleGeometry&>(idealizedActuator.position()).setOrigin(
-                    newNode);
-                const_cast<internal_forces::muscles::MuscleGeometry&>
-                (idealizedActuator.position()).setInsertionInLocal(newNode);
-                const utils::Vector3d& origin =
-                    idealizedActuator.position().originInLocal();
-                const utils::Vector3d& insertion =
-                    idealizedActuator.position().insertionInLocal();
+                const_cast<internal_forces::muscles::MuscleGeometry&>(idealizedActuator.position()).setOrigin(newNode);
+                const_cast<internal_forces::muscles::MuscleGeometry&>(idealizedActuator.position()).setInsertionInLocal(newNode);
+                const utils::Vector3d& origin = idealizedActuator.position().originInLocal();
+                const utils::Vector3d& insertion = idealizedActuator.position().insertionInLocal();
                 EXPECT_STREQ(origin.utils::Node::name().c_str(), newName.c_str());
                 EXPECT_STREQ(insertion.utils::Node::name().c_str(), newName.c_str());
             }
@@ -2772,9 +2768,8 @@ TEST(MuscleForce, torqueFromMuscles)
     Model model(modelPathForMuscleForce);
     rigidbody::GeneralizedCoordinates Q(model);
     rigidbody::GeneralizedVelocity Qdot(model);
-    rigidbody::GeneralizedAcceleration Qddot(model);
-    Q.setOnes()/10;
-    Qdot.setOnes()/10;
+    Q.setOnes();
+    Qdot.setOnes();
     std::vector<std::shared_ptr<internal_forces::muscles::State>> states;
     for (size_t i=0; i<model.nbMuscleTotal(); ++i) {
         states.push_back(std::make_shared<internal_forces::muscles::StateDynamics>(0, 0.2));
@@ -2784,12 +2779,12 @@ TEST(MuscleForce, torqueFromMuscles)
     rigidbody::GeneralizedTorque Tau(model);
     std::vector<double> TauExpected({-11.018675667414932, -4.6208345704133764});
     Tau = model.muscularJointTorque(states, Q, Qdot);
-    for (unsigned int i=0; i<Qddot.size(); ++i) {
+    for (unsigned int i=0; i<Tau.size(); ++i) {
         SCALAR_TO_DOUBLE(val, Tau(i));
         EXPECT_NEAR(val, TauExpected[i], requiredPrecision);
     }
 
-    RigidBodyDynamics::ForwardDynamics(model, Q, Qdot, Tau, Qddot);
+    rigidbody::GeneralizedAcceleration Qddot = model.ForwardDynamics(Q, Qdot, Tau);
     std::vector<double> QddotExpected({-21.778696890631039, -26.807322754152935});
     for (unsigned int i=0; i<Qddot.size(); ++i) {
         SCALAR_TO_DOUBLE(val, Qddot(i));

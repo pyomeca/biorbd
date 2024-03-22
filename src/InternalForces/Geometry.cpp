@@ -98,9 +98,7 @@ void internal_forces::Geometry::updateKinematics(
 {
     if (*m_posAndJacoWereForced) {
         utils::Error::warning(
-            false,
-            "Warning, using updateKinematics overrides the"
-            " previously sent position and jacobian");
+            false, "Warning, using updateKinematics overrides the previously sent position and jacobian");
         *m_posAndJacoWereForced = false;
     }
 
@@ -108,15 +106,13 @@ void internal_forces::Geometry::updateKinematics(
 #ifdef BIORBD_USE_CASADI_MATH
     updateKin = 2;
 #endif
-    if (updateKin > 1) {
-        model.UpdateKinematicsCustom(Q, Qdot, nullptr);
-    }
+    rigidbody::Joints& updatedModel = model.UpdateKinematicsCustom(updateKin > 1 ? Q : nullptr, updateKin > 1 ? Qdot : nullptr);
 
     // Position of the points in space
-    setPointsInGlobal(model, *Q);
+    setPointsInGlobal(updatedModel, *Q);
 
     // Compute the Jacobian of the muscle points
-    jacobian(model, *Q);
+    jacobian(updatedModel, *Q);
 
     // Complete the update
     _updateKinematics(Qdot, nullptr);
@@ -130,24 +126,20 @@ void internal_forces::Geometry::updateKinematics(rigidbody::Joints
 {
     if (*m_posAndJacoWereForced) {
         utils::Error::warning(
-            false, "Warning, using updateKinematics overrides the"
-            " previously sent position and jacobian");
+            false, "Warning, using updateKinematics overrides the previously sent position and jacobian");
         *m_posAndJacoWereForced = false;
     }
+    
 #ifdef BIORBD_USE_CASADI_MATH
     updateKin = 2;
 #endif
-
-    // Ensure the model is in the right configuration
-    if (updateKin > 1) {
-        model.UpdateKinematicsCustom(Q, Qdot);
-    }
+    rigidbody::Joints& updatedModel = model.UpdateKinematicsCustom(updateKin > 1 ? Q : nullptr, updateKin > 1 ? Qdot : nullptr);
 
     // Position of the points in space
-    setPointsInGlobal(model, *Q, &pathModifiers);
+    setPointsInGlobal(updatedModel, *Q, &pathModifiers);
 
     // Compute the Jacobian of the muscle points
-    jacobian(model, *Q);
+    jacobian(updatedModel, *Q);
 
     // Complete the update
     _updateKinematics(Qdot, &pathModifiers);
@@ -378,8 +370,7 @@ void internal_forces::Geometry::setPointsInGlobal(
         m_pointsInLocal->push_back(originInLocal());
         m_pointsInGlobal->push_back(originInGlobal(model, Q));
         for (size_t i=0; i<pathModifiers->nbObjects(); ++i) {
-            const internal_forces::ViaPoint& node(static_cast<internal_forces::ViaPoint&>
-                                                  (pathModifiers->object(i)));
+            const internal_forces::ViaPoint& node(static_cast<internal_forces::ViaPoint&>(pathModifiers->object(i)));
             m_pointsInLocal->push_back(node);
             m_pointsInGlobal->push_back(model.CalcBodyToBaseCoordinates(Q, node.parent(), node, false));
         }

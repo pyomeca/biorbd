@@ -12,14 +12,6 @@ utils::Matrix2d::Matrix2d() :
 
 }
 
-utils::Matrix2d::Matrix2d(
-    const utils::Scalar &v00, const utils::Scalar &v01,
-    const utils::Scalar &v10, const utils::Scalar &v11) :
-    RigidBodyDynamics::Math::Matrix2d(v00, v01, v10, v11)
-{
-
-}
-
 #ifdef BIORBD_USE_CASADI_MATH
 
 utils::Matrix2d::Matrix2d(

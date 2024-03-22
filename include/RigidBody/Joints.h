@@ -300,7 +300,7 @@ public:
     /// \param Qdot The generalized velocities
     /// \param Qddot The generalized accelerations
     ///
-    void UpdateKinematicsCustom(
+    Joints& UpdateKinematicsCustom(
         const GeneralizedCoordinates *Q = nullptr,
         const GeneralizedVelocity *Qdot = nullptr,
         const rigidbody::GeneralizedAcceleration *Qddot = nullptr);
@@ -372,7 +372,7 @@ public:
     /// \param segmentName The name of the segment
     /// \param pointInLocal The point in the body
     /// \param updateKin If the kinematics of the model should be computed (always true for casadi)
-    utils::Vector3d rigidbody::Joints::CalcBodyToBaseCoordinates(
+    utils::Vector3d CalcBodyToBaseCoordinates(
         const rigidbody::GeneralizedCoordinates& Q,
         utils::String segmentName,
         const utils::Vector3d &pointInLocal,
@@ -385,7 +385,7 @@ public:
     /// \param bodyId The index of the segment (obtainable with GetBodyId)
     /// \param pointInLocal The point in the body
     /// \param updateKin If the kinematics of the model should be computed (always true for casadi)
-    utils::Vector3d rigidbody::Joints::CalcBodyToBaseCoordinates(
+    utils::Vector3d CalcBodyToBaseCoordinates(
         const rigidbody::GeneralizedCoordinates& Q,
         unsigned int bodyId,
         const utils::Vector3d &pointInLocal,
@@ -399,7 +399,7 @@ public:
     /// \param segmentName The name of the segment
     /// \param pointInLocal The point in the body
     /// \param updateKin If the kinematics of the model should be computed (always true for casadi)
-    utils::Vector3d rigidbody::Joints::CalcPointVelocity(
+    utils::Vector3d CalcPointVelocity(
         const rigidbody::GeneralizedCoordinates& Q,
         const rigidbody::GeneralizedVelocity& Qdot,
         utils::String segmentName,
@@ -415,7 +415,7 @@ public:
     /// \param bodyId The index of the segment (obtainable with GetBodyId)
     /// \param pointInLocal The point in the body
     /// \param updateKin If the kinematics of the model should be computed (always true for casadi)
-    utils::Vector3d rigidbody::Joints::CalcPointVelocity(
+    utils::Vector3d CalcPointVelocity(
         const rigidbody::GeneralizedCoordinates& Q,
         const rigidbody::GeneralizedVelocity& Qdot,
         unsigned int bodyId,
@@ -431,7 +431,7 @@ public:
     /// \param segmentName The name of the segment
     /// \param pointInLocal The point in the body
     /// \param updateKin If the kinematics of the model should be computed (always true for casadi)
-    utils::SpatialVector rigidbody::Joints::CalcPointVelocity6D(
+    utils::SpatialVector CalcPointVelocity6D(
         const rigidbody::GeneralizedCoordinates& Q,
         const rigidbody::GeneralizedVelocity& Qdot,
         utils::String segmentName,
@@ -447,7 +447,7 @@ public:
     /// \param bodyId The index of the segment (obtainable with GetBodyId)
     /// \param pointInLocal The point in the body
     /// \param updateKin If the kinematics of the model should be computed (always true for casadi)
-    utils::SpatialVector rigidbody::Joints::CalcPointVelocity6D(
+    utils::SpatialVector CalcPointVelocity6D(
         const rigidbody::GeneralizedCoordinates& Q,
         const rigidbody::GeneralizedVelocity& Qdot,
         unsigned int bodyId,
@@ -464,7 +464,7 @@ public:
     /// \param segmentName The name of the segment
     /// \param pointInLocal The point in the body
     /// \param updateKin If the kinematics of the model should be computed (always true for casadi)
-    utils::Vector3d rigidbody::Joints::CalcPointAcceleration(
+    utils::Vector3d CalcPointAcceleration(
         const rigidbody::GeneralizedCoordinates& Q,
         const rigidbody::GeneralizedVelocity& Qdot,
         const rigidbody::GeneralizedAcceleration& Qddot,
@@ -482,7 +482,7 @@ public:
     /// \param bodyId The index of the segment (obtainable with GetBodyId)
     /// \param pointInLocal The point in the body
     /// \param updateKin If the kinematics of the model should be computed (always true for casadi)
-    utils::Vector3d rigidbody::Joints::CalcPointAcceleration(
+    utils::Vector3d CalcPointAcceleration(
         const rigidbody::GeneralizedCoordinates& Q,
         const rigidbody::GeneralizedVelocity& Qdot,
         const rigidbody::GeneralizedAcceleration& Qddot,

@@ -58,29 +58,26 @@ void internal_forces::muscles::MuscleGeometry::updateKinematics(
     const internal_forces::muscles::Characteristics& characteristics,
     const rigidbody::GeneralizedCoordinates *Q,
     const rigidbody::GeneralizedVelocity *Qdot,
-    int updateKin)
+    int updateKinLevel)
 {
     if (*m_posAndJacoWereForced) {
         utils::Error::warning(
             false,
-            "Warning, using updateKinematics overrides the"
-            " previously sent position and jacobian");
+            "Warning, using updateKinematics overrides the previously sent position and jacobian");
         *m_posAndJacoWereForced = false;
     }
 
     // Make sure the model is in the right configuration
 #ifdef BIORBD_USE_CASADI_MATH
-    updateKin = 2;
+    updateKinLevel = 2;
 #endif
-    if (updateKin > 1) {
-        model.UpdateKinematicsCustom(Q, Qdot, nullptr);
-    }
+    rigidbody::Joints& updatedModel = model.UpdateKinematicsCustom(updateKinLevel > 1 ? Q : nullptr, updateKinLevel > 1 ? Qdot : nullptr);
 
     // Position of the points in space
-    setPointsInGlobal(model, *Q);
+    setPointsInGlobal(updatedModel, *Q);
 
     // Compute the Jacobian of the muscle points
-    jacobian(model, *Q);
+    jacobian(updatedModel, *Q);
 
     // Complete the update
     _updateKinematics(Qdot, &characteristics);
@@ -92,28 +89,24 @@ void internal_forces::muscles::MuscleGeometry::updateKinematics(
         internal_forces::PathModifiers &pathModifiers,
         const rigidbody::GeneralizedCoordinates *Q,
         const rigidbody::GeneralizedVelocity *Qdot,
-        int updateKin)
+        int updateKinLevel)
 {
     if (*m_posAndJacoWereForced) {
         utils::Error::warning(
-            false, "Warning, using updateKinematics overrides the"
-            " previously sent position and jacobian");
+            false, "Warning, using updateKinematics overrides the previously sent position and jacobian");
         *m_posAndJacoWereForced = false;
     }
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = 2;
-#endif
 
-    // Ensure the model is in the right configuration
-    if (updateKin > 1) {
-        model.UpdateKinematicsCustom(Q, Qdot);
-    }
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKinLevel = 2;
+#endif
+    rigidbody::Joints& updatedModel = model.UpdateKinematicsCustom(updateKinLevel > 1 ? Q : nullptr, updateKinLevel > 1 ? Qdot : nullptr);
 
     // Position of the points in space
-    setPointsInGlobal(model, *Q, &pathModifiers);
+    setPointsInGlobal(updatedModel, *Q, &pathModifiers);
 
     // Compute the Jacobian of the muscle points
-    jacobian(model, *Q);
+    jacobian(updatedModel, *Q);
 
     // Complete the update
     _updateKinematics(Qdot, &characteristics, &pathModifiers);

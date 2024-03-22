@@ -94,8 +94,7 @@ public:
     /// \param other The other matrix
     ///
     template<typename OtherDerived>
-    SpatialVector& operator=(const Eigen::MatrixBase <OtherDerived>&
-                                            other)
+    SpatialVector& operator=(const Eigen::MatrixBase <OtherDerived>& other)
     {
         this->Eigen::Matrix<double, 6, 1>::operator=(other);
         return *this;

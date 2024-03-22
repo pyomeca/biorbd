@@ -286,57 +286,29 @@ void internal_forces::muscles::Muscles::updateMuscles(
     rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
 
     // Update all the muscles
-#ifdef BIORBD_USE_CASADI_MATH
-    int updateKinTP = 2;
-#else
-    int updateKinTP;
-    if (updateKin) {
-        updateKinTP = 2;
-    } else {
-        updateKinTP = 0;
-    }
-#endif
-
-    for (auto group : *m_mus) // muscle group
+    int updateKinLevel = updateKin ? 2 : 0;
+    for (auto group : *m_mus){// muscle group
         for (size_t j=0; j<group.nbMuscles(); ++j) {
-            group.muscle(j).updateOrientations(model, Q, Qdot, updateKinTP);
-#ifndef BIORBD_USE_CASADI_MATH
-            if (updateKinTP){
-                updateKinTP=1;
-            }
-#endif
+            group.muscle(j).updateOrientations(model, Q, Qdot, updateKinLevel);
+            if (updateKinLevel) updateKinLevel=1;
         }
+    } 
 }
 void internal_forces::muscles::Muscles::updateMuscles(
     const rigidbody::GeneralizedCoordinates& Q,
     bool updateKin)
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
-    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>
-                                       (*this);
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
 
     // Update all the muscles
-#ifdef BIORBD_USE_CASADI_MATH
-    int updateKinTP = 2;
-#else
-    int updateKinTP;
-    if (updateKin) {
-        updateKinTP = 2;
-    } else {
-        updateKinTP = 0;
-    }
-#endif
-
-    // Update all the muscles
-    for (auto group : *m_mus) // muscle group
+    int updateKinLevel = updateKin ? 2 : 0;
+    for (auto group : *m_mus){ // muscle group
         for (size_t j=0; j<group.nbMuscles(); ++j) {
-            group.muscle(j).updateOrientations(model, Q,updateKinTP);
-#ifndef BIORBD_USE_CASADI_MATH
-            if (updateKinTP){
-                updateKinTP=1;
-            }
-#endif
+            group.muscle(j).updateOrientations(model, Q, updateKinLevel);
+            updateKinLevel = 1;
         }
+    }
 }
 void internal_forces::muscles::Muscles::updateMuscles(
     std::vector<std::vector<utils::Vector3d>>& musclePointsInGlobal,
