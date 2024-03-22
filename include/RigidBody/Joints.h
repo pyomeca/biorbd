@@ -521,6 +521,93 @@ public:
         bool updateKin = true
     );
 
+    ///
+    /// \brief Project a point on specific axis of a segment
+    /// \param Q The generalized coordinates
+    /// \param v The point to project
+    /// \param segmentIdx The segment index to project the marker on
+    /// \param axesToRemove The axis to remove
+    /// \param updateKin If the kinematics of the model should be computed
+    /// \return The position of the projected marker
+    ///
+    NodeSegment projectPoint(
+        const GeneralizedCoordinates &Q,
+        const utils::Vector3d &v,
+        int segmentIdx,
+        const utils::String& axesToRemove,
+        bool updateKin=true);
+
+    ///
+    /// \brief Project multiples points on their respective segment
+    /// \param Q The generalized coordinates
+    /// \param v All the points to project. The number of points must match the number of marker in the joint model
+    /// \param updateKin If the kinematics of the model should be computed
+    /// \return The projected markers from points corresponding to markers from the model
+    ///
+    /// Return projected markers from points corresponding to markers from the model.
+    /// The vector needs to be equal to the number of markers and in the order given
+    /// by Markers and in global coordinates
+    ///
+    std::vector<NodeSegment>  projectPoint(
+        const GeneralizedCoordinates &Q,
+        const std::vector<NodeSegment> &v,
+        bool updateKin=true);
+
+    ///
+    /// \brief Return the projected markers from a point corresponding to a marker from the model
+    /// \param Q The generalized coordinates
+    /// \param n A reference to a marker from the model
+    /// \param updateKin If the kinematics of the model should be computed
+    /// \return The projected markers from a point corresponding to a marker from the model
+    ///
+    NodeSegment projectPoint(
+        const GeneralizedCoordinates& Q,
+        const NodeSegment& n,
+        bool updateKin);
+
+    ///
+    /// \brief Return the jacobian matrix of the projected markers for a marker from the model
+    /// \param Q The generalized coordinates
+    /// \param p A reference to a marker from the model
+    /// \param updateKin If the kinematics of the model should be computed
+    /// \return The jacobian matrix of the projected marker
+    ///
+    utils::Matrix projectPointJacobian(
+        const GeneralizedCoordinates &Q,
+        NodeSegment p,
+        bool updateKin);
+
+    ///
+    /// \brief Return the Jacobian matrix of a projected marker on the segment segmentIdx
+    /// \param Q The generalized coordinates
+    /// \param v The marker to project
+    /// \param segmentIdx The index of the segment to project the marker on
+    /// \param axesToRemove The axes to remove
+    /// \param updateKin If the kinematics of the model should be computed
+    /// \return The Jacobian matrix of a projected marker on the segment segmentIdx
+    ///
+    utils::Matrix projectPointJacobian(
+        const GeneralizedCoordinates &Q,
+        const utils::Vector3d &v,
+        int segmentIdx,
+        const utils::String& axesToRemove,
+        bool updateKin);
+
+    ///
+    /// \brief Return the jacobian matrix of the projected markers
+    /// \param Q The generalized coordinates
+    /// \param v All the markers. The size of which must match the one in the joint model
+    /// \param updateKin If the kinematics of the model should be computed
+    /// \return The jacobian matrix of the projected markers
+    ///
+    /// Return the jacobian matrix of projected markers from points corresponding to markers from the model.
+    /// The vector needs to be equal to the number of markers and in the order given
+    /// by Markers and in global coordinates
+    ///
+    std::vector<utils::Matrix> projectPointJacobian(
+        const GeneralizedCoordinates &Q,
+        const std::vector<NodeSegment> &v,
+        bool updateKin);
     // ------------------------------------- //
 
 

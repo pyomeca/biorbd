@@ -336,7 +336,7 @@ TEST(IdealizedActuator, copy)
             utils::Vector3d newPosition(1, 2, 3);
             utils::String oldName("MyNewName");
             utils::String newName("MyNewNewName");
-            rigidbody::NodeSegment newNode(newPosition, newName, "", true, true, 0);
+            rigidbody::NodeSegment newNode(newPosition, newName, "", true, true, "", 0);
             {
                 const_cast<internal_forces::muscles::MuscleGeometry&>(idealizedActuator.position()).setOrigin(
                     newPosition);

@@ -299,10 +299,21 @@ utils::SpatialVector rigidbody::ExternalForceSet::transportForceAtOrigin(
     const utils::Vector3d& force,
     const rigidbody::NodeSegment& pointOfApplication) const
 {
+    utils::Vector3d forceTp;
+    if (pointOfApplication.nbAxesToRemove() > 0){
+        // Fill only if direction is enabled
+        forceTp = utils::Vector3d(0., 0., 0.);
+        for (auto axis : pointOfApplication.availableAxesIndices()){
+            forceTp.block(axis, 0, 1, 1) = force.block(axis, 0, 1, 1);
+        }
+    } else {
+        forceTp = force;
+    }
+    
     // Transport to Origin (Bour's formula)
     utils::SpatialVector out(0., 0., 0., 0., 0., 0.);
-    out.block(0, 0, 3, 1) = force.cross(-pointOfApplication);
-    out.block(3, 0, 3, 1) = force;
+    out.block(0, 0, 3, 1) = forceTp.cross(-pointOfApplication);
+    out.block(3, 0, 3, 1) = forceTp;
 
     return out;
 }

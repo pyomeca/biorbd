@@ -167,6 +167,13 @@ TEST(Contacts, unitTest)
     {
         Model model(modelPathForGeneralTesting);
 
+        auto axes(model.rigidContact(0).availableAxesIndices());
+        EXPECT_EQ(axes[0], 1);
+        EXPECT_EQ(axes[1], 2);
+    }
+    {
+        Model model(modelPathForGeneralTesting);
+
         EXPECT_EQ(model.contactSegmentBiorbdId(0), 7);
     }
     {
@@ -228,6 +235,9 @@ TEST(RigidContacts, create){
         EXPECT_EQ(contactX, 0.1);
         EXPECT_EQ(contactY, 0.2);
         EXPECT_EQ(contactZ, 0.3);
+        EXPECT_EQ(model.rigidContact(n).axes()[0], 1);
+        EXPECT_EQ(model.rigidContact(n).axes()[1], 0);
+        EXPECT_EQ(model.rigidContact(n).axes()[2], 0);
     }
 
     {
@@ -239,6 +249,9 @@ TEST(RigidContacts, create){
         EXPECT_EQ(contactX, 0.4);
         EXPECT_EQ(contactY, 0.5);
         EXPECT_EQ(contactZ, 0.6);
+        EXPECT_EQ(model.rigidContact(n).axes()[0], 0);
+        EXPECT_EQ(model.rigidContact(n).axes()[1], 1);
+        EXPECT_EQ(model.rigidContact(n).axes()[2], 0);
     }
 
     {
@@ -250,6 +263,9 @@ TEST(RigidContacts, create){
         EXPECT_EQ(contactX, 0.7);
         EXPECT_EQ(contactY, 0.8);
         EXPECT_EQ(contactZ, 0.9);
+        EXPECT_EQ(model.rigidContact(n).axes()[0], 0);
+        EXPECT_EQ(model.rigidContact(n).axes()[1], 0);
+        EXPECT_EQ(model.rigidContact(n).axes()[2], 1);
     }
 
     {
@@ -261,6 +277,9 @@ TEST(RigidContacts, create){
         EXPECT_EQ(contactX, 0.1);
         EXPECT_EQ(contactY, 0.2);
         EXPECT_EQ(contactZ, 0.3);
+        EXPECT_EQ(model.rigidContact(n).axes()[0], 1);
+        EXPECT_EQ(model.rigidContact(n).axes()[1], 0);
+        EXPECT_EQ(model.rigidContact(n).axes()[2], 0);
     }
 
 
@@ -974,7 +993,7 @@ TEST(Markers, copy)
 
 
         rigidbody::NodeSegment nodeSegment;
-        markers.addMarker(nodeSegment, "markerName", "parentName", true, true, 98);
+        markers.addMarker(nodeSegment, "markerName", "parentName", true, true, "x", 98);
 
         EXPECT_EQ(markers.nbMarkers(), 98);
         EXPECT_EQ(shallowCopy.nbMarkers(), 98);
@@ -993,6 +1012,7 @@ TEST(Markers, set)
     EXPECT_STREQ(marker0.parent().c_str(), "Pelvis");
     EXPECT_EQ(marker0.isTechnical(), true);
     EXPECT_EQ(marker0.isAnatomical(), false);
+    EXPECT_STREQ(marker0.axesToRemoveAsString().c_str(), "");
     EXPECT_EQ(marker0.parentId(), 3);
 
     SCALAR_TO_DOUBLE(xValuePre, marker0.x());
@@ -1008,6 +1028,7 @@ TEST(Markers, set)
     EXPECT_STREQ(marker0.parent().c_str(), "Pelvis");
     EXPECT_EQ(marker0.isTechnical(), true);
     EXPECT_EQ(marker0.isAnatomical(), false);
+    EXPECT_STREQ(marker0.axesToRemoveAsString().c_str(), "");
     EXPECT_EQ(marker0.parentId(), 3);
 
     SCALAR_TO_DOUBLE(xValuePost, marker0.x());
@@ -1157,8 +1178,35 @@ TEST(NodeSegment, unitTests)
     }
     {
         rigidbody::NodeSegment nodeSegment(
-            utils::Vector3d(2, 3, 4), "nodeSegmentName", "parentName", true, true, 8);
+            utils::Vector3d(2, 3, 4), "nodeSegmentName", "parentName", true, true, "z", 8);
         EXPECT_STREQ(nodeSegment.parent().c_str(), "parentName");
+    }
+    {
+        rigidbody::NodeSegment nodeSegment(
+            utils::Vector3d(2, 3, 4), "nodeSegmentName", "parentName", true, true, "z", 8);
+        EXPECT_EQ(nodeSegment.isAxisKept(2), false);
+        EXPECT_EQ(nodeSegment.isAxisRemoved(2), true);
+    }
+    {
+        rigidbody::NodeSegment nodeSegment(
+            utils::Vector3d(2, 3, 4), "nodeSegmentName", "parentName", true, true, "z", 8);
+        std::vector<utils::String> vector = { "x", "y" };
+        nodeSegment.addAxesToRemove(vector);
+        EXPECT_STREQ(nodeSegment.axesToRemoveAsString().c_str(), "xyz");
+    }
+    {
+        rigidbody::NodeSegment nodeSegment(
+            utils::Vector3d(2, 3, 4), "nodeSegmentName", "parentName", true, true, "z", 8);
+        std::vector<size_t> vector = {0, 1};
+        nodeSegment.addAxesToRemove(vector);
+        EXPECT_STREQ(nodeSegment.axesToRemoveAsString().c_str(), "xyz");
+    }
+    {
+        rigidbody::NodeSegment nodeSegment(
+            utils::Vector3d(2, 3, 4),"nodeSegmentName", "parentName", true, true, "z", 8);
+        EXPECT_THROW(nodeSegment.addAxesToRemove(4), std::runtime_error);
+        utils::String string("m");
+        EXPECT_THROW(nodeSegment.addAxesToRemove(string), std::runtime_error);
     }
 }
 
@@ -1166,11 +1214,15 @@ TEST(NodeSegment, unitTests)
 TEST(NodeSegment, copy)
 {
     rigidbody::NodeSegment nodeSegment(
-        utils::Vector3d(2, 3, 4), "nodeSegmentName", "parentName", true, true, 8);
+        utils::Vector3d(2, 3, 4), "nodeSegmentName", "parentName", true, true, "z", 8);
 
     rigidbody::NodeSegment deepCopyNow(nodeSegment.DeepCopy());
     rigidbody::NodeSegment deepCopyLater;
     deepCopyLater.DeepCopy(nodeSegment);
+    
+    EXPECT_EQ(nodeSegment.nbAxesToRemove(), 1);
+    EXPECT_EQ(deepCopyNow.nbAxesToRemove(), 1);
+    EXPECT_EQ(deepCopyLater.nbAxesToRemove(), 1);
 }
 
 TEST(DegreesOfFreedom, count)

@@ -83,7 +83,7 @@ size_t rigidbody::Contacts::AddConstraint(
     }
 
     m_rigidContacts->push_back(
-        NodeSegment(bodyPoint, name, parentName, true, false, static_cast<int>(bodyId))
+        NodeSegment(bodyPoint, name, parentName, true, false, swapAxes(axis), static_cast<int>(bodyId))
     );
     return static_cast<size_t>(
         RigidBodyDynamics::ConstraintSet::AddContactConstraint(
@@ -126,7 +126,7 @@ size_t rigidbody::Contacts::AddConstraint(
         }
     }
     
-    m_rigidContacts->push_back(NodeSegment(bodyPoint, name, parentName, true, false, static_cast<int>(bodyId)));
+    m_rigidContacts->push_back(NodeSegment(bodyPoint, name, parentName, true, false, swapAxes(axis), static_cast<int>(bodyId)));
     return ret;
 }
 
@@ -432,4 +432,13 @@ std::vector<size_t> rigidbody::Contacts::segmentRigidContactIdx(
     }
 
     return indices;
+}
+
+utils::String rigidbody::Contacts::swapAxes(
+    const utils::String& axesToSwap) const 
+{
+    utils::String out;
+    std::string reference = "xyz";
+    std::set_difference(reference.begin(), reference.end(), axesToSwap.begin(), axesToSwap.end(), std::back_inserter(out));
+    return out;
 }

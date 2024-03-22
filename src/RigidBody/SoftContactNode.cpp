@@ -44,7 +44,7 @@ rigidbody::SoftContactNode::SoftContactNode(
         const utils::String &name,
         const utils::String &parentName,
         int parentID) :
-    rigidbody::NodeSegment(x, y, z, name, parentName, true, true, parentID),
+    rigidbody::NodeSegment(x, y, z, name, parentName, true, true, "", parentID),
     m_contactPlane(std::make_shared<std::pair<utils::Vector3d, utils::Vector3d>>(utils::Vector3d(0, 0, 0), utils::Vector3d(0, 0, 1)))
 {
 
@@ -55,7 +55,7 @@ rigidbody::SoftContactNode::SoftContactNode(
         const utils::String &name,
         const utils::String &parentName,
         int parentID) :
-    rigidbody::NodeSegment(node, name, parentName, true, true, parentID),
+    rigidbody::NodeSegment(node, name, parentName, true, true, "", parentID),
     m_contactPlane(std::make_shared<std::pair<utils::Vector3d, utils::Vector3d>>(utils::Vector3d(0, 0, 0), utils::Vector3d(0, 0, 1)))
 {
 
