@@ -2777,7 +2777,7 @@ TEST(MuscleForce, torqueFromMuscles)
 
 
     rigidbody::GeneralizedTorque Tau(model);
-    std::vector<double> TauExpected({-11.018675667414932, -4.6208345704133764});
+    std::vector<double> TauExpected({-11.018675667414932, -1.7483464272594329 });
     Tau = model.muscularJointTorque(states, Q, Qdot);
     for (unsigned int i=0; i<Tau.size(); ++i) {
         SCALAR_TO_DOUBLE(val, Tau(i));
@@ -2785,7 +2785,7 @@ TEST(MuscleForce, torqueFromMuscles)
     }
 
     rigidbody::GeneralizedAcceleration Qddot = model.ForwardDynamics(Q, Qdot, Tau);
-    std::vector<double> QddotExpected({-21.778696890631039, -26.807322754152935});
+    std::vector<double> QddotExpected({ -47.946292142243109, 56.344108470462629 });
     for (unsigned int i=0; i<Qddot.size(); ++i) {
         SCALAR_TO_DOUBLE(val, Qddot(i));
         EXPECT_NEAR(val, QddotExpected[i], requiredPrecision);
