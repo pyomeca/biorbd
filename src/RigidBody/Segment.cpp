@@ -280,7 +280,7 @@ rigidbody::Segment::QddotRanges() const
 
 utils::RotoTrans rigidbody::Segment::localJCS() const
 {
-    return utils::RotoTrans::fromSpatialTransform(*m_cor);
+    return utils::SpatialTransform(m_cor->rotation().transpose(), m_cor->translation());
 }
 
 void  rigidbody::Segment::setLocalJCS(rigidbody::Joints& model, utils::RotoTrans &rototrans)
