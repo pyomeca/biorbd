@@ -120,12 +120,11 @@ TEST(BinderC, jcs)
     // JCS in local reference frame
     double *dRtInLocal = new double[model->nbSegment()*4*4];
     c_globalJCS(model, dQ, dRtInLocal);
-    std::vector<utils::RotoTrans> jcsInLocal(model->allGlobalJCS());
+    std::vector<utils::RotoTrans> jcsInLocal(model->localJCS());
     for (unsigned int i=0; i<model->nbSegment(); ++i)
         for (unsigned int row=0; row<4; ++row)
             for (unsigned int col=0; col<4; ++col) {
-                EXPECT_NEAR(dRtInLocal[i*16+col*4+row], jcsInLocal[i](row, col),
-                            requiredPrecision);
+                EXPECT_NEAR(dRtInLocal[i*16+col*4+row], jcsInLocal[i](row, col), requiredPrecision);
             }
     delete[] dRtInLocal;
 
