@@ -300,7 +300,12 @@ public:
     /// \param Qdot The generalized velocities
     /// \param Qddot The generalized accelerations
     ///
-    Joints& UpdateKinematicsCustom(
+#ifdef BIORBD_USE_CASADI_MATH
+Joints
+#else
+Joints&
+#endif
+UpdateKinematicsCustom(
         const GeneralizedCoordinates *Q = nullptr,
         const GeneralizedVelocity *Qdot = nullptr,
         const rigidbody::GeneralizedAcceleration *Qddot = nullptr);

@@ -171,36 +171,40 @@ std::vector< utils::SpatialVector > rigidbody::Contacts::calcLoopConstraintForce
 
     // outputs
     std::vector<unsigned int> constraintBodyIdsOutput;
-    std::vector<RigidBodyDynamics::Math::SpatialVector> updatedConstraintForcesOutput;
     std::vector<RigidBodyDynamics::Math::SpatialTransform> updatedConstraintBodyFramesOutput;
+    std::vector<RigidBodyDynamics::Math::SpatialVector> updatedConstraintForcesOutput;
 
     // retrieve the model and the contacts
     rigidbody::Contacts CS = dynamic_cast<rigidbody::Contacts*>(this)->getConstraints();
-    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
+#ifdef BIORBD_USE_CASADI_MATH
+    rigidbody::Joints model = dynamic_cast<rigidbody::Joints &>(*this).UpdateKinematicsCustom(&Q, &Qdot);
+#else
+    rigidbody::Joints& model = dynamic_cast<rigidbody::Joints &>(*this);
+#endif
     model.ForwardDynamicsConstraintsDirect(Q, Qdot, Tau, CS, externalForces);
 
-    std::vector< utils::SpatialVector > output;
+    std::vector< utils::SpatialVector > out;
     for (int i=0; i<static_cast<int>(*m_nbLoopConstraint); i++) {
         constraintBodyIdsOutput.clear();
         updatedConstraintBodyFramesOutput.clear();
         updatedConstraintForcesOutput.clear();
 
         CS.calcForces(
-                    i,
-                    model,
-                    Q,
-                    Qdot,
-                    constraintBodyIdsOutput,
-                    updatedConstraintBodyFramesOutput,
-                    updatedConstraintForcesOutput,
-                    resolveAllInRootFrame,
-                    false
-                    );
+            i,
+            model,
+            Q,
+            Qdot,
+            constraintBodyIdsOutput,
+            updatedConstraintBodyFramesOutput,
+            updatedConstraintForcesOutput,
+            resolveAllInRootFrame,
+            false
+        );
 
         // save all the forces in the global reference frame applied on the predecessor segment
-        output.push_back(updatedConstraintForcesOutput[0]);
+        out.push_back(updatedConstraintForcesOutput[0]);
     }
-    return output;
+    return out;
 
 }
 

@@ -71,7 +71,13 @@ void internal_forces::muscles::MuscleGeometry::updateKinematics(
 #ifdef BIORBD_USE_CASADI_MATH
     updateKinLevel = 2;
 #endif
-    rigidbody::Joints& updatedModel = model.UpdateKinematicsCustom(updateKinLevel > 1 ? Q : nullptr, updateKinLevel > 1 ? Qdot : nullptr);
+
+#ifdef BIORBD_USE_CASADI_MATH
+    rigidbody::Joints
+#else
+    rigidbody::Joints&
+#endif
+    updatedModel = model.UpdateKinematicsCustom(updateKinLevel > 1 ? Q : nullptr, updateKinLevel > 1 ? Qdot : nullptr);
 
     // Position of the points in space
     setPointsInGlobal(updatedModel, *Q);
@@ -100,7 +106,13 @@ void internal_forces::muscles::MuscleGeometry::updateKinematics(
 #ifdef BIORBD_USE_CASADI_MATH
     updateKinLevel = 2;
 #endif
-    rigidbody::Joints& updatedModel = model.UpdateKinematicsCustom(updateKinLevel > 1 ? Q : nullptr, updateKinLevel > 1 ? Qdot : nullptr);
+
+#ifdef BIORBD_USE_CASADI_MATH
+    rigidbody::Joints
+#else
+    rigidbody::Joints&
+#endif
+    updatedModel = model.UpdateKinematicsCustom(updateKinLevel > 1 ? Q : nullptr, updateKinLevel > 1 ? Qdot : nullptr);
 
     // Position of the points in space
     setPointsInGlobal(updatedModel, *Q, &pathModifiers);

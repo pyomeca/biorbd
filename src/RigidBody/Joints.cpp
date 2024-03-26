@@ -674,7 +674,12 @@ utils::SpatialTransform rigidbody::Joints::CalcBodyWorldTransformation (
     updateKin = true;
 #endif
     // Get the updated model
-    rigidbody::Joints& model = this->UpdateKinematicsCustom(updateKin ? &Q : nullptr);
+#ifdef BIORBD_USE_CASADI_MATH
+    rigidbody::Joints
+#else
+    rigidbody::Joints&
+#endif
+    model = this->UpdateKinematicsCustom(updateKin ? &Q : nullptr);
 
     if (segmentIdx >= model.fixed_body_discriminator) {
         size_t fbody_id = segmentIdx - static_cast<size_t>(model.fixed_body_discriminator);
@@ -757,7 +762,13 @@ utils::Matrix rigidbody::Joints::massMatrixInverse (
 #ifdef BIORBD_USE_CASADI_MATH
     updateKin = true;
 #endif
-    rigidbody::Joints& model = this->UpdateKinematicsCustom(updateKin ? &Q : nullptr);
+
+#ifdef BIORBD_USE_CASADI_MATH
+    rigidbody::Joints
+#else
+    rigidbody::Joints&
+#endif
+    model = this->UpdateKinematicsCustom(updateKin ? &Q : nullptr);
 
     int i = 0; // for loop purpose
     int j = 0; // for loop purpose
@@ -1562,15 +1573,21 @@ rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamicsConstraints
 )
 {
 #ifdef BIORBD_USE_CASADI_MATH
-    rigidbody::Joints model = this->DeepCopy();
+    rigidbody::Joints
 #else
-    rigidbody::Joints& model = *this;
+    rigidbody::Joints&
 #endif
+    model = this->UpdateKinematicsCustom(&Q, &Qdot);
+ 
+#ifdef BIORBD_USE_CASADI_MATH
     bool updateKin = true;
-
-    rigidbody::GeneralizedAcceleration Qddot(model);
+#else
+    bool updateKin = false;
+#endif
     auto fExt = externalForces.computeRbdlSpatialVectors(Q, Qdot, updateKin);
     updateKin = false;
+
+    rigidbody::GeneralizedAcceleration Qddot(model);
     RigidBodyDynamics::ForwardDynamicsConstraintsDirect(model, Q, Qdot, Tau, CS, Qddot, updateKin, &fExt);
     return Qddot;
 }
@@ -1611,8 +1628,7 @@ rigidbody::GeneralizedVelocity rigidbody::Joints::ComputeConstraintImpulsesDirec
         rigidbody::Joints& model = *this;
 #endif
 
-        // This can succeed because "this" is expected to be a Biorbd::Model
-        CS = dynamic_cast<rigidbody::Contacts*>(&model)->getConstraints();
+        CS = dynamic_cast<rigidbody::Contacts*>(this)->getConstraints();
 
         rigidbody::GeneralizedVelocity QdotPost(model);
         RigidBodyDynamics::ComputeConstraintImpulsesDirect(model, Q, QdotPre, CS, QdotPost);
@@ -1627,7 +1643,13 @@ utils::Matrix3d rigidbody::Joints::bodyInertia (
 #ifdef BIORBD_USE_CASADI_MATH
     updateKin = true;
 #endif
-    rigidbody::Joints& model = this->UpdateKinematicsCustom (updateKin ? &q : nullptr);
+
+#ifdef BIORBD_USE_CASADI_MATH
+    rigidbody::Joints
+#else
+    rigidbody::Joints&
+#endif
+    model = this->UpdateKinematicsCustom (updateKin ? &q : nullptr);
 
     for (size_t i = 1; i < model.mBodies.size(); i++) {
         model.Ic[i] = model.I[i];
@@ -1706,7 +1728,12 @@ size_t rigidbody::Joints::getDofIndex(
     return idx;
 }
 
-rigidbody::Joints& rigidbody::Joints::UpdateKinematicsCustom(
+#ifdef BIORBD_USE_CASADI_MATH
+rigidbody::Joints
+#else
+rigidbody::Joints&
+#endif
+rigidbody::Joints::UpdateKinematicsCustom(
     const rigidbody::GeneralizedCoordinates *Q,
     const rigidbody::GeneralizedVelocity *Qdot,
     const rigidbody::GeneralizedAcceleration *Qddot)
@@ -1741,7 +1768,13 @@ void rigidbody::Joints::CalcMatRotJacobian(
 #ifdef BIORBD_USE_CASADI_MATH
     updateKin = true;
 #endif
-    rigidbody::Joints& model = this->UpdateKinematicsCustom(updateKin ? &Q : nullptr);
+
+#ifdef BIORBD_USE_CASADI_MATH
+    rigidbody::Joints
+#else
+    rigidbody::Joints&
+#endif
+    model = this->UpdateKinematicsCustom(updateKin ? &Q : nullptr);
     updateKin = false;
 
     assert (G.rows() == 9 && G.cols() == model.qdot_size );
