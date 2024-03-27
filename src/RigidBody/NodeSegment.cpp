@@ -69,7 +69,7 @@ rigidbody::NodeSegment::NodeSegment(
     const utils::String &parentName,
     bool isTechnical,
     bool isAnatomical,
-    const utils::String& axesToRemove, // Axis to remove
+    const utils::String& axesToRemove,
     int parentID) :
     utils::Vector3d(node, name, parentName),
     m_axesRemoved(std::make_shared<std::vector<bool>>(3)),
@@ -79,25 +79,6 @@ rigidbody::NodeSegment::NodeSegment(
     m_id(std::make_shared<int>(parentID))
 {
     addAxesToRemove(axesToRemove);
-    //ctor
-}
-
-rigidbody::NodeSegment::NodeSegment(
-        const utils::Vector3d &node,
-        const utils::String &name,
-        const utils::String &parentName,
-        bool isTechnical,
-        bool isAnatomical,
-        const std::vector<bool> &axesToRemove,
-        int parentID) :
-    utils::Vector3d(node, name, parentName),
-    m_axesRemoved(std::make_shared<std::vector<bool>>(axesToRemove)),
-    m_nbAxesToRemove(std::make_shared<int>(0)),
-    m_technical(std::make_shared<bool>(isTechnical)),
-    m_anatomical(std::make_shared<bool>(isAnatomical)),
-    m_id(std::make_shared<int>(parentID))
-{
-
 }
 
 rigidbody::NodeSegment rigidbody::NodeSegment::DeepCopy() const
@@ -161,12 +142,13 @@ const std::vector<bool> rigidbody::NodeSegment::axes() const
 
 rigidbody::NodeSegment rigidbody::NodeSegment::removeAxes() const
 {
-    rigidbody::NodeSegment pos(*this);
-    for (size_t i=0; i<m_axesRemoved->size(); ++i)
+    rigidbody::NodeSegment out(*this);
+    for (size_t i=0; i<m_axesRemoved->size(); ++i){
         if (isAxisRemoved(i)) {
-            pos(static_cast<unsigned int>(i)) = 0;
+            out(static_cast<unsigned int>(i)) = 0;
         }
-    return pos;
+    }
+    return out;
 }
 
 bool rigidbody::NodeSegment::isAxisRemoved(size_t i) const
@@ -196,10 +178,6 @@ int rigidbody::NodeSegment::nbAxesToRemove() const
     return *m_nbAxesToRemove;
 }
 
-void rigidbody::NodeSegment::setType()
-{
-    *m_typeOfNode = utils::NODE_TYPE::BONE_POINT;
-}
 
 void rigidbody::NodeSegment::addAxesToRemove(size_t axisNumber)
 {
@@ -210,10 +188,10 @@ void rigidbody::NodeSegment::addAxesToRemove(size_t axisNumber)
     ++*m_nbAxesToRemove;
 }
 
-void rigidbody::NodeSegment::addAxesToRemove(const
-        utils::String& s)
+void rigidbody::NodeSegment::addAxesToRemove(
+    const utils::String& s)
 {
-    for (size_t i=0; i<s.length(); ++i)
+    for (size_t i=0; i<s.length(); ++i){
         if (!s(i).compare("x")) {
             addAxesToRemove(0);
         } else if (!s(i).compare("y")) {
@@ -223,6 +201,7 @@ void rigidbody::NodeSegment::addAxesToRemove(const
         } else {
             utils::Error::raise("Axis must be 0 (\"x\"), 1 (\"y\") or 2 (\"z\")");
         }
+    }
 }
 
 void rigidbody::NodeSegment::addAxesToRemove(const
@@ -254,4 +233,9 @@ utils::String rigidbody::NodeSegment::axesToRemoveAsString() const
         axes += "z";
     }
     return axes;
+}
+
+void rigidbody::NodeSegment::setType()
+{
+    *m_typeOfNode = utils::NODE_TYPE::BONE_POINT;
 }

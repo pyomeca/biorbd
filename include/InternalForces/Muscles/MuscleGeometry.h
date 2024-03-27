@@ -66,9 +66,9 @@ public:
     ///
     /// \brief Updates the position and dynamic elements of the muscles.
     /// \param model The joint model
-    /// \param Q The generalized coordinates of the joints (not needed if updateKin is less than 2)
-    /// \param Qdot The generalized velocities of the joints (not needed if updateKin is less than 2)
-    /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
+    /// \param Q The generalized coordinates of the joints (not needed if updateKinLevel is less than 2)
+    /// \param Qdot The generalized velocities of the joints (not needed if updateKinLevel is less than 2)
+    /// \param updateKinLevel Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
     ///
     /// updateKinematics MUST be called before retreiving data that are dependent on Q and/or Qdot
     ///
@@ -77,16 +77,16 @@ public:
         const Characteristics& characteristics,
         const rigidbody::GeneralizedCoordinates* Q = nullptr,
         const rigidbody::GeneralizedVelocity* Qdot = nullptr,
-        int updateKin = 2);
+        int updateKinLevel = 2);
 
     ///
     /// \brief Updates the position and dynamic elements of the muscles.
     /// \param model The joint model
     /// \param characteristics The muscle characteristics
     /// \param pathModifiers The path modifiers
-    /// \param Q The generalized coordinates of the joints (not needed if updateKin is less than 2)
-    /// \param Qdot The generalized velocities of the joints (not needed if updateKin is less than 2)
-    /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
+    /// \param Q The generalized coordinates of the joints (not needed if updateKinLevel is less than 2)
+    /// \param Qdot The generalized velocities of the joints (not needed if updateKinLevel is less than 2)
+    /// \param updateKinLevel Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
     ///
     /// updateKinematics MUST be called before retreiving data that are dependent on Q and/or Qdot
     ///
@@ -96,7 +96,7 @@ public:
         internal_forces::PathModifiers& pathModifiers,
         const rigidbody::GeneralizedCoordinates* Q = nullptr,
         const rigidbody::GeneralizedVelocity* Qdot = nullptr,
-        int updateKin = 2);
+        int updateKinLevel = 2);
 
     ///
     /// \brief Updates the position and dynamic elements of the muscles by hand.

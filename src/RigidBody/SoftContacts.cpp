@@ -12,6 +12,7 @@
 #include "Utils/UtilsEnum.h"
 #include "Utils/String.h"
 #include "Utils/Error.h"
+#include "Utils/SpatialVector.h"
 
 using namespace BIORBD_NAMESPACE;
 
@@ -79,13 +80,9 @@ rigidbody::NodeSegment rigidbody::SoftContacts::softContact(
         bool updateKin)
 {
     rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = true;
-#endif
 
     const rigidbody::SoftContactNode& sc(softContact(idx));
-    unsigned int id = model.GetBodyId(sc.parent().c_str());
-    return rigidbody::NodeSegment(RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, id, sc, updateKin));
+    return rigidbody::NodeSegment(model.CalcBodyToBaseCoordinates(Q, sc.parent(), sc, updateKin));
 }
 
 std::vector<rigidbody::NodeSegment> rigidbody::SoftContacts::softContacts(
@@ -110,16 +107,11 @@ rigidbody::NodeSegment rigidbody::SoftContacts::softContactVelocity(
 {
     // Assuming that this is also a joint type (via BiorbdModel)
     rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = true;
-#endif
 
-    const rigidbody::SoftContactNode& sc(softContact(idx));
-    unsigned int id(model.GetBodyId(sc.parent().c_str()));
     // Calculate the velocity of the point
+    const rigidbody::SoftContactNode& sc(softContact(idx));
     return rigidbody::NodeSegment(
-        RigidBodyDynamics::CalcPointVelocity(model, Q, Qdot, id, sc, updateKin)
-    );
+        model.CalcPointVelocity(Q, Qdot, sc.parent(), sc, updateKin));
 }
 
 rigidbody::NodeSegment rigidbody::SoftContacts::softContactAngularVelocity(
@@ -130,17 +122,11 @@ rigidbody::NodeSegment rigidbody::SoftContacts::softContactAngularVelocity(
 {
     // Assuming that this is also a joint type (via BiorbdModel)
     rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = true;
-#endif
-
-    const rigidbody::SoftContactNode& sc(softContact(idx));
 
     // Calculate the velocity of the point
-    unsigned int id(model.GetBodyId(sc.parent().c_str()));
+    const rigidbody::SoftContactNode& sc(softContact(idx));
     return rigidbody::NodeSegment(
-        RigidBodyDynamics::CalcPointVelocity6D(model, Q, Qdot, id, sc, updateKin).block(0, 0, 3, 1)
-    );
+        model.CalcPointVelocity6D(Q, Qdot, sc.parent(), sc, updateKin).block(0, 0, 3, 1));
 }
 
 std::vector<rigidbody::NodeSegment> rigidbody::SoftContacts::softContactsVelocity(

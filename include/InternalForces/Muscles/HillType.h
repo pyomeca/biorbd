@@ -25,7 +25,6 @@ class MuscleGeometry;
 /// - \f$FlPE_2 = 5.0\f$
 /// - \f$eccentricForceMultiplier = 1.8\f$
 /// - \f$damping = 0.1\f$
-/// - \f$maxShorteningSpeed = 10.0\f$
 ///
 class BIORBD_API HillType : public Muscle
 {
@@ -245,8 +244,6 @@ protected:
     m_cste_eccentricForceMultiplier; ///< Constant used for ForceVelocity
     std::shared_ptr<utils::Scalar>
     m_cste_damping; ///< parameters used in damping
-    std::shared_ptr<utils::Scalar>
-    m_cste_maxShorteningSpeed; ///< Maximal velocity of shortening
 
 };
 

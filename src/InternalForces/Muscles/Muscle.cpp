@@ -135,19 +135,19 @@ void internal_forces::muscles::Muscle::setType()
 void internal_forces::muscles::Muscle::updateOrientations(
     rigidbody::Joints& model,
     const rigidbody::GeneralizedCoordinates &Q,
-    int updateKin)
+    int updateKinLevel)
 {
     // Update de la position des insertions et origines
-    m_position->updateKinematics(model,*m_characteristics,*m_pathChanger,&Q,nullptr,updateKin);
+    m_position->updateKinematics(model, *m_characteristics, *m_pathChanger, &Q, nullptr, updateKinLevel);
 }
 void internal_forces::muscles::Muscle::updateOrientations(
     rigidbody::Joints& model,
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot,
-    int updateKin)
+    int updateKinLevel)
 {
     // Update de la position des insertions et origines
-    m_position->updateKinematics(model,*m_characteristics,*m_pathChanger,&Q,&Qdot,updateKin);
+    m_position->updateKinematics(model, *m_characteristics, *m_pathChanger, &Q, &Qdot, updateKinLevel);
 }
 void internal_forces::muscles::Muscle::updateOrientations(
     std::vector<utils::Vector3d>& musclePointsInGlobal,
@@ -178,13 +178,13 @@ const internal_forces::muscles::MuscleGeometry &internal_forces::muscles::Muscle
 const utils::Scalar& internal_forces::muscles::Muscle::length(
     rigidbody::Joints& model,
     const rigidbody::GeneralizedCoordinates &Q,
-    int updateKin)
+    int updateKinLevel)
 {
 #ifdef BIORBD_USE_CASADI_MATH
-    updateKin = 2;
+    updateKinLevel = 2;
 #endif
-    if (updateKin != 0) {
-        m_position->updateKinematics(model,*m_characteristics,*m_pathChanger,&Q,nullptr,updateKin);
+    if (updateKinLevel != 0) {
+        m_position->updateKinematics(model, *m_characteristics, *m_pathChanger, &Q, nullptr, updateKinLevel);
     }
     return position().length();
 }
@@ -192,13 +192,13 @@ const utils::Scalar& internal_forces::muscles::Muscle::length(
 const utils::Scalar& internal_forces::muscles::Muscle::musculoTendonLength(
     rigidbody::Joints &m,
     const rigidbody::GeneralizedCoordinates &Q,
-    int updateKin)
+    int updateKinLevel)
 {
 #ifdef BIORBD_USE_CASADI_MATH
-    updateKin = 2;
+    updateKinLevel = 2;
 #endif
-    if (updateKin != 0) {
-        m_position->updateKinematics(m,*m_characteristics,*m_pathChanger,&Q,nullptr,updateKin);
+    if (updateKinLevel != 0) {
+        m_position->updateKinematics(m, *m_characteristics, *m_pathChanger, &Q, nullptr, updateKinLevel);
     }
     return position().musculoTendonLength();
 }
@@ -213,7 +213,7 @@ const utils::Scalar& internal_forces::muscles::Muscle::velocity(
     updateKin = true;
 #endif
     if (updateKin) {
-        m_position->updateKinematics(model,*m_characteristics,*m_pathChanger,&Q,&Qdot,2);
+        m_position->updateKinematics(model, *m_characteristics, *m_pathChanger, &Q, &Qdot, 2);
     }
 
     return m_position->velocity();

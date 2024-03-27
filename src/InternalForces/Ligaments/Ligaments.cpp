@@ -116,11 +116,11 @@ rigidbody::GeneralizedTorque
 internal_forces::ligaments::Ligaments::ligamentsJointTorque(
     const utils::Vector &F,
     const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& QDot)
+    const rigidbody::GeneralizedVelocity& Qdot)
 {
 
     // Update the ligament position
-    updateLigaments(Q, QDot, true);
+    updateLigaments(Q, Qdot, true);
     return ligamentsJointTorque(F);
 }
 
@@ -128,21 +128,21 @@ internal_forces::ligaments::Ligaments::ligamentsJointTorque(
 rigidbody::GeneralizedTorque
 internal_forces::ligaments::Ligaments::ligamentsJointTorque(
     const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& QDot)
+    const rigidbody::GeneralizedVelocity& Qdot)
 {
-    return ligamentsJointTorque(ligamentForces(Q, QDot));
+    return ligamentsJointTorque(ligamentForces(Q, Qdot));
 }
 
 utils::Vector internal_forces::ligaments::Ligaments::ligamentForces(
     const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& QDot)
+    const rigidbody::GeneralizedVelocity& Qdot)
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
     rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
     // Output variable
     utils::Vector forces(nbLigaments());
     for (size_t j=0; j<nbLigaments(); ++j) {
-        forces(static_cast<unsigned int>(j)) = ((*m_ligaments)[j]->force(model,Q, QDot));
+        forces(static_cast<unsigned int>(j)) = ((*m_ligaments)[j]->force(model,Q, Qdot));
     }
 
 
@@ -216,7 +216,7 @@ int internal_forces::ligaments::Ligaments::ligamentID(const utils::String&
 
 void internal_forces::ligaments::Ligaments::updateLigaments(
     const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedVelocity& Qdot,
     bool updateKin)
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
@@ -235,7 +235,7 @@ void internal_forces::ligaments::Ligaments::updateLigaments(
 #endif
 
     for (size_t j=0; j<nbLigaments(); ++j) {
-        ligament(j).updateOrientations(model, Q, QDot, updateKinTP);
+        ligament(j).updateOrientations(model, Q, Qdot, updateKinTP);
 #ifndef BIORBD_USE_CASADI_MATH
             if (updateKinTP){
                 updateKinTP=1;
@@ -275,10 +275,10 @@ void internal_forces::ligaments::Ligaments::updateLigaments(
 void internal_forces::ligaments::Ligaments::updateLigaments(
     std::vector<std::vector<utils::Vector3d>>& ligamentPointsInGlobal,
     std::vector<utils::Matrix> &jacoPointsInGlobal,
-    const rigidbody::GeneralizedVelocity& QDot)
+    const rigidbody::GeneralizedVelocity& Qdot)
 {
     for (size_t j=0; j<nbLigaments(); ++j) {
-            ligament(j).updateOrientations(ligamentPointsInGlobal[j], jacoPointsInGlobal[j], QDot);
+            ligament(j).updateOrientations(ligamentPointsInGlobal[j], jacoPointsInGlobal[j], Qdot);
     }
 }
 

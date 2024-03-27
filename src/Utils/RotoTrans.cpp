@@ -6,6 +6,7 @@
 #include "Utils/String.h"
 #include "Utils/Vector.h"
 #include "Utils/Rotation.h"
+#include "Utils/SpatialTransform.h"
 
 #include "RigidBody/NodeSegment.h"
 
@@ -41,8 +42,7 @@ utils::RotoTrans::RotoTrans(
 
 utils::RotoTrans::RotoTrans(
     const utils::Rotation& rot) :
-    RigidBodyDynamics::Math::Matrix4d(combineRotAndTrans(rot,
-                                      utils::Vector3d::Zero()))
+    RigidBodyDynamics::Math::Matrix4d(combineRotAndTrans(rot, utils::Vector3d::Zero()))
 {
 
 }
@@ -59,14 +59,14 @@ utils::RotoTrans::RotoTrans(
     const utils::Vector& rotation,
     const utils::Vector3d& translation,
     const utils::String& rotationSequence) :
-    RigidBodyDynamics::Math::Matrix4d(fromEulerAngles(rotation, translation,
-                                      rotationSequence))
+    RigidBodyDynamics::Math::Matrix4d(
+        fromEulerAngles(rotation, translation, rotationSequence))
 {
 
 }
 
 utils::RotoTrans::RotoTrans(
-    const RigidBodyDynamics::Math::SpatialTransform& st) :
+    const utils::SpatialTransform& st) :
     RigidBodyDynamics::Math::Matrix4d(fromSpatialTransform(st))
 {
 
@@ -80,8 +80,8 @@ utils::RotoTrans utils::RotoTrans::fromMarkers(
     const utils::String &axisToRecalculate)
 {
     RotoTrans rt_out;
-    rt_out.block(0, 0, 3, 3) = Rotation::fromMarkers(axis1markers, axis2markers,
-                               axesNames, axisToRecalculate);
+    rt_out.block(0, 0, 3, 3) = 
+        Rotation::fromMarkers(axis1markers, axis2markers, axesNames, axisToRecalculate);
     rt_out.block(0, 3, 3, 1) = origin;
     return rt_out;
 }
@@ -97,9 +97,9 @@ utils::RotoTrans utils::RotoTrans::transpose() const
 {
     utils::RotoTrans tp;
     tp.block(0, 0, 3, 3) = block(0, 0, 3, 3).transpose();
-    tp.block(0, 3, 3, 1) = -tp.block(0, 0, 3, 3) * block(0, 3, 3, 1);
-    tp.block(3, 0, 1, 4) = RigidBodyDynamics::Math::Vector4d(0, 0, 0,
-                           1).transpose();
+    tp.block(0, 3, 3, 1) = 
+        -tp.block(0, 0, 3, 3) * block(0, 3, 3, 1);
+    tp.block(3, 0, 1, 4) = RigidBodyDynamics::Math::Vector4d(0, 0, 0, 1).transpose();
     return tp;
 }
 
@@ -120,15 +120,14 @@ utils::RotoTrans utils::RotoTrans::combineRotAndTrans(
     utils::RotoTrans out;
     out.block(0,0,3,3) = rot;
     out.block(0,3,3,1) = trans;
-    out.block(3, 0, 1, 4) = RigidBodyDynamics::Math::Vector4d(0, 0, 0,
-                            1).transpose();
+    out.block(3, 0, 1, 4) = RigidBodyDynamics::Math::Vector4d(0, 0, 0, 1).transpose();
     return out;
 }
 
 utils::RotoTrans utils::RotoTrans::fromSpatialTransform(
-    const RigidBodyDynamics::Math::SpatialTransform& st)
+    const utils::SpatialTransform& st)
 {
-    return combineRotAndTrans(st.E,st.r);
+    return combineRotAndTrans(st.rotation(), st.translation());
 }
 
 utils::RotoTrans utils::RotoTrans::fromEulerAngles(
@@ -137,8 +136,7 @@ utils::RotoTrans utils::RotoTrans::fromEulerAngles(
     const utils::String& seq)
 {
 
-    utils::Rotation rot_mat(utils::Rotation::fromEulerAngles(rot,
-                                    seq));
+    utils::Rotation rot_mat(utils::Rotation::fromEulerAngles(rot, seq));
 
     utils::RotoTrans out;
     out.block(0, 0, 3, 3) = rot_mat;
@@ -190,10 +188,8 @@ void utils::RotoTrans::checkUnitary()
 #ifndef BIORBD_USE_CASADI_MATH
 #ifndef SKIP_ASSERT
     this->rot(); // Automatically cast the test for the rotation part
-    utils::Error::check(this->block(3, 0, 1, 4).sum() == 1.,
-                                "Last row of the RotoTrans should be (0,0,0,1");
-    utils::Error::check((*this)(3, 3) == 1.,
-                                "Last row of the RotoTrans should be (0,0,0,1");
+    utils::Error::check(this->block(3, 0, 1, 4).sum() == 1., "Last row of the RotoTrans should be (0,0,0,1");
+    utils::Error::check((*this)(3, 3) == 1., "Last row of the RotoTrans should be (0,0,0,1");
 #endif
 #endif
 }

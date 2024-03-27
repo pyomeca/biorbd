@@ -18,8 +18,9 @@
 using namespace BIORBD_NAMESPACE;
 
 #ifndef BIORBD_USE_CASADI_MATH
-void Writer::writeModel(Model & model,
-                                const utils::Path& pathToWrite)
+void Writer::writeModel(
+    Model & model,
+    const utils::Path& pathToWrite)
 {
     utils::String sep("\t"); // separator in the file
     utils::String com("//"); // commentaire
@@ -96,8 +97,7 @@ void Writer::writeModel(Model & model,
         biorbdModelFile << std::endl;
 
         // Write the prospective markers
-        std::vector<rigidbody::NodeSegment> markers (model.marker(model.segment(
-                    i).name()));
+        std::vector<rigidbody::NodeSegment> markers (model.markers(model.segment(i).name()));
         if (markers.size() > 0) {
             biorbdModelFile << sep << com << " Markers" << std::endl;
             for (size_t j = 0; j< markers.size(); ++j) {

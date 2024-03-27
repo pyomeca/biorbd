@@ -152,13 +152,13 @@ void rigidbody::KalmanReconsMarkers::reconstructFrame(
     // Projected state
     const utils::Vector& xkm(*m_A * *m_xp);
     const rigidbody::GeneralizedCoordinates& Q_tp(xkm.topRows(*m_nbDof));
-    model.UpdateKinematicsCustom (&Q_tp, nullptr, nullptr);
+    Model& updatedModel = static_cast<Model&>(model.UpdateKinematicsCustom (&Q_tp));
 
     // Projected markers
     const std::vector<rigidbody::NodeSegment>& zest_tp(
-        model.technicalMarkers(Q_tp, removeAxes, false));
+        updatedModel.technicalMarkers(Q_tp, removeAxes, false));
     // Jacobian
-    const  std::vector<utils::Matrix>& J_tp(model.technicalMarkersJacobian(
+    const  std::vector<utils::Matrix>& J_tp(updatedModel.technicalMarkersJacobian(
                 Q_tp, removeAxes, false));
     // Create only one matrix for zest and Jacobian
     utils::Matrix H(utils::Matrix::Zero(*m_nMeasure,
@@ -167,15 +167,16 @@ void rigidbody::KalmanReconsMarkers::reconstructFrame(
     std::vector<size_t> occlusionIdx;
     for (size_t i=0; i<*m_nMeasure/3;
             ++i) // Divided by 3 because we are integrate once xyz
-#ifdef BIORBD_USE_CASADI_MATH
+    
+    if (
         // If there is a marker
-        if (!Tobs(i*3).is_zero() && !Tobs(i*3+1).is_zero() && !Tobs(i*3+2).is_zero()) {
+#ifdef BIORBD_USE_CASADI_MATH
+        !Tobs(i*3).is_zero() && !Tobs(i*3+1).is_zero() && !Tobs(i*3+2).is_zero()
 #else
-        if (Tobs(i*3)*Tobs(i*3) + Tobs(i*3+1)*Tobs(i*3+1) + Tobs(i*3+2)*Tobs(
-                    i*3+2) != 0.0 &&
-                !isnan(Tobs(i*3)*Tobs(i*3) + Tobs(i*3+1)*Tobs(i*3+1) + Tobs(i*3+2)*Tobs(
-                           i*3+2))) {
+            Tobs(i*3)*Tobs(i*3) + Tobs(i*3+1)*Tobs(i*3+1) + Tobs(i*3+2)*Tobs(i*3+2) != 0.0 &&
+                !isnan(Tobs(i*3)*Tobs(i*3) + Tobs(i*3+1)*Tobs(i*3+1) + Tobs(i*3+2)*Tobs(i*3+2))
 #endif
+        ) {
             H.block(i*3,0,3,*m_nbDof) = J_tp[i];
             zest.block(i*3, 0, 3, 1) = zest_tp[i];
         } else {

@@ -26,6 +26,12 @@ public:
     ///
     Matrix3d();
 
+    /// 
+    /// \brief Construct a new Matrix3d from other
+    /// \param other The other matrix
+    /// 
+    Matrix3d(const Matrix3d& other);
+
     ///
     /// \brief Rotation Construct a generic 3d matrix by elements
     /// \param v00 Row 0, Col 0

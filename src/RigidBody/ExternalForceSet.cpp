@@ -96,7 +96,7 @@ void rigidbody::ExternalForceSet::addTranslationalForce(
 std::vector<RigidBodyDynamics::Math::SpatialVector> rigidbody::ExternalForceSet::computeRbdlSpatialVectors() {
     if (hasExternalForceInLocalReferenceFrame()) throw std::runtime_error("local reference frame requires Q when computing the Spatial Vectors");
     if (m_useTranslationalForces) throw std::runtime_error("useTranslationalForce requires Q when computing the Spatial Vectors");
-    if (m_useSoftContacts) throw std::runtime_error("useSoftContacts requires Q and QDot when computing the Spatial Vectors");
+    if (m_useSoftContacts) throw std::runtime_error("useSoftContacts requires Q and Qdot when computing the Spatial Vectors");
     return computeRbdlSpatialVectors(rigidbody::GeneralizedCoordinates(m_model), rigidbody::GeneralizedVelocity(m_model), false);
 }
 
@@ -104,16 +104,16 @@ std::vector<RigidBodyDynamics::Math::SpatialVector> rigidbody::ExternalForceSet:
     const rigidbody::GeneralizedCoordinates& Q,
     bool updateKin
 ) {
-    if (m_useSoftContacts) throw std::runtime_error("useSoftContacts requires QDot when computing the Spatial Vectors");
+    if (m_useSoftContacts) throw std::runtime_error("useSoftContacts requires Qdot when computing the Spatial Vectors");
     return computeRbdlSpatialVectors(Q, rigidbody::GeneralizedVelocity(m_model), updateKin);
 }
 
 std::vector<RigidBodyDynamics::Math::SpatialVector> rigidbody::ExternalForceSet::computeRbdlSpatialVectors(
     const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedVelocity& Qdot,
     bool updateKin
 ) {
-    std::vector<utils::SpatialVector> tp(computeSpatialVectors(Q, QDot, updateKin));
+    std::vector<utils::SpatialVector> tp(computeSpatialVectors(Q, Qdot, updateKin));
     std::vector<RigidBodyDynamics::Math::SpatialVector> out;
     for (const auto& value : tp) {
         out.push_back(value);
@@ -124,7 +124,7 @@ std::vector<RigidBodyDynamics::Math::SpatialVector> rigidbody::ExternalForceSet:
 std::vector<utils::SpatialVector> rigidbody::ExternalForceSet::computeSpatialVectors() {
     if (hasExternalForceInLocalReferenceFrame()) throw std::runtime_error("local reference frame requires Q when computing the Spatial Vectors");
     if (m_useTranslationalForces) throw std::runtime_error("useTranslationalForce requires Q when computing the Spatial Vectors");
-    if (m_useSoftContacts) throw std::runtime_error("useSoftContacts requires Q and QDot when computing the Spatial Vectors");
+    if (m_useSoftContacts) throw std::runtime_error("useSoftContacts requires Q and Qdot when computing the Spatial Vectors");
     return computeSpatialVectors(rigidbody::GeneralizedCoordinates(m_model), rigidbody::GeneralizedVelocity(m_model), false);
 }
 
@@ -132,30 +132,35 @@ std::vector<utils::SpatialVector> rigidbody::ExternalForceSet::computeSpatialVec
     const rigidbody::GeneralizedCoordinates& Q,
     bool updateKin
 ) {
-    if (m_useSoftContacts) throw std::runtime_error("useSoftContacts requires QDot when computing the Spatial Vectors");
+    if (m_useSoftContacts) throw std::runtime_error("useSoftContacts requires Qdot when computing the Spatial Vectors");
     return computeSpatialVectors(Q, rigidbody::GeneralizedVelocity(), updateKin);
 }
 
 std::vector<utils::SpatialVector> rigidbody::ExternalForceSet::computeSpatialVectors(
     const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& QDot,
-    bool updateKin    
-) 
+    const rigidbody::GeneralizedVelocity& Qdot,
+    bool updateKin) 
 {
 #ifdef BIORBD_USE_CASADI_MATH
     updateKin = true;
 #endif
-    if (updateKin) {
-        m_model.UpdateKinematicsCustom(&Q, m_useSoftContacts ? &QDot : nullptr, nullptr);
-    }
+
+
+#ifdef BIORBD_USE_CASADI_MATH
+    rigidbody::Joints
+#else
+    rigidbody::Joints&
+#endif
+     updatedModel = m_model.UpdateKinematicsCustom(
+            updateKin ? &Q : nullptr, updateKin && m_useSoftContacts ? &Qdot : nullptr);
 
     std::vector<utils::SpatialVector> out;
     for (const auto& value : m_externalForces) {
         out.push_back(value);
     }
-    if (hasExternalForceInLocalReferenceFrame()) combineLocalReferenceFrameForces(Q, out);
-    if (m_useTranslationalForces) combineTranslationalForces(Q, out);
-    if (m_useSoftContacts) combineSoftContactForces(Q, QDot, out);
+    if (hasExternalForceInLocalReferenceFrame()) combineLocalReferenceFrameForces(updatedModel, Q, out);
+    if (m_useTranslationalForces) combineTranslationalForces(updatedModel, Q, out);
+    if (m_useSoftContacts) combineSoftContactForces(updatedModel, Q, Qdot, out);
 
     return out;
 }
@@ -187,17 +192,15 @@ void rigidbody::ExternalForceSet::setZero()
 }
 
 void rigidbody::ExternalForceSet::combineLocalReferenceFrameForces(
+    rigidbody::Joints& updatedModel,
     const rigidbody::GeneralizedCoordinates& Q,
     std::vector<utils::SpatialVector>& out
 )
 {
     // NOTE: since combineExternalPushes is necessarily called from internal as protected method
     // we assume updateKinematics was already done
-    bool updateKin(false);
-    #ifdef BIORBD_USE_CASADI_MATH
-updateKin = true;
-    #endif
-    const auto& allGlobalJcs = m_model.allGlobalJCS(Q, updateKin);
+    bool updateKin = false;
+    const auto& allGlobalJcs = updatedModel.allGlobalJCS(Q, updateKin);
 
     for (size_t i = 0; i < m_externalForcesInLocal.size(); i++) {
         const auto& pair(m_externalForcesInLocal.get(static_cast<int>(i)));
@@ -208,14 +211,14 @@ updateKin = true;
 
         // Traverse the segment hierarchy from root to child to root until we get to a segment with at least one dof
         // as it is not possible to add forces on segment without degree of freedom
-        const rigidbody::Segment* segment = &m_model.segment(node.parent());
+        const rigidbody::Segment* segment = &updatedModel.segment(node.parent());
         utils::RotoTrans segmentRotoTrans = utils::RotoTrans::Identity();
         do {
-            segmentRotoTrans *= allGlobalJcs[m_model.getBodyBiorbdId(segment->name())];
+            segmentRotoTrans *= allGlobalJcs[updatedModel.getBodyBiorbdId(segment->name())];
             
             if (segment->nbDof() > 0) break;
             utils::Error::check(segment->parent().compare("root"), node.parent() + " should be attached to at least one segment with a degree of freedom.");
-            segment = &m_model.segment(segment->parent());
+            segment = &updatedModel.segment(segment->parent());
         } while(true);
         const utils::RotoTransNode nodeInGrf(segmentRotoTrans * node);
         
@@ -230,43 +233,38 @@ updateKin = true;
         momentInGrf.applyRT(rotationInGrf);
 
         // Transport the force to the global reference frame (Add 1 to account for the undeclared root)
-        size_t dofIndex = m_model.segment(node.parent()).getLastDofIndexInGeneralizedCoordinates(m_model) + 1;
+        size_t dofIndex = updatedModel.segment(node.parent()).getLastDofIndexInGeneralizedCoordinates(updatedModel) + 1;
         out[dofIndex] += transportAtOrigin(utils::SpatialVector(momentInGrf, forceInGrf), pointOfApplication);
     }
     return;
 }
 
 void rigidbody::ExternalForceSet::combineTranslationalForces(
+    rigidbody::Joints& updatedModel,
     const rigidbody::GeneralizedCoordinates& Q, 
     std::vector<utils::SpatialVector>& out
 ) const
 {
     // NOTE: since combineExternalPushes is necessarily called from internal as protected method
-    // we assume updateKinematics was already done
-#ifdef BIORBD_USE_CASADI_MATH
-    bool updateKin = true;
-#else
+    // we can assume updateKinematics was already done
     bool updateKin = false;
-#endif
 
     // Do not waste time computing forces on empty vector
     if (m_translationalForces.size() == 0) return;
 
     for (auto& e : m_translationalForces) {    
         const rigidbody::NodeSegment& pointOfApplication = e.second;
-        const rigidbody::Segment& segment(m_model.segment(pointOfApplication.parent()));
-        size_t dofIndex = segment.getLastDofIndexInGeneralizedCoordinates(m_model) + 1;
+        const rigidbody::Segment& segment(updatedModel.segment(pointOfApplication.parent()));
+        size_t dofIndex = segment.getLastDofIndexInGeneralizedCoordinates(updatedModel) + 1;
 
         const utils::Vector3d& force = e.first;
         rigidbody::NodeSegment pointOfApplicationInGlobal(
-            RigidBodyDynamics::CalcBodyToBaseCoordinates(
-                m_model, Q, static_cast<unsigned int>(segment.id()), pointOfApplication, updateKin
-            ),
+            updatedModel.CalcBodyToBaseCoordinates(Q, static_cast<unsigned int>(segment.id()), pointOfApplication, updateKin),
             pointOfApplication.Node::name(),
             pointOfApplication.parent(),
             pointOfApplication.isTechnical(),
             pointOfApplication.isAnatomical(),
-            pointOfApplication.axesToRemove(),
+            pointOfApplication.axesToRemoveAsString(),
             pointOfApplication.parentId()
         );
             
@@ -276,55 +274,55 @@ void rigidbody::ExternalForceSet::combineTranslationalForces(
 }
 
 void rigidbody::ExternalForceSet::combineSoftContactForces(
+    rigidbody::Joints& updatedModel,
     const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedVelocity& Qdot,
     std::vector<utils::SpatialVector>& out
 ) const
 {
     // NOTE: since combineSoftContactForces is necessarily called from internal as protected method
     // we assume updateKinematics was already done
-#ifdef BIORBD_USE_CASADI_MATH
-    bool updateKin = true;
-#else
     bool updateKin = false;
-#endif
 
     // Do not waste time computing forces on empty vector
     if (m_model.nbSoftContacts() == 0) return;
     
     for (size_t j = 0; j < m_model.nbSoftContacts(); j++) {
         rigidbody::SoftContactNode& contact(m_model.softContact(j));
-        const rigidbody::Segment& segment(m_model.segment(contact.parent()));
-        size_t dofIndex = segment.getLastDofIndexInGeneralizedCoordinates(m_model) + 1;
+        const rigidbody::Segment& segment(updatedModel.segment(contact.parent()));
+        size_t dofIndex = segment.getLastDofIndexInGeneralizedCoordinates(updatedModel) + 1;
 
         // Add the force to the force vector (do not subtract 1 because 0 is the base)
-        out[dofIndex] += contact.computeForceAtOrigin(m_model, Q, QDot, updateKin);
+        out[dofIndex] += contact.computeForceAtOrigin(updatedModel, Q, Qdot, updateKin);
     }
 }
 
 utils::SpatialVector rigidbody::ExternalForceSet::transportForceAtOrigin(
     const utils::Vector3d& force,
-    const rigidbody::NodeSegment& pointOfApplication
-) const
+    const rigidbody::NodeSegment& pointOfApplication) const
 {
-    // Fill only if direction is enabled
-    utils::Vector3d newForce(0., 0., 0.);
-    for (auto axis : pointOfApplication.availableAxesIndices()){
-        newForce.block(axis, 0, 1, 1) = force.block(axis, 0, 1, 1);
+    utils::Vector3d forceTp;
+    if (pointOfApplication.nbAxesToRemove() > 0){
+        // Fill only if direction is enabled
+        forceTp = utils::Vector3d(0., 0., 0.);
+        for (auto axis : pointOfApplication.availableAxesIndices()){
+            forceTp.block(axis, 0, 1, 1) = force.block(axis, 0, 1, 1);
+        }
+    } else {
+        forceTp = force;
     }
-
+    
     // Transport to Origin (Bour's formula)
     utils::SpatialVector out(0., 0., 0., 0., 0., 0.);
-    out.block(0, 0, 3, 1) = newForce.cross(-pointOfApplication);
-    out.block(3, 0, 3, 1) = newForce;
+    out.block(0, 0, 3, 1) = forceTp.cross(-pointOfApplication);
+    out.block(3, 0, 3, 1) = forceTp;
 
     return out;
 }
 
 utils::SpatialVector rigidbody::ExternalForceSet::transportAtOrigin(
     const utils::SpatialVector& v,
-    const rigidbody::NodeSegment& pointOfApplication
-) const
+    const rigidbody::NodeSegment& pointOfApplication) const
 {
     // Transport to Origin (Bour's formula)
     utils::SpatialVector out(transportForceAtOrigin(v.force(), pointOfApplication));

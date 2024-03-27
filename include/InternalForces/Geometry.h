@@ -305,7 +305,6 @@ protected:
     std::shared_ptr<std::vector<utils::Vector3d>> m_pointsInGlobal; ///< Position of all the points in the global reference
     std::shared_ptr<std::vector<utils::Vector3d>> m_pointsInLocal; ///< Position of all the points in local
     std::shared_ptr<utils::Matrix> m_jacobian; ///<The jacobian matrix
-    std::shared_ptr<utils::Matrix> m_G; ///< Internal matrix of the jacobian dimension to speed up calculation
     std::shared_ptr<utils::Matrix> m_jacobianLength; ///< The muscle length jacobian
 
     std::shared_ptr<utils::Scalar> m_length; ///< length

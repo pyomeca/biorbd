@@ -45,6 +45,7 @@ public:
     /// \param torqueDeact Time deactivation constant (default: 0.04)
     /// \param minAct Minimal activation (default: 0.01)
     /// \param useDamping Use damping (default: false)
+    /// \param maxShorteningSpeed Maximal velocity of shortening (default: 10.0)
     ///
     Characteristics(
         const utils::Scalar& optLength,
@@ -55,9 +56,11 @@ public:
         const State& emgMax,
         const FatigueParameters& fatigueParameters,
         bool useDamping=false,
+        const utils::Scalar& maxShorteningSpeed = 10.0,
         const utils::Scalar& torqueAct = 0.01,
         const utils::Scalar& torqueDeact = 0.04,
-        const utils::Scalar& minAct = 0.01);
+        const utils::Scalar& minAct = 0.01
+    );
 
     ///
     /// \brief Destroy the class properly
@@ -155,6 +158,19 @@ public:
     const utils::Scalar& minActivation() const;
 
     ///
+    /// \brief Set the maximal velocity of shortening
+    /// \param val The value of the maximal velocity of shortening
+    ///
+    void setMaxShorteningSpeed(
+        const utils::Scalar& val);
+
+    ///
+    /// \brief Return the maximal velocity of shortening
+    /// \return The maximal velocity of shortening
+    ///
+    const utils::Scalar& maxShorteningSpeed() const;
+
+    ///
     /// \brief Set the time activation constant
     /// \param val The value of the time activation constant
     ///
@@ -220,29 +236,23 @@ public:
 
 
 protected:
-    std::shared_ptr<utils::Scalar>
-    m_optimalLength; ///< Length without tension
-    std::shared_ptr<utils::Scalar>
-    m_fIsoMax;       ///< Maximal isometric force
-    std::shared_ptr<utils::Scalar>
-    m_PCSA;          ///< Physiological cross-sectional area of the muscle
-    std::shared_ptr<utils::Scalar>
-    m_tendonSlackLength; ///< Tendon slack length
+    std::shared_ptr<utils::Scalar> m_optimalLength; ///< Length without tension
+    std::shared_ptr<utils::Scalar> m_fIsoMax;       ///< Maximal isometric force
+    std::shared_ptr<utils::Scalar> m_PCSA;          ///< Physiological cross-sectional area of the muscle
+    std::shared_ptr<utils::Scalar> m_tendonSlackLength; ///< Tendon slack length
     std::shared_ptr<utils::Scalar> m_pennationAngle; ///< Angle of pennation
-    std::shared_ptr<bool> m_useDamping; ///< Use damping for muscle force from activation
-    std::shared_ptr<State>
-    m_stateMax; ///< Maximal excitation et activation of the muscle
+    std::shared_ptr<bool> m_useDamping;             ///< Use damping for muscle force from activation
+    std::shared_ptr<State> m_stateMax;              ///< Maximal excitation et activation of the muscle
 
-    // Parametre d'activation
+    std::shared_ptr<utils::Scalar> m_maxShorteningSpeed; ///< Maximal velocity of shortening
+
+    // Activation parameters
     std::shared_ptr<utils::Scalar> m_minActivation; ///< Minimal activation
-    std::shared_ptr<utils::Scalar>
-    m_torqueActivation; ///<  Time activation constant
-    std::shared_ptr<utils::Scalar>
-    m_torqueDeactivation; ///< Time deactivation constant
+    std::shared_ptr<utils::Scalar> m_torqueActivation; ///<  Time activation constant
+    std::shared_ptr<utils::Scalar> m_torqueDeactivation; ///< Time deactivation constant
 
     // Fatigue parameters
-    std::shared_ptr<FatigueParameters>
-    m_fatigueParameters; ///< Fatigue parameters
+    std::shared_ptr<FatigueParameters> m_fatigueParameters; ///< Fatigue parameters
 };
 
 }

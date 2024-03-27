@@ -336,8 +336,7 @@ TEST(IdealizedActuator, copy)
             utils::Vector3d newPosition(1, 2, 3);
             utils::String oldName("MyNewName");
             utils::String newName("MyNewNewName");
-            rigidbody::NodeSegment newNode(newPosition, newName, "", true, true, "",
-                                                   0);
+            rigidbody::NodeSegment newNode(newPosition, newName, "", true, true, "", 0);
             {
                 const_cast<internal_forces::muscles::MuscleGeometry&>(idealizedActuator.position()).setOrigin(
                     newPosition);
@@ -351,14 +350,10 @@ TEST(IdealizedActuator, copy)
                 EXPECT_STREQ(insertion.utils::Node::name().c_str(), oldName.c_str());
             }
             {
-                const_cast<internal_forces::muscles::MuscleGeometry&>(idealizedActuator.position()).setOrigin(
-                    newNode);
-                const_cast<internal_forces::muscles::MuscleGeometry&>
-                (idealizedActuator.position()).setInsertionInLocal(newNode);
-                const utils::Vector3d& origin =
-                    idealizedActuator.position().originInLocal();
-                const utils::Vector3d& insertion =
-                    idealizedActuator.position().insertionInLocal();
+                const_cast<internal_forces::muscles::MuscleGeometry&>(idealizedActuator.position()).setOrigin(newNode);
+                const_cast<internal_forces::muscles::MuscleGeometry&>(idealizedActuator.position()).setInsertionInLocal(newNode);
+                const utils::Vector3d& origin = idealizedActuator.position().originInLocal();
+                const utils::Vector3d& insertion = idealizedActuator.position().insertionInLocal();
                 EXPECT_STREQ(origin.utils::Node::name().c_str(), newName.c_str());
                 EXPECT_STREQ(insertion.utils::Node::name().c_str(), newName.c_str());
             }
@@ -2196,10 +2191,10 @@ TEST(FatigueDynamiqueState, DeepCopy)
     // Prepare the model
     Model model(modelPathForXiaDerivativeTest);
     rigidbody::GeneralizedCoordinates Q(model);
-    rigidbody::GeneralizedVelocity QDot(model);
+    rigidbody::GeneralizedVelocity Qdot(model);
     Q.setZero();
-    QDot.setZero();
-    model.updateMuscles(Q, QDot, true);
+    Qdot.setZero();
+    model.updateMuscles(Q, Qdot, true);
 
     {
         internal_forces::muscles::HillThelenTypeFatigable muscle(model.muscleGroup(
@@ -2747,14 +2742,14 @@ TEST(MuscleForce, force)
 {
     Model model(modelPathForMuscleForce);
     rigidbody::GeneralizedCoordinates Q(model);
-    rigidbody::GeneralizedVelocity QDot(model);
+    rigidbody::GeneralizedVelocity Qdot(model);
     Q = Q.setOnes()/10;
-    QDot = QDot.setOnes()/10;
+    Qdot = Qdot.setOnes()/10;
     std::vector<std::shared_ptr<internal_forces::muscles::State>> states;
     for (size_t i=0; i<model.nbMuscleTotal(); ++i) {
         states.push_back(std::make_shared<internal_forces::muscles::StateDynamics>(0, 0.2));
     }
-    model.updateMuscles(Q, QDot, true);
+    model.updateMuscles(Q, Qdot, true);
 
     const utils::Vector& F = model.muscleForces(states);
 
@@ -2772,10 +2767,9 @@ TEST(MuscleForce, torqueFromMuscles)
 {
     Model model(modelPathForMuscleForce);
     rigidbody::GeneralizedCoordinates Q(model);
-    rigidbody::GeneralizedVelocity QDot(model);
-    rigidbody::GeneralizedAcceleration QDDot(model);
-    Q.setOnes()/10;
-    QDot.setOnes()/10;
+    rigidbody::GeneralizedVelocity Qdot(model);
+    Q.setOnes();
+    Qdot.setOnes();
     std::vector<std::shared_ptr<internal_forces::muscles::State>> states;
     for (size_t i=0; i<model.nbMuscleTotal(); ++i) {
         states.push_back(std::make_shared<internal_forces::muscles::StateDynamics>(0, 0.2));
@@ -2783,18 +2777,18 @@ TEST(MuscleForce, torqueFromMuscles)
 
 
     rigidbody::GeneralizedTorque Tau(model);
-    std::vector<double> TauExpected({-11.018675667414932, -4.6208345704133764});
-    Tau = model.muscularJointTorque(states, Q, QDot);
-    for (unsigned int i=0; i<QDDot.size(); ++i) {
+    std::vector<double> TauExpected({-11.018675667414932, -1.7483464272594329 });
+    Tau = model.muscularJointTorque(states, Q, Qdot);
+    for (unsigned int i=0; i<Tau.size(); ++i) {
         SCALAR_TO_DOUBLE(val, Tau(i));
         EXPECT_NEAR(val, TauExpected[i], requiredPrecision);
     }
 
-    RigidBodyDynamics::ForwardDynamics(model, Q, QDot, Tau, QDDot);
-    std::vector<double> QDDotExpected({-21.778696890631039, -26.807322754152935});
-    for (unsigned int i=0; i<QDDot.size(); ++i) {
-        SCALAR_TO_DOUBLE(val, QDDot(i));
-        EXPECT_NEAR(val, QDDotExpected[i], requiredPrecision);
+    rigidbody::GeneralizedAcceleration Qddot = model.ForwardDynamics(Q, Qdot, Tau);
+    std::vector<double> QddotExpected({ -47.946292142243109, 56.344108470462629 });
+    for (unsigned int i=0; i<Qddot.size(); ++i) {
+        SCALAR_TO_DOUBLE(val, Qddot(i));
+        EXPECT_NEAR(val, QddotExpected[i], requiredPrecision);
     }
 }
 
@@ -3041,10 +3035,10 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaPointers)
     // Prepare the model
     Model model(modelPathForXiaDerivativeTest);
     rigidbody::GeneralizedCoordinates Q(model);
-    rigidbody::GeneralizedVelocity QDot(model);
+    rigidbody::GeneralizedVelocity Qdot(model);
     Q.setZero();
-    QDot.setZero();
-    model.updateMuscles(Q, QDot, true);
+    Qdot.setZero();
+    model.updateMuscles(Q, Qdot, true);
 
     {
         internal_forces::muscles::HillDeGrooteTypeFatigable muscle(model.muscleGroup(
@@ -3112,10 +3106,10 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaInterface)
     // Prepare the model
     Model model(modelPathForXiaDerivativeTest);
     rigidbody::GeneralizedCoordinates Q(model);
-    rigidbody::GeneralizedVelocity QDot(model);
+    rigidbody::GeneralizedVelocity Qdot(model);
     Q.setZero();
-    QDot.setZero();
-    model.updateMuscles(Q, QDot, true);
+    Qdot.setZero();
+    model.updateMuscles(Q, Qdot, true);
 
     {
         internal_forces::muscles::HillDeGrooteTypeFatigable muscle(model.muscleGroup(
@@ -3156,10 +3150,10 @@ TEST(MuscleFatigue, FatigueXiaDerivativeShallowViaCopy)
     // Prepare the model
     Model model(modelPathForXiaDerivativeTest);
     rigidbody::GeneralizedCoordinates Q(model);
-    rigidbody::GeneralizedVelocity QDot(model);
+    rigidbody::GeneralizedVelocity Qdot(model);
     Q.setZero();
-    QDot.setZero();
-    model.updateMuscles(Q, QDot, true);
+    Qdot.setZero();
+    model.updateMuscles(Q, Qdot, true);
 
     {
         internal_forces::muscles::HillDeGrooteTypeFatigable muscle(
@@ -3333,7 +3327,7 @@ TEST(StaticOptim, OneFrameNoActivations)
 
     std::vector<double> expectedActivations = {
         0.00010047848168370485, 0.00026033154088793019, 0.00010447521345058055,
-        0.00028606920658459623,  0.00024239415731516569, 0.0001088407448652662
+        0.00035110380208766648,  0.00029794677572706776, 0.0001088407448652662
     };
     for (size_t i=0; i<expectedActivations.size(); ++i) {
         EXPECT_NEAR(muscleActivations(i), expectedActivations[i], 1e-5);
@@ -3368,7 +3362,7 @@ TEST(StaticOptim, OneFrameOneActivationDouble)
 
     std::vector<double> expectedActivations = {
         0.00010053617554538839, 0.00026033154088793019, 0.00010449199826840102,
-        0.00028606920658459623,  0.00024239415731516569, 0.00010877907171798182
+        0.00035110380208766648,  0.00029794677572706776, 0.00010877907171798182
     };
     for (size_t i=0; i<expectedActivations.size(); ++i) {
         EXPECT_NEAR(muscleActivations(i), expectedActivations[i], 1e-5);
@@ -3406,7 +3400,7 @@ TEST(StaticOptim, OneFrameOneActivationVector)
 
     std::vector<double> expectedActivations = {
         0.00010053617554538839, 0.00026033154088793019, 0.00010449199826840102,
-        0.00028606920658459623,  0.00024239415731516569, 0.00010877907171798182
+        0.00035110380208766648,  0.00029794677572706776, 0.00010877907171798182
     };
     for (size_t i=0; i<expectedActivations.size(); ++i) {
         EXPECT_NEAR(muscleActivations(i), expectedActivations[i], 1e-5);
@@ -3451,7 +3445,7 @@ TEST(StaticOptim, MultiFrameNoActivation)
 
     std::vector<double> expectedActivations = {
         0.00010053617554538839, 0.00026033154088793019, 0.00010449199826840102,
-        0.00028606920658459623,  0.00024239415731516569, 0.00010877907171798182
+        0.00035110380208766648,  0.00029794677572706776, 0.00010877907171798182
     };
     for (auto muscleActivations : allMuscleActivations) {
         for (size_t i=0; i<expectedActivations.size(); ++i) {
@@ -3500,7 +3494,7 @@ TEST(StaticOptim, MultiFrameActivationDouble)
 
     std::vector<double> expectedActivations = {
         0.00010053617554538839, 0.00026033154088793019, 0.00010449199826840102,
-        0.00028606920658459623,  0.00024239415731516569, 0.00010877907171798182
+        0.00035110380208766648,  0.00029794677572706776, 0.00010877907171798182
     };
     for (auto muscleActivations : allMuscleActivations) {
         for (size_t i=0; i<expectedActivations.size(); ++i) {
@@ -3552,7 +3546,7 @@ TEST(StaticOptim, MultiFrameNoActivationVector)
 
     std::vector<double> expectedActivations = {
         0.00010053617554538839, 0.00026033154088793019, 0.00010449199826840102,
-        0.00028606920658459623,  0.00024239415731516569, 0.00010877907171798182
+        0.00035110380208766648,  0.00029794677572706776, 0.00010877907171798182
     };
     for (auto muscleActivations : allMuscleActivations) {
         for (size_t i=0; i<expectedActivations.size(); ++i) {
