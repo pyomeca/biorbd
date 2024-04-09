@@ -57,8 +57,7 @@ TEST(ActuatorGauss3p, torqueMax)
         FILL_VECTOR(Qdot, Qdot_val);
         CALL_BIORBD_FUNCTION_2ARGS(torqueMaxVal, gauss3p_torque_act, torqueMax, Q, Qdot);
 #ifdef BIORBD_USE_CASADI_MATH
-        EXPECT_NEAR(static_cast<double>(torqueMaxVal(0, 0)), torqueMaxExpected,
-                    requiredPrecision);
+        EXPECT_NEAR(static_cast<double>(torqueMaxVal(0, 0)), torqueMaxExpected, requiredPrecision);
 #else
         EXPECT_NEAR(torqueMaxVal, torqueMaxExpected, requiredPrecision);
 #endif
@@ -70,8 +69,7 @@ TEST(ActuatorGauss3p, torqueMax)
         CALL_BIORBD_FUNCTION_2ARGS(torqueMaxVal, gauss3p_torque_act, torqueMax, Q,
                                    Qdot);
 #ifdef BIORBD_USE_CASADI_MATH
-        EXPECT_NEAR(static_cast<double>(torqueMaxVal(0, 0)), torqueMaxExpected,
-                    requiredPrecision);
+        EXPECT_NEAR(static_cast<double>(torqueMaxVal(0, 0)), torqueMaxExpected, requiredPrecision);
 #else
         EXPECT_NEAR(torqueMaxVal, torqueMaxExpected, requiredPrecision);
 #endif
@@ -95,8 +93,7 @@ TEST(ActuatorGauss6p, torqueMax)
         CALL_BIORBD_FUNCTION_2ARGS(torqueMaxVal, gauss6p_torque_act, torqueMax, Q,
                                    Qdot);
 #ifdef BIORBD_USE_CASADI_MATH
-        EXPECT_NEAR(static_cast<double>(torqueMaxVal(0, 0)), torqueMaxExpected,
-                    requiredPrecision);
+        EXPECT_NEAR(static_cast<double>(torqueMaxVal(0, 0)), torqueMaxExpected, requiredPrecision);
 #else
         EXPECT_NEAR(torqueMaxVal, torqueMaxExpected, requiredPrecision);
 #endif
@@ -108,8 +105,7 @@ TEST(ActuatorGauss6p, torqueMax)
         CALL_BIORBD_FUNCTION_2ARGS(torqueMaxVal, gauss6p_torque_act, torqueMax, Q,
                                    Qdot);
 #ifdef BIORBD_USE_CASADI_MATH
-        EXPECT_NEAR(static_cast<double>(torqueMaxVal(0, 0)), torqueMaxExpected,
-                    requiredPrecision);
+        EXPECT_NEAR(static_cast<double>(torqueMaxVal(0, 0)), torqueMaxExpected, requiredPrecision);
 #else
         EXPECT_NEAR(torqueMaxVal, torqueMaxExpected, requiredPrecision);
 #endif
@@ -128,8 +124,7 @@ TEST(ActuatorLinear, torqueMax)
     internal_forces::actuator::ActuatorLinear linear_torque_act(1, 25, 1, 0);
     CALL_BIORBD_FUNCTION_1ARG(torqueMaxVal, linear_torque_act, torqueMax, Q);
 #ifdef BIORBD_USE_CASADI_MATH
-    EXPECT_NEAR(static_cast<double>(torqueMaxVal(0, 0)), torqueMaxExpected,
-                requiredPrecision);
+    EXPECT_NEAR(static_cast<double>(torqueMaxVal(0, 0)), torqueMaxExpected, requiredPrecision);
 #else
     EXPECT_NEAR(torqueMaxVal, torqueMaxExpected, requiredPrecision);
 #endif
@@ -327,8 +322,7 @@ TEST(ActuatorSigmoidGauss3p, torqueMax)
         CALL_BIORBD_FUNCTION_2ARGS(torqueMaxVal, sigmoid_gauss3p_torque_act, torqueMax,
                                    Q, Qdot);
 #ifdef BIORBD_USE_CASADI_MATH
-        EXPECT_NEAR(static_cast<double>(torqueMaxVal(0, 0)), torqueMaxExpected,
-                    requiredPrecision);
+        EXPECT_NEAR(static_cast<double>(torqueMaxVal(0, 0)), torqueMaxExpected, requiredPrecision);
 #else
         EXPECT_NEAR(torqueMaxVal, torqueMaxExpected, requiredPrecision);
 #endif
@@ -344,8 +338,7 @@ TEST(ActuatorSigmoidGauss3p, torqueMax)
         CALL_BIORBD_FUNCTION_2ARGS(torqueMaxVal, sigmoid_gauss3p_torque_act, torqueMax,
                                    Q, Qdot);
 #ifdef BIORBD_USE_CASADI_MATH
-        EXPECT_NEAR(static_cast<double>(torqueMaxVal(0, 0)), torqueMaxExpected,
-                    requiredPrecision);
+        EXPECT_NEAR(static_cast<double>(torqueMaxVal(0, 0)), torqueMaxExpected, requiredPrecision);
 #else
         EXPECT_NEAR(torqueMaxVal, torqueMaxExpected, requiredPrecision);
 #endif

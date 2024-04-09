@@ -1145,12 +1145,14 @@ UpdateKinematicsCustom(
     /// \param Q The Generalized Coordinates
     /// \param Qdot The Generalized Velocities
     /// \param Tau The Generalized Torques
+    /// \param updateKin If the kinematics of the model should be computed
     /// \return The Generalized Accelerations
     ///
     rigidbody::GeneralizedAcceleration ForwardDynamicsConstraintsDirect(
         const GeneralizedCoordinates& Q,
         const GeneralizedVelocity& Qdot,
-        const GeneralizedTorque& Tau
+        const GeneralizedTorque& Tau,
+        bool updateKin = true
     );
     ///
     /// \brief Interface for the forward dynamics with contact of RBDL
@@ -1158,13 +1160,15 @@ UpdateKinematicsCustom(
     /// \param Qdot The Generalized Velocities
     /// \param Tau The Generalized Torques
     /// \param externalForces External force acting on the system if there are any
+    /// \param updateKin If the kinematics of the model should be computed
     /// \return The Generalized Accelerations
     ///
     rigidbody::GeneralizedAcceleration ForwardDynamicsConstraintsDirect(
         const GeneralizedCoordinates& Q,
         const GeneralizedVelocity& Qdot,
         const GeneralizedTorque& Tau,
-        rigidbody::ExternalForceSet& externalForces
+        rigidbody::ExternalForceSet& externalForces,
+        bool updateKin = true
     );
     ///
     /// \brief Interface for the forward dynamics with contact of RBDL
@@ -1172,21 +1176,7 @@ UpdateKinematicsCustom(
     /// \param Qdot The Generalized Velocities
     /// \param Tau The Generalized Torques
     /// \param CS The Constraint set that will be filled
-    /// \return The Generalized Accelerations
-    ///
-    rigidbody::GeneralizedAcceleration ForwardDynamicsConstraintsDirect(
-        const GeneralizedCoordinates& Q,
-        const GeneralizedVelocity& Qdot,
-        const GeneralizedTorque& Tau,
-        Contacts& CS
-    );
-    ///
-    /// \brief Interface for the forward dynamics with contact of RBDL
-    /// \param Q The Generalized Coordinates
-    /// \param Qdot The Generalized Velocities
-    /// \param Tau The Generalized Torques
-    /// \param CS The Constraint set that will be filled
-    /// \param externalForces External force acting on the system if there are any
+    /// \param updateKin If the kinematics of the model should be computed
     /// \return The Generalized Accelerations
     ///
     rigidbody::GeneralizedAcceleration ForwardDynamicsConstraintsDirect(
@@ -1194,7 +1184,25 @@ UpdateKinematicsCustom(
         const GeneralizedVelocity& Qdot,
         const GeneralizedTorque& Tau,
         Contacts& CS,
-        rigidbody::ExternalForceSet& externalForces
+        bool updateKin = true
+    );
+    ///
+    /// \brief Interface for the forward dynamics with contact of RBDL
+    /// \param Q The Generalized Coordinates
+    /// \param Qdot The Generalized Velocities
+    /// \param Tau The Generalized Torques
+    /// \param CS The Constraint set that will be filled
+    /// \param externalForces External force acting on the system if there are any
+    /// \param updateKin If the kinematics of the model should be computed
+    /// \return The Generalized Accelerations
+    ///
+    rigidbody::GeneralizedAcceleration ForwardDynamicsConstraintsDirect(
+        const GeneralizedCoordinates& Q,
+        const GeneralizedVelocity& Qdot,
+        const GeneralizedTorque& Tau,
+        Contacts& CS,
+        rigidbody::ExternalForceSet& externalForces,
+        bool updateKin = true
     );
 
     ///

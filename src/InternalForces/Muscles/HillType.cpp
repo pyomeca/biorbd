@@ -1,6 +1,7 @@
 #define BIORBD_API_EXPORTS
 
 #include "Utils/Error.h"
+#include "RigidBody/Joints.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedVelocity.h"
 #include "InternalForces/Muscles/Characteristics.h"
@@ -209,17 +210,14 @@ const utils::Scalar& internal_forces::muscles::HillType::force(
     int updateKin)
 {
 #ifdef BIORBD_USE_CASADI_MATH
-    updateKin = 2;
+    rigidbody::Joints
+#else
+    rigidbody::Joints &
 #endif
+    updatedModel = model.UpdateKinematicsCustom(updateKin > 1 ? &Q : nullptr, updateKin > 1 ? &Qdot : nullptr);
+
     // Update the configuration
-    if (updateKin == 1) {
-        updateOrientations(model,Q,Qdot,false);
-    } else if (updateKin == 2) {
-        updateOrientations(model,Q,Qdot,2);
-    } else {
-        utils::Error::check(updateKin == 0,
-                                    "Wrong level of update in force function");
-    }
+    updateOrientations(updatedModel,Q,Qdot, updateKin >= 1);
 
     // Computation
     return force(emg);

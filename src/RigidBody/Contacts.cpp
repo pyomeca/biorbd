@@ -176,12 +176,14 @@ std::vector< utils::SpatialVector > rigidbody::Contacts::calcLoopConstraintForce
 
     // retrieve the model and the contacts
     rigidbody::Contacts CS = dynamic_cast<rigidbody::Contacts*>(this)->getConstraints();
+
 #ifdef BIORBD_USE_CASADI_MATH
-    rigidbody::Joints model = dynamic_cast<rigidbody::Joints &>(*this).UpdateKinematicsCustom(&Q, &Qdot);
+    rigidbody::Joints
 #else
-    rigidbody::Joints& model = dynamic_cast<rigidbody::Joints &>(*this);
+    rigidbody::Joints&
 #endif
-    model.ForwardDynamicsConstraintsDirect(Q, Qdot, Tau, CS, externalForces);
+    updatedModel = dynamic_cast<rigidbody::Joints &>(*this).UpdateKinematicsCustom(&Q, &Qdot);
+    updatedModel.ForwardDynamicsConstraintsDirect(Q, Qdot, Tau, CS, externalForces, false);
 
     std::vector< utils::SpatialVector > out;
     for (int i=0; i<static_cast<int>(*m_nbLoopConstraint); i++) {
@@ -191,7 +193,7 @@ std::vector< utils::SpatialVector > rigidbody::Contacts::calcLoopConstraintForce
 
         CS.calcForces(
             i,
-            model,
+            updatedModel,
             Q,
             Qdot,
             constraintBodyIdsOutput,

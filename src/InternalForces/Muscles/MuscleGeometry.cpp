@@ -69,10 +69,6 @@ void internal_forces::muscles::MuscleGeometry::updateKinematics(
 
     // Make sure the model is in the right configuration
 #ifdef BIORBD_USE_CASADI_MATH
-    updateKinLevel = 2;
-#endif
-
-#ifdef BIORBD_USE_CASADI_MATH
     rigidbody::Joints
 #else
     rigidbody::Joints&
@@ -102,10 +98,6 @@ void internal_forces::muscles::MuscleGeometry::updateKinematics(
             false, "Warning, using updateKinematics overrides the previously sent position and jacobian");
         *m_posAndJacoWereForced = false;
     }
-
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKinLevel = 2;
-#endif
 
 #ifdef BIORBD_USE_CASADI_MATH
     rigidbody::Joints

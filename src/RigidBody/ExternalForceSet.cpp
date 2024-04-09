@@ -141,18 +141,13 @@ std::vector<utils::SpatialVector> rigidbody::ExternalForceSet::computeSpatialVec
     const rigidbody::GeneralizedVelocity& Qdot,
     bool updateKin) 
 {
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = true;
-#endif
-
 
 #ifdef BIORBD_USE_CASADI_MATH
     rigidbody::Joints
 #else
     rigidbody::Joints&
 #endif
-     updatedModel = m_model.UpdateKinematicsCustom(
-            updateKin ? &Q : nullptr, updateKin && m_useSoftContacts ? &Qdot : nullptr);
+    updatedModel = m_model.UpdateKinematicsCustom(updateKin ? &Q : nullptr, updateKin && m_useSoftContacts ? &Qdot : nullptr);
 
     std::vector<utils::SpatialVector> out;
     for (const auto& value : m_externalForces) {
