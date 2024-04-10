@@ -89,28 +89,53 @@ rigidbody::NodeSegment rigidbody::Markers::markerAxesRemoved(
     return marker(idx).removeAxes();
 }
 
-// Return a marker
 rigidbody::NodeSegment rigidbody::Markers::marker(
-    const rigidbody::GeneralizedCoordinates &Q,
-    const rigidbody::NodeSegment &n,
-    bool updateKin, 
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::NodeSegment& n,
+    bool updateKin,
     bool removeAxis)
 {
+#ifdef BIORBD_USE_CASADI_MATH
+    if (!updateKin) {
+        utils::Error::raise(
+            utils::String("When using Casadi, the marker(Q, ...) method must set updateKin to true. ") +
+            "Alternatively, you can call the marker(updatedKinematics, Q, ...)."
+        );
+    }
+#endif
+
     // Assuming that this is also a joint type (via BiorbdModel)
-    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
+    rigidbody::Joints& updatedModel = dynamic_cast<rigidbody::Joints&>(*this).UpdateKinematicsCustom(updateKin ? &Q : nullptr);
+    return marker(updatedModel, Q, n, removeAxis);
+}
+
+rigidbody::NodeSegment rigidbody::Markers::marker(
+    rigidbody::Joints& updatedModel,
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::NodeSegment& n,
+    bool removeAxis)
+{
     return rigidbody::NodeSegment(
-        model.CalcBodyToBaseCoordinates(Q, n.parent(), removeAxis ? n.removeAxes() : n, updateKin)
+        updatedModel.CalcBodyToBaseCoordinates(Q, n.parent(), removeAxis ? n.removeAxes() : n, false)
     );
 }
 
-// Get a marker
 rigidbody::NodeSegment rigidbody::Markers::marker(
-    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedCoordinates& Q,
     size_t idx,
-    bool updateKin, 
+    bool updateKin,
     bool removeAxis)
 {
     return marker(Q, marker(idx), updateKin, removeAxis);
+}
+
+rigidbody::NodeSegment rigidbody::Markers::marker(
+    rigidbody::Joints& updatedModel,
+    const rigidbody::GeneralizedCoordinates& Q,
+    size_t idx,
+    bool removeAxis)
+{
+    return marker(updatedModel, Q, marker(idx), removeAxis);
 }
 
 // Get all the markers in the local reference

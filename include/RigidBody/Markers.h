@@ -20,6 +20,7 @@ class GeneralizedCoordinates;
 class GeneralizedVelocity;
 class GeneralizedAcceleration;
 class NodeSegment;
+class Joints;
 
 ///
 /// \brief Holder for the marker set
@@ -130,7 +131,21 @@ public:
     NodeSegment marker(
         const GeneralizedCoordinates& Q,
         const NodeSegment& node,
-        bool updateKin = true, 
+        bool updateKin = true,
+        bool removeAxis = true);
+
+    ///
+    /// \brief Compute and return the position of a marker at given Q in the global reference frame
+    /// \param updatedModel The joint model updated to the proper kinematics level
+    /// \param Q The generalized coordinates
+    /// \param node The position of the marker in its parent reference frame
+    /// \param removeAxis If there are axis to remove from the position variables
+    /// \return The marker in the global reference frame
+    ///
+    NodeSegment marker(
+        rigidbody::Joints& updatedModel,
+        const GeneralizedCoordinates& Q,
+        const NodeSegment& node,
         bool removeAxis = true);
 
     ///
@@ -145,6 +160,20 @@ public:
         const GeneralizedCoordinates& Q,
         size_t  idx,
         bool updateKin = true,
+        bool removeAxis = true);
+
+    ///
+    /// \brief Compute and return the position of the marker of index idx at given Q in the global reference frame
+    /// \param updatedModel The joint model updated to the proper kinematics level
+    /// \param Q The generalized coordinates
+    /// \param idx The index of the marker in the marker set
+    /// \param removeAxis If there are axis to remove from the position variables
+    /// \return The marker idx in the global reference frame
+    ///
+    NodeSegment marker(
+        rigidbody::Joints& updatedModel,
+        const GeneralizedCoordinates& Q,
+        size_t  idx,
         bool removeAxis = true);
 
     ///

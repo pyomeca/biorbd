@@ -1556,7 +1556,11 @@ TEST(Markers, individualPositions)
 
     // One marker at a time, only update Q once
     for (size_t i=0; i<model.nbMarkers(); ++i) {
+#ifdef BIORBD_USE_CASADI_MATH
+        bool updateKin = true;
+#else
         bool updateKin = i == 0;
+#endif
         CALL_BIORBD_FUNCTION_1ARG2PARAMS(marker, model, marker, Q, i, updateKin);
         for (size_t j = 0; j < 3; ++j) {
             EXPECT_NEAR(static_cast<double>(marker(j)), expectedMarkers[i][j], requiredPrecision);
@@ -1573,7 +1577,11 @@ TEST(Markers, individualPositions)
     };
     // One marker at a time, only update Q once
     for (size_t i=0; i<model.nbMarkers(); ++i) {
+#ifdef BIORBD_USE_CASADI_MATH
+        bool updateKin = true;
+#else
         bool updateKin = i == 0;
+#endif
         CALL_BIORBD_FUNCTION_1ARG2PARAMS(marker, model, marker, Q, i, updateKin);
         for (size_t j = 0; j < 3; ++j) {
             EXPECT_NEAR(static_cast<double>(marker(j)), expectedMarkers2[i][j], requiredPrecision);
