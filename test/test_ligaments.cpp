@@ -593,7 +593,7 @@ TEST(LigamentTorque, torqueFromLigaments)
     Qdot.setOnes()/10;
     rigidbody::GeneralizedTorque Tau(model);
     std::vector<double> TauExpected({8.4576580134417226e-15, 3.0375576471800541});
-    Tau = model.ligamentsJointTorque(model, Q, Qdot);
+    Tau = model.ligamentsJointTorque(Q, Qdot);
     for (unsigned int i=0; i<Qddot.size(); ++i) {
         SCALAR_TO_DOUBLE(val, Tau(i));
         EXPECT_NEAR(val, TauExpected[i], requiredPrecision);

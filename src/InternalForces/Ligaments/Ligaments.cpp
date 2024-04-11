@@ -118,11 +118,35 @@ internal_forces::ligaments::Ligaments::ligamentsJointTorque(
     rigidbody::Joints &updatedModel,
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& Qdot, 
-    bool updateKin)
+    bool updateLigamentKinematics)
 {
     // Update the ligament position
-    if (updateKin) updateLigaments(updatedModel, Q, Qdot);
+    if (updateLigamentKinematics) updateLigaments(updatedModel, Q, Qdot);
     return ligamentsJointTorque(F);
+}
+
+// From ligament Force and kinematics
+rigidbody::GeneralizedTorque
+internal_forces::ligaments::Ligaments::ligamentsJointTorque(
+    const utils::Vector& F,
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& Qdot,
+    int updateKin)
+{
+#ifdef BIORBD_USE_CASADI_MATH
+    if (updateKin < 2) {
+        utils::Error::raise(
+            utils::String("When using Casadi, the marker(Q, ...) method must set updateKin to true. ") +
+            "Alternatively, you can call ligamentsJointTorque with the preupdated model."
+        );
+    }
+    rigidbody::Joints 
+#else
+    rigidbody::Joints&
+#endif
+    updatedModel = dynamic_cast<rigidbody::Joints&>(*this).UpdateKinematicsCustom(updateKin >= 2 ? &Q : nullptr, updateKin >= 2 ? &Qdot : nullptr);
+
+    return ligamentsJointTorque(F, updatedModel, Q, Qdot, updateKin >= 1);
 }
 
 // From kinematics
@@ -131,21 +155,43 @@ internal_forces::ligaments::Ligaments::ligamentsJointTorque(
     rigidbody::Joints &updatedModel,
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& Qdot,
-    bool updateKin)
+    bool updateLigamentKinematics)
 {
+    return ligamentsJointTorque(ligamentForces(updatedModel, Q, Qdot, updateLigamentKinematics));
+}
+
+// From kinematics
+rigidbody::GeneralizedTorque
+internal_forces::ligaments::Ligaments::ligamentsJointTorque(
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& Qdot,
+    int updateKin)
+{
+#ifdef BIORBD_USE_CASADI_MATH
+    if (updateKin < 2) {
+        utils::Error::raise(
+            utils::String("When using Casadi, the marker(Q, ...) method must set updateKin to true. ") +
+            "Alternatively, you can call ligamentsJointTorque with the preupdated model."
+        );
+    }
+    rigidbody::Joints
+#else
+    rigidbody::Joints&
+#endif
+        updatedModel = dynamic_cast<rigidbody::Joints&>(*this).UpdateKinematicsCustom(updateKin >= 2 ? &Q : nullptr, updateKin >= 2 ? &Qdot : nullptr);
+
     return ligamentsJointTorque(ligamentForces(updatedModel, Q, Qdot, updateKin));
 }
 
 utils::Vector internal_forces::ligaments::Ligaments::ligamentForces(
-    rigidbody::Joints &updatedModel,
+    rigidbody::Joints& updatedModel,
     const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& Qdot, 
-    bool updateKin)
+    bool updateLigamentKinematics)
 {
     // Output variable
     utils::Vector forces(nbLigaments());
-    for (size_t j=0; j<nbLigaments(); ++j) {
-        forces(static_cast<unsigned int>(j)) = ((*m_ligaments)[j]->force(updatedModel, Q, Qdot, updateKin));
+    for (size_t j = 0; j < nbLigaments(); ++j) {
+        forces(static_cast<unsigned int>(j)) = ((*m_ligaments)[j]->force(updatedModel, Q, updateLigamentKinematics));
     }
 
     // The forces
@@ -153,24 +199,68 @@ utils::Vector internal_forces::ligaments::Ligaments::ligamentForces(
 }
 
 utils::Vector internal_forces::ligaments::Ligaments::ligamentForces(
-    rigidbody::Joints &updatedModel,
     const rigidbody::GeneralizedCoordinates& Q,
-    bool updateKin)
+    int updateKin)
+{
+#ifdef BIORBD_USE_CASADI_MATH
+    if (updateKin < 2) {
+        utils::Error::raise(
+            utils::String("When using Casadi, the marker(Q, ...) method must set updateKin to true. ") +
+            "Alternatively, you can call ligamentForces with the preupdated model."
+        );
+    }
+    rigidbody::Joints
+#else
+    rigidbody::Joints&
+#endif
+    updatedModel = dynamic_cast<rigidbody::Joints&>(*this).UpdateKinematicsCustom(updateKin >= 2 ? &Q : nullptr);
+
+    // The forces
+    return ligamentForces(updatedModel, Q, updateKin >= 1);
+}
+
+utils::Vector internal_forces::ligaments::Ligaments::ligamentForces(
+    rigidbody::Joints& updatedModel,
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& Qdot,
+    bool updateLigamentKinematics)
 {
     // Output variable
     utils::Vector forces(nbLigaments());
-    for (size_t j=0; j<nbLigaments(); ++j) {
-        forces(static_cast<unsigned int>(j)) = ((*m_ligaments)[j]->force(updatedModel, Q, updateKin));
+    for (size_t j = 0; j < nbLigaments(); ++j) {
+        forces(static_cast<unsigned int>(j)) = ((*m_ligaments)[j]->force(updatedModel, Q, Qdot, updateLigamentKinematics));
     }
 
     // The forces
     return forces;
 }
 
+utils::Vector internal_forces::ligaments::Ligaments::ligamentForces(
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& Qdot,
+    int updateKin)
+{
+#ifdef BIORBD_USE_CASADI_MATH
+    if (updateKin < 2) {
+        utils::Error::raise(
+            utils::String("When using Casadi, the marker(Q, ...) method must set updateKin to true. ") +
+            "Alternatively, you can call ligamentForces with the preupdated model."
+        );
+    }
+    rigidbody::Joints
+#else
+    rigidbody::Joints&
+#endif
+        updatedModel = dynamic_cast<rigidbody::Joints&>(*this).UpdateKinematicsCustom(updateKin >= 2 ? &Q : nullptr, updateKin >= 2 ? &Qdot : nullptr);
+
+    return ligamentForces(updatedModel, Q, Qdot, updateKin >= 1);
+}
+
 utils::Matrix internal_forces::ligaments::Ligaments::ligamentsLengthJacobian() const
 {
+    const rigidbody::Joints& model = dynamic_cast<const rigidbody::Joints&>(*this);
+
     // Assuming that this is also a Joints type (via BiorbdModel)
-    const rigidbody::Joints &model = dynamic_cast<const rigidbody::Joints &>(*this);
     utils::Matrix tp(nbLigaments(), model.nbDof());
     for (size_t j=0; j<nbLigaments(); ++j) {
         tp.block(static_cast<unsigned int>(j),0,1, static_cast<unsigned int>(model.nbDof())) =
@@ -180,13 +270,33 @@ utils::Matrix internal_forces::ligaments::Ligaments::ligamentsLengthJacobian() c
 }
 
 utils::Matrix internal_forces::ligaments::Ligaments::ligamentsLengthJacobian(
-    rigidbody::Joints &updatedModel,
-    const rigidbody::GeneralizedCoordinates &Q, 
-    bool updateKin)
+    rigidbody::Joints& updatedModel,
+    const rigidbody::GeneralizedCoordinates& Q,
+    bool updateLigamentKinematics)
 {
     // Update the ligament position
-    if (updateKin) updateLigaments(updatedModel, Q);
-    return ligamentsLengthJacobian();
+    if (updateLigamentKinematics) updateLigaments(updatedModel, Q);
+    return ligamentsLengthJacobian(updatedModel);
+}
+
+utils::Matrix internal_forces::ligaments::Ligaments::ligamentsLengthJacobian(
+    const rigidbody::GeneralizedCoordinates& Q,
+    int updateKin)
+{
+#ifdef BIORBD_USE_CASADI_MATH
+    if (updateKin < 2) {
+        utils::Error::raise(
+            utils::String("When using Casadi, the marker(Q, ...) method must set updateKin to true. ") +
+            "Alternatively, you can call ligamentsLengthJacobian with the preupdated model."
+        );
+    }
+    rigidbody::Joints
+#else
+    rigidbody::Joints&
+#endif
+    updatedModel = dynamic_cast<rigidbody::Joints&>(*this).UpdateKinematicsCustom(updateKin >= 2 ? &Q : nullptr);
+
+    return ligamentsLengthJacobian(updatedModel, Q, updateKin >= 1);
 }
 
 size_t internal_forces::ligaments::Ligaments::nbLigaments() const
