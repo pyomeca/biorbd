@@ -278,38 +278,73 @@ size_t internal_forces::muscles::Muscles::nbMuscles() const
 }
 
 void internal_forces::muscles::Muscles::updateMuscles(
+    rigidbody::Joints& updatedModel,
     const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& Qdot,
-    bool updateKin)
+    bool updateMuscleParameters)
 {
-    // Assuming that this is also a Joints type (via BiorbdModel)
-    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
-
     // Update all the muscles
-    int updateKinLevel = updateKin ? 2 : 0;
-    for (auto group : *m_mus){// muscle group
-        for (size_t j=0; j<group.nbMuscles(); ++j) {
-            group.muscle(j).updateOrientations(model, Q, Qdot, updateKinLevel);
-            if (updateKinLevel) updateKinLevel=1;
-        }
-    } 
-}
-void internal_forces::muscles::Muscles::updateMuscles(
-    const rigidbody::GeneralizedCoordinates& Q,
-    bool updateKin)
-{
-    // Assuming that this is also a Joints type (via BiorbdModel)
-    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
-
-    // Update all the muscles
-    int updateKinLevel = updateKin ? 2 : 0;
-    for (auto group : *m_mus){ // muscle group
-        for (size_t j=0; j<group.nbMuscles(); ++j) {
-            group.muscle(j).updateOrientations(model, Q, updateKinLevel);
-            updateKinLevel = 1;
+    for (auto group : *m_mus) { // muscle group
+        for (size_t j = 0; j < group.nbMuscles(); ++j) {
+            group.muscle(j).updateOrientations(updatedModel, Q, updateMuscleParameters);
         }
     }
 }
+
+void internal_forces::muscles::Muscles::updateMuscles(
+    const rigidbody::GeneralizedCoordinates& Q,
+    int updateKin)
+{
+#ifdef BIORBD_USE_CASADI_MATH
+    if (updateKin < 2) {
+        utils::Error::raise(
+            utils::String("When using Casadi, this method must set updateKin to true. ") +
+            "Alternatively, you can call updateMuscles with the pre-updated model."
+        );
+    }
+    rigidbody::Joints
+#else
+    rigidbody::Joints&
+#endif
+    updatedModel = dynamic_cast<rigidbody::Joints&>(*this).UpdateKinematicsCustom(updateKin >= 2 ? &Q : nullptr);
+    
+    updateMuscles(updatedModel, Q, updateKin >= 1);
+}
+
+void internal_forces::muscles::Muscles::updateMuscles(
+    rigidbody::Joints& updatedModel,
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& Qdot,
+    bool updateMuscleParameters)
+{
+    // Update all the muscles
+    for (auto group : *m_mus) {// muscle group
+        for (size_t j = 0; j < group.nbMuscles(); ++j) {
+            group.muscle(j).updateOrientations(updatedModel, Q, Qdot, updateMuscleParameters);
+        }
+    }
+}
+
+void internal_forces::muscles::Muscles::updateMuscles(
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& Qdot,
+    int updateKin)
+{
+#ifdef BIORBD_USE_CASADI_MATH
+    if (updateKin < 2) {
+        utils::Error::raise(
+            utils::String("When using Casadi, this method must set updateKin to true. ") +
+            "Alternatively, you can call updateMuscles with the pre-updated model."
+        );
+    }
+    rigidbody::Joints
+#else
+    rigidbody::Joints&
+#endif
+    updatedModel = dynamic_cast<rigidbody::Joints&>(*this).UpdateKinematicsCustom(updateKin >= 2 ? &Q : nullptr);
+
+    updateMuscles(updatedModel, Q, Qdot, updateKin >= 1);
+}
+
 void internal_forces::muscles::Muscles::updateMuscles(
     std::vector<std::vector<utils::Vector3d>>& musclePointsInGlobal,
     std::vector<utils::Matrix> &jacoPointsInGlobal,

@@ -2975,7 +2975,7 @@ TEST(MuscleJacobian, jacobianLength)
     Model model(modelPathForMuscleJacobian);
     rigidbody::GeneralizedCoordinates Q(model);
     Q = Q.setOnes()/10;
-    model.updateMuscles(Q, true);
+    model.updateMuscles(Q, 2);
 
     size_t nRows(model.nbMuscleTotal());
     utils::Matrix jacoRef(nRows, model.nbQ());

@@ -137,7 +137,7 @@ internal_forces::ligaments::Ligaments::ligamentsJointTorque(
     if (updateKin < 2) {
         utils::Error::raise(
             utils::String("When using Casadi, this method must set updateKin to true. ") +
-            "Alternatively, you can call ligamentsJointTorque with the preupdated model."
+            "Alternatively, you can call ligamentsJointTorque with the pre-updated model."
         );
     }
     rigidbody::Joints 
@@ -171,7 +171,7 @@ internal_forces::ligaments::Ligaments::ligamentsJointTorque(
     if (updateKin < 2) {
         utils::Error::raise(
             utils::String("When using Casadi, this method must set updateKin to true. ") +
-            "Alternatively, you can call ligamentsJointTorque with the preupdated model."
+            "Alternatively, you can call ligamentsJointTorque with the pre-updated model."
         );
     }
     rigidbody::Joints
@@ -206,7 +206,7 @@ utils::Vector internal_forces::ligaments::Ligaments::ligamentForces(
     if (updateKin < 2) {
         utils::Error::raise(
             utils::String("When using Casadi, this method must set updateKin to true. ") +
-            "Alternatively, you can call ligamentForces with the preupdated model."
+            "Alternatively, you can call ligamentForces with the pre-updated model."
         );
     }
     rigidbody::Joints
@@ -244,7 +244,7 @@ utils::Vector internal_forces::ligaments::Ligaments::ligamentForces(
     if (updateKin < 2) {
         utils::Error::raise(
             utils::String("When using Casadi, this method must set updateKin to true. ") +
-            "Alternatively, you can call ligamentForces with the preupdated model."
+            "Alternatively, you can call ligamentForces with the pre-updated model."
         );
     }
     rigidbody::Joints
@@ -287,7 +287,7 @@ utils::Matrix internal_forces::ligaments::Ligaments::ligamentsLengthJacobian(
     if (updateKin < 2) {
         utils::Error::raise(
             utils::String("When using Casadi, this method must set updateKin to true. ") +
-            "Alternatively, you can call ligamentsLengthJacobian with the preupdated model."
+            "Alternatively, you can call ligamentsLengthJacobian with the pre-updated model."
         );
     }
     rigidbody::Joints

@@ -107,11 +107,11 @@ void internal_forces::Geometry::updateKinematics(
     _updateKinematics(Qdot, nullptr);
 }
 
-void internal_forces::Geometry::updateKinematics(rigidbody::Joints
-        &updatedModel,
-        internal_forces::PathModifiers &pathModifiers,
-        const rigidbody::GeneralizedCoordinates *Q,
-        const rigidbody::GeneralizedVelocity *Qdot)
+void internal_forces::Geometry::updateKinematics(
+    rigidbody::Joints& updatedModel,
+    internal_forces::PathModifiers &pathModifiers,
+    const rigidbody::GeneralizedCoordinates *Q,
+    const rigidbody::GeneralizedVelocity *Qdot)
 {
     *m_posAndJacoWereForced = false;
     // Position of the points in space

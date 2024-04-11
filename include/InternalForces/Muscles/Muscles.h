@@ -146,12 +146,36 @@ public:
 
     ///
     /// \brief Update all the muscles (positions, jacobian, etc.)
+    /// \param updatedModel The model previously updated to proper kinematic level
+    /// \param Q The generalized coordinates
+    /// \param updateMuscleParameters Update the kinematic related parameters of the muscles
+    ///
+    void updateMuscles(
+        rigidbody::Joints& updatedModel,
+        const rigidbody::GeneralizedCoordinates& Q,
+        bool updateMuscleParameters);
+
+    ///
+    /// \brief Update all the muscles (positions, jacobian, etc.)
     /// \param Q The generalized coordinates
     /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
     ///
     void updateMuscles(
         const rigidbody::GeneralizedCoordinates& Q,
-        bool updateKin);
+        int updateKin);
+
+    ///
+    /// \brief Update all the muscles (positions, jacobian, etc.)
+    /// \param updatedModel The model previously updated to proper kinematic level
+    /// \param Q The generalized coordinates
+    /// \param Qdot The generalized velocities
+    /// \param updateMuscleParameters Update the kinematic related parameters of the muscles
+    ///
+    void updateMuscles(
+        rigidbody::Joints& updatedModel,
+        const rigidbody::GeneralizedCoordinates& Q,
+        const rigidbody::GeneralizedVelocity& Qdot,
+        bool updateMuscleParameters);
 
     ///
     /// \brief Update all the muscles (positions, jacobian, etc.)
@@ -162,7 +186,7 @@ public:
     void updateMuscles(
         const rigidbody::GeneralizedCoordinates& Q,
         const rigidbody::GeneralizedVelocity& Qdot,
-        bool updateKin);
+        int updateKin);
 
     ///
     /// \brief Update by hand all the muscles (positions, jacobian, velocity, etc.)

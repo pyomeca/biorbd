@@ -54,26 +54,12 @@ void internal_forces::muscles::MuscleGeometry::DeepCopy(const internal_forces::m
 
 // ------ PUBLIC FUNCTIONS ------ //
 void internal_forces::muscles::MuscleGeometry::updateKinematics(
-    rigidbody::Joints &model,
+    rigidbody::Joints& updatedModel,
     const internal_forces::muscles::Characteristics& characteristics,
     const rigidbody::GeneralizedCoordinates *Q,
-    const rigidbody::GeneralizedVelocity *Qdot,
-    int updateKinLevel)
+    const rigidbody::GeneralizedVelocity *Qdot)
 {
-    if (*m_posAndJacoWereForced) {
-        utils::Error::warning(
-            false,
-            "Warning, using updateKinematics overrides the previously sent position and jacobian");
-        *m_posAndJacoWereForced = false;
-    }
-
-    // Make sure the model is in the right configuration
-#ifdef BIORBD_USE_CASADI_MATH
-    rigidbody::Joints
-#else
-    rigidbody::Joints&
-#endif
-    updatedModel = model.UpdateKinematicsCustom(updateKinLevel > 1 ? Q : nullptr, updateKinLevel > 1 ? Qdot : nullptr);
+    *m_posAndJacoWereForced = false;
 
     // Position of the points in space
     setPointsInGlobal(updatedModel, *Q);
@@ -86,25 +72,13 @@ void internal_forces::muscles::MuscleGeometry::updateKinematics(
 }
 
 void internal_forces::muscles::MuscleGeometry::updateKinematics(
-        rigidbody::Joints &model,
-        const internal_forces::muscles::Characteristics& characteristics,
-        internal_forces::PathModifiers &pathModifiers,
-        const rigidbody::GeneralizedCoordinates *Q,
-        const rigidbody::GeneralizedVelocity *Qdot,
-        int updateKinLevel)
+    rigidbody::Joints& updatedModel,
+    const internal_forces::muscles::Characteristics& characteristics,
+    internal_forces::PathModifiers &pathModifiers,
+    const rigidbody::GeneralizedCoordinates *Q,
+    const rigidbody::GeneralizedVelocity *Qdot)
 {
-    if (*m_posAndJacoWereForced) {
-        utils::Error::warning(
-            false, "Warning, using updateKinematics overrides the previously sent position and jacobian");
-        *m_posAndJacoWereForced = false;
-    }
-
-#ifdef BIORBD_USE_CASADI_MATH
-    rigidbody::Joints
-#else
-    rigidbody::Joints&
-#endif
-    updatedModel = model.UpdateKinematicsCustom(updateKinLevel > 1 ? Q : nullptr, updateKinLevel > 1 ? Qdot : nullptr);
+    *m_posAndJacoWereForced = false;
 
     // Position of the points in space
     setPointsInGlobal(updatedModel, *Q, &pathModifiers);
@@ -136,15 +110,15 @@ void internal_forces::muscles::MuscleGeometry::updateKinematics(
 
 const utils::Scalar& internal_forces::muscles::MuscleGeometry::length() const
 {
-    utils::Error::check(*m_isGeometryComputed,
-                                "Geometry must be computed at least before calling length()");
+    utils::Error::check(
+        *m_isGeometryComputed, "Geometry must be computed at least before calling length()");
     return *m_muscleLength;
 }
 
 const utils::Scalar& internal_forces::muscles::MuscleGeometry::musculoTendonLength() const
 {
-    utils::Error::check(*m_isGeometryComputed,
-                                "Geometry must be computed at least before calling length()");
+    utils::Error::check(
+        *m_isGeometryComputed, "Geometry must be computed at least before calling length()");
     return *m_muscleTendonLength;
 }
 
@@ -177,27 +151,25 @@ const utils::Scalar& internal_forces::muscles::MuscleGeometry::length(
 
     // because we can't combine, test the first (0) will let us know all the types if more than one
     if (pathModifiers != nullptr && pathModifiers->nbWraps()!=0) {
-        utils::Error::check(pathModifiers->nbVia() == 0,
-                                    "Cannot mix wrapping and via points yet" ) ;
-        utils::Error::check(pathModifiers->nbWraps() < 2,
-                                    "Cannot compute more than one wrapping yet");
+        utils::Error::check(
+            pathModifiers->nbVia() == 0, "Cannot mix wrapping and via points yet" ) ;
+        utils::Error::check(
+            pathModifiers->nbWraps() < 2, "Cannot compute more than one wrapping yet");
 
-        utils::Vector3d pi_wrap(0, 0,
-                                        0); // point on the wrapping related to insertion
-        utils::Vector3d po_wrap(0, 0,
-                                        0); // point on the wrapping related to origin
+        utils::Vector3d pi_wrap(0, 0, 0); // point on the wrapping related to insertion
+        utils::Vector3d po_wrap(0, 0, 0); // point on the wrapping related to origin
         utils::Scalar lengthWrap(0);
         static_cast<internal_forces::WrappingObject&>(
             pathModifiers->object(0)).wrapPoints(po_wrap, pi_wrap, &lengthWrap);
-        *m_muscleTendonLength = ((*m_pointsInGlobal)[0] - po_wrap).norm()
-                                + // length before the wrap
-                                lengthWrap                 + // length on the wrap
-                                ((*m_pointsInGlobal)[3] - pi_wrap).norm();   // length after the wrap
+        
+        *m_muscleTendonLength = 
+            ((*m_pointsInGlobal)[0] - po_wrap).norm()   + // length before the wrap
+            lengthWrap                                  + // length on the wrap
+            ((*m_pointsInGlobal)[3] - pi_wrap).norm();    // length after the wrap
 
     } else {
         for (size_t i=0; i<m_pointsInGlobal->size()-1; ++i) {
-            *m_muscleTendonLength += ((*m_pointsInGlobal)[i+1] -
-                                      (*m_pointsInGlobal)[i]).norm();
+            *m_muscleTendonLength += ((*m_pointsInGlobal)[i+1] - (*m_pointsInGlobal)[i]).norm();
         }
     }
     *m_muscleLength = (*m_muscleTendonLength - characteristics->tendonSlackLength())/std::cos(characteristics->pennationAngle());
