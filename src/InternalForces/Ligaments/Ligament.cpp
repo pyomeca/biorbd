@@ -151,21 +151,21 @@ const internal_forces::Geometry &internal_forces::ligaments::Ligament::position(
 
 const utils::Scalar& internal_forces::ligaments::Ligament::length(
     rigidbody::Joints& updatedModel,
-    const rigidbody::GeneralizedCoordinates &Q,
-    bool updateKin)
+    const rigidbody::GeneralizedCoordinates& Q,
+    bool updateLigamentKinematics)
 {
-    if (updateKin) m_position->updateKinematics(updatedModel, *m_pathChanger, &Q, nullptr);
+    if (updateLigamentKinematics) m_position->updateKinematics(updatedModel, *m_pathChanger, &Q, nullptr);
     return position().length();
 }
 
 const utils::Scalar& internal_forces::ligaments::Ligament::velocity(
-    rigidbody::Joints &model,
-    const rigidbody::GeneralizedCoordinates &Q,
-    const rigidbody::GeneralizedVelocity &Qdot,
-    bool updateKin)
+    rigidbody::Joints& updatedModel,
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& Qdot,
+    bool updateLigamentKinematics)
 {
-    if (updateKin) {
-        m_position->updateKinematics(model, *m_pathChanger, &Q, &Qdot);
+    if (updateLigamentKinematics) {
+        m_position->updateKinematics(updatedModel, *m_pathChanger, &Q, &Qdot);
     }
 
     return m_position->velocity();
@@ -175,10 +175,10 @@ const utils::Scalar& internal_forces::ligaments::Ligament::force(
     rigidbody::Joints &updatedModel,
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot,
-    bool updateKin)
+    bool updateLigamentKinematics)
 {
     // Update the ligament configuration if necessary
-    if (updateKin) updateOrientations(updatedModel, Q, Qdot);
+    if (updateLigamentKinematics) updateOrientations(updatedModel, Q, Qdot);
 
     // Computation
     computeFl();
@@ -187,12 +187,12 @@ const utils::Scalar& internal_forces::ligaments::Ligament::force(
 }
 
 const utils::Scalar& internal_forces::ligaments::Ligament::force(
-    rigidbody::Joints &model,
+    rigidbody::Joints &updatedModel,
     const rigidbody::GeneralizedCoordinates &Q,
-    bool updateKin)
+    bool updateLigamentKinematics)
 {
     // Update the ligament configuration if necessary
-    if (updateKin) updateOrientations(model, Q);
+    if (updateLigamentKinematics) updateOrientations(updatedModel, Q);
 
     // Computation
     computeFl();
@@ -219,16 +219,15 @@ utils::Scalar internal_forces::ligaments::Ligament::getForce()
 }
 
 const std::vector<utils::Vector3d>& internal_forces::ligaments::Ligament::ligamentsPointsInGlobal(
-    rigidbody::Joints &model,
-    const rigidbody::GeneralizedCoordinates &Q)
+    rigidbody::Joints &updatedModel,
+    const rigidbody::GeneralizedCoordinates &Q, 
+    bool updateLigamentKinematics)
 {
-    m_position->updateKinematics(model, *m_pathChanger, &Q);
-
+    if (updateLigamentKinematics) m_position->updateKinematics(updatedModel, *m_pathChanger, &Q);
     return ligamentsPointsInGlobal();
 }
 
-const std::vector<utils::Vector3d>&
-internal_forces::ligaments::Ligament::ligamentsPointsInGlobal() const
+const std::vector<utils::Vector3d>& internal_forces::ligaments::Ligament::ligamentsPointsInGlobal() const
 {
     return m_position->pointsInGlobal();
 }

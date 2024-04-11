@@ -136,7 +136,7 @@ internal_forces::ligaments::Ligaments::ligamentsJointTorque(
 #ifdef BIORBD_USE_CASADI_MATH
     if (updateKin < 2) {
         utils::Error::raise(
-            utils::String("When using Casadi, the marker(Q, ...) method must set updateKin to true. ") +
+            utils::String("When using Casadi, this method must set updateKin to true. ") +
             "Alternatively, you can call ligamentsJointTorque with the preupdated model."
         );
     }
@@ -170,7 +170,7 @@ internal_forces::ligaments::Ligaments::ligamentsJointTorque(
 #ifdef BIORBD_USE_CASADI_MATH
     if (updateKin < 2) {
         utils::Error::raise(
-            utils::String("When using Casadi, the marker(Q, ...) method must set updateKin to true. ") +
+            utils::String("When using Casadi, this method must set updateKin to true. ") +
             "Alternatively, you can call ligamentsJointTorque with the preupdated model."
         );
     }
@@ -205,7 +205,7 @@ utils::Vector internal_forces::ligaments::Ligaments::ligamentForces(
 #ifdef BIORBD_USE_CASADI_MATH
     if (updateKin < 2) {
         utils::Error::raise(
-            utils::String("When using Casadi, the marker(Q, ...) method must set updateKin to true. ") +
+            utils::String("When using Casadi, this method must set updateKin to true. ") +
             "Alternatively, you can call ligamentForces with the preupdated model."
         );
     }
@@ -243,7 +243,7 @@ utils::Vector internal_forces::ligaments::Ligaments::ligamentForces(
 #ifdef BIORBD_USE_CASADI_MATH
     if (updateKin < 2) {
         utils::Error::raise(
-            utils::String("When using Casadi, the marker(Q, ...) method must set updateKin to true. ") +
+            utils::String("When using Casadi, this method must set updateKin to true. ") +
             "Alternatively, you can call ligamentForces with the preupdated model."
         );
     }
@@ -286,7 +286,7 @@ utils::Matrix internal_forces::ligaments::Ligaments::ligamentsLengthJacobian(
 #ifdef BIORBD_USE_CASADI_MATH
     if (updateKin < 2) {
         utils::Error::raise(
-            utils::String("When using Casadi, the marker(Q, ...) method must set updateKin to true. ") +
+            utils::String("When using Casadi, this method must set updateKin to true. ") +
             "Alternatively, you can call ligamentsLengthJacobian with the preupdated model."
         );
     }
