@@ -64,9 +64,10 @@ TEST(IdealizedActuator, unitTest)
                 muscle(muscleForIdealizedActuator));
         rigidbody::GeneralizedCoordinates Q(model);
         Q = Q.setOnes() / 10;
-        SCALAR_TO_DOUBLE(length, idealizedActuator.length(model, Q, 2));
-        SCALAR_TO_DOUBLE(musculoTendonLength,
-                         idealizedActuator.musculoTendonLength(model, Q, 2));
+        auto updatedModel = model.UpdateKinematicsCustom(&Q);
+
+        SCALAR_TO_DOUBLE(length, idealizedActuator.length(updatedModel, Q, true));
+        SCALAR_TO_DOUBLE(musculoTendonLength, idealizedActuator.musculoTendonLength(updatedModel, Q, true));
         EXPECT_NEAR(length, 0.066381977535807504, requiredPrecision);
         EXPECT_NEAR(musculoTendonLength, 0.1563647052655904, requiredPrecision);
     }
@@ -86,13 +87,13 @@ TEST(IdealizedActuator, unitTest)
         rigidbody::GeneralizedVelocity Qdot(model);
         Q = Q.setOnes() / 10;
         Qdot = Qdot.setOnes() / 10;
+        auto updatedModel = model.UpdateKinematicsCustom(&Q, &Qdot);
+
         internal_forces::muscles::IdealizedActuator idealizedActuator(model.
                 muscleGroup(muscleGroupForIdealizedActuator).
                 muscle(muscleForIdealizedActuator));
-        SCALAR_TO_DOUBLE(velocityTrue, idealizedActuator.velocity(model, Q, Qdot,
-                         true));
-        SCALAR_TO_DOUBLE(velocityFalse, idealizedActuator.velocity(model, Q, Qdot,
-                         false));
+        SCALAR_TO_DOUBLE(velocityTrue, idealizedActuator.velocity(updatedModel, Q, Qdot, true));
+        SCALAR_TO_DOUBLE(velocityFalse, idealizedActuator.velocity(updatedModel, Q, Qdot, false));
         EXPECT_NEAR(velocityTrue, 0.0022230374109936529, requiredPrecision);
         EXPECT_NEAR(velocityFalse, 0.0022230374109936529, requiredPrecision);
     }
@@ -422,7 +423,9 @@ TEST(hillType, unitTest)
         rigidbody::GeneralizedVelocity Qdot(model);
         Q = Q.setOnes() / 10;
         Qdot = Qdot.setOnes() / 10;
-        hillType.updateOrientations(model, Q, Qdot);
+        auto updatedModel = model.UpdateKinematicsCustom(&Q, &Qdot);
+
+        hillType.updateOrientations(updatedModel, Q, Qdot);
         static double activationEmgForHillTypeTest(1);
         internal_forces::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
 
@@ -501,10 +504,12 @@ TEST(hillType, unitTest)
         rigidbody::GeneralizedVelocity Qdot(model);
         Q = Q.setOnes() / 10;
         Qdot = Qdot.setOnes() / 10;
+        auto updatedModel = model.UpdateKinematicsCustom(&Q, &Qdot);
+
         static double activationEmgForHillTypeTest(1);
         internal_forces::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
 
-        SCALAR_TO_DOUBLE(force, hillType.force(model, Q, Qdot, emg, 2));
+        SCALAR_TO_DOUBLE(force, hillType.force(updatedModel, Q, Qdot, emg, 2));
         EXPECT_NEAR(force, 419.78610578875896, requiredPrecision);
     }
 }
@@ -694,8 +699,9 @@ TEST(hillThelenType, unitTest)
         rigidbody::GeneralizedVelocity Qdot(model);
         Q = Q.setOnes() / 10;
         Qdot = Qdot.setOnes() / 10;
-        model.updateMuscles(Q, true);
-        hillThelenType.updateOrientations(model, Q, Qdot);
+        auto updatedModel = model.UpdateKinematicsCustom(&Q, &Qdot);
+
+        hillThelenType.updateOrientations(updatedModel, Q, Qdot);
         static double activationEmgForHillTypeTest(1.0);
         internal_forces::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
 
@@ -940,8 +946,9 @@ TEST(hillThelenTypeActive, unitTest)
         rigidbody::GeneralizedVelocity Qdot(model);
         Q = Q.setOnes() / 10;
         Qdot = Qdot.setOnes() / 10;
-        model.updateMuscles(Q, true);
-        hillThelenType.updateOrientations(model, Q, Qdot);
+        auto updatedModel = model.UpdateKinematicsCustom(&Q, &Qdot);
+
+        hillThelenType.updateOrientations(updatedModel, Q, Qdot);
         static double activationEmgForHillTypeTest(1.0);
         internal_forces::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
 
@@ -1195,8 +1202,10 @@ TEST(hillDeGrooteTypeActive, unitTest)
         rigidbody::GeneralizedVelocity Qdot(model);
         Q = Q.setOnes() / 10;
         Qdot = Qdot.setOnes() / 10;
-        model.updateMuscles(Q, true);
-        hillDeGrooteType.updateOrientations(model, Q, Qdot);
+        auto updatedModel = model.UpdateKinematicsCustom(&Q, &Qdot);
+
+        hillDeGrooteType.updateOrientations(updatedModel, Q, Qdot);
+
         static double activationEmgForHillTypeTest(1.0);
         internal_forces::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
 
@@ -1630,8 +1639,10 @@ TEST(hillDeGrooteType, unitTest)
         rigidbody::GeneralizedVelocity Qdot(model);
         Q = Q.setOnes() / 10;
         Qdot = Qdot.setOnes() / 10;
-        model.updateMuscles(Q, true);
-        hillDeGrooteType.updateOrientations(model, Q, Qdot);
+        auto updatedModel = model.UpdateKinematicsCustom(&Q, &Qdot);
+        
+        hillDeGrooteType.updateOrientations(updatedModel, Q, Qdot);
+        
         static double activationEmgForHillTypeTest(1.0);
         internal_forces::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
 
