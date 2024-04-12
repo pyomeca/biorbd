@@ -255,10 +255,34 @@ utils::Matrix internal_forces::muscles::Muscles::musclesLengthJacobian()
 }
 
 utils::Matrix internal_forces::muscles::Muscles::musclesLengthJacobian(
-    const rigidbody::GeneralizedCoordinates &Q)
+    rigidbody::Joints &updatedModel,
+    const rigidbody::GeneralizedCoordinates &Q, 
+    bool updateMuscleParameters)
 {
     // Update the muscular position
-    updateMuscles(Q, true);
+    updateMuscles(updatedModel, Q, updateMuscleParameters);
+    return musclesLengthJacobian();
+}
+
+utils::Matrix internal_forces::muscles::Muscles::musclesLengthJacobian(
+    const rigidbody::GeneralizedCoordinates &Q, 
+    int updateKin)
+{
+#ifdef BIORBD_USE_CASADI_MATH
+    if (updateKin < 2) {
+        utils::Error::raise(
+            utils::String("When using Casadi, this method must set updateKin to true. ") +
+            "Alternatively, you can call musclesLengthJacobian with the pre-updated model."
+        );
+    }
+    rigidbody::Joints
+#else
+    rigidbody::Joints&
+#endif
+    updatedModel = dynamic_cast<rigidbody::Joints&>(*this).UpdateKinematicsCustom(updateKin >= 2 ? &Q : nullptr);
+
+    // Update the muscular position
+    updateMuscles(updatedModel, Q, updateKin >= 1);
     return musclesLengthJacobian();
 }
 
@@ -319,7 +343,7 @@ void internal_forces::muscles::Muscles::updateMuscles(
     // Update all the muscles
     for (auto group : *m_mus) {// muscle group
         for (size_t j = 0; j < group.nbMuscles(); ++j) {
-            group.muscle(j).updateOrientations(updatedModel, Q, Qdot, updateMuscleParameters);
+            group.muscle(j).updateOrientations(updatedModel, Q, Qdot);
         }
     }
 }

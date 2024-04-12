@@ -153,7 +153,7 @@ public:
     void updateMuscles(
         rigidbody::Joints& updatedModel,
         const rigidbody::GeneralizedCoordinates& Q,
-        bool updateMuscleParameters);
+        bool updateMuscleParameters = true);
 
     ///
     /// \brief Update all the muscles (positions, jacobian, etc.)
@@ -162,7 +162,7 @@ public:
     ///
     void updateMuscles(
         const rigidbody::GeneralizedCoordinates& Q,
-        int updateKin);
+        int updateKin = 2);
 
     ///
     /// \brief Update all the muscles (positions, jacobian, etc.)
@@ -175,7 +175,7 @@ public:
         rigidbody::Joints& updatedModel,
         const rigidbody::GeneralizedCoordinates& Q,
         const rigidbody::GeneralizedVelocity& Qdot,
-        bool updateMuscleParameters);
+        bool updateMuscleParameters = true);
 
     ///
     /// \brief Update all the muscles (positions, jacobian, etc.)
@@ -186,7 +186,7 @@ public:
     void updateMuscles(
         const rigidbody::GeneralizedCoordinates& Q,
         const rigidbody::GeneralizedVelocity& Qdot,
-        int updateKin);
+        int updateKin = 2);
 
     ///
     /// \brief Update by hand all the muscles (positions, jacobian, velocity, etc.)
@@ -303,11 +303,25 @@ public:
 
     ///
     /// \brief Compute and return the muscle length Jacobian
+    /// \param updatedModel The model previously updated to proper kinematic level
     /// \param Q The generalized coordinates
+    /// \param updateMuscleParameters Update the kinematic related parameters of the muscles
     /// \return The muscle length Jacobian
     ///
     utils::Matrix musclesLengthJacobian(
-        const rigidbody::GeneralizedCoordinates& Q);
+        rigidbody::Joints& updatedModel,
+        const rigidbody::GeneralizedCoordinates& Q, 
+        bool updateMuscleParameters = true);
+
+    ///
+    /// \brief Compute and return the muscle length Jacobian
+    /// \param Q The generalized coordinates
+    /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
+    /// \return The muscle length Jacobian
+    ///
+    utils::Matrix musclesLengthJacobian(
+        const rigidbody::GeneralizedCoordinates& Q, 
+        int updateKin = 2);
 
     ///
     /// \brief Compute and return the muscle forces

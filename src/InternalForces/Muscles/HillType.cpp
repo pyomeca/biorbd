@@ -203,21 +203,14 @@ const utils::Scalar& internal_forces::muscles::HillType::force(
 }
 
 const utils::Scalar& internal_forces::muscles::HillType::force(
-    rigidbody::Joints &model,
+    rigidbody::Joints &updatedModel,
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot,
     const internal_forces::muscles::State &emg,
-    int updateKin)
+    bool updateMuscleParameters)
 {
-#ifdef BIORBD_USE_CASADI_MATH
-    rigidbody::Joints
-#else
-    rigidbody::Joints &
-#endif
-    updatedModel = model.UpdateKinematicsCustom(updateKin > 1 ? &Q : nullptr, updateKin > 1 ? &Qdot : nullptr);
-
     // Update the configuration
-    updateOrientations(updatedModel,Q,Qdot, updateKin >= 1);
+    if (updateMuscleParameters) updateOrientations(updatedModel, Q, Qdot);
 
     // Computation
     return force(emg);
@@ -227,7 +220,7 @@ const utils::Scalar& internal_forces::muscles::HillType::force(
     rigidbody::Joints &,
     const rigidbody::GeneralizedCoordinates &,
     const internal_forces::muscles::State &,
-    int)
+    bool)
 {
     utils::Error::raise("Hill type needs velocity");
 #ifdef _WIN32

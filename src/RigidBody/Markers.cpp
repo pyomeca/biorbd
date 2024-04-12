@@ -105,7 +105,13 @@ rigidbody::NodeSegment rigidbody::Markers::marker(
 #endif
 
     // Assuming that this is also a joint type (via BiorbdModel)
-    rigidbody::Joints& updatedModel = dynamic_cast<rigidbody::Joints&>(*this).UpdateKinematicsCustom(updateKin ? &Q : nullptr);
+    rigidbody::Joints& model = dynamic_cast<rigidbody::Joints&>(*this);
+#ifdef BIORBD_USE_CASADI_MATH
+    rigidbody::Joints
+#else
+    rigidbody::Joints&
+#endif
+    updatedModel = model.UpdateKinematicsCustom(updateKin ? &Q : nullptr);
     return marker(updatedModel, Q, n, removeAxis);
 }
 
