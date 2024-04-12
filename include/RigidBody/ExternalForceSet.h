@@ -157,57 +157,63 @@ namespace BIORBD_NAMESPACE
 
             /// 
             /// \brief The forces in a rbdl compatible format. This won't work if useTranslationalForces 
+            /// \param updatedModel The joint model that with its kinematics updated
             /// useSoftContacts is set to true
             /// 
-            std::vector<RigidBodyDynamics::Math::SpatialVector> computeRbdlSpatialVectors();
+            std::vector<RigidBodyDynamics::Math::SpatialVector> computeRbdlSpatialVectors(
+                rigidbody::Joints& updatedModel
+            );
 
             /// 
             /// \brief The forces in a rbdl compatible format. This won't work if useSoftContacts is set to true
+            /// \param updatedModel The joint model that with its kinematics updated
             /// \param Q The generalized coordinates
-            /// \param updateKin If the kinematics of the model should be computed
             /// 
             std::vector<RigidBodyDynamics::Math::SpatialVector> computeRbdlSpatialVectors(
-                const rigidbody::GeneralizedCoordinates& Q,
-                bool updateKin = true
+                rigidbody::Joints& updatedModel,
+                const rigidbody::GeneralizedCoordinates& Q
             );
 
             /// 
             /// \brief The forces in a rbdl compatible format. 
+            /// \param updatedModel The joint model that with its kinematics updated
             /// \param Q The generalized coordinates
             /// \param Qdot The generalized velocity
-            /// \param updateKin If the kinematics of the model should be computed
             /// 
             std::vector<RigidBodyDynamics::Math::SpatialVector> computeRbdlSpatialVectors(
+                rigidbody::Joints& updatedModel,
                 const rigidbody::GeneralizedCoordinates& Q,
-                const rigidbody::GeneralizedVelocity& Qdot,
-                bool updateKin = true
+                const rigidbody::GeneralizedVelocity& Qdot
             );
 
             /// 
             /// \brief The forces in a rbdl compatible format. This won't work if useTranslationalForces or useSoftContacts is set to true
+            /// \param updatedModel The joint model that with its kinematics updated
             /// 
-            std::vector<utils::SpatialVector> computeSpatialVectors();
+            std::vector<utils::SpatialVector> computeSpatialVectors(
+                rigidbody::Joints& updatedModel
+            );
 
             /// 
             /// \brief The forces in a rbdl compatible format. This won't work if useSoftContacts is set to true
+            /// \param updatedModel The joint model that with its kinematics updated
             /// \param Q The generalized coordinates
-            /// \param updateKin If the kinematics of the model should be computed
             /// 
             std::vector<utils::SpatialVector> computeSpatialVectors(
-                const rigidbody::GeneralizedCoordinates& Q,
-                bool updateKin = true
+                rigidbody::Joints& updatedModel,
+                const rigidbody::GeneralizedCoordinates& Q
             );
 
             /// 
             /// \brief The forces in a rbdl compatible format. 
+            /// \param updatedModel The joint model that with its kinematics updated
             /// \param Q The generalized coordinates
             /// \param Qdot The generalized velocity
-            /// \param updateKin If the kinematics of the model should be computed
             /// 
             std::vector<utils::SpatialVector> computeSpatialVectors(
+                rigidbody::Joints& updatedModel,
                 const rigidbody::GeneralizedCoordinates& Q,
-                const rigidbody::GeneralizedVelocity& Qdot,
-                bool updateKin = true
+                const rigidbody::GeneralizedVelocity& Qdot
             );
 #endif // !SWIG
 
