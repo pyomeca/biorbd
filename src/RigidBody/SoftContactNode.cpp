@@ -74,18 +74,25 @@ utils::SpatialVector rigidbody::SoftContactNode::computeForceAtOrigin(
         const GeneralizedVelocity &Qdot,
         bool updateKin)
 {
-    unsigned int id = model.GetBodyId(parent().c_str());
-    utils::Vector3d dx(rigidbody::NodeSegment(model.CalcPointVelocity(Q, Qdot, id, *this, updateKin)));
+#ifdef BIORBD_USE_CASADI_MATH
+    Joints
+#else
+    Joints& 
+#endif
+    updatedModel = model.UpdateKinematicsCustom(updateKin? &Q: nullptr, updateKin? &Qdot: nullptr, nullptr);
     updateKin = false;
 
-    utils::Vector3d x(model.CalcBodyToBaseCoordinates(Q, id, *this, updateKin));
-    utils::Vector3d angularVelocity(model.CalcPointVelocity6D(Q, Qdot, id, utils::Vector3d(0, 0, 0), updateKin).block(0, 0, 3, 1));
+    unsigned int id = updatedModel.GetBodyId(parent().c_str());
+    utils::Vector3d dx(rigidbody::NodeSegment(updatedModel.CalcPointVelocity(Q, Qdot, id, *this, updateKin)));
+
+    utils::Vector3d x(updatedModel.CalcBodyToBaseCoordinates(Q, id, *this, updateKin));
+    utils::Vector3d angularVelocity(updatedModel.CalcPointVelocity6D(Q, Qdot, id, utils::Vector3d(0, 0, 0), updateKin).block(0, 0, 3, 1));
 
     utils::Vector3d force(computeForce(x, dx, angularVelocity));
 
     // Transport to CoM (Bour's formula)
-    const utils::Vector3d& CoM(model.segment(parent()).characteristics().CoM());
-    utils::Vector3d CoMinGlobal(model.CalcBodyToBaseCoordinates(Q, id, CoM, updateKin));
+    const utils::Vector3d& CoM(updatedModel.segment(parent()).characteristics().CoM());
+    utils::Vector3d CoMinGlobal(updatedModel.CalcBodyToBaseCoordinates(Q, id, CoM, updateKin));
 
     // Find the application point of the force
     utils::SpatialVector out(0., 0., 0., 0., 0., 0.);

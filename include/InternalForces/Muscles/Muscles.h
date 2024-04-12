@@ -146,23 +146,43 @@ public:
 
     ///
     /// \brief Update all the muscles (positions, jacobian, etc.)
+    /// \param updatedModel The model previously updated to proper kinematic level
     /// \param Q The generalized coordinates
-    /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
+    ///
+    void updateMuscles(
+        rigidbody::Joints& updatedModel,
+        const rigidbody::GeneralizedCoordinates& Q);
+
+    ///
+    /// \brief Update all the muscles (positions, jacobian, etc.)
+    /// \param Q The generalized coordinates
+    /// \param updateKin If the joint model should be updated
     ///
     void updateMuscles(
         const rigidbody::GeneralizedCoordinates& Q,
-        bool updateKin);
+        bool updateKin = true);
+
+    ///
+    /// \brief Update all the muscles (positions, jacobian, etc.)
+    /// \param updatedModel The model previously updated to proper kinematic level
+    /// \param Q The generalized coordinates
+    /// \param Qdot The generalized velocities
+    ///
+    void updateMuscles(
+        rigidbody::Joints& updatedModel,
+        const rigidbody::GeneralizedCoordinates& Q,
+        const rigidbody::GeneralizedVelocity& Qdot);
 
     ///
     /// \brief Update all the muscles (positions, jacobian, etc.)
     /// \param Q The generalized coordinates
     /// \param Qdot The generalized velocities
-    /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
+    /// \param updateKin If the joint model should be updated
     ///
     void updateMuscles(
         const rigidbody::GeneralizedCoordinates& Q,
         const rigidbody::GeneralizedVelocity& Qdot,
-        bool updateKin);
+        bool updateKin = true);
 
     ///
     /// \brief Update by hand all the muscles (positions, jacobian, velocity, etc.)
@@ -211,8 +231,10 @@ public:
     ///
     /// \brief Compute the muscular joint torque
     /// \param F The force vector of all the muscles
+    /// \param updatedModel The model previously updated to proper kinematic level
     /// \param Q The generalized coordinates
     /// \param Qdot The generalized velocities
+    /// \param updatedModel The model previously updated to proper kinematic level
     ///
     /// This function updates the muscles and then performs the computation for
     /// the muscular joint torque is done from virtual power:
@@ -221,12 +243,32 @@ public:
     ///
     /// where \f$J\f$ is the muscle lengths jacobian and \f$F\f$ is the force vector of all the muscles
     ///
-    /// Warning: This function assumes that muscles are already updated (via `updateMuscles`)
+    rigidbody::GeneralizedTorque muscularJointTorque(
+        const utils::Vector& F,
+        rigidbody::Joints& updatedModel,
+        const rigidbody::GeneralizedCoordinates& Q,
+        const rigidbody::GeneralizedVelocity& Qdot, 
+        bool updateMuscleParameters = true);
+
+    ///
+    /// \brief Compute the muscular joint torque
+    /// \param F The force vector of all the muscles
+    /// \param Q The generalized coordinates
+    /// \param Qdot The generalized velocities
+    /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
+    ///
+    /// This function updates the muscles and then performs the computation for
+    /// the muscular joint torque is done from virtual power:
+    ///
+    /// i.e. \f$-J \times F\f$
+    ///
+    /// where \f$J\f$ is the muscle lengths jacobian and \f$F\f$ is the force vector of all the muscles
     ///
     rigidbody::GeneralizedTorque muscularJointTorque(
         const utils::Vector& F,
         const rigidbody::GeneralizedCoordinates& Q,
-        const rigidbody::GeneralizedVelocity& Qdot);
+        const rigidbody::GeneralizedVelocity& Qdot, 
+        int updateKin = 2);
 
     ///
     /// \brief Compute the muscular joint torque
@@ -246,9 +288,31 @@ public:
 
     ///
     /// \brief Compute the muscular joint torque
+    /// \param updatedModel The model previously updated to proper kinematic level
     /// \param emg The dynamic state to compute the force vector
     /// \param Q The generalized coordinates (not needed if updateKin is false)
     /// \param Qdot The generalized velocities (not needed if updateKin is false)
+    /// \param updateMuscleParameters Update the kinematic related parameters of the muscles
+    ///
+    /// The computation for the muscular joint torque is done from virtual power:
+    ///
+    /// i.e. \f$-J \times F\f$
+    ///
+    /// where \f$J\f$ is the muscle lengths jacobian and \f$F\f$ is the force vector of all the muscles
+    ///
+    rigidbody::GeneralizedTorque muscularJointTorque(
+        rigidbody::Joints& updatedModel,
+        const std::vector<std::shared_ptr<State>>& emg,
+        const rigidbody::GeneralizedCoordinates& Q,
+        const rigidbody::GeneralizedVelocity& Qdot,
+        bool updateMuscleParameters = true);
+
+    ///
+    /// \brief Compute the muscular joint torque
+    /// \param emg The dynamic state to compute the force vector
+    /// \param Q The generalized coordinates (not needed if updateKin is false)
+    /// \param Qdot The generalized velocities (not needed if updateKin is false)
+    /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
     ///
     /// The computation for the muscular joint torque is done from virtual power:
     ///
@@ -259,7 +323,8 @@ public:
     rigidbody::GeneralizedTorque muscularJointTorque(
         const std::vector<std::shared_ptr<State>>& emg,
         const rigidbody::GeneralizedCoordinates& Q,
-        const rigidbody::GeneralizedVelocity& Qdot);
+        const rigidbody::GeneralizedVelocity& Qdot,
+        int updateKin = 2);
 
     ///
     /// \brief Interface that returns in a vector all the activations dot
@@ -279,11 +344,25 @@ public:
 
     ///
     /// \brief Compute and return the muscle length Jacobian
+    /// \param updatedModel The model previously updated to proper kinematic level
     /// \param Q The generalized coordinates
+    /// \param updateMuscleParameters Update the kinematic related parameters of the muscles
     /// \return The muscle length Jacobian
     ///
     utils::Matrix musclesLengthJacobian(
-        const rigidbody::GeneralizedCoordinates& Q);
+        rigidbody::Joints& updatedModel,
+        const rigidbody::GeneralizedCoordinates& Q, 
+        bool updateMuscleParameters = true);
+
+    ///
+    /// \brief Compute and return the muscle length Jacobian
+    /// \param Q The generalized coordinates
+    /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
+    /// \return The muscle length Jacobian
+    ///
+    utils::Matrix musclesLengthJacobian(
+        const rigidbody::GeneralizedCoordinates& Q, 
+        int updateKin = 2);
 
     ///
     /// \brief Compute and return the muscle forces
@@ -297,15 +376,33 @@ public:
 
     ///
     /// \brief Compute and return the muscle forces
+    /// \param updatedModel The model previously updated to proper kinematic level
     /// \param emg The dynamic state
     /// \param Q The generalized coordinates
     /// \param Qdot The generalized velocities
+    /// \param updateMuscleParameters Update the kinematic related parameters of the muscles
+    /// \return The muscle forces
+    ///
+    utils::Vector muscleForces(
+        rigidbody::Joints& updatedModel,
+        const std::vector<std::shared_ptr<State>>& emg,
+        const rigidbody::GeneralizedCoordinates& Q,
+        const rigidbody::GeneralizedVelocity& Qdot, 
+        bool updateMuscleParameters = true);
+
+    ///
+    /// \brief Compute and return the muscle forces
+    /// \param emg The dynamic state
+    /// \param Q The generalized coordinates
+    /// \param Qdot The generalized velocities
+    /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
     /// \return The muscle forces
     ///
     utils::Vector muscleForces(
         const std::vector<std::shared_ptr<State>>& emg,
         const rigidbody::GeneralizedCoordinates& Q,
-        const rigidbody::GeneralizedVelocity& Qdot);
+        const rigidbody::GeneralizedVelocity& Qdot, 
+        int updateKin = 2);
 
     ///
     /// \brief Return the total number of muscle groups

@@ -133,21 +133,19 @@ void internal_forces::muscles::Muscle::setType()
 }
 
 void internal_forces::muscles::Muscle::updateOrientations(
-    rigidbody::Joints& model,
-    const rigidbody::GeneralizedCoordinates &Q,
-    int updateKinLevel)
+    rigidbody::Joints& updatedModel,
+    const rigidbody::GeneralizedCoordinates &Q)
 {
     // Update de la position des insertions et origines
-    m_position->updateKinematics(model, *m_characteristics, *m_pathChanger, &Q, nullptr, updateKinLevel);
+    m_position->updateKinematics(updatedModel, *m_characteristics, *m_pathChanger, &Q, nullptr);
 }
 void internal_forces::muscles::Muscle::updateOrientations(
-    rigidbody::Joints& model,
+    rigidbody::Joints& updatedModel,
     const rigidbody::GeneralizedCoordinates &Q,
-    const rigidbody::GeneralizedVelocity &Qdot,
-    int updateKinLevel)
+    const rigidbody::GeneralizedVelocity &Qdot)
 {
     // Update de la position des insertions et origines
-    m_position->updateKinematics(model, *m_characteristics, *m_pathChanger, &Q, &Qdot, updateKinLevel);
+    m_position->updateKinematics(updatedModel, *m_characteristics, *m_pathChanger, &Q, &Qdot);
 }
 void internal_forces::muscles::Muscle::updateOrientations(
     std::vector<utils::Vector3d>& musclePointsInGlobal,
@@ -176,46 +174,30 @@ const internal_forces::muscles::MuscleGeometry &internal_forces::muscles::Muscle
 }
 
 const utils::Scalar& internal_forces::muscles::Muscle::length(
-    rigidbody::Joints& model,
+    rigidbody::Joints& updatedModel,
     const rigidbody::GeneralizedCoordinates &Q,
-    int updateKinLevel)
+    bool updateMuscleParameters)
 {
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKinLevel = 2;
-#endif
-    if (updateKinLevel != 0) {
-        m_position->updateKinematics(model, *m_characteristics, *m_pathChanger, &Q, nullptr, updateKinLevel);
-    }
+    if (updateMuscleParameters) m_position->updateKinematics(updatedModel, *m_characteristics, *m_pathChanger, &Q, nullptr);
     return position().length();
 }
 
 const utils::Scalar& internal_forces::muscles::Muscle::musculoTendonLength(
-    rigidbody::Joints &m,
+    rigidbody::Joints &updatedModel,
     const rigidbody::GeneralizedCoordinates &Q,
-    int updateKinLevel)
+    bool updateMuscleParameters)
 {
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKinLevel = 2;
-#endif
-    if (updateKinLevel != 0) {
-        m_position->updateKinematics(m, *m_characteristics, *m_pathChanger, &Q, nullptr, updateKinLevel);
-    }
+    if (updateMuscleParameters) m_position->updateKinematics(updatedModel, *m_characteristics, *m_pathChanger, &Q, nullptr);
     return position().musculoTendonLength();
 }
 
 const utils::Scalar& internal_forces::muscles::Muscle::velocity(
-    rigidbody::Joints &model,
+    rigidbody::Joints &updatedModel,
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot,
-    bool updateKin)
+    bool updateMuscleParameters)
 {
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = true;
-#endif
-    if (updateKin) {
-        m_position->updateKinematics(model, *m_characteristics, *m_pathChanger, &Q, &Qdot, 2);
-    }
-
+    if (updateMuscleParameters) m_position->updateKinematics(updatedModel, *m_characteristics, *m_pathChanger, &Q, &Qdot);
     return m_position->velocity();
 }
 
@@ -238,11 +220,11 @@ void internal_forces::muscles::Muscle::computeForce(const internal_forces::muscl
 
 const std::vector<utils::Vector3d>&
 internal_forces::muscles::Muscle::musclesPointsInGlobal(
-    rigidbody::Joints &model,
-    const rigidbody::GeneralizedCoordinates &Q)
+    rigidbody::Joints &updatedModel,
+    const rigidbody::GeneralizedCoordinates &Q, 
+    bool updateMuscleParameters)
 {
-    m_position->updateKinematics(model,*m_characteristics,*m_pathChanger,&Q,nullptr,2);
-
+    if (updateMuscleParameters) m_position->updateKinematics(updatedModel, *m_characteristics, *m_pathChanger, &Q, nullptr);
     return musclesPointsInGlobal();
 }
 

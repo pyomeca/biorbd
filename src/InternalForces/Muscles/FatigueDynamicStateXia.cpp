@@ -44,8 +44,8 @@ void internal_forces::muscles::FatigueDynamicStateXia::timeDerivativeState(
     const internal_forces::muscles::Characteristics &characteristics)
 {
 #ifdef BIORBD_USE_CASADI_MATH
-    utils::Error::raise("timeDerivativeState for FatigueDynamicStateXia"
-                                " is not implemented yet");
+    utils::Error::raise(
+        "timeDerivativeState for FatigueDynamicStateXia is not implemented yet");
 #else
     // Getting the command
     utils::Scalar targetCommand(emg.activation());

@@ -119,65 +119,61 @@ public:
 
     ///
     /// \brief Get the length of the muscle
-    /// \param model The joint model
+    /// \param updatedModel The joint model previously updated to the proper level
     /// \param Q The generalized coordinates
-    /// \param updateKinLevel Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
+    /// \param updateMuscleParameters Update the kinematic related parameters of the muscles
     /// \return The length of the muscle
     ///
     const utils::Scalar& length(
-        rigidbody::Joints& model,
+        rigidbody::Joints& updatedModel,
         const rigidbody::GeneralizedCoordinates& Q,
-        int updateKinLevel = 2);
+        bool updateMuscleParameters = true);
 
     ///
     /// \brief Return the musculo tendon length
-    /// \param model The joint model
+    /// \param updatedModel The joint model previously updated to the proper level
     /// \param Q The generalized coordinates
-    /// \param updateKinLevel Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
+    /// \param updateMuscleParameters Update the kinematic related parameters of the muscles
     /// \return The musculo tendon length
     ///
     const utils::Scalar& musculoTendonLength(
-        rigidbody::Joints& model,
+        rigidbody::Joints& updatedModel,
         const rigidbody::GeneralizedCoordinates& Q,
-        int updateKinLevel = 2);
+        bool updateMuscleParameters = true);
 
     ///
     /// \brief Return the velocity of the muscle
-    /// \param model The joint model
+    /// \param updatedModel The joint model previously updated to the proper level
     /// \param Q The generalized coordinates
     /// \param Qdot The generalized velocities
-    /// \param updateKin Update kinematics (false: don't update, [true: both kinematics and muscles])
-    //// \return The velocity of the muscle
+    /// \param updateMuscleParameters Update the kinematic related parameters of the muscles
+    /// \return The velocity of the muscle
     ///
     const utils::Scalar& velocity(
-        rigidbody::Joints& model,
+        rigidbody::Joints& updatedModel,
         const rigidbody::GeneralizedCoordinates& Q,
         const rigidbody::GeneralizedVelocity& Qdot,
-        bool updateKin = true);
+        bool updateMuscleParameters = true);
 
     ///
     /// \brief Update the position of the origin and insertion positions of the muscle
-    /// \param model The joint model
+    /// \param updatedModel The joint model previously updated to the proper level
     /// \param Q The generalized coordinates
-    /// \param updateKinLevel Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
     ///
     void updateOrientations(
-        rigidbody::Joints &model,
-        const rigidbody::GeneralizedCoordinates &Q,
-        int updateKinLevel = 2);
+        rigidbody::Joints& updatedModel,
+        const rigidbody::GeneralizedCoordinates &Q);
 
     ///
     /// \brief Update the position of the origin and insertion nodes of the muscle
-    /// \param model The joint model
+    /// \param updatedModel The joint model previously updated to the proper level
     /// \param Q The generalized coordinates
     /// \param Qdot The generalized velocities
-    /// \param updateKinLevel Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
     ///
     void updateOrientations(
-        rigidbody::Joints &model,
+        rigidbody::Joints& updatedModel,
         const rigidbody::GeneralizedCoordinates &Q,
-        const rigidbody::GeneralizedVelocity &Qdot,
-        int updateKinLevel = 2);
+        const rigidbody::GeneralizedVelocity &Qdot);
 
     ///
     /// \brief Update by hand the position of the origin and insertion nodes of the muscle
@@ -227,13 +223,15 @@ public:
 
     ///
     /// \brief Return the muscle points in global reference frame
-    /// \param model The joint model
+    /// \param updatedModel The joint model
     /// \param Q The generalized coordinates
+    /// \param updateMuscleParameters Update the kinematic related parameters of the muscles
     /// \return The muscle points in global reference frame
     ///
     const std::vector<utils::Vector3d>& musclesPointsInGlobal(
-        rigidbody::Joints &model,
-        const rigidbody::GeneralizedCoordinates &Q);
+        rigidbody::Joints &updatedModel,
+        const rigidbody::GeneralizedCoordinates &Q, 
+        bool updateMuscleParameters = true);
 
     ///
     /// \brief Return the previously computed muscle points in global reference frame
@@ -288,33 +286,33 @@ public:
 
     ///
     /// \brief Return the computed force norm from EMG
-    /// \param model The joints model
+    /// \param updatedModel The joint model previously updated to the proper level
     /// \param Q The generalized coordinates of the model
     /// \param Qdot The generalized velocities of the model
     /// \param emg EMG data
-    /// \param updateKinLevel Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
+    /// \param updateMuscleParameters Update the kinematic related parameters of the muscles
     /// \return The computed force from EMG
     ///
     virtual const utils::Scalar& force(
-        rigidbody::Joints& model,
+        rigidbody::Joints& updatedModel,
         const rigidbody::GeneralizedCoordinates& Q,
         const rigidbody::GeneralizedVelocity& Qdot,
         const State& emg,
-        int updateKinLevel = 2) = 0;
+        bool updateMuscleParameters = true) = 0;
 
     ///
     /// \brief Return the computed force norm from EMG
-    /// \param model The joints model
+    /// \param updatedModel The joint model previously updated to the proper level
     /// \param Q The generalized coordinates of the model
     /// \param emg EMG data
-    /// \param updateKinLevel Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
+    /// \param updateMuscleParameters Update the kinematic related parameters of the muscles
     /// \return The computed force from EMG
     ///
     virtual const utils::Scalar& force(
-        rigidbody::Joints& model,
+        rigidbody::Joints& updatedModel,
         const rigidbody::GeneralizedCoordinates& Q,
         const State& emg,
-        int updateKinLevel = 2) = 0;
+        bool updateMuscleParameters = true) = 0;
 
     ///
     /// \brief Return the type of the muscle

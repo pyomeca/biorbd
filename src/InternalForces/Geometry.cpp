@@ -91,28 +91,11 @@ void internal_forces::Geometry::DeepCopy(const internal_forces::Geometry &other)
 
 // ------ PUBLIC FUNCTIONS ------ //
 void internal_forces::Geometry::updateKinematics(
-    rigidbody::Joints &model,
+    rigidbody::Joints &updatedModel,
     const rigidbody::GeneralizedCoordinates *Q,
-    const rigidbody::GeneralizedVelocity *Qdot,
-    int updateKin)
+    const rigidbody::GeneralizedVelocity *Qdot)
 {
-    if (*m_posAndJacoWereForced) {
-        utils::Error::warning(
-            false, "Warning, using updateKinematics overrides the previously sent position and jacobian");
-        *m_posAndJacoWereForced = false;
-    }
-
-    // Make sure the model is in the right configuration
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = 2;
-#endif
-
-#ifdef BIORBD_USE_CASADI_MATH
-    rigidbody::Joints
-#else
-    rigidbody::Joints&
-#endif
-    updatedModel = model.UpdateKinematicsCustom(updateKin > 1 ? Q : nullptr, updateKin > 1 ? Qdot : nullptr);
+    *m_posAndJacoWereForced = false;
 
     // Position of the points in space
     setPointsInGlobal(updatedModel, *Q);
@@ -123,30 +106,14 @@ void internal_forces::Geometry::updateKinematics(
     // Complete the update
     _updateKinematics(Qdot, nullptr);
 }
-void internal_forces::Geometry::updateKinematics(rigidbody::Joints
-        &model,
-        internal_forces::PathModifiers &pathModifiers,
-        const rigidbody::GeneralizedCoordinates *Q,
-        const rigidbody::GeneralizedVelocity *Qdot,
-        int updateKin)
+
+void internal_forces::Geometry::updateKinematics(
+    rigidbody::Joints& updatedModel,
+    internal_forces::PathModifiers &pathModifiers,
+    const rigidbody::GeneralizedCoordinates *Q,
+    const rigidbody::GeneralizedVelocity *Qdot)
 {
-    if (*m_posAndJacoWereForced) {
-        utils::Error::warning(
-            false, "Warning, using updateKinematics overrides the previously sent position and jacobian");
-        *m_posAndJacoWereForced = false;
-    }
-    
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = 2;
-#endif
-
-#ifdef BIORBD_USE_CASADI_MATH
-    rigidbody::Joints
-#else
-    rigidbody::Joints&
-#endif
-     updatedModel = model.UpdateKinematicsCustom(updateKin > 1 ? Q : nullptr, updateKin > 1 ? Qdot : nullptr);
-
+    *m_posAndJacoWereForced = false;
     // Position of the points in space
     setPointsInGlobal(updatedModel, *Q, &pathModifiers);
 
@@ -337,24 +304,22 @@ void internal_forces::Geometry::setPointsInGlobal(
     // Do not apply on wrapping objects
     if (pathModifiers->nbWraps()!=0) {
         // CHECK TO MODIFY BEFOR GOING FORWARD WITH PROJECTS
-        utils::Error::check(pathModifiers->nbVia() == 0,
-                                    "Cannot mix wrapping and via points yet") ;
-        utils::Error::check(pathModifiers->nbWraps() < 2,
-                                    "Cannot compute more than one wrapping yet");
+        utils::Error::check(
+            pathModifiers->nbVia() == 0, "Cannot mix wrapping and via points yet") ;
+        utils::Error::check(
+            pathModifiers->nbWraps() < 2, "Cannot compute more than one wrapping yet");
 
         // Get the matrix of Rt of the wrap
         internal_forces::WrappingObject& w =
             static_cast<internal_forces::WrappingObject&>(pathModifiers->object(0));
-        const utils::RotoTrans& RT = w.RT(model,Q);
+        const utils::RotoTrans& RT = w.RT(model, Q, false);
 
         // Alias
         const utils::Vector3d& po_mus = originInGlobal(model, Q);  // Origin on bone
         const utils::Vector3d& pi_mus = insertionInGlobal(model, Q); // Insertion on bone
 
-        utils::Vector3d pi_wrap(0, 0,
-                                        0); // point on the wrapping related to insertion
-        utils::Vector3d po_wrap(0, 0,
-                                        0); // point on the wrapping related to origin
+        utils::Vector3d pi_wrap(0, 0, 0); // point on the wrapping related to insertion
+        utils::Vector3d po_wrap(0, 0, 0); // point on the wrapping related to origin
 
         utils::Scalar a; // Force the computation of the length
         w.wrapPoints(RT,po_mus,pi_mus,po_wrap, pi_wrap, &a);

@@ -62,36 +62,38 @@ public:
 
     ///
     /// \brief Updates the position and dynamic elements of the muscles.
-    /// \param model The joint model
+    /// \param updatedModel The joint model updated to the proper kinematics level
     /// \param Q The generalized coordinates of the joints (not needed if updateKin is less than 2)
     /// \param Qdot The generalized velocities of the joints (not needed if updateKin is less than 2)
-    /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
     ///
     /// updateKinematics MUST be called before retreiving data that are dependent on Q and/or Qdot
+    /// 
+    /// WARNING If one used updateKinematics providing the jacobian, using updateKinematics overrides
+    /// this previously sent position and jacobian
     ///
     void updateKinematics(
-        rigidbody::Joints &model,
+        rigidbody::Joints &updatedModel,
         const rigidbody::GeneralizedCoordinates* Q = nullptr,
-        const rigidbody::GeneralizedVelocity* Qdot = nullptr,
-        int updateKin = 2);
+        const rigidbody::GeneralizedVelocity* Qdot = nullptr);
 
     ///
     /// \brief Updates the position and dynamic elements of the muscles.
-    /// \param model The joint model
+    /// \param updatedModel The joint model updated to the proper kinematics level
     /// \param characteristics The muscle characteristics
     /// \param pathModifiers The path modifiers
     /// \param Q The generalized coordinates of the joints (not needed if updateKin is less than 2)
     /// \param Qdot The generalized velocities of the joints (not needed if updateKin is less than 2)
-    /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
     ///
     /// updateKinematics MUST be called before retreiving data that are dependent on Q and/or Qdot
+    /// 
+    /// WARNING If one used updateKinematics providing the jacobian, using updateKinematics overrides
+    /// this previously sent position and jacobian
     ///
     void updateKinematics(
-        rigidbody::Joints &model,
+        rigidbody::Joints &updatedModel,
         internal_forces::PathModifiers& pathModifiers,
         const rigidbody::GeneralizedCoordinates* Q = nullptr,
-        const rigidbody::GeneralizedVelocity* Qdot = nullptr,
-        int updateKin = 2);
+        const rigidbody::GeneralizedVelocity* Qdot = nullptr);
 
     ///
     /// \brief Updates the position and dynamic elements of the muscles by hand.

@@ -1556,7 +1556,11 @@ TEST(Markers, individualPositions)
 
     // One marker at a time, only update Q once
     for (size_t i=0; i<model.nbMarkers(); ++i) {
+#ifdef BIORBD_USE_CASADI_MATH
+        bool updateKin = true;
+#else
         bool updateKin = i == 0;
+#endif
         CALL_BIORBD_FUNCTION_1ARG2PARAMS(marker, model, marker, Q, i, updateKin);
         for (size_t j = 0; j < 3; ++j) {
             EXPECT_NEAR(static_cast<double>(marker(j)), expectedMarkers[i][j], requiredPrecision);
@@ -1573,7 +1577,11 @@ TEST(Markers, individualPositions)
     };
     // One marker at a time, only update Q once
     for (size_t i=0; i<model.nbMarkers(); ++i) {
+#ifdef BIORBD_USE_CASADI_MATH
+        bool updateKin = true;
+#else
         bool updateKin = i == 0;
+#endif
         CALL_BIORBD_FUNCTION_1ARG2PARAMS(marker, model, marker, Q, i, updateKin);
         for (size_t j = 0; j < 3; ++j) {
             EXPECT_NEAR(static_cast<double>(marker(j)), expectedMarkers2[i][j], requiredPrecision);
@@ -2005,7 +2013,7 @@ TEST(ExternalForces, toRbdl_externalForcesOnly)
     rigidbody::ExternalForceSet externalForces = model.externalForceSet(false, false);
     RigidBodyDynamics::Math::SpatialVector sp_dof4(1, 2, 3, 4, 5, 6);
     externalForces.add("Seg1", sp_dof4);
-    std::vector<RigidBodyDynamics::Math::SpatialVector> forceInRbdl = externalForces.computeRbdlSpatialVectors();
+    std::vector<RigidBodyDynamics::Math::SpatialVector> forceInRbdl = externalForces.computeRbdlSpatialVectors(model);
 
     RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
     std::vector<RigidBodyDynamics::Math::SpatialVector> sp_expected;
@@ -2023,19 +2031,18 @@ TEST(ExternalForces, toRbdl_externalForcesOnly)
         }
     }
 }
+
 TEST(ExternalForces, toRbdl_LocalForcesOnly)
 {
     Model model(modelWithRigidContactsExternalForces);
     DECLARE_GENERALIZED_COORDINATES(Q, model);
-    DECLARE_GENERALIZED_VELOCITY(Qdot, model);
-    DECLARE_GENERALIZED_ACCELERATION(Qddot, model);
     FILL_VECTOR(Q, std::vector<double>({ -2.01, -3.01, -3.01, 0.1 }));
+    auto& updatedModel = model.UpdateKinematicsCustom(&Q);
     
     rigidbody::ExternalForceSet externalForces = model.externalForceSet(false, false);
     externalForces.addInSegmentReferenceFrame(
-        "Seg1", RigidBodyDynamics::Math::SpatialVector(1, 2, 3, 4, 5, 6), utils::Vector3d(1, 2, 3)
-    );
-    std::vector<RigidBodyDynamics::Math::SpatialVector> forceInRbdl = externalForces.computeRbdlSpatialVectors(Q);
+        "Seg1", RigidBodyDynamics::Math::SpatialVector(1, 2, 3, 4, 5, 6), utils::Vector3d(1, 2, 3));
+    std::vector<RigidBodyDynamics::Math::SpatialVector> forceInRbdl = externalForces.computeRbdlSpatialVectors(updatedModel, Q);
 
     RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
     RigidBodyDynamics::Math::SpatialVector sp_dof4(-3.7077892190493884, 5.4142479088233468, 3.9325084878828047, 4.5790171609930725, 5, 5.5706913250808423);
@@ -2061,13 +2068,14 @@ TEST(ExternalForces, toRbdl_linearForcesOnly)
     DECLARE_GENERALIZED_COORDINATES(Q, model);
     FILL_VECTOR(Q, std::vector<double>(
         { -2.01, -3.01, -3.01, 0.1, 0.2, 0.3, -2.01, -3.01, -3.01, 0.1, 0.2, 0.3, 0.4 }));
+    auto& updatedModel = model.UpdateKinematicsCustom(&Q);
 
     rigidbody::ExternalForceSet externalForces = model.externalForceSet(true, false);
     externalForces.addTranslationalForce(utils::Vector3d(0, 1, 2), model.rigidContact(0));
     externalForces.addTranslationalForce(utils::Vector3d(0, 0, 3), model.rigidContact(1));
     externalForces.addTranslationalForce(utils::Vector3d(0, 4, 5), model.rigidContact(2));
     externalForces.addTranslationalForce(utils::Vector3d(0, 0, 6), model.rigidContact(3));
-    std::vector<RigidBodyDynamics::Math::SpatialVector> forceInRbdl = externalForces.computeRbdlSpatialVectors(Q);
+    std::vector<RigidBodyDynamics::Math::SpatialVector> forceInRbdl = externalForces.computeRbdlSpatialVectors(updatedModel, Q);
 
     RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
     RigidBodyDynamics::Math::SpatialVector sp_dof10(-7.592268755852077, -0.7864099999999999, 0.14995, 0, 1.0, 5.0);
@@ -2104,9 +2112,10 @@ TEST(ExternalForces, toRbdl_softContactOnly)
     DECLARE_GENERALIZED_VELOCITY(Qdot, model);
     FILL_VECTOR(Q, std::vector<double>({ -2.01, -3.01, -3.01, 0.1 }));
     FILL_VECTOR(Qdot, std::vector<double>({ -2.01, -3.01, -3.01, 0.1 }));
+    auto& updatedModel = model.UpdateKinematicsCustom(&Q, &Qdot);
 
     rigidbody::ExternalForceSet externalForces = model.externalForceSet(false, true);
-    std::vector<RigidBodyDynamics::Math::SpatialVector> forceInRbdl = externalForces.computeRbdlSpatialVectors(Q, Qdot);
+    std::vector<RigidBodyDynamics::Math::SpatialVector> forceInRbdl = externalForces.computeRbdlSpatialVectors(updatedModel, Q, Qdot);
 
     RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
     RigidBodyDynamics::Math::SpatialVector sp_dof4(185392.9862903644, -249642.95301694548, 238700.3791127471, 74247.2670562476, 102146.62960989607, 49317.07505542255);
@@ -2132,12 +2141,13 @@ TEST(ExternalForces, toRbdl_externalForcesAndLinearForces)
     Model model(modelWithRigidContactsExternalForces);
     DECLARE_GENERALIZED_COORDINATES(Q, model);
     FILL_VECTOR(Q, std::vector<double>({ -2.01, -3.01, -3.01, 0.1 }));
+    auto& updatedModel = model.UpdateKinematicsCustom(&Q);
 
     rigidbody::ExternalForceSet externalForces = model.externalForceSet(true, false);
     externalForces.add("Seg1", utils::SpatialVector(1, 2, 3, 4, 5, 6));
     externalForces.addTranslationalForce(utils::Vector3d(0, 1, 2), model.rigidContact(0));
     externalForces.addTranslationalForce(utils::Vector3d(0, 0, 3), model.rigidContact(1));
-    std::vector<RigidBodyDynamics::Math::SpatialVector> forceInRbdl = externalForces.computeRbdlSpatialVectors(Q);
+    std::vector<RigidBodyDynamics::Math::SpatialVector> forceInRbdl = externalForces.computeRbdlSpatialVectors(updatedModel, Q);
 
     RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
     RigidBodyDynamics::Math::SpatialVector sp_dof4(-10.694693700837254, 12.040834024296124, 0.98598321280716972, 4, 6, 11);
@@ -2164,11 +2174,12 @@ TEST(ExternalForces, toRbdl_softContactAndLinearForces)
     DECLARE_GENERALIZED_VELOCITY(Qdot, model);
     FILL_VECTOR(Q, std::vector<double>({ -2.01, -3.01, -3.01, 0.1 }));
     FILL_VECTOR(Qdot, std::vector<double>({ -2.01, -3.01, -3.01, 0.1 }));
+    auto& updatedModel = model.UpdateKinematicsCustom(&Q, &Qdot);
 
     rigidbody::ExternalForceSet externalForces = model.externalForceSet();
     externalForces.addTranslationalForce(utils::Vector3d(0, 1, 2), model.rigidContact(0));
     externalForces.addTranslationalForce(utils::Vector3d(0, 0, 3), model.rigidContact(1));
-    std::vector<RigidBodyDynamics::Math::SpatialVector> forceInRbdl = externalForces.computeRbdlSpatialVectors(Q, Qdot);
+    std::vector<RigidBodyDynamics::Math::SpatialVector> forceInRbdl = externalForces.computeRbdlSpatialVectors(updatedModel, Q, Qdot);
 
     RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
     RigidBodyDynamics::Math::SpatialVector sp_dof4(185381.29159666356, -249632.91218292119, 238698.36509595989, 74247.267056247598, 102147.62960989607, 49322.075055422552);
@@ -2195,10 +2206,11 @@ TEST(ExternalForces, toRbdl_externalForcesAndSoftContacts)
     DECLARE_GENERALIZED_VELOCITY(Qdot, model);
     FILL_VECTOR(Q, std::vector<double>({ -2.01, -3.01, -3.01, 0.1 }));
     FILL_VECTOR(Qdot, std::vector<double>({ -2.01, -3.01, -3.01, 0.1 }));
+    auto& updatedModel = model.UpdateKinematicsCustom(&Q, &Qdot);
 
     rigidbody::ExternalForceSet externalForces = model.externalForceSet(false, true);
     externalForces.add("Seg1", utils::SpatialVector(1, 2, 3, 4, 5, 6));
-    std::vector<RigidBodyDynamics::Math::SpatialVector> forceInRbdl = externalForces.computeRbdlSpatialVectors(Q, Qdot);
+    std::vector<RigidBodyDynamics::Math::SpatialVector> forceInRbdl = externalForces.computeRbdlSpatialVectors(updatedModel, Q, Qdot);
    
     RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
     RigidBodyDynamics::Math::SpatialVector sp_dof4(185393.98629036441, -249640.95301694548, 238703.37911274709, 74251.267056247598, 102151.62960989607, 49323.075055422552);
@@ -2225,12 +2237,13 @@ TEST(ExternalForces, toRbdl_includeAll)
     DECLARE_GENERALIZED_VELOCITY(Qdot, model);
     FILL_VECTOR(Q, std::vector<double>({ -2.01, -3.01, -3.01, 0.1 }));
     FILL_VECTOR(Qdot, std::vector<double>({ -2.01, -3.01, -3.01, 0.1 }));
+    auto& updatedModel = model.UpdateKinematicsCustom(&Q, &Qdot);
 
     rigidbody::ExternalForceSet externalForces = model.externalForceSet();
     externalForces.add("Seg1", utils::SpatialVector(1, 2, 3, 4, 5, 6));
     externalForces.addTranslationalForce(utils::Vector3d(0, 1, 2), model.rigidContact(0));
     externalForces.addTranslationalForce(utils::Vector3d(0, 0, 3), model.rigidContact(1));
-    std::vector<RigidBodyDynamics::Math::SpatialVector> forceInRbdl = externalForces.computeRbdlSpatialVectors(Q, Qdot);
+    std::vector<RigidBodyDynamics::Math::SpatialVector> forceInRbdl = externalForces.computeRbdlSpatialVectors(updatedModel, Q, Qdot);
 
 
     RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
@@ -2258,15 +2271,15 @@ TEST(ExternalForces, toRbdl_failings)
     DECLARE_GENERALIZED_COORDINATES(Q, model);
     {
         rigidbody::ExternalForceSet externalForces = model.externalForceSet(true, false);
-        EXPECT_THROW(externalForces.computeRbdlSpatialVectors(), std::runtime_error);
+        EXPECT_THROW(externalForces.computeRbdlSpatialVectors(model), std::runtime_error);
     }
     {
         rigidbody::ExternalForceSet externalForces = model.externalForceSet(false, true);
-        EXPECT_THROW(externalForces.computeRbdlSpatialVectors(), std::runtime_error);
+        EXPECT_THROW(externalForces.computeRbdlSpatialVectors(model), std::runtime_error);
     }
     {
         rigidbody::ExternalForceSet externalForces = model.externalForceSet(false, true);
-        EXPECT_THROW(externalForces.computeRbdlSpatialVectors(Q), std::runtime_error);
+        EXPECT_THROW(externalForces.computeRbdlSpatialVectors(model, Q), std::runtime_error);
     }
 }
 TEST(ExternalForces, toRbdl_externalForcesOnlyNotAtOrigin)
@@ -2276,7 +2289,7 @@ TEST(ExternalForces, toRbdl_externalForcesOnlyNotAtOrigin)
     rigidbody::ExternalForceSet externalForces = model.externalForceSet(false, false);
     RigidBodyDynamics::Math::SpatialVector sp_dof4(1, 2, 3, 4, 5, 6);
     externalForces.add("Seg1", sp_dof4, utils::Vector3d(1, 2, 3));
-    std::vector<RigidBodyDynamics::Math::SpatialVector> forceInRbdl = externalForces.computeRbdlSpatialVectors();
+    std::vector<RigidBodyDynamics::Math::SpatialVector> forceInRbdl = externalForces.computeRbdlSpatialVectors(model);
 
     RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
     std::vector<RigidBodyDynamics::Math::SpatialVector> sp_expected;

@@ -93,7 +93,7 @@ const utils::Scalar& internal_forces::muscles::IdealizedActuator::force(
     const rigidbody::GeneralizedCoordinates &,
     const rigidbody::GeneralizedVelocity &,
     const internal_forces::muscles::State &emg,
-    int)
+    bool)
 {
     computeForce(emg);
     return *m_force;
@@ -103,7 +103,7 @@ const utils::Scalar& internal_forces::muscles::IdealizedActuator::force(
     rigidbody::Joints &,
     const rigidbody::GeneralizedCoordinates &,
     const internal_forces::muscles::State &emg,
-    int)
+    bool)
 {
     computeForce(emg);
     return *m_force;

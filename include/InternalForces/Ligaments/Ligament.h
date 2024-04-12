@@ -90,53 +90,49 @@ public:
 
     ///
     /// \brief Get the length of the ligament
-    /// \param model The joint model
+    /// \param updatedModel The joint model updated to the proper kinematic level
     /// \param Q The generalized coordinates
-    /// \param updateKin Update kinematics (0: don't update, 1:only ligaments, [2: both kinematics and ligaments])
+    /// \param updateLigamentKinematics If the kinematic parameters of the ligament should be updated
     /// \return The length of the ligament
     ///
     const utils::Scalar& length(
-        rigidbody::Joints& model,
+        rigidbody::Joints& updatedModel,
         const rigidbody::GeneralizedCoordinates& Q,
-        int updateKin = 2);
+        bool updateLigamentKinematics = true);
 
     ///
     /// \brief Return the velocity of the ligament
-    /// \param model The joint model
+    /// \param updatedModel The joint model
     /// \param Q The generalized coordinates
     /// \param Qdot The generalized velocities
-    /// \param updateKin Update kinematics (0: don't update, 1:only ligaments, [2: both kinematics and ligaments])
+    /// \param updateLigamentKinematics If the kinematic parameters of the ligament should be updated
     //// \return The velocity of the ligament
     ///
     const utils::Scalar& velocity(
-        rigidbody::Joints& model,
+        rigidbody::Joints& updatedModel,
         const rigidbody::GeneralizedCoordinates& Q,
         const rigidbody::GeneralizedVelocity& Qdot,
-        bool updateKin = true);
+        bool updateLigamentKinematics = true);
 
     ///
     /// \brief Update the position of the origin and insertion positions of the ligament
-    /// \param model The joint model
+    /// \param updatedModel The joint model updated to the proper kinematic level
     /// \param Q The generalized coordinates
-    /// \param updateKin Update kinematics (0: don't update, 1:only ligaments, [2: both kinematics and ligaments])
     ///
     void updateOrientations(
-        rigidbody::Joints &model,
-        const rigidbody::GeneralizedCoordinates &Q,
-        int updateKin = 2);
+        rigidbody::Joints &updatedModel,
+        const rigidbody::GeneralizedCoordinates &Q);
 
     ///
     /// \brief Update the position of the origin and insertion nodes of the ligament
-    /// \param model The joint model
+    /// \param updatedModel The joint model updated to the proper kinematic level
     /// \param Q The generalized coordinates
     /// \param Qdot The generalized velocities
-    /// \param updateKin Update kinematics (0: don't update, 1:only ligaments, [2: both kinematics and ligaments])
     ///
     void updateOrientations(
-        rigidbody::Joints &model,
+        rigidbody::Joints &updatedModel,
         const rigidbody::GeneralizedCoordinates &Q,
-        const rigidbody::GeneralizedVelocity &Qdot,
-        int updateKin = 2);
+        const rigidbody::GeneralizedVelocity &Qdot);
 
     ///
     /// \brief Update by hand the position of the origin and insertion nodes of the ligament
@@ -186,13 +182,15 @@ public:
 
     ///
     /// \brief Return the ligament points in global reference frame
-    /// \param model The joint model
+    /// \param updatedModel The joint model updated to the proper kinematic level
     /// \param Q The generalized coordinates
+    /// \param updateLigamentKinematics If the kinematic parameters of the ligament should be updated
     /// \return The ligament points in global reference frame
     ///
     const std::vector<utils::Vector3d>& ligamentsPointsInGlobal(
-        rigidbody::Joints &model,
-        const rigidbody::GeneralizedCoordinates &Q);
+        rigidbody::Joints &updatedModel,
+        const rigidbody::GeneralizedCoordinates &Q, 
+        bool updateLigamentKinematics = true);
 
     ///
     /// \brief Return the previously computed ligament points in global reference frame
@@ -202,29 +200,29 @@ public:
 
     ///
     /// \brief Return the computed force norm
-    /// \param model The joints model
+    /// \param updatedModel The joints model
     /// \param Q The generalized coordinates of the model
     /// \param Qdot The generalized velocities of the model
-    /// \param updateKin Update kinematics (0: don't update, 1:only ligaments, [2: both kinematics and ligaments])
+    /// \param updateLigamentKinematics If the kinematic parameters of the ligament should be updated
     /// \return The computed force
     ///
     virtual const utils::Scalar& force(
-        rigidbody::Joints& model,
+        rigidbody::Joints& updatedModel,
         const rigidbody::GeneralizedCoordinates& Q,
         const rigidbody::GeneralizedVelocity& Qdot,
-        int updateKin = 2);
+        bool updateLigamentKinematics = true);
 
     ///
     /// \brief Return the computed force norm
-    /// \param model The joints model
+    /// \param updatedModel The joint model updated to the proper kinematic level
     /// \param Q The generalized coordinates of the model
-    /// \param updateKin Update kinematics (0: don't update, 1:only ligaments, [2: both kinematics and ligaments])
+    /// \param updateLigamentKinematics If the kinematic parameters of the ligament should be updated
     /// \return The computed force
     ///
     virtual const utils::Scalar& force(
-        rigidbody::Joints& model,
+        rigidbody::Joints& updatedModel,
         const rigidbody::GeneralizedCoordinates& Q,
-        int updateKin = 2);
+        bool updateLigamentKinematics = true);
 
     ///
     /// \brief Return the computed force norm. The ligament orientation had to be computed before calling this function.

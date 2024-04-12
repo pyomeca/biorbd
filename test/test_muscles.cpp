@@ -64,9 +64,10 @@ TEST(IdealizedActuator, unitTest)
                 muscle(muscleForIdealizedActuator));
         rigidbody::GeneralizedCoordinates Q(model);
         Q = Q.setOnes() / 10;
-        SCALAR_TO_DOUBLE(length, idealizedActuator.length(model, Q, 2));
-        SCALAR_TO_DOUBLE(musculoTendonLength,
-                         idealizedActuator.musculoTendonLength(model, Q, 2));
+        auto updatedModel = model.UpdateKinematicsCustom(&Q);
+
+        SCALAR_TO_DOUBLE(length, idealizedActuator.length(updatedModel, Q, true));
+        SCALAR_TO_DOUBLE(musculoTendonLength, idealizedActuator.musculoTendonLength(updatedModel, Q, true));
         EXPECT_NEAR(length, 0.066381977535807504, requiredPrecision);
         EXPECT_NEAR(musculoTendonLength, 0.1563647052655904, requiredPrecision);
     }
@@ -83,16 +84,16 @@ TEST(IdealizedActuator, unitTest)
     {
         Model model(modelPathForMuscleForce);
         rigidbody::GeneralizedCoordinates Q(model);
-        rigidbody::GeneralizedVelocity qDot(model);
+        rigidbody::GeneralizedVelocity Qdot(model);
         Q = Q.setOnes() / 10;
-        qDot = qDot.setOnes() / 10;
+        Qdot = Qdot.setOnes() / 10;
+        auto updatedModel = model.UpdateKinematicsCustom(&Q, &Qdot);
+
         internal_forces::muscles::IdealizedActuator idealizedActuator(model.
                 muscleGroup(muscleGroupForIdealizedActuator).
                 muscle(muscleForIdealizedActuator));
-        SCALAR_TO_DOUBLE(velocityTrue, idealizedActuator.velocity(model, Q, qDot,
-                         true));
-        SCALAR_TO_DOUBLE(velocityFalse, idealizedActuator.velocity(model, Q, qDot,
-                         false));
+        SCALAR_TO_DOUBLE(velocityTrue, idealizedActuator.velocity(updatedModel, Q, Qdot, true));
+        SCALAR_TO_DOUBLE(velocityFalse, idealizedActuator.velocity(updatedModel, Q, Qdot, false));
         EXPECT_NEAR(velocityTrue, 0.0022230374109936529, requiredPrecision);
         EXPECT_NEAR(velocityFalse, 0.0022230374109936529, requiredPrecision);
     }
@@ -103,15 +104,15 @@ TEST(IdealizedActuator, unitTest)
                 muscleGroup(muscleGroupForIdealizedActuator).
                 muscle(muscleForIdealizedActuator));
         rigidbody::GeneralizedCoordinates Q(model);
-        rigidbody::GeneralizedVelocity qDot(model);
+        rigidbody::GeneralizedVelocity Qdot(model);
         Q = Q.setOnes() / 10;
-        qDot = qDot.setOnes() / 10;
+        Qdot = Qdot.setOnes() / 10;
         static double activationEmgForHillTypeTest(1);
         internal_forces::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
 
         SCALAR_TO_DOUBLE(emg1, idealizedActuator.force(emg));
         SCALAR_TO_DOUBLE(emg2, idealizedActuator.force(model, Q, emg));
-        SCALAR_TO_DOUBLE(emg3, idealizedActuator.force(model, Q, qDot, emg));
+        SCALAR_TO_DOUBLE(emg3, idealizedActuator.force(model, Q, Qdot, emg));
         EXPECT_NEAR(emg1, 624.29999999999995, requiredPrecision);
         EXPECT_NEAR(emg2, 624.29999999999995, requiredPrecision);
         EXPECT_NEAR(emg3, 624.29999999999995, requiredPrecision);
@@ -271,10 +272,12 @@ TEST(IdealizedActuator, copy)
             model.muscleGroup(muscleGroupForIdealizedActuator).muscle(
                 muscleForIdealizedActuator));
         rigidbody::GeneralizedCoordinates Q(model);
-        rigidbody::GeneralizedVelocity qDot(model);
+        rigidbody::GeneralizedVelocity Qdot(model);
         Q = Q.setOnes() / 10;
-        qDot = qDot.setOnes() / 10;
-        idealizedActuator.updateOrientations(model, Q, qDot);
+        Qdot = Qdot.setOnes() / 10;
+        auto updatedModel = model.UpdateKinematicsCustom(&Q, &Qdot);
+
+        idealizedActuator.updateOrientations(updatedModel, Q, Qdot);
 
 
         internal_forces::muscles::IdealizedActuator shallowCopy(idealizedActuator);
@@ -306,7 +309,7 @@ TEST(IdealizedActuator, copy)
             utils::String oldName(insertion.utils::Node::name());
             utils::String newName("MyNewName");
             insertion.setName(newName);
-            idealizedActuator.updateOrientations(model, Q, qDot, 2);
+            idealizedActuator.updateOrientations(updatedModel, Q, Qdot);
 
             {
                 SCALAR_TO_DOUBLE(length, idealizedActuator.position().length());
@@ -417,10 +420,12 @@ TEST(hillType, unitTest)
             model.muscleGroup(muscleGroupForHillType).muscle(
                 muscleForHillType));
         rigidbody::GeneralizedCoordinates Q(model);
-        rigidbody::GeneralizedVelocity qDot(model);
+        rigidbody::GeneralizedVelocity Qdot(model);
         Q = Q.setOnes() / 10;
-        qDot = qDot.setOnes() / 10;
-        hillType.updateOrientations(model, Q, qDot);
+        Qdot = Qdot.setOnes() / 10;
+        auto updatedModel = model.UpdateKinematicsCustom(&Q, &Qdot);
+
+        hillType.updateOrientations(updatedModel, Q, Qdot);
         static double activationEmgForHillTypeTest(1);
         internal_forces::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
 
@@ -496,13 +501,15 @@ TEST(hillType, unitTest)
             model.muscleGroup(muscleGroupForHillType).muscle(
                 muscleForHillType));
         rigidbody::GeneralizedCoordinates Q(model);
-        rigidbody::GeneralizedVelocity qDot(model);
+        rigidbody::GeneralizedVelocity Qdot(model);
         Q = Q.setOnes() / 10;
-        qDot = qDot.setOnes() / 10;
+        Qdot = Qdot.setOnes() / 10;
+        auto updatedModel = model.UpdateKinematicsCustom(&Q, &Qdot);
+
         static double activationEmgForHillTypeTest(1);
         internal_forces::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
 
-        SCALAR_TO_DOUBLE(force, hillType.force(model, Q, qDot, emg, 2));
+        SCALAR_TO_DOUBLE(force, hillType.force(updatedModel, Q, Qdot, emg, 2));
         EXPECT_NEAR(force, 419.78610578875896, requiredPrecision);
     }
 }
@@ -577,10 +584,12 @@ TEST(hillType, copy)
             model.muscleGroup(muscleGroupForHillType).muscle(
                 muscleForHillType));
         rigidbody::GeneralizedCoordinates Q(model);
-        rigidbody::GeneralizedVelocity qDot(model);
+        rigidbody::GeneralizedVelocity Qdot(model);
         Q = Q.setOnes() / 10;
-        qDot = qDot.setOnes() / 10;
-        hillType.updateOrientations(model, Q);
+        Qdot = Qdot.setOnes() / 10;
+        auto updatedModel = model.UpdateKinematicsCustom(&Q, &Qdot);
+
+        hillType.updateOrientations(updatedModel, Q);
 
         internal_forces::muscles::HillType shallowCopy(hillType);
         internal_forces::muscles::HillType deepCopyNow(hillType.DeepCopy());
@@ -608,7 +617,7 @@ TEST(hillType, copy)
         utils::String oldName(insertion.utils::Node::name());
         utils::String newName("MyNewName");
         insertion.setName(newName);
-        hillType.updateOrientations(model, Q, qDot, 2);
+        hillType.updateOrientations(updatedModel, Q, Qdot);
 
 
         {
@@ -687,11 +696,12 @@ TEST(hillThelenType, unitTest)
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
         rigidbody::GeneralizedCoordinates Q(model);
-        rigidbody::GeneralizedVelocity qDot(model);
+        rigidbody::GeneralizedVelocity Qdot(model);
         Q = Q.setOnes() / 10;
-        qDot = qDot.setOnes() / 10;
-        model.updateMuscles(Q, true);
-        hillThelenType.updateOrientations(model, Q, qDot);
+        Qdot = Qdot.setOnes() / 10;
+        auto updatedModel = model.UpdateKinematicsCustom(&Q, &Qdot);
+
+        hillThelenType.updateOrientations(updatedModel, Q, Qdot);
         static double activationEmgForHillTypeTest(1.0);
         internal_forces::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
 
@@ -824,10 +834,12 @@ TEST(hillThelenType, copy)
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
         rigidbody::GeneralizedCoordinates Q(model);
-        rigidbody::GeneralizedVelocity qDot(model);
+        rigidbody::GeneralizedVelocity Qdot(model);
         Q = Q.setOnes() / 10;
-        qDot = qDot.setOnes() / 10;
-        hillThelenType.updateOrientations(model, Q);
+        Qdot = Qdot.setOnes() / 10;
+        auto updatedModel = model.UpdateKinematicsCustom(&Q, &Qdot);
+
+        hillThelenType.updateOrientations(updatedModel, Q);
 
         internal_forces::muscles::HillThelenType shallowCopy(hillThelenType);
         internal_forces::muscles::HillThelenType deepCopyNow(hillThelenType.DeepCopy());
@@ -855,7 +867,7 @@ TEST(hillThelenType, copy)
         utils::String oldName(insertion.utils::Node::name());
         utils::String newName("MyNewName");
         insertion.setName(newName);
-        hillThelenType.updateOrientations(model, Q, qDot, 2);
+        hillThelenType.updateOrientations(updatedModel, Q, Qdot);
 
         {
             SCALAR_TO_DOUBLE(length, hillThelenType.position().length());
@@ -931,11 +943,12 @@ TEST(hillThelenTypeActive, unitTest)
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
         rigidbody::GeneralizedCoordinates Q(model);
-        rigidbody::GeneralizedVelocity qDot(model);
+        rigidbody::GeneralizedVelocity Qdot(model);
         Q = Q.setOnes() / 10;
-        qDot = qDot.setOnes() / 10;
-        model.updateMuscles(Q, true);
-        hillThelenType.updateOrientations(model, Q, qDot);
+        Qdot = Qdot.setOnes() / 10;
+        auto updatedModel = model.UpdateKinematicsCustom(&Q, &Qdot);
+
+        hillThelenType.updateOrientations(updatedModel, Q, Qdot);
         static double activationEmgForHillTypeTest(1.0);
         internal_forces::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
 
@@ -1073,10 +1086,12 @@ TEST(hillThelenActiveType, copy)
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
         rigidbody::GeneralizedCoordinates Q(model);
-        rigidbody::GeneralizedVelocity qDot(model);
+        rigidbody::GeneralizedVelocity Qdot(model);
         Q = Q.setOnes() / 10;
-        qDot = qDot.setOnes() / 10;
-        hillThelenType.updateOrientations(model, Q);
+        Qdot = Qdot.setOnes() / 10;
+        auto updatedModel = model.UpdateKinematicsCustom(&Q, &Qdot);
+
+        hillThelenType.updateOrientations(updatedModel, Q);
 
         internal_forces::muscles::HillThelenActiveOnlyType shallowCopy(hillThelenType);
         internal_forces::muscles::HillThelenActiveOnlyType deepCopyNow(
@@ -1105,7 +1120,7 @@ TEST(hillThelenActiveType, copy)
         utils::String oldName(insertion.utils::Node::name());
         utils::String newName("MyNewName");
         insertion.setName(newName);
-        hillThelenType.updateOrientations(model, Q, qDot, 2);
+        hillThelenType.updateOrientations(updatedModel, Q, Qdot);
 
         {
             SCALAR_TO_DOUBLE(length, hillThelenType.position().length());
@@ -1184,11 +1199,13 @@ TEST(hillDeGrooteTypeActive, unitTest)
             model.muscleGroup(muscleGroupFordeGrooteType).muscle(
                 muscleFordeGrooteType));
         rigidbody::GeneralizedCoordinates Q(model);
-        rigidbody::GeneralizedVelocity qDot(model);
+        rigidbody::GeneralizedVelocity Qdot(model);
         Q = Q.setOnes() / 10;
-        qDot = qDot.setOnes() / 10;
-        model.updateMuscles(Q, true);
-        hillDeGrooteType.updateOrientations(model, Q, qDot);
+        Qdot = Qdot.setOnes() / 10;
+        auto updatedModel = model.UpdateKinematicsCustom(&Q, &Qdot);
+
+        hillDeGrooteType.updateOrientations(updatedModel, Q, Qdot);
+
         static double activationEmgForHillTypeTest(1.0);
         internal_forces::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
 
@@ -1326,10 +1343,12 @@ TEST(hillDeGrooteActiveType, copy)
             model.muscleGroup(muscleGroupFordeGrooteType).muscle(
                 muscleFordeGrooteType));
         rigidbody::GeneralizedCoordinates Q(model);
-        rigidbody::GeneralizedVelocity qDot(model);
+        rigidbody::GeneralizedVelocity Qdot(model);
         Q = Q.setOnes() / 10;
-        qDot = qDot.setOnes() / 10;
-        hillDeGrooteType.updateOrientations(model, Q);
+        Qdot = Qdot.setOnes() / 10;
+        auto updatedModel = model.UpdateKinematicsCustom(&Q, &Qdot);
+
+        hillDeGrooteType.updateOrientations(updatedModel, Q);
 
         internal_forces::muscles::HillDeGrooteActiveOnlyType shallowCopy(hillDeGrooteType);
         internal_forces::muscles::HillDeGrooteActiveOnlyType deepCopyNow(
@@ -1358,7 +1377,7 @@ TEST(hillDeGrooteActiveType, copy)
         utils::String oldName(insertion.utils::Node::name());
         utils::String newName("MyNewName");
         insertion.setName(newName);
-        hillDeGrooteType.updateOrientations(model, Q, qDot, 2);
+        hillDeGrooteType.updateOrientations(updatedModel, Q, Qdot);
 
         {
             SCALAR_TO_DOUBLE(length, hillDeGrooteType.position().length());
@@ -1617,11 +1636,13 @@ TEST(hillDeGrooteType, unitTest)
             model.muscleGroup(muscleGroupFordeGrooteType).muscle(
                 muscleFordeGrooteType));
         rigidbody::GeneralizedCoordinates Q(model);
-        rigidbody::GeneralizedVelocity qDot(model);
+        rigidbody::GeneralizedVelocity Qdot(model);
         Q = Q.setOnes() / 10;
-        qDot = qDot.setOnes() / 10;
-        model.updateMuscles(Q, true);
-        hillDeGrooteType.updateOrientations(model, Q, qDot);
+        Qdot = Qdot.setOnes() / 10;
+        auto updatedModel = model.UpdateKinematicsCustom(&Q, &Qdot);
+        
+        hillDeGrooteType.updateOrientations(updatedModel, Q, Qdot);
+        
         static double activationEmgForHillTypeTest(1.0);
         internal_forces::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
 
@@ -1759,10 +1780,12 @@ TEST(hillDeGrooteType, copy)
             model.muscleGroup(muscleGroupFordeGrooteType).muscle(
                 muscleFordeGrooteType));
         rigidbody::GeneralizedCoordinates Q(model);
-        rigidbody::GeneralizedVelocity qDot(model);
+        rigidbody::GeneralizedVelocity Qdot(model);
         Q = Q.setOnes() / 10;
-        qDot = qDot.setOnes() / 10;
-        hillDeGrooteType.updateOrientations(model, Q);
+        Qdot = Qdot.setOnes() / 10;
+        auto updatedModel = model.UpdateKinematicsCustom(&Q, &Qdot);
+
+        hillDeGrooteType.updateOrientations(updatedModel, Q);
 
         internal_forces::muscles::HillDeGrooteType shallowCopy(hillDeGrooteType);
         internal_forces::muscles::HillDeGrooteType deepCopyNow(
@@ -1791,7 +1814,7 @@ TEST(hillDeGrooteType, copy)
         utils::String oldName(insertion.utils::Node::name());
         utils::String newName("MyNewName");
         insertion.setName(newName);
-        hillDeGrooteType.updateOrientations(model, Q, qDot, 2);
+        hillDeGrooteType.updateOrientations(updatedModel, Q, Qdot);
 
         {
             SCALAR_TO_DOUBLE(length, hillDeGrooteType.position().length());
@@ -2875,8 +2898,8 @@ TEST(MuscleJacobian, jacobian)
     Q = Q.setOnes()/10;
 
     // Force computation of geometry
-    internal_forces::muscles::Muscle& muscle(model.muscleGroup(
-                                        muscleForMuscleJacobian).muscle(muscleGroupForMuscleJacobian));
+    internal_forces::muscles::Muscle& muscle(
+        model.muscleGroup(muscleForMuscleJacobian).muscle(muscleGroupForMuscleJacobian));
     EXPECT_THROW(muscle.position().jacobian(), std::runtime_error);
     model.updateMuscles(Q, true);
 
