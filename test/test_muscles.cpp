@@ -2887,8 +2887,8 @@ TEST(MuscleJacobian, jacobian)
     Q = Q.setOnes()/10;
 
     // Force computation of geometry
-    internal_forces::muscles::Muscle& muscle(model.muscleGroup(
-                                        muscleForMuscleJacobian).muscle(muscleGroupForMuscleJacobian));
+    internal_forces::muscles::Muscle& muscle(
+        model.muscleGroup(muscleForMuscleJacobian).muscle(muscleGroupForMuscleJacobian));
     EXPECT_THROW(muscle.position().jacobian(), std::runtime_error);
     model.updateMuscles(Q, true);
 
@@ -2987,7 +2987,7 @@ TEST(MuscleJacobian, jacobianLength)
     Model model(modelPathForMuscleJacobian);
     rigidbody::GeneralizedCoordinates Q(model);
     Q = Q.setOnes()/10;
-    model.updateMuscles(Q, 2);
+    model.updateMuscles(Q, true);
 
     size_t nRows(model.nbMuscleTotal());
     utils::Matrix jacoRef(nRows, model.nbQ());
@@ -3017,7 +3017,7 @@ TEST(MuscleJacobian, jacobianLength)
 
     // Change Q
     Q.setOnes();
-    model.updateMuscles(Q, 2);
+    model.updateMuscles(Q, true);
     // Here we provide emperical values that we have confidence in
     jacoRef(0, 0) = 0.025994784772561841;
     jacoRef(0, 1) = 0.021586396946686921;
