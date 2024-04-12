@@ -583,7 +583,7 @@ TEST(LigamentForce, forceUpdateOutside)
     Qdot = Qdot.setOnes()/10;
     model.updateLigaments(Q, Qdot, true);
 
-    const utils::Vector& F = model.ligamentForces(Q, Qdot);
+    const utils::Vector& F = model.ligamentForces(Q, Qdot, false);
 
     std::vector<double> ExpectedForce({500.00056194583868, 27.517183773325474, 139.51352848156762});
     for (unsigned int i=0; i<model.nbLigaments(); ++i) {

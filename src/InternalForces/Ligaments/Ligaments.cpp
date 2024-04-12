@@ -338,12 +338,39 @@ void internal_forces::ligaments::Ligaments::updateLigaments(
 }
 
 void internal_forces::ligaments::Ligaments::updateLigaments(
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& Qdot, 
+    bool updateKin)
+{   
+#ifdef BIORBD_USE_CASADI_MATH
+    rigidbody::Joints
+#else
+    rigidbody::Joints&
+#endif
+    updatedModel = dynamic_cast<rigidbody::Joints&>(*this).UpdateKinematicsCustom(updateKin ? &Q : nullptr, updateKin ? &Qdot : nullptr);
+    updateLigaments(updatedModel, Q, Qdot);
+}
+
+void internal_forces::ligaments::Ligaments::updateLigaments(
     rigidbody::Joints &updatedModel,
     const rigidbody::GeneralizedCoordinates& Q)
 {
     for (size_t j=0; j<nbLigaments(); ++j) {
         ligament(j).updateOrientations(updatedModel, Q);
     }
+}
+
+void internal_forces::ligaments::Ligaments::updateLigaments(
+    const rigidbody::GeneralizedCoordinates& Q, 
+    bool updateKin)
+{
+#ifdef BIORBD_USE_CASADI_MATH
+    rigidbody::Joints
+#else
+    rigidbody::Joints&
+#endif
+    updatedModel = dynamic_cast<rigidbody::Joints&>(*this).UpdateKinematicsCustom(updateKin ? &Q : nullptr);
+    updateLigaments(updatedModel, Q);
 }
 
 void internal_forces::ligaments::Ligaments::updateLigaments(

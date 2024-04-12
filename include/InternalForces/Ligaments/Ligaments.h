@@ -311,6 +311,15 @@ public:
 
     ///
     /// \brief Update all the ligaments (positions, jacobian, etc.)
+    /// \param Q The generalized coordinates
+    /// \param updateKin If the joint model should be updated
+    ///
+    void updateLigaments(
+        const rigidbody::GeneralizedCoordinates& Q, 
+        bool updateKin = true);
+
+    ///
+    /// \brief Update all the ligaments (positions, jacobian, etc.)
     /// \param updatedModel The joint model updated to the proper kinematics level
     /// \param Q The generalized coordinates
     /// \param Qdot The generalized velocities
@@ -319,6 +328,17 @@ public:
         rigidbody::Joints &updatedModel,
         const rigidbody::GeneralizedCoordinates& Q,
         const rigidbody::GeneralizedVelocity& Qdot);
+
+    ///
+    /// \brief Update all the ligaments (positions, jacobian, etc.)
+    /// \param Q The generalized coordinates
+    /// \param Qdot The generalized velocities
+    /// \param updateKin If the joint model should be updated
+    ///
+    void updateLigaments(
+        const rigidbody::GeneralizedCoordinates& Q,
+        const rigidbody::GeneralizedVelocity& Qdot, 
+        bool updateKin = true);
 
     ///
     /// \brief Update by hand all the ligaments (positions, jacobian, velocity, etc.)

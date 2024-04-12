@@ -136,7 +136,7 @@ std::vector<utils::SpatialVector> rigidbody::ExternalForceSet::computeSpatialVec
     return computeSpatialVectors(
         updatedModel,
         rigidbody::GeneralizedCoordinates(updatedModel), 
-        rigidbody::GeneralizedVelocity(m_model)
+        rigidbody::GeneralizedVelocity(updatedModel)
     );
 }
 
