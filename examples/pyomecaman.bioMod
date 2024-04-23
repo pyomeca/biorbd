@@ -14,6 +14,7 @@ version   4
         rangesQddot  -1500 1500
                      -1500 1500
                      -(pi+1)*100 (pi+1)*100
+        jointdampings 0.1 0.2 0.3
         mass    9.03529
         inertia
             0.04664    0.00000    0.00000

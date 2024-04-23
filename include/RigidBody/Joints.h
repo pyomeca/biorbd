@@ -86,6 +86,7 @@ public:
     /// \param QRanges Ranges of the translations and rotations dof. The length of QRanges must be equal to length of translations and rotations
     /// \param QdotRanges Ranges of the translations and rotations dof velocity. The length of QdotRanges must be equal to length of translations and rotations
     /// \param QddotRanges Ranges of the translations and rotations dof acceleration. The length of QddotRanges must be equal to length of translations and rotations
+    /// \param jointDampings The damping of the joints to apply to the dynamics
     /// \param characteristics The characteristics of the semgent (mass, center of mass, inertia of the segment, etc)
     /// \param referenceFrame Transformation of the parent to child
     ///
@@ -97,6 +98,7 @@ public:
         const std::vector<utils::Range>& QRanges,
         const std::vector<utils::Range>& QdotRanges,
         const std::vector<utils::Range>& QddotRanges,
+        const std::vector<utils::Scalar>& jointDampings,
         const SegmentCharacteristics& characteristics,
         const utils::RotoTrans& referenceFrame);
 
@@ -108,6 +110,7 @@ public:
     /// \param QRanges Ranges of the translations and rotations dof. The length of QRanges must be equal to length of translations and rotations
     /// \param QdotRanges Ranges of the translations and rotations dof velocity. The length of QdotRanges must be equal to length of translations and rotations
     /// \param QddotRanges Ranges of the translations and rotations dof acceleration. The length of QddotRanges must be equal to length of translations and rotations
+    /// \param jointDampings The damping of the joints to apply to the dynamics
     /// \param characteristics The characteristics of the semgent (mass, center of mass, inertia of the segment, etc)
     /// \param referenceFrame Transformation of the parent to child
     ///
@@ -118,6 +121,7 @@ public:
         const std::vector<utils::Range>& QRanges,
         const std::vector<utils::Range>& QdotRanges,
         const std::vector<utils::Range>& QddotRanges,
+        const std::vector<utils::Scalar>& jointDampings,
         const SegmentCharacteristics& characteristics,
         const utils::RotoTrans& referenceFrame);
 
@@ -275,7 +279,7 @@ public:
     /// \param idx Index of the segment
     /// \return The segment
     ///
-    const Segment& segment(
+    Segment& segment(
         size_t idx) const;
 
     ///
@@ -283,14 +287,22 @@ public:
     /// \param name The name of the segment to return
     /// \return The segment
     ///
-    const Segment& segment(
+    Segment& segment(
         const utils::String& name) const;
 
     ///
     /// \brief Get all the segments
     /// \return  All the segments
     ///
-    const std::vector<Segment>& segments() const;
+    std::vector<Segment>& segments() const;
+
+    ///
+    /// \brief Get the joint dampings to apply to the dynamics
+    /// \param Qdot The generalized velocities
+    /// \return The joint dampings to apply to the dynamics
+    ///
+    GeneralizedTorque computeDampedTau(
+        const GeneralizedVelocity &Qdot) const;
 
 public:
 

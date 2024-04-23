@@ -149,12 +149,14 @@ size_t rigidbody::Joints::AddSegment(
     const std::vector<utils::Range>& QRanges,
     const std::vector<utils::Range>& QdotRanges,
     const std::vector<utils::Range>& QddotRanges,
+    const std::vector<utils::Scalar>& jointDampings,
     const rigidbody::SegmentCharacteristics& characteristics,
     const utils::RotoTrans& referenceFrame)
 {
     rigidbody::Segment tp(
         *this, segmentName, parentName, translationSequence,
-        rotationSequence, QRanges, QdotRanges, QddotRanges, characteristics,
+        rotationSequence, QRanges, QdotRanges, QddotRanges, jointDampings,
+        characteristics,
         utils::SpatialTransform(referenceFrame.rot().transpose(), referenceFrame.trans())
     );
     if (this->GetBodyId(parentName.c_str()) == std::numeric_limits<unsigned int>::max()) {
@@ -181,6 +183,7 @@ size_t rigidbody::Joints::AddSegment(
     const std::vector<utils::Range>& QRanges,
     const std::vector<utils::Range>& QdotRanges,
     const std::vector<utils::Range>& QddotRanges,
+    const std::vector<utils::Scalar>& jointDampings,
     const rigidbody::SegmentCharacteristics& characteristics,
     const utils::RotoTrans& referenceFrame)
 {
@@ -192,6 +195,7 @@ size_t rigidbody::Joints::AddSegment(
         QRanges, 
         QdotRanges, 
         QddotRanges,
+        jointDampings,
         characteristics, 
         utils::SpatialTransform(referenceFrame.rot().transpose(), referenceFrame.trans())
     );
@@ -224,7 +228,7 @@ void rigidbody::Joints::updateSegmentCharacteristics(
     (*m_segments)[idx].updateCharacteristics(*this, characteristics);
 }
 
-const rigidbody::Segment& rigidbody::Joints::segment(
+rigidbody::Segment& rigidbody::Joints::segment(
     size_t idx) const
 {
     utils::Error::check(idx < m_segments->size(),
@@ -232,15 +236,30 @@ const rigidbody::Segment& rigidbody::Joints::segment(
     return (*m_segments)[idx];
 }
 
-const rigidbody::Segment &rigidbody::Joints::segment(
+rigidbody::Segment &rigidbody::Joints::segment(
     const utils::String & name) const
 {
     return segment(static_cast<size_t>(getBodyBiorbdId(name.c_str())));
 }
 
-const std::vector<rigidbody::Segment>& rigidbody::Joints::segments() const
+std::vector<rigidbody::Segment>& rigidbody::Joints::segments() const
 {
     return *m_segments;
+}
+
+rigidbody::GeneralizedTorque rigidbody::Joints::computeDampedTau(
+    const rigidbody::GeneralizedVelocity& Qdot) const
+{
+    rigidbody::GeneralizedTorque dampings(*this);
+
+    size_t count(0);
+    for (auto& segment : *m_segments) {
+        for (auto& damping : segment.jointDampings()) {
+            dampings[count] = damping * Qdot[count];
+            count++;
+        }
+    }
+    return dampings;
 }
 
 size_t rigidbody::Joints::nbSegment() const
@@ -1510,8 +1529,9 @@ rigidbody::GeneralizedTorque rigidbody::Joints::InverseDynamics(
 
     rigidbody::GeneralizedTorque Tau(nbGeneralizedTorque());
     auto fExt = externalForces.computeRbdlSpatialVectors(updatedModel, Q, Qdot);
+
     RigidBodyDynamics::InverseDynamics(updatedModel, Q, Qdot, Qddot, Tau, &fExt);
-    return Tau;
+    return Tau - computeDampedTau(Qdot);
 }
 
 rigidbody::GeneralizedTorque rigidbody::Joints::NonLinearEffect(
@@ -1566,7 +1586,9 @@ rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamics(
     
     rigidbody::GeneralizedAcceleration Qddot(updatedModel);
     auto fExt = externalForces.computeRbdlSpatialVectors(updatedModel, Q, Qdot);
-    RigidBodyDynamics::ForwardDynamics(updatedModel, Q, Qdot, Tau, Qddot, &fExt);
+    rigidbody::GeneralizedTorque dampedTau = Tau - computeDampedTau(Qdot);
+    
+    RigidBodyDynamics::ForwardDynamics(updatedModel, Q, Qdot, dampedTau, Qddot, &fExt);
     return Qddot;
 }
 
@@ -1655,9 +1677,10 @@ rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamicsConstraints
     updatedModel = this->UpdateKinematicsCustom(updateKin ? &Q : nullptr, updateKin ? &Qdot : nullptr);
  
     auto fExt = externalForces.computeRbdlSpatialVectors(updatedModel, Q, Qdot);
+    rigidbody::GeneralizedTorque dampedTau = Tau - computeDampedTau(Qdot);
 
     rigidbody::GeneralizedAcceleration Qddot(*this);
-    RigidBodyDynamics::ForwardDynamicsConstraintsDirect(updatedModel, Q, Qdot, Tau, CS, Qddot, updateKin, &fExt);
+    RigidBodyDynamics::ForwardDynamicsConstraintsDirect(updatedModel, Q, Qdot, dampedTau, CS, Qddot, updateKin, &fExt);
     return Qddot;
 }
 
