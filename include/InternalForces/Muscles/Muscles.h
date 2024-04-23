@@ -91,14 +91,14 @@ public:
     /// \brief Returns all the muscles. It sorts the muscles by group
     /// \return All the muscle
     ///
-    const std::vector<std::shared_ptr<Muscle>> muscles() const;
+    std::vector<std::shared_ptr<Muscle>> muscles() const;
 
     ///
     /// \brief Returns a specific muscle sorted by muscles()
     /// \param idx The muscle index
     /// \return The muscle
     ///
-    const Muscle& muscle(
+    Muscle& muscle(
         size_t idx) const;
 
     ///

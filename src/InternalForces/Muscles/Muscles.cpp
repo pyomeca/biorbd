@@ -53,8 +53,7 @@ void internal_forces::muscles::Muscles::addMuscleGroup(
     const utils::String &insertionName)
 {
     if (m_mus->size() > 0) {
-        utils::Error::check(getMuscleGroupId(name)==-1,
-                                    "Muscle group already defined");
+        utils::Error::check(getMuscleGroupId(name) == -1, "Muscle group already defined");
     }
 
     m_mus->push_back(internal_forces::muscles::MuscleGroup(name, originName, insertionName));
@@ -70,7 +69,7 @@ int internal_forces::muscles::Muscles::getMuscleGroupId(const utils::String
     return -1;
 }
 
-const std::vector<std::shared_ptr<internal_forces::muscles::Muscle>>
+std::vector<std::shared_ptr<internal_forces::muscles::Muscle>>
         internal_forces::muscles::Muscles::muscles() const
 {
     std::vector<std::shared_ptr<internal_forces::muscles::Muscle>> m;
@@ -82,7 +81,7 @@ const std::vector<std::shared_ptr<internal_forces::muscles::Muscle>>
     return m;
 }
 
-const internal_forces::muscles::Muscle &internal_forces::muscles::Muscles::muscle(
+internal_forces::muscles::Muscle &internal_forces::muscles::Muscles::muscle(
     size_t idx) const
 {
     for (auto g : muscleGroups()) {
@@ -121,23 +120,21 @@ internal_forces::muscles::Muscles::muscleGroups() const
 internal_forces::muscles::MuscleGroup &internal_forces::muscles::Muscles::muscleGroup(
     size_t idx)
 {
-    utils::Error::check(idx<nbMuscleGroups(),
-                                "Idx asked is higher than number of muscle groups");
+    utils::Error::check(idx < nbMuscleGroups(), "Idx asked is higher than number of muscle groups");
     return (*m_mus)[idx];
 }
 
 const internal_forces::muscles::MuscleGroup &internal_forces::muscles::Muscles::muscleGroup(
     size_t idx) const
 {
-    utils::Error::check(idx<nbMuscleGroups(),
-                                "Idx asked is higher than number of muscle groups");
+    utils::Error::check(idx < nbMuscleGroups(), "Idx asked is higher than number of muscle groups");
     return (*m_mus)[idx];
 }
 const internal_forces::muscles::MuscleGroup &internal_forces::muscles::Muscles::muscleGroup(
     const utils::String& name) const
 {
     int idx = getMuscleGroupId(name);
-    utils::Error::check(idx!=-1, "Group name could not be found");
+    utils::Error::check(idx != -1, "Group name could not be found");
     return muscleGroup(static_cast<size_t>(idx));
 }
 

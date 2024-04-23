@@ -219,7 +219,7 @@ public:
     /// \brief Return the muscle characteristics
     /// \return The muscle characteristics
     ///
-    const Characteristics& characteristics() const;
+    Characteristics& characteristics() const;
 
     ///
     /// \brief Return the muscle points in global reference frame
