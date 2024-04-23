@@ -347,8 +347,7 @@ TEST(springLinear, copy)
         // Change the position of the insertion and pennation angle and compare again (length and insertion in Local)
         utils::Vector3d insertion(ligamentSpringLinear.position().insertionInLocal());
         insertion.set(0.5, 0.6, 0.7);
-        const_cast<internal_forces::Geometry&>
-        (ligamentSpringLinear.position()).setInsertionInLocal(insertion);
+        const_cast<internal_forces::Geometry&>(ligamentSpringLinear.position()).setInsertionInLocal(insertion);
         utils::String oldName(insertion.utils::Node::name());
         utils::String newName("MyNewName");
         insertion.setName(newName);

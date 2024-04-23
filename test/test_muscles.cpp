@@ -304,8 +304,7 @@ TEST(IdealizedActuator, copy)
             utils::Vector3d insertion(
             idealizedActuator.position().insertionInLocal());
             insertion.set(0.2, 0.2, 0.2);
-            const_cast<internal_forces::muscles::MuscleGeometry&>
-            (idealizedActuator.position()).setInsertionInLocal(insertion);
+            const_cast<internal_forces::muscles::MuscleGeometry&>(idealizedActuator.position()).setInsertionInLocal(insertion);
             utils::String oldName(insertion.utils::Node::name());
             utils::String newName("MyNewName");
             insertion.setName(newName);
@@ -341,14 +340,10 @@ TEST(IdealizedActuator, copy)
             utils::String newName("MyNewNewName");
             rigidbody::NodeSegment newNode(newPosition, newName, "", true, true, "", 0);
             {
-                const_cast<internal_forces::muscles::MuscleGeometry&>(idealizedActuator.position()).setOrigin(
-                    newPosition);
-                const_cast<internal_forces::muscles::MuscleGeometry&>
-                (idealizedActuator.position()).setInsertionInLocal(newPosition);
-                const utils::Vector3d& origin =
-                    idealizedActuator.position().originInLocal();
-                const utils::Vector3d& insertion =
-                    idealizedActuator.position().insertionInLocal();
+                const_cast<internal_forces::muscles::MuscleGeometry&>(idealizedActuator.position()).setOrigin(newPosition);
+                const_cast<internal_forces::muscles::MuscleGeometry&>(idealizedActuator.position()).setInsertionInLocal(newPosition);
+                const utils::Vector3d& origin = idealizedActuator.position().originInLocal();
+                const utils::Vector3d& insertion = idealizedActuator.position().insertionInLocal();
                 EXPECT_STREQ(origin.utils::Node::name().c_str(), "TRImed_origin");
                 EXPECT_STREQ(insertion.utils::Node::name().c_str(), oldName.c_str());
             }
@@ -612,8 +607,7 @@ TEST(hillType, copy)
         charac.setPennationAngle(0.523599);
         utils::Vector3d insertion(hillType.position().insertionInLocal());
         insertion.set(0.5, 0.6, 0.7);
-        const_cast<internal_forces::muscles::MuscleGeometry&>
-        (hillType.position()).setInsertionInLocal(insertion);
+        const_cast<internal_forces::muscles::MuscleGeometry&>(hillType.position()).setInsertionInLocal(insertion);
         utils::String oldName(insertion.utils::Node::name());
         utils::String newName("MyNewName");
         insertion.setName(newName);
@@ -862,8 +856,7 @@ TEST(hillThelenType, copy)
         charac.setPennationAngle(0.523599);
         utils::Vector3d insertion(hillThelenType.position().insertionInLocal());
         insertion.set(0.5, 0.6, 0.7);
-        const_cast<internal_forces::muscles::MuscleGeometry&>
-        (hillThelenType.position()).setInsertionInLocal(insertion);
+        const_cast<internal_forces::muscles::MuscleGeometry&>(hillThelenType.position()).setInsertionInLocal(insertion);
         utils::String oldName(insertion.utils::Node::name());
         utils::String newName("MyNewName");
         insertion.setName(newName);
@@ -1115,8 +1108,7 @@ TEST(hillThelenActiveType, copy)
         charac.setPennationAngle(0.523599);
         utils::Vector3d insertion(hillThelenType.position().insertionInLocal());
         insertion.set(0.5, 0.6, 0.7);
-        const_cast<internal_forces::muscles::MuscleGeometry&>
-        (hillThelenType.position()).setInsertionInLocal(insertion);
+        const_cast<internal_forces::muscles::MuscleGeometry&>(hillThelenType.position()).setInsertionInLocal(insertion);
         utils::String oldName(insertion.utils::Node::name());
         utils::String newName("MyNewName");
         insertion.setName(newName);
@@ -1372,8 +1364,7 @@ TEST(hillDeGrooteActiveType, copy)
         charac.setPennationAngle(0.523599);
         utils::Vector3d insertion(hillDeGrooteType.position().insertionInLocal());
         insertion.set(0.5, 0.6, 0.7);
-        const_cast<internal_forces::muscles::MuscleGeometry&>
-        (hillDeGrooteType.position()).setInsertionInLocal(insertion);
+        const_cast<internal_forces::muscles::MuscleGeometry&>(hillDeGrooteType.position()).setInsertionInLocal(insertion);
         utils::String oldName(insertion.utils::Node::name());
         utils::String newName("MyNewName");
         insertion.setName(newName);
@@ -1809,8 +1800,7 @@ TEST(hillDeGrooteType, copy)
         charac.setPennationAngle(0.523599);
         utils::Vector3d insertion(hillDeGrooteType.position().insertionInLocal());
         insertion.set(0.5, 0.6, 0.7);
-        const_cast<internal_forces::muscles::MuscleGeometry&>
-        (hillDeGrooteType.position()).setInsertionInLocal(insertion);
+        const_cast<internal_forces::muscles::MuscleGeometry&>(hillDeGrooteType.position()).setInsertionInLocal(insertion);
         utils::String oldName(insertion.utils::Node::name());
         utils::String newName("MyNewName");
         insertion.setName(newName);
