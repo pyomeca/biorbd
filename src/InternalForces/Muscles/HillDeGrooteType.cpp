@@ -90,22 +90,15 @@ void internal_forces::muscles::HillDeGrooteType::computeFlPE()
     utils::Scalar kpe = 4;
     utils::Scalar e0 = 0.6;
     utils::Scalar normLength = position().length() / characteristics().optimalLength();
+    utils::Scalar t5 = exp( kpe * (normLength - 1) / e0);
+    utils::Scalar t7 = exp(kpe);
 
 #ifdef BIORBD_USE_CASADI_MATH
     *m_FlPE = IF_ELSE_NAMESPACE::if_else_zero(
-                  IF_ELSE_NAMESPACE::gt(normLength, 1),
-                (exp( (kpe * (normLength-1)) / e0) -1)
-                                      /
-                                  (exp( kpe ) - 1));
+        IF_ELSE_NAMESPACE::gt(normLength, 1), (t5 - 1) / (t7 - 1)
+    );
 #else
-
-    if (normLength > 1) {
-        *m_FlPE = (exp( (kpe * (normLength-1)) / e0) -1)
-                      /
-                  (exp( kpe ) - 1);
-    } else {
-        *m_FlPE = 0;
-    }
+    *m_FlPE = normLength > 1 ? (t5 - 1) / (t7 - 1) : 0;
 #endif
 }
 
