@@ -85,6 +85,19 @@ public:
     void DeepCopy(
         const LigamentSpringLinear& other);
 
+    ///
+    /// \brief Return the ligament stiffness
+    /// \return The ligament stiffness
+    ///
+    const utils::Scalar& stiffness() const;
+
+    ///
+    /// \brief Set the ligament stiffness
+    /// \param stiffness The ligament stiffness
+    ///
+    void setStiffness(
+        const utils::Scalar& stiffness);
+
 protected:
     ///
     /// \brief Set type to linear spring like ligament

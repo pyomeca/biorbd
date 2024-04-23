@@ -298,6 +298,10 @@ TEST(springLinear, copy)
         EXPECT_STREQ(shallowCopy.name().c_str(), originalName.c_str());
         EXPECT_STREQ(deepCopyNow.name().c_str(), originalName.c_str());
         EXPECT_STREQ(deepCopyLater.name().c_str(), originalName.c_str());
+        EXPECT_FLOAT_EQ(ligamentSpringLinear.stiffness(), 500);
+        EXPECT_FLOAT_EQ(shallowCopy.stiffness(), 500);
+        EXPECT_FLOAT_EQ(deepCopyNow.stiffness(), 500);
+        EXPECT_FLOAT_EQ(deepCopyLater.stiffness(), 500);
 
         utils::String newName("MyNewMuscleName");
         ligamentSpringLinear.setName(newName);
@@ -305,6 +309,12 @@ TEST(springLinear, copy)
         EXPECT_STREQ(shallowCopy.name().c_str(), newName.c_str());
         EXPECT_STREQ(deepCopyNow.name().c_str(), originalName.c_str());
         EXPECT_STREQ(deepCopyLater.name().c_str(), originalName.c_str());
+        
+        ligamentSpringLinear.setStiffness(100);
+        EXPECT_FLOAT_EQ(ligamentSpringLinear.stiffness(), 100);
+        EXPECT_FLOAT_EQ(shallowCopy.stiffness(), 100);
+        EXPECT_FLOAT_EQ(deepCopyNow.stiffness(), 500);
+        EXPECT_FLOAT_EQ(deepCopyLater.stiffness(), 500);
     }
     {
         Model model(modelPathForGenericTest);
@@ -353,15 +363,10 @@ TEST(springLinear, copy)
             EXPECT_NEAR(shallowCopyLength, 0.97513625610637888, requiredPrecision);
             EXPECT_NEAR(deepCopyNowLength, 0.14083430313088782, requiredPrecision);
             EXPECT_NEAR(deepCopyLaterLength, 0.14083430313088782, requiredPrecision);
-            EXPECT_EQ(ligamentSpringLinear.position().insertionInLocal().utils::Node::name(),
-                      newName);
-            EXPECT_EQ(shallowCopy.position().insertionInLocal().utils::Node::name(),
-                      newName);
-            EXPECT_EQ(deepCopyNow.position().insertionInLocal().utils::Node::name(),
-                      oldName);
-            EXPECT_EQ(
-                deepCopyLater.position().insertionInLocal().utils::Node::name(),
-                oldName);
+            EXPECT_EQ(ligamentSpringLinear.position().insertionInLocal().utils::Node::name(), newName);
+            EXPECT_EQ(shallowCopy.position().insertionInLocal().utils::Node::name(), newName);
+            EXPECT_EQ(deepCopyNow.position().insertionInLocal().utils::Node::name(), oldName);
+            EXPECT_EQ(deepCopyLater.position().insertionInLocal().utils::Node::name(), oldName);
         }
     }
 }

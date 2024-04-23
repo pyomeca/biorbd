@@ -63,6 +63,28 @@ void internal_forces::ligaments::LigamentSpringSecondOrder::DeepCopy(
     *m_epsilon = *other.m_epsilon;
 }
 
+const utils::Scalar& internal_forces::ligaments::LigamentSpringSecondOrder::stiffness() const
+{
+    return *m_stiffness;
+}
+
+void internal_forces::ligaments::LigamentSpringSecondOrder::setStiffness(
+    const utils::Scalar &val)
+{
+    *m_stiffness = val;
+}
+
+const utils::Scalar& internal_forces::ligaments::LigamentSpringSecondOrder::epsilon() const
+{
+    return *m_epsilon;
+}
+
+void internal_forces::ligaments::LigamentSpringSecondOrder::setEpsilon(
+    const utils::Scalar &val)
+{
+    *m_epsilon = val;
+}
+
 internal_forces::ligaments::LigamentSpringSecondOrder::LigamentSpringSecondOrder(
     const internal_forces::ligaments::Ligament &other) :
     internal_forces::ligaments::Ligament (other)

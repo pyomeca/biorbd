@@ -144,7 +144,7 @@ void internal_forces::ligaments::Ligament::setPosition(
 {
     *m_position = positions;
 }
-const internal_forces::Geometry &internal_forces::ligaments::Ligament::position() const
+const internal_forces::Geometry& internal_forces::ligaments::Ligament::position() const
 {
     return *m_position;
 }
