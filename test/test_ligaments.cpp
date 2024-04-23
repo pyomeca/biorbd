@@ -298,10 +298,17 @@ TEST(springLinear, copy)
         EXPECT_STREQ(shallowCopy.name().c_str(), originalName.c_str());
         EXPECT_STREQ(deepCopyNow.name().c_str(), originalName.c_str());
         EXPECT_STREQ(deepCopyLater.name().c_str(), originalName.c_str());
-        EXPECT_FLOAT_EQ(ligamentSpringLinear.stiffness(), 500);
-        EXPECT_FLOAT_EQ(shallowCopy.stiffness(), 500);
-        EXPECT_FLOAT_EQ(deepCopyNow.stiffness(), 500);
-        EXPECT_FLOAT_EQ(deepCopyLater.stiffness(), 500);
+        
+        {
+            SCALAR_TO_DOUBLE(ligamentSpringLinearStiffness, ligamentSpringLinear.stiffness());
+            SCALAR_TO_DOUBLE(shallowCopyStiffness, shallowCopy.stiffness());
+            SCALAR_TO_DOUBLE(deepCopyNowStiffness, deepCopyNow.stiffness());
+            SCALAR_TO_DOUBLE(deepCopyLaterStiffness, deepCopyLater.stiffness());
+            EXPECT_FLOAT_EQ(ligamentSpringLinearStiffness, 500);
+            EXPECT_FLOAT_EQ(shallowCopyStiffness, 500);
+            EXPECT_FLOAT_EQ(deepCopyNowStiffness, 500);
+            EXPECT_FLOAT_EQ(deepCopyLaterStiffness, 500);
+        }
 
         utils::String newName("MyNewMuscleName");
         ligamentSpringLinear.setName(newName);
@@ -311,10 +318,16 @@ TEST(springLinear, copy)
         EXPECT_STREQ(deepCopyLater.name().c_str(), originalName.c_str());
         
         ligamentSpringLinear.setStiffness(100);
-        EXPECT_FLOAT_EQ(ligamentSpringLinear.stiffness(), 100);
-        EXPECT_FLOAT_EQ(shallowCopy.stiffness(), 100);
-        EXPECT_FLOAT_EQ(deepCopyNow.stiffness(), 500);
-        EXPECT_FLOAT_EQ(deepCopyLater.stiffness(), 500);
+        {
+            SCALAR_TO_DOUBLE(ligamentSpringLinearStiffness, ligamentSpringLinear.stiffness());
+            SCALAR_TO_DOUBLE(shallowCopyStiffness, shallowCopy.stiffness());
+            SCALAR_TO_DOUBLE(deepCopyNowStiffness, deepCopyNow.stiffness());
+            SCALAR_TO_DOUBLE(deepCopyLaterStiffness, deepCopyLater.stiffness());
+            EXPECT_FLOAT_EQ(ligamentSpringLinearStiffness, 100);
+            EXPECT_FLOAT_EQ(shallowCopyStiffness, 100);
+            EXPECT_FLOAT_EQ(deepCopyNowStiffness, 500);
+            EXPECT_FLOAT_EQ(deepCopyLaterStiffness, 500);
+        }
     }
     {
         Model model(modelPathForGenericTest);

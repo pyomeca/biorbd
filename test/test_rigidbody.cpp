@@ -1399,11 +1399,16 @@ TEST(Segment, copy)
     EXPECT_EQ(ShallowCopyEqual.jointDampings().size(), 6);
     EXPECT_EQ(DeepCopyNow.jointDampings().size(), 6);
     for (size_t i = 0; i < 6; ++i) {
-        EXPECT_FLOAT_EQ(MasterSegment.jointDampings()[i], 0.1 * (i + 1));
-        EXPECT_FLOAT_EQ(ShallowCopy.jointDampings()[i], 0.1 * (i + 1));
-        EXPECT_FLOAT_EQ(ShallowCopyEqual.jointDampings()[i], 0.1 * (i + 1));
-        EXPECT_FLOAT_EQ(DeepCopyNow.jointDampings()[i], 0.1 * (i + 1));
-        EXPECT_FLOAT_EQ(DeepCopyLater.jointDampings()[i], 0.1 * (i + 1));
+        SCALAR_TO_DOUBLE(MasterSegmentJointDamping, MasterSegment.jointDampings()[i]);
+        SCALAR_TO_DOUBLE(ShallowCopyJointDamping, ShallowCopy.jointDampings()[i]);
+        SCALAR_TO_DOUBLE(ShallowCopyEqualJointDamping, ShallowCopyEqual.jointDampings()[i]);
+        SCALAR_TO_DOUBLE(DeepCopyNowJointDamping, DeepCopyNow.jointDampings()[i]);
+        SCALAR_TO_DOUBLE(DeepCopyLaterJointDamping, DeepCopyLater.jointDampings()[i]);
+        EXPECT_FLOAT_EQ(MasterSegmentJointDamping, 0.1 * (i + 1));
+        EXPECT_FLOAT_EQ(ShallowCopyJointDamping, 0.1 * (i + 1));
+        EXPECT_FLOAT_EQ(ShallowCopyEqualJointDamping, 0.1 * (i + 1));
+        EXPECT_FLOAT_EQ(DeepCopyNowJointDamping, 0.1 * (i + 1));
+        EXPECT_FLOAT_EQ(DeepCopyLaterJointDamping, 0.1 * (i + 1));
     }
 
     ShallowCopy.setParent("MyLovelyParent");
@@ -1419,11 +1424,16 @@ TEST(Segment, copy)
     EXPECT_EQ(ShallowCopyEqual.jointDampings().size(), 6);
     EXPECT_EQ(DeepCopyNow.jointDampings().size(), 6);
     for (size_t i = 0; i < 6; ++i) {
-        EXPECT_FLOAT_EQ(MasterSegment.jointDampings()[i], 0.6 + 0.1 * (i + 1));
-        EXPECT_FLOAT_EQ(ShallowCopy.jointDampings()[i], 0.6 + 0.1 * (i + 1));
-        EXPECT_FLOAT_EQ(ShallowCopyEqual.jointDampings()[i], 0.6 + 0.1 * (i + 1));
-        EXPECT_FLOAT_EQ(DeepCopyNow.jointDampings()[i], 0.1 * (i + 1));
-        EXPECT_FLOAT_EQ(DeepCopyLater.jointDampings()[i], 0.1 * (i + 1));
+        SCALAR_TO_DOUBLE(MasterSegmentJointDamping, MasterSegment.jointDampings()[i]);
+        SCALAR_TO_DOUBLE(ShallowCopyJointDamping, ShallowCopy.jointDampings()[i]);
+        SCALAR_TO_DOUBLE(ShallowCopyEqualJointDamping, ShallowCopyEqual.jointDampings()[i]);
+        SCALAR_TO_DOUBLE(DeepCopyNowJointDamping, DeepCopyNow.jointDampings()[i]);
+        SCALAR_TO_DOUBLE(DeepCopyLaterJointDamping, DeepCopyLater.jointDampings()[i]);
+        EXPECT_FLOAT_EQ(MasterSegmentJointDamping, 0.6 + 0.1 * (i + 1));
+        EXPECT_FLOAT_EQ(ShallowCopyJointDamping, 0.6 + 0.1 * (i + 1));
+        EXPECT_FLOAT_EQ(ShallowCopyEqualJointDamping, 0.6 + 0.1 * (i + 1));
+        EXPECT_FLOAT_EQ(DeepCopyNowJointDamping, 0.1 * (i + 1));
+        EXPECT_FLOAT_EQ(DeepCopyLaterJointDamping, 0.1 * (i + 1));
     }
 }
 
@@ -1448,7 +1458,8 @@ TEST(Joints, jointDampings){
         auto dampings = model.segment(0).jointDampings();
         EXPECT_EQ(dampings.size(), 3);
         for (size_t i = 0; i < dampings.size(); ++i) {
-            EXPECT_FLOAT_EQ(dampings[i], 0.1 * (i + 1));
+            SCALAR_TO_DOUBLE(damping, dampings[i]);
+            EXPECT_FLOAT_EQ(damping, 0.1 * (i + 1));
         }
 
         dampings = model.segment(1).jointDampings();
@@ -1568,7 +1579,8 @@ TEST(Joints, jointDampings){
         auto dampings = model.segment(0).jointDampings();
         EXPECT_EQ(dampings.size(), 3);
         for (size_t i = 0; i < dampings.size(); ++i) {
-            EXPECT_FLOAT_EQ(dampings[i], 0.0);
+            SCALAR_TO_DOUBLE(damping, dampings[i]);
+            EXPECT_FLOAT_EQ(damping, 0.0);
         }
     }
     {
