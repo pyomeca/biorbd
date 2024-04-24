@@ -245,8 +245,8 @@ void internal_forces::muscles::Muscle::setCharacteristics(
 {
     *m_characteristics = characteristics;
 }
-const internal_forces::muscles::Characteristics&
-internal_forces::muscles::Muscle::characteristics() const
+
+internal_forces::muscles::Characteristics& internal_forces::muscles::Muscle::characteristics() const
 {
     return *m_characteristics;
 }

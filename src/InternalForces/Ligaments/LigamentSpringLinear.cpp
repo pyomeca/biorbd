@@ -72,6 +72,17 @@ void internal_forces::ligaments::LigamentSpringLinear::DeepCopy(
     *m_stiffness = *other.m_stiffness;
 }
 
+const utils::Scalar& internal_forces::ligaments::LigamentSpringLinear::stiffness() const
+{
+    return *m_stiffness;
+}
+
+void internal_forces::ligaments::LigamentSpringLinear::setStiffness(
+    const utils::Scalar &val)
+{
+    *m_stiffness = val;
+}
+
 internal_forces::ligaments::LigamentSpringLinear::LigamentSpringLinear(
     const internal_forces::ligaments::Ligament &other) :
     internal_forces::ligaments::Ligament (other)

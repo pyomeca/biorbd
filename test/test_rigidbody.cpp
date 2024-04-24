@@ -217,7 +217,7 @@ TEST(Contacts, DeepCopy)
 
 TEST(RigidContacts, create){
     Model model;
-    model.AddSegment("Seg1", "root", "xyz", "xyz", {}, {}, {}, rigidbody::SegmentCharacteristics(), utils::RotoTrans());
+    model.AddSegment("Seg1", "root", "xyz", "xyz", {}, {}, {}, {}, rigidbody::SegmentCharacteristics(), utils::RotoTrans());
     size_t id = model.GetBodyId("Seg1");
     model.AddConstraint(id, utils::Vector3d(0.1, 0.2, 0.3), utils::Vector3d(1, 0, 0), "ContactX", "Seg1");
     model.AddConstraint(id, utils::Vector3d(0.4, 0.5, 0.6), utils::Vector3d(0, 1, 0), "ContactY", "Seg1");
@@ -225,7 +225,6 @@ TEST(RigidContacts, create){
     model.AddConstraint(id, utils::Vector3d(0.1, 0.2, 0.3), "x", "ContactX2", "Seg1");
 
     EXPECT_EQ(model.nbRigidContacts(), 4);
-
     {
         size_t n(0);
         EXPECT_STREQ(model.rigidContact(n).utils::Node::name().c_str(), "ContactX");
@@ -831,6 +830,7 @@ TEST(Joints, copy)
             10, utils::Vector3d(0.5, 0.5, 0.5),
             utils::Matrix3d(1, 0, 0, 0, 1, 0, 0, 0, 1));
         std::vector<utils::Range> ranges(6);
+        std::vector<utils::Scalar> jointDampings = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6};
 
         joints.AddSegment(
             "segmentName", 
@@ -840,6 +840,7 @@ TEST(Joints, copy)
             ranges, 
             ranges,
             ranges,
+            jointDampings,
             characteristics, 
             utils::SpatialTransform()
         );
@@ -1376,8 +1377,10 @@ TEST(Segment, copy)
         10, utils::Vector3d(0.5, 0.5, 0.5),
         utils::Matrix3d(1, 0, 0, 0, 1, 0, 0, 0, 1));
     std::vector<utils::Range> ranges(6);
+    std::vector<utils::Scalar> jointDampings = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6};
+
     rigidbody::Segment MasterSegment(
-        model, "MasterSegment", "NoParent", "zyx", "yzx", ranges, ranges, ranges,
+        model, "MasterSegment", "NoParent", "zyx", "yzx", ranges, ranges, ranges, jointDampings,
         characteristics, RigidBodyDynamics::Math::SpatialTransform());
     rigidbody::Segment ShallowCopy(MasterSegment);
     rigidbody::Segment ShallowCopyEqual = MasterSegment;
@@ -1390,12 +1393,300 @@ TEST(Segment, copy)
     EXPECT_STREQ(ShallowCopyEqual.parent().c_str(), "NoParent");
     EXPECT_STREQ(DeepCopyNow.parent().c_str(), "NoParent");
     EXPECT_STREQ(DeepCopyLater.parent().c_str(), "NoParent");
+
+    EXPECT_EQ(MasterSegment.jointDampings().size(), 6);
+    EXPECT_EQ(ShallowCopy.jointDampings().size(), 6);
+    EXPECT_EQ(ShallowCopyEqual.jointDampings().size(), 6);
+    EXPECT_EQ(DeepCopyNow.jointDampings().size(), 6);
+    for (size_t i = 0; i < 6; ++i) {
+        SCALAR_TO_DOUBLE(MasterSegmentJointDamping, MasterSegment.jointDampings()[i]);
+        SCALAR_TO_DOUBLE(ShallowCopyJointDamping, ShallowCopy.jointDampings()[i]);
+        SCALAR_TO_DOUBLE(ShallowCopyEqualJointDamping, ShallowCopyEqual.jointDampings()[i]);
+        SCALAR_TO_DOUBLE(DeepCopyNowJointDamping, DeepCopyNow.jointDampings()[i]);
+        SCALAR_TO_DOUBLE(DeepCopyLaterJointDamping, DeepCopyLater.jointDampings()[i]);
+        EXPECT_FLOAT_EQ(MasterSegmentJointDamping, 0.1 * (i + 1));
+        EXPECT_FLOAT_EQ(ShallowCopyJointDamping, 0.1 * (i + 1));
+        EXPECT_FLOAT_EQ(ShallowCopyEqualJointDamping, 0.1 * (i + 1));
+        EXPECT_FLOAT_EQ(DeepCopyNowJointDamping, 0.1 * (i + 1));
+        EXPECT_FLOAT_EQ(DeepCopyLaterJointDamping, 0.1 * (i + 1));
+    }
+
     ShallowCopy.setParent("MyLovelyParent");
+    ShallowCopy.setJointDampings({0.7, 0.8, 0.9, 1.0, 1.1, 1.2});
     EXPECT_STREQ(MasterSegment.parent().c_str(), "MyLovelyParent");
     EXPECT_STREQ(ShallowCopy.parent().c_str(), "MyLovelyParent");
     EXPECT_STREQ(ShallowCopyEqual.parent().c_str(), "MyLovelyParent");
     EXPECT_STREQ(DeepCopyNow.parent().c_str(), "NoParent");
     EXPECT_STREQ(DeepCopyLater.parent().c_str(), "NoParent");
+
+    EXPECT_EQ(MasterSegment.jointDampings().size(), 6);
+    EXPECT_EQ(ShallowCopy.jointDampings().size(), 6);
+    EXPECT_EQ(ShallowCopyEqual.jointDampings().size(), 6);
+    EXPECT_EQ(DeepCopyNow.jointDampings().size(), 6);
+    for (size_t i = 0; i < 6; ++i) {
+        SCALAR_TO_DOUBLE(MasterSegmentJointDamping, MasterSegment.jointDampings()[i]);
+        SCALAR_TO_DOUBLE(ShallowCopyJointDamping, ShallowCopy.jointDampings()[i]);
+        SCALAR_TO_DOUBLE(ShallowCopyEqualJointDamping, ShallowCopyEqual.jointDampings()[i]);
+        SCALAR_TO_DOUBLE(DeepCopyNowJointDamping, DeepCopyNow.jointDampings()[i]);
+        SCALAR_TO_DOUBLE(DeepCopyLaterJointDamping, DeepCopyLater.jointDampings()[i]);
+        EXPECT_FLOAT_EQ(MasterSegmentJointDamping, 0.6 + 0.1 * (i + 1));
+        EXPECT_FLOAT_EQ(ShallowCopyJointDamping, 0.6 + 0.1 * (i + 1));
+        EXPECT_FLOAT_EQ(ShallowCopyEqualJointDamping, 0.6 + 0.1 * (i + 1));
+        EXPECT_FLOAT_EQ(DeepCopyNowJointDamping, 0.1 * (i + 1));
+        EXPECT_FLOAT_EQ(DeepCopyLaterJointDamping, 0.1 * (i + 1));
+    }
+}
+
+#include "InternalForces/Muscles/all.h"
+TEST(Joints, jointDampings){
+    Model model(modelPathForGeneralTesting);
+    DECLARE_GENERALIZED_COORDINATES(Q, model);
+    DECLARE_GENERALIZED_VELOCITY(Qdot, model);
+    DECLARE_GENERALIZED_TORQUE(Tau, model);
+
+    // Set to random values
+    std::vector<double> val(model.nbQ());
+    for (size_t i=0; i<val.size(); ++i) {
+        val[i] = static_cast<double>(i) * 1.1;
+    }
+    FILL_VECTOR(Q, val);
+    FILL_VECTOR(Qdot, val);
+    FILL_VECTOR(Tau, val);
+
+    {
+        // Check if the reader properly reads the joint dampings
+        auto dampings = model.segment(0).jointDampings();
+        EXPECT_EQ(dampings.size(), 3);
+        for (size_t i = 0; i < dampings.size(); ++i) {
+            SCALAR_TO_DOUBLE(damping, dampings[i]);
+            EXPECT_FLOAT_EQ(damping, 0.1 * (i + 1));
+        }
+
+        dampings = model.segment(1).jointDampings();
+        EXPECT_EQ(dampings.size(), 0);
+    }
+    {
+        {
+            // Test the inverse dynamics with dampings
+            DECLARE_GENERALIZED_TORQUE(Qddot, model);
+            FILL_VECTOR(Qddot, val);
+
+            std::vector<double> Tau_expected = {
+                -377.37667601984111, 1457.9126891969104, 76.141796229487724, -0.43739617658133534,
+                5.8900641759328698, 7.3851291383764082, 0.28966316617146276, -64.291413677104757,
+                30.907296369679397, -4.7397421144523726, 77.000421833123298, -22.634668114160633, 
+                15.352013571500056
+            };
+
+            CALL_BIORBD_FUNCTION_3ARGS(Tau, model, InverseDynamics, Q, Qdot, Qddot);
+            for (size_t i = 0; i<model.nbQddot(); ++i) {
+                EXPECT_NEAR(static_cast<double>(Tau(i, 0)), Tau_expected[i], requiredPrecision);
+            }
+        }
+        {
+            // Test the forward dynamics with dampings
+            std::vector<double> Qddot_expected = {
+                20.579879953792599, -22.344438880486177, -77.71396306066697, 17.439328818095163,
+                -63.654436623607509, 93.947447602864898, 106.56475488173393, 95.383470282451356,
+                -268.35067940981662, 2680.1849515004387, -183.0783731561468, 755.65327278299458,
+                164.18907387083343
+            };
+
+            CALL_BIORBD_FUNCTION_3ARGS(Qddot, model, ForwardDynamics, Q, Qdot, Tau);
+            for (size_t i = 0; i<model.nbQddot(); ++i) {
+                EXPECT_NEAR(static_cast<double>(Qddot(i, 0)), Qddot_expected[i], requiredPrecision);
+            }
+        }
+        {
+            // Test the forward dynamics with free floating base with dampings
+            DECLARE_GENERALIZED_OF_TYPE(Acceleration, QJointsDDot, model.nbQddot() - model.nbRoot());
+     
+            std::vector<double> valQ = {
+                0.6772113773514055, 0.594725911263424, -0.37125218287187844, 0.8008719220322567,
+                0.34387602931586936, -0.48585572458565385, -0.8771307019475285, 0.8971162532685075,
+                0.5233833414396123, 0.4387214855367281, -0.261476841217011, -0.32085518311637085,
+                0.6535149322727045
+            };
+            std::vector<double> valQdot = {
+                -2.3439330676895542, 2.7424241596865895, -3.4950304777399976, -5.369662406205471,
+                -1.8658120198345363, -5.02599152359938, -6.999413730817041, -0.7060849694543303,
+                1.8995138906821407, -6.277466940454428, 9.054298192029442, -9.068984871797213,
+                -4.4601279545571515
+            };
+            std::vector<double> valQJointsDDot = {
+                -32.264957457954566, 8.302307945630583, -85.66701600446129, -33.16644219089828,
+                3.3611301491870638, 35.10823095080686, -65.88196441641745, -53.43507412927335,
+                81.06299775985526, 49.014951112137965
+            };
+
+            FILL_VECTOR(Q, valQ);
+            FILL_VECTOR(Qdot, valQdot);
+            FILL_VECTOR(QJointsDDot, valQJointsDDot);
+
+            std::vector<double> QRootDDot_expected = {
+                0.40301090178723398, -13.237279709279068, 7.506337517802633
+            };
+
+            CALL_BIORBD_FUNCTION_3ARGS(QRootDDot, model, ForwardDynamicsFreeFloatingBase, Q, Qdot, QJointsDDot);
+
+            for (size_t i = 0; i<model.nbRoot(); ++i) {
+                EXPECT_NEAR(static_cast<double>(QRootDDot(i, 0)), QRootDDot_expected[i], requiredPrecision);
+            }
+        }
+        {
+            // Change the values so it fits the test of the constrained dynamics
+            for (size_t i=0; i<val.size(); ++i) {
+                val[i] = 1.0;
+            }
+            FILL_VECTOR(Q, val);
+            FILL_VECTOR(Qdot, val);
+            FILL_VECTOR(Tau, val);
+
+            // Test the constrained forward dynamics with dampings
+            std::vector<double> Qddot_expected = {
+                1.9361217291222719,  -9.2300693389613979,  2.8158158873845083,
+                5.2752213864534809, 9.0220059892771776, 6.1069863156724535, 10.010973293826574,
+                38.944482708020352, -52.419700174703543, 36.825553831073492, 38.944482708020324, -52.4197001747035,
+                36.825553831073435};
+            std::vector<double> forces_expected = {
+                -16.367760046768577, -30.530016618028743, 112.89670031638671, -16.367760046768588, -30.530016618028725, 112.89670031638663};
+
+            CALL_BIORBD_FUNCTION_3ARGS(Qddot, model, ForwardDynamicsConstraintsDirect, Q, Qdot, Tau);
+            for (size_t i = 0; i<model.nbQddot(); ++i) {
+                EXPECT_NEAR(static_cast<double>(Qddot(i, 0)), Qddot_expected[i], requiredPrecision);
+            }
+            
+            CALL_BIORBD_FUNCTION_3ARGS(
+                forces, model, ContactForcesFromForwardDynamicsConstraintsDirect, Q, Qdot, Tau);
+            for (size_t i=0; i<forces_expected.size(); ++i) {
+                EXPECT_NEAR(static_cast<double>(forces(i, 0)), forces_expected[i], requiredPrecision);
+            }
+
+            // Put back the original values
+            for (size_t i=0; i<val.size(); ++i) {
+                val[i] = static_cast<double>(i) * 1.1;
+            }
+            FILL_VECTOR(Q, val);
+            FILL_VECTOR(Qdot, val);
+            FILL_VECTOR(Tau, val);
+        }
+    }
+
+    // Removed damping
+    {
+        // Check if removing the dampings works
+        model.segment(0).setJointDampings({});
+        auto dampings = model.segment(0).jointDampings();
+        EXPECT_EQ(dampings.size(), 3);
+        for (size_t i = 0; i < dampings.size(); ++i) {
+            SCALAR_TO_DOUBLE(damping, dampings[i]);
+            EXPECT_FLOAT_EQ(damping, 0.0);
+        }
+    }
+    {
+        {
+            // Test the inverse dynamics without dampings
+            DECLARE_GENERALIZED_TORQUE(Qddot, model);
+            FILL_VECTOR(Qddot, val);
+
+            std::vector<double> Tau_expected = {
+                -377.37667601984111, 1458.1326891969104, 76.801796229487721, -0.43739617658133534,
+                5.8900641759328698, 7.3851291383764082, 0.28966316617146276, -64.291413677104757,
+                30.907296369679397, -4.7397421144523726, 77.000421833123298, -22.634668114160633, 
+                15.352013571500056
+            };
+
+            CALL_BIORBD_FUNCTION_3ARGS(Tau, model, InverseDynamics, Q, Qdot, Qddot);
+            for (size_t i = 0; i<model.nbQddot(); ++i) {
+                EXPECT_NEAR(static_cast<double>(Tau(i, 0)), Tau_expected[i], requiredPrecision);
+            }
+        }
+        {
+            // Test the forward dynamics without dampings
+            std::vector<double> Qddot_expected = {
+                20.554883896960259, -22.317642013324736, -77.406439058256126, 17.382961188212313,
+                -63.426361095191858, 93.816468824985876, 106.46105024484631, 95.116641811710167,
+                -268.1961283528546, 2680.3632159799949, -183.4582596257801, 755.89411812405604,
+                163.60239754283589
+            };
+
+            CALL_BIORBD_FUNCTION_3ARGS(Qddot, model, ForwardDynamics, Q, Qdot, Tau);
+            for (size_t i = 0; i<model.nbQddot(); ++i) {
+                EXPECT_NEAR(static_cast<double>(Qddot(i, 0)), Qddot_expected[i], requiredPrecision);
+            }
+        }
+        {
+            // Test the forward dynamics with free floating base without dampings
+            DECLARE_GENERALIZED_OF_TYPE(Acceleration, QJointsDDot, model.nbQddot() - model.nbRoot());
+     
+            std::vector<double> valQ = {
+                0.6772113773514055, 0.594725911263424, -0.37125218287187844, 0.8008719220322567,
+                0.34387602931586936, -0.48585572458565385, -0.8771307019475285, 0.8971162532685075,
+                0.5233833414396123, 0.4387214855367281, -0.261476841217011, -0.32085518311637085,
+                0.6535149322727045
+            };
+            std::vector<double> valQdot = {
+                -2.3439330676895542, 2.7424241596865895, -3.4950304777399976, -5.369662406205471,
+                -1.8658120198345363, -5.02599152359938, -6.999413730817041, -0.7060849694543303,
+                1.8995138906821407, -6.277466940454428, 9.054298192029442, -9.068984871797213,
+                -4.4601279545571515
+            };
+            std::vector<double> valQJointsDDot = {
+                -32.264957457954566, 8.302307945630583, -85.66701600446129, -33.16644219089828,
+                3.3611301491870638, 35.10823095080686, -65.88196441641745, -53.43507412927335,
+                81.06299775985526, 49.014951112137965
+            };
+
+            FILL_VECTOR(Q, valQ);
+            FILL_VECTOR(Qdot, valQdot);
+            FILL_VECTOR(QJointsDDot, valQJointsDDot);
+
+            std::vector<double> QRootDDot_expected = {
+                0.4056651149671642, -13.250782774367915, 7.655292172975847
+            };
+
+            CALL_BIORBD_FUNCTION_3ARGS(QRootDDot, model, ForwardDynamicsFreeFloatingBase, Q, Qdot, QJointsDDot);
+
+            for (size_t i = 0; i<model.nbRoot(); ++i) {
+                EXPECT_NEAR(static_cast<double>(QRootDDot(i, 0)), QRootDDot_expected[i], requiredPrecision);
+            }
+        }
+        {
+            for (size_t i=0; i<val.size(); ++i) {
+                val[i] = 1.0;
+            }
+            FILL_VECTOR(Q, val);
+            FILL_VECTOR(Qdot, val);
+            FILL_VECTOR(Tau, val);
+
+            // Test the constrained forward dynamics without dampings
+            std::vector<double> Qddot_expected = {
+                1.9402069774422919,  -9.1992692111538243,  2.9930159570454702,
+                5.2738378853554133, 8.9387539396273699, 6.0938738229550751, 9.9560407885164217,
+                38.6297746304162, -52.159023390563554, 36.702385054876714, 38.629774630416208, -52.159023390563561,
+                36.70238505487675};
+            std::vector<double> forces_expected = {
+                -16.344680827308579, -30.485214214095951, 112.8234134576031, -16.344680827308611, -30.485214214095965, 112.82341345760311};
+
+            CALL_BIORBD_FUNCTION_3ARGS(Qddot, model, ForwardDynamicsConstraintsDirect, Q, Qdot, Tau);
+            for (size_t i = 0; i<model.nbQddot(); ++i) {
+                EXPECT_NEAR(static_cast<double>(Qddot(i, 0)), Qddot_expected[i], requiredPrecision);
+            }
+            
+            CALL_BIORBD_FUNCTION_3ARGS(
+                forces, model, ContactForcesFromForwardDynamicsConstraintsDirect, Q, Qdot, Tau);
+            for (size_t i=0; i<forces_expected.size(); ++i) {
+                EXPECT_NEAR(static_cast<double>(forces(i, 0)), forces_expected[i], requiredPrecision);
+            }
+
+            for (size_t i=0; i<val.size(); ++i) {
+                val[i] = static_cast<double>(i) * 1.1;
+            }
+            FILL_VECTOR(Q, val);
+            FILL_VECTOR(Qdot, val);
+            FILL_VECTOR(Tau, val);
+        }
+    }
 }
 
 TEST(Mesh, copy)
@@ -1623,6 +1914,7 @@ TEST(Mesh, position)
 TEST(Dynamics, Forward)
 {
     Model model(modelPathForGeneralTesting);
+    model.segment(0).setJointDampings({}); // Remove the dampings for this test
     DECLARE_GENERALIZED_COORDINATES(Q, model);
     DECLARE_GENERALIZED_VELOCITY(Qdot, model);
     DECLARE_GENERALIZED_TORQUE(Tau, model);
@@ -1655,6 +1947,7 @@ TEST(Dynamics, ForwardDynamicsFreeFloatingBase)
 
     {
         Model model(modelPathForGeneralTesting);
+        model.segment(0).setJointDampings({}); // Remove the dampings for this test
         DECLARE_GENERALIZED_COORDINATES(Q, model);
         DECLARE_GENERALIZED_VELOCITY(Qdot, model);
         DECLARE_GENERALIZED_OF_TYPE(Acceleration, QJointsDDot, model.nbQddot() - model.nbRoot());
@@ -1793,6 +2086,7 @@ TEST(Dynamics, ForwardChangingMass)
 TEST(Dynamics, ForwardDynAndExternalForces)
 {
     Model model(modelPathForGeneralTesting);
+    model.segment(0).setJointDampings({}); // Remove the dampings for this test
     DECLARE_GENERALIZED_COORDINATES(Q, model);
     DECLARE_GENERALIZED_VELOCITY(Qdot, model);
     DECLARE_GENERALIZED_TORQUE(Tau, model);
@@ -1923,9 +2217,9 @@ TEST(Dynamics, ForwardLoopConstraint)
 TEST(Dynamics, ForwardAccelerationConstraint)
 {
     Model model(modelPathForGeneralTesting);
+    model.segment(0).setJointDampings({}); // Remove the dampings for this test
     DECLARE_GENERALIZED_COORDINATES(Q, model);
     DECLARE_GENERALIZED_VELOCITY(Qdot, model);
-    DECLARE_GENERALIZED_ACCELERATION(Qddot_constrained, model);
     DECLARE_GENERALIZED_TORQUE(Tau, model);
 
     std::vector<double> val(model.nbQ());
@@ -1953,11 +2247,10 @@ TEST(Dynamics, ForwardAccelerationConstraint)
     }
     EXPECT_EQ(cs.nbContacts(), forces_expected.size());
 
-    CALL_BIORBD_FUNCTION_3ARGS(forces, model,
-                               ContactForcesFromForwardDynamicsConstraintsDirect, Q, Qdot, Tau);
+    CALL_BIORBD_FUNCTION_3ARGS(
+        forces, model, ContactForcesFromForwardDynamicsConstraintsDirect, Q, Qdot, Tau);
     for (size_t i=0; i<forces_expected.size(); ++i) {
-        EXPECT_NEAR(static_cast<double>(forces(i, 0)), forces_expected[i],
-                    requiredPrecision);
+        EXPECT_NEAR(static_cast<double>(forces(i, 0)), forces_expected[i], requiredPrecision);
     }
 }
 

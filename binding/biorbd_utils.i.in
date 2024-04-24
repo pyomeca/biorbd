@@ -21,6 +21,11 @@ namespace std {
 %template(VecBiorbdString) std::vector<BIORBD_NAMESPACE::utils::String>;
 %template(PairBiorbdString) std::pair<BIORBD_NAMESPACE::utils::String, BIORBD_NAMESPACE::utils::String>;
 
+#ifdef BIORBD_USE_CASADI_MATH
+%template(VecBiorbdScalar) std::vector<BIORBD_NAMESPACE::utils::Scalar>;
+#else
+%template(VecBiorbdScalar) std::vector<double>;
+#endif
 %template(VecBiorbdVector) std::vector<BIORBD_NAMESPACE::utils::Vector>;
 %template(MatBiorbdVector) std::vector<std::vector<BIORBD_NAMESPACE::utils::Vector>>;
 %template(VecBiorbdSpatialVector) std::vector<BIORBD_NAMESPACE::utils::SpatialVector>;

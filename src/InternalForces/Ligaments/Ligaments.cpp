@@ -61,15 +61,13 @@ void internal_forces::ligaments::Ligaments::DeepCopy(
 
 internal_forces::ligaments::Ligament& internal_forces::ligaments::Ligaments::ligament(size_t idx)
 {
-    utils::Error::check(idx<nbLigaments(),
-                                "Idx asked is higher than number of ligaments");
+    utils::Error::check(idx < nbLigaments(), "Idx asked is higher than number of ligaments");
     return *(*m_ligaments)[idx];
 }
 
 const internal_forces::ligaments::Ligament& internal_forces::ligaments::Ligaments::ligament(size_t idx) const
 {
-    utils::Error::check(idx<nbLigaments(),
-                                "Idx asked is higher than number of ligaments");
+    utils::Error::check(idx < nbLigaments(), "Idx asked is higher than number of ligaments");
     return *(*m_ligaments)[idx];
 }
 

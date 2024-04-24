@@ -20,6 +20,13 @@ except:
 def test_external_forces(brbd):
     m = brbd.Model("../../models/pyomecaman.bioMod")
 
+    # Remove the dampings in this test
+    if brbd.currentLinearAlgebraBackend() == 1:
+        jointDampings = [brbd.Scalar(0), brbd.Scalar(0), brbd.Scalar(0)]
+    else:
+        jointDampings = [0, 0, 0]
+    m.segment(0).setJointDampings(jointDampings)
+
     force_set = m.externalForceSet()
     force_set.add(
         "PiedD",
@@ -83,6 +90,13 @@ def test_external_forces(brbd):
 def test_external_forces_with_point_of_application(brbd):
     m = brbd.Model("../../models/pyomecaman.bioMod")
 
+    # Remove the dampings in this test
+    if brbd.currentLinearAlgebraBackend() == 1:
+        jointDampings = [brbd.Scalar(0), brbd.Scalar(0), brbd.Scalar(0)]
+    else:
+        jointDampings = [0, 0, 0]
+    m.segment(0).setJointDampings(jointDampings)
+    
     force_set = m.externalForceSet()
     force_set.add(
         "PiedD",

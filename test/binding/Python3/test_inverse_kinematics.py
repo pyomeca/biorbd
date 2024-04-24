@@ -18,6 +18,13 @@ except ModuleNotFoundError:
 def test_solve(brbd, method):
     biorbd_model = brbd.Model("../../models/pyomecaman.bioMod")
 
+    # Remove the dampings in this test
+    if brbd.currentLinearAlgebraBackend() == 1:
+        jointDampings = [brbd.Scalar(0), brbd.Scalar(0), brbd.Scalar(0)]
+    else:
+        jointDampings = [0, 0, 0]
+    biorbd_model.segment(0).setJointDampings(jointDampings)
+
     qinit = np.array([0.1, 0.1, -0.3, 0.35, 1.15, -0.35, 1.15, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1])
 
     markers = np.ndarray((3, biorbd_model.nbMarkers(), 1))

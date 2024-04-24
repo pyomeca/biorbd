@@ -52,6 +52,11 @@ TEST(FileIO, WriteModel)
     rigidbody::GeneralizedCoordinates Q(modelCopy);
     Q.setOnes();
 
+    EXPECT_FLOAT_EQ(model.segment(0).jointDampings()[0], 1.0);
+    EXPECT_FLOAT_EQ(model.segment(0).jointDampings()[1], 2.0);
+    EXPECT_FLOAT_EQ(model.segment(0).jointDampings()[2], 3.0);
+    EXPECT_FLOAT_EQ(model.segment(1).jointDampings()[0], 0.0);
+
     for (size_t k=0; k<model.nbSegment(); ++k) {
         for (size_t i=0; i<4; ++i) {
             for (size_t j=0; j<4; ++j) {

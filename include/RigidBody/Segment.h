@@ -6,6 +6,7 @@
 #include <rbdl/Joint.h>
 #include "biorbdConfig.h"
 #include "Utils/Node.h"
+#include "Utils/Scalar.h"
 
 namespace BIORBD_NAMESPACE
 {
@@ -42,6 +43,7 @@ public:
     /// \param QRanges Ranges of the translations and rotations dof. The length of QRanges must be equal to length of translations and rotations
     /// \param QdotRanges Ranges of the translations and rotations dof velocity. The length of QdotRanges must be equal to length of translations and rotations
     /// \param QddotRanges Ranges of the translations and rotations dof acceleration. The length of QddotRanges must be equal to length of translations and rotations
+    /// \param jointDamping The joint damping to apply to the dynamics
     /// \param characteristics of the segment (mass, center of mass, inertia, etc.)
     /// \param cor Transformation in parent reference frame
     ///
@@ -54,6 +56,7 @@ public:
         const std::vector<utils::Range>& QRanges,
         const std::vector<utils::Range>& QdotRanges,
         const std::vector<utils::Range>& QddotRanges,
+        const std::vector<utils::Scalar>& jointDamping,
         const SegmentCharacteristics& characteristics,
         const utils::SpatialTransform& cor);
 
@@ -66,6 +69,7 @@ public:
     /// \param QRanges Ranges of the translations and rotations dof. The length of QRanges must be equal to length of translations and rotations
     /// \param QdotRanges Ranges of the translations and rotations dof velocity. The length of QdotRanges must be equal to length of translations and rotations
     /// \param QddotRanges Ranges of the translations and rotations dof acceleration. The length of QddotRanges must be equal to length of translations and rotations
+    /// \param jointDamping The joint damping to apply to the dynamics
     /// \param characteristics of the segment (mass, center of mass, inertia, etc.)
     /// \param cor Transformation in parent reference frame
     ///
@@ -77,6 +81,7 @@ public:
         const std::vector<utils::Range>& QRanges,
         const std::vector<utils::Range>& QdotRanges,
         const std::vector<utils::Range>& QddotRanges,
+        const std::vector<utils::Scalar>& jointDamping,
         const SegmentCharacteristics& characteristics,
         const utils::SpatialTransform& cor);
 
@@ -120,22 +125,48 @@ public:
     /// \brief Return the ranges for all the dof, translations and rotations respectively
     /// \return The ranges for all the dof, translations and rotations respectively
     ///
-    const std::vector<utils::Range>&
-    QRanges() const;
+    const std::vector<utils::Range>& QRanges() const;
+
+    ///
+    /// \brief Set the ranges for all the dof, translations and rotations respectively
+    /// \param QRanges The ranges for all the dof, translations and rotations respectively
+    ///
+    void setQRanges(const std::vector<utils::Range>& QRanges);
 
     ///
     /// \brief Return the ranges for all the dof velocity, translations and rotations respectively
     /// \return The ranges for all the dof velocity, translations and rotations respectively
     ///
-    const std::vector<utils::Range>&
-    QdotRanges() const;
+    const std::vector<utils::Range>& QdotRanges() const;
+
+    ///
+    /// \brief Set the ranges for all the dof velocity, translations and rotations respectively
+    /// \param QdotRanges The ranges for all the dof velocity, translations and rotations respectively
+    ///
+    void setQdotRanges(const std::vector<utils::Range>& QdotRanges);
 
     ///
     /// \brief Return the ranges for all the dof acceleration, translations and rotations respectively
     /// \return The ranges for all the dofa acceleration, translations and rotations respectively
     ///
-    const std::vector<utils::Range>&
-    QddotRanges() const;
+    const std::vector<utils::Range>& QddotRanges() const;
+
+    ///
+    /// \brief Set the ranges for all the dof acceleration, translations and rotations respectively
+    /// \param QddotRanges The ranges for all the dof acceleration, translations and rotations respectively
+    ///
+    void setQddotRanges(const std::vector<utils::Range>& QddotRanges);
+
+    ///
+    /// \brief Return the joint damping to apply to the dynamics
+    /// \return The joint damping
+    const std::vector<utils::Scalar>& jointDampings() const;
+
+    ///
+    /// \brief Set the joint damping to apply to the dynamics
+    /// \param jointDampings The joint damping
+    ///
+    void setJointDampings(const std::vector<utils::Scalar>& jointDampings);
 
     ///
     /// \brief Return the number of DoF of the segment
@@ -285,6 +316,7 @@ protected:
     /// \param QRanges Ranges of the translations and rotations dof. The length of QRanges must be equal to length of translations and rotations
     /// \param QdotRanges Ranges of the translations and rotations dof velocity. The length of QdotRanges must be equal to length of translations and rotations
     /// \param QddotRanges Ranges of the translations and rotations dof acceleration. The length of QddotRanges must be equal to length of translations and rotations
+    /// \param jointDamping The joint damping to apply to the dynamics
     ///
     void setDofs(
         rigidbody::Joints& model,
@@ -292,7 +324,18 @@ protected:
         const utils::String &seqR,
         const std::vector<utils::Range>& QRanges,
         const std::vector<utils::Range>& QdotRanges,
-        const std::vector<utils::Range>& QddotRanges);
+        const std::vector<utils::Range>& QddotRanges, 
+        const std::vector<utils::Scalar>& jointDamping);
+
+    ///
+    /// \brief Check if the vector has the same number of elements as the number of DoF
+    /// \param vec The vector to check
+    /// \param isQLevel If the vector is a Q level or a Qdot/Qddot level. This is important to compute number of rotations when using quaternions
+    /// \return If the vector has the same number of elements as the number of DoF
+    template<typename T>
+    bool isVectorHasDofDimension(
+        const std::vector<T>& vec, 
+        bool isQLevel) const;
 
     ///
     /// \brief Set the total number of DoF
@@ -305,9 +348,6 @@ protected:
 
     std::shared_ptr<utils::String> m_seqT;  ///< Translation sequence
     std::shared_ptr<utils::String> m_seqR;  ///< Euler rotation sequence
-    std::shared_ptr<std::vector<utils::Range>> m_QRanges;  ///< Minimum and maximum coordinate values that each dof should hold. This is only prescriptive and can be ignored when setting the GeneralizedCoordinates
-    std::shared_ptr<std::vector<utils::Range>> m_QdotRanges;  ///< Minimum and maximum velocity values that each dof should hold. This is only prescriptive and can be ignored when setting the GeneralizedVelocities
-    std::shared_ptr<std::vector<utils::Range>> m_QddotRanges;  ///< Minimum and maximum acceleration values that each dof should hold. This is only prescriptive and can be ignored when setting the GeneralizedAccelerations
     std::shared_ptr<size_t> m_nbDof;   ///< Number of degrees of freedom
     std::shared_ptr<size_t> m_nbQdot;  ///< Number of generalized velocities
     std::shared_ptr<size_t> m_nbQddot;  ///< Number of generalized accelerations
@@ -316,6 +356,12 @@ protected:
     std::shared_ptr<size_t> m_nbDofTrans; ///< Number of degrees of freedom in translation
     std::shared_ptr<size_t> m_nbDofRot; ///< Number of degrees of freedom in rotation
     std::shared_ptr<size_t> m_nbDofQuat; ///< Number of degrees of freedom in rotation if expressed in quaternion
+    
+    std::shared_ptr<std::vector<utils::Range>> m_QRanges;  ///< Minimum and maximum coordinate values that each dof should hold. This is only prescriptive and can be ignored when setting the GeneralizedCoordinates
+    std::shared_ptr<std::vector<utils::Range>> m_QdotRanges;  ///< Minimum and maximum velocity values that each dof should hold. This is only prescriptive and can be ignored when setting the GeneralizedVelocities
+    std::shared_ptr<std::vector<utils::Range>> m_QddotRanges;  ///< Minimum and maximum acceleration values that each dof should hold. This is only prescriptive and can be ignored when setting the GeneralizedAccelerations
+
+    std::shared_ptr<std::vector<utils::Scalar>> m_jointDampings; ///< The joint dampings to apply to the dynamics
 
     std::shared_ptr<bool> m_isQuaternion; ///< If DoF in rotation is a Quaternion
 

@@ -95,15 +95,10 @@ void internal_forces::muscles::HillThelenType::computeFlPE()
 
 #ifdef BIORBD_USE_CASADI_MATH
     *m_FlPE = IF_ELSE_NAMESPACE::if_else_zero(
-                  IF_ELSE_NAMESPACE::gt(normLength, 1),
-                  ((t5 - 1) / (t7 - 1))
-                );
+        IF_ELSE_NAMESPACE::gt(normLength, 1), ((t5 - 1) / (t7 - 1))
+    );
 #else
-    if (normLength > 1)
-        *m_FlPE = (t5 - 1) / (t7 - 1);
-    else
-        *m_FlPE = 0;
-
+    *m_FlPE = normLength > 1 ? (t5 - 1) / (t7 - 1) : 0;
 #endif
 }
 

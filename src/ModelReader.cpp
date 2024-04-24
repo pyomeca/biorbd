@@ -136,6 +136,7 @@ void Reader::readModelFile(
                 std::vector<utils::Range> QRanges;
                 std::vector<utils::Range> QdotRanges;
                 std::vector<utils::Range> QddotRanges;
+                std::vector<utils::Scalar> jointDampings;
                 bool isRangeQSet(
                     false); // Ranges must be done only after translation AND rotations tags
                 bool isRangeQdotSet(
@@ -163,13 +164,7 @@ void Reader::readModelFile(
                         !property_tag.tolower().compare("ranges") || 
                         !property_tag.tolower().compare("rangesq")){
                         double min, max;
-                        size_t rotLength(0);
-                        if (rot.compare("q")) {
-                            // If not a quaternion
-                            rotLength = rot.length();
-                        } else {
-                            rotLength = 4;
-                        }
+                        size_t rotLength = !rot.compare("q") ? 4 : rot.length();
                         for (size_t i=0; i<trans.length() + rotLength; ++i) {
                             file.read(min);
                             file.read(max);
@@ -179,13 +174,7 @@ void Reader::readModelFile(
                         isRangeQSet = true;
                     } else if (!property_tag.tolower().compare("rangesqdot")) {
                         double min, max;
-                        size_t rotLength(0);
-                        if (rot.compare("q")) {
-                            // If not a quaternion
-                            rotLength = rot.length();
-                        } else {
-                            rotLength = 3;
-                        }
+                        size_t rotLength = !rot.compare("q") ? 3 : rot.length();
                         for (size_t i=0; i<trans.length() + rotLength; ++i) {
                             file.read(min);
                             file.read(max);
@@ -194,19 +183,20 @@ void Reader::readModelFile(
                         isRangeQdotSet = true;
                     } else if (!property_tag.tolower().compare("rangesqddot")) {
                         double min, max;
-                        size_t rotLength(0);
-                        if (rot.compare("q")) {
-                            // If not a quaternion
-                            rotLength = rot.length();
-                        } else {
-                            rotLength = 3;
-                        }
+                        size_t rotLength = !rot.compare("q") ? 3 : rot.length();
                         for (size_t i=0; i<trans.length() + rotLength; ++i) {
                             file.read(min);
                             file.read(max);
                             QddotRanges.push_back(utils::Range (min, max));
                         }
                         isRangeQddotSet = true;
+                    } else if (!property_tag.tolower().compare("jointdampings")) {
+                        size_t rotLength = !rot.compare("q") ? 3 : rot.length();
+                        for (size_t i=0; i<trans.length() + rotLength; ++i) {
+                            double damping;
+                            file.read(damping);
+                            jointDampings.push_back(damping);
+                        }
                     } else if (!property_tag.tolower().compare("mass")) {
                         file.read(mass, variable);
                     } else if (!property_tag.tolower().compare("inertia") || !property_tag.tolower().compare("inertiamatrix")) {
@@ -351,6 +341,7 @@ void Reader::readModelFile(
                     QRanges, 
                     QdotRanges,
                     QddotRanges, 
+                    jointDampings,
                     characteristics, 
                     RT
                 );

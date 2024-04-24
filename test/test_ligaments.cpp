@@ -298,6 +298,17 @@ TEST(springLinear, copy)
         EXPECT_STREQ(shallowCopy.name().c_str(), originalName.c_str());
         EXPECT_STREQ(deepCopyNow.name().c_str(), originalName.c_str());
         EXPECT_STREQ(deepCopyLater.name().c_str(), originalName.c_str());
+        
+        {
+            SCALAR_TO_DOUBLE(ligamentSpringLinearStiffness, ligamentSpringLinear.stiffness());
+            SCALAR_TO_DOUBLE(shallowCopyStiffness, shallowCopy.stiffness());
+            SCALAR_TO_DOUBLE(deepCopyNowStiffness, deepCopyNow.stiffness());
+            SCALAR_TO_DOUBLE(deepCopyLaterStiffness, deepCopyLater.stiffness());
+            EXPECT_FLOAT_EQ(ligamentSpringLinearStiffness, 500);
+            EXPECT_FLOAT_EQ(shallowCopyStiffness, 500);
+            EXPECT_FLOAT_EQ(deepCopyNowStiffness, 500);
+            EXPECT_FLOAT_EQ(deepCopyLaterStiffness, 500);
+        }
 
         utils::String newName("MyNewMuscleName");
         ligamentSpringLinear.setName(newName);
@@ -305,6 +316,18 @@ TEST(springLinear, copy)
         EXPECT_STREQ(shallowCopy.name().c_str(), newName.c_str());
         EXPECT_STREQ(deepCopyNow.name().c_str(), originalName.c_str());
         EXPECT_STREQ(deepCopyLater.name().c_str(), originalName.c_str());
+        
+        ligamentSpringLinear.setStiffness(100);
+        {
+            SCALAR_TO_DOUBLE(ligamentSpringLinearStiffness, ligamentSpringLinear.stiffness());
+            SCALAR_TO_DOUBLE(shallowCopyStiffness, shallowCopy.stiffness());
+            SCALAR_TO_DOUBLE(deepCopyNowStiffness, deepCopyNow.stiffness());
+            SCALAR_TO_DOUBLE(deepCopyLaterStiffness, deepCopyLater.stiffness());
+            EXPECT_FLOAT_EQ(ligamentSpringLinearStiffness, 100);
+            EXPECT_FLOAT_EQ(shallowCopyStiffness, 100);
+            EXPECT_FLOAT_EQ(deepCopyNowStiffness, 500);
+            EXPECT_FLOAT_EQ(deepCopyLaterStiffness, 500);
+        }
     }
     {
         Model model(modelPathForGenericTest);
@@ -337,8 +360,7 @@ TEST(springLinear, copy)
         // Change the position of the insertion and pennation angle and compare again (length and insertion in Local)
         utils::Vector3d insertion(ligamentSpringLinear.position().insertionInLocal());
         insertion.set(0.5, 0.6, 0.7);
-        const_cast<internal_forces::Geometry&>
-        (ligamentSpringLinear.position()).setInsertionInLocal(insertion);
+        const_cast<internal_forces::Geometry&>(ligamentSpringLinear.position()).setInsertionInLocal(insertion);
         utils::String oldName(insertion.utils::Node::name());
         utils::String newName("MyNewName");
         insertion.setName(newName);
@@ -353,15 +375,10 @@ TEST(springLinear, copy)
             EXPECT_NEAR(shallowCopyLength, 0.97513625610637888, requiredPrecision);
             EXPECT_NEAR(deepCopyNowLength, 0.14083430313088782, requiredPrecision);
             EXPECT_NEAR(deepCopyLaterLength, 0.14083430313088782, requiredPrecision);
-            EXPECT_EQ(ligamentSpringLinear.position().insertionInLocal().utils::Node::name(),
-                      newName);
-            EXPECT_EQ(shallowCopy.position().insertionInLocal().utils::Node::name(),
-                      newName);
-            EXPECT_EQ(deepCopyNow.position().insertionInLocal().utils::Node::name(),
-                      oldName);
-            EXPECT_EQ(
-                deepCopyLater.position().insertionInLocal().utils::Node::name(),
-                oldName);
+            EXPECT_EQ(ligamentSpringLinear.position().insertionInLocal().utils::Node::name(), newName);
+            EXPECT_EQ(shallowCopy.position().insertionInLocal().utils::Node::name(), newName);
+            EXPECT_EQ(deepCopyNow.position().insertionInLocal().utils::Node::name(), oldName);
+            EXPECT_EQ(deepCopyLater.position().insertionInLocal().utils::Node::name(), oldName);
         }
     }
 }

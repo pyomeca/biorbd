@@ -176,71 +176,71 @@ const
 // Position of the muscles in space
 const utils::Vector3d &internal_forces::Geometry::originInGlobal() const
 {
-    utils::Error::check(*m_isGeometryComputed,
-                                "Geometry must be computed at least once before calling originInLocal()");
+    utils::Error::check(
+        *m_isGeometryComputed, "Geometry must be computed at least once before calling originInLocal()");
     return *m_originInGlobal;
 }
 const utils::Vector3d &internal_forces::Geometry::insertionInGlobal()
 const
 {
-    utils::Error::check(*m_isGeometryComputed,
-                                "Geometry must be computed at least once before calling insertionInGlobal()");
+    utils::Error::check(
+        *m_isGeometryComputed, "Geometry must be computed at least once before calling insertionInGlobal()");
     return *m_insertionInGlobal;
 }
 const std::vector<utils::Vector3d>
 &internal_forces::Geometry::pointsInGlobal() const
 {
-    utils::Error::check(*m_isGeometryComputed,
-                                "Geometry must be computed at least once before calling musclesPointsInGlobal()");
+    utils::Error::check(
+        *m_isGeometryComputed, "Geometry must be computed at least once before calling musclesPointsInGlobal()");
     return *m_pointsInGlobal;
 }
 
 // Return the length and muscular velocity
 const utils::Scalar& internal_forces::Geometry::length() const
 {
-    utils::Error::check(*m_isGeometryComputed,
-                                "Geometry must be computed at least before calling length()");
+    utils::Error::check(
+        *m_isGeometryComputed, "Geometry must be computed at least before calling length()");
     return *m_length;
 }
 
 const utils::Scalar& internal_forces::Geometry::velocity() const
 {
-    utils::Error::check(*m_isVelocityComputed,
-                                "Geometry must be computed before calling velocity()");
+    utils::Error::check(
+        *m_isVelocityComputed, "Geometry must be computed before calling velocity()");
     return *m_velocity;
 }
 
 // Return the Jacobian
 const utils::Matrix& internal_forces::Geometry::jacobian() const
 {
-    utils::Error::check(*m_isGeometryComputed,
-                                "Geometry must be computed before calling jacobian()");
+    utils::Error::check(
+        *m_isGeometryComputed, "Geometry must be computed before calling jacobian()");
     return *m_jacobian;
 } // Return the last Jacobian
 utils::Matrix internal_forces::Geometry::jacobianOrigin() const
 {
-    utils::Error::check(*m_isGeometryComputed,
-                                "Geometry must be computed before calling jacobianOrigin()");
+    utils::Error::check(
+        *m_isGeometryComputed, "Geometry must be computed before calling jacobianOrigin()");
     return m_jacobian->block(0,0,3,m_jacobian->cols());
 }
 utils::Matrix internal_forces::Geometry::jacobianInsertion() const
 {
-    utils::Error::check(*m_isGeometryComputed,
-                                "Geometry must be computed before calling jacobianInsertion()");
+    utils::Error::check(
+        *m_isGeometryComputed, "Geometry must be computed before calling jacobianInsertion()");
     return m_jacobian->block(m_jacobian->rows()-3,0,3,m_jacobian->cols());
 }
 utils::Matrix internal_forces::Geometry::jacobian(
     size_t idxViaPoint) const
 {
-    utils::Error::check(*m_isGeometryComputed,
-                                "Geometry must be computed before calling jacobian(i)");
+    utils::Error::check(
+        *m_isGeometryComputed, "Geometry must be computed before calling jacobian(i)");
     return m_jacobian->block(3* static_cast<unsigned int>(idxViaPoint),0,3,m_jacobian->cols());
 }
 
 const utils::Matrix &internal_forces::Geometry::jacobianLength() const
 {
-    utils::Error::check(*m_isGeometryComputed,
-                                "Geometry must be computed before calling jacobianLength()");
+    utils::Error::check(
+        *m_isGeometryComputed, "Geometry must be computed before calling jacobianLength()");
     return *m_jacobianLength;
 }
 
@@ -379,10 +379,8 @@ const utils::Scalar& internal_forces::Geometry::length(
         utils::Error::check(pathModifiers->nbWraps() < 2,
                                     "Cannot compute more than one wrapping yet");
 
-        utils::Vector3d pi_wrap(0, 0,
-                                        0); // point on the wrapping related to insertion
-        utils::Vector3d po_wrap(0, 0,
-                                        0); // point on the wrapping related to origin
+        utils::Vector3d pi_wrap(0, 0, 0); // point on the wrapping related to insertion
+        utils::Vector3d po_wrap(0, 0, 0); // point on the wrapping related to origin
         utils::Scalar lengthWrap(0);
         static_cast<internal_forces::WrappingObject&>(
             pathModifiers->object(0)).wrapPoints(po_wrap, pi_wrap, &lengthWrap);
@@ -407,16 +405,15 @@ const utils::Scalar& internal_forces::Geometry::velocity(
     return *m_velocity;
 }
 
-void internal_forces::Geometry::setJacobianDimension(rigidbody::Joints
-        &model)
+void internal_forces::Geometry::setJacobianDimension(
+    rigidbody::Joints& model)
 {
     *m_jacobian = utils::Matrix::Zero(static_cast<unsigned int>(m_pointsInLocal->size()*3), model.dof_count);
 }
 
 void internal_forces::Geometry::jacobian(const utils::Matrix &jaco)
 {
-    utils::Error::check(jaco.rows()/3 == static_cast<int>
-                                (m_pointsInGlobal->size()), "Jacobian is the wrong size");
+    utils::Error::check(jaco.rows()/3 == static_cast<int>(m_pointsInGlobal->size()), "Jacobian is the wrong size");
     *m_jacobian = jaco;
 }
 

@@ -90,6 +90,32 @@ public:
     void DeepCopy(
         const LigamentSpringSecondOrder& other);
 
+    ///
+    /// \brief Get the stiffness
+    /// \return The stiffness
+    ///
+    const utils::Scalar& stiffness() const;
+
+    ///
+    /// \brief Set the stiffness
+    /// \param stiffness The stiffness
+    ///
+    void setStiffness(
+        const utils::Scalar& stiffness);
+
+    ///
+    /// \brief Get the epsilon
+    /// \return The epsilon
+    ///
+    const utils::Scalar& epsilon() const;
+
+    ///
+    /// \brief Set the epsilon
+    /// \param epsilon The epsilon
+    ///
+    void setEpsilon(
+        const utils::Scalar& epsilon);
+
 protected:
     ///
     /// \brief Set type to second order spring like ligament

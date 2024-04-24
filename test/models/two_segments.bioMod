@@ -4,6 +4,7 @@ segment segment1
     rt 0.1 0.2 0.3 xyz 1 2 3
     translations    xy
     rotations	z
+	jointdampings 1 2 3
 endsegment
 
 segment segment2
