@@ -186,7 +186,7 @@
         // Cast the vector
         PyObject *data = PyArray_FROM_OTF((PyObject*)$input, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
         if (ndim == 1 ) {
-            unsigned int scalar_dim0 = dims[0];
+            unsigned int scalar_dim0 = static_cast<unsigned int>(dims[0]);
             if (scalar_dim0 != 1){
                 PyErr_SetString(PyExc_ValueError,
                                 "Scalar must be a 1x1 array or a float");
@@ -197,8 +197,8 @@
             $1 = new BIORBD_NAMESPACE::utils::Scalar(*(double*)PyArray_GETPTR1((PyArrayObject*)data, 0));
         }
         else if (ndim == 2) {
-            unsigned int scalar_dim0(dims[0]);
-            unsigned int scalar_dim1(dims[1]);
+            unsigned int scalar_dim0(static_cast<unsigned int>(dims[0]));
+            unsigned int scalar_dim1(static_cast<unsigned int>(dims[1]));
             if (scalar_dim0 != 1 && scalar_dim1 != 1){
                 PyErr_SetString(PyExc_ValueError,
                                 "Scalar must be a 1x1 array or a float");
@@ -251,8 +251,8 @@
 
         double * quat = new double[nRows*nCols];
         unsigned int k(0);
-        for (unsigned int i=0; i<nRows; ++i){
-            for (unsigned int j=0; j<nCols; ++j){
+        for (unsigned int i = 0; i < static_cast<unsigned int>(nRows); ++i){
+            for (unsigned int j = 0; j < static_cast<unsigned int>(nCols); ++j){
                 quat[k] = (*$self)(j,i);
                 ++k;
             }
@@ -273,8 +273,8 @@
     };
 #else
     PyObject* to_array(){
-        int nRows($self->rows());
-        int nCols($self->cols());
+        int nRows(static_cast<int>($self->rows()));
+        int nCols(static_cast<int>($self->cols()));
         int nArraySize(2);
         npy_intp * arraySizes = new npy_intp[nArraySize];
         arraySizes[0] = nRows;
@@ -282,8 +282,8 @@
 
         double * matrix = new double[nRows*nCols];
         unsigned int k(0);
-        for (unsigned int i=0; i<nRows; ++i){
-            for (unsigned int j=0; j<nCols; ++j){
+        for (unsigned int i = 0; i < static_cast<unsigned int>(nRows); ++i){
+            for (unsigned int j = 0; j < static_cast<unsigned int>(nCols); ++j){
                 matrix[k] = (*$self)(i, j);
                 ++k;
             }
@@ -373,8 +373,8 @@
 
         double * matrix = new double[nRows*nCols];
         unsigned int k(0);
-        for (unsigned int i=0; i<nRows; ++i){
-            for (unsigned int j=0; j<nCols; ++j){
+        for (unsigned int i = 0; i < static_cast<unsigned int>(nRows); ++i){
+            for (unsigned int j = 0; j < static_cast<unsigned int>(nCols); ++j){
                 matrix[k] = (*$self)(i, j);
                 ++k;
             }
@@ -442,13 +442,13 @@
     };
 #else
     PyObject* to_array(){
-        int nElements($self->size());
+        int nElements(static_cast<int>($self->size()));
         int nArraySize(1);
         npy_intp * arraySizes = new npy_intp[nArraySize];
         arraySizes[0] = nElements;
 
         double * vect = new double[nElements];
-        for (unsigned int i=0; i<nElements; ++i){
+        for (unsigned int i = 0; i < static_cast<unsigned int>(nElements); ++i){
             vect[i] = (*$self)(i);
         }
         PyObject* output = PyArray_SimpleNewFromData(nArraySize,arraySizes,NPY_DOUBLE, vect);
@@ -503,7 +503,7 @@
         // Cast the vector
         PyObject *data = PyArray_FROM_OTF((PyObject*)$input, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
         // Copy the actual data
-        unsigned int n(dims[0]);
+        unsigned int n(static_cast<unsigned int>(dims[0]));
         $1 = new BIORBD_NAMESPACE::utils::Vector(n);
         for (unsigned int i=0; i<n; ++i)
             (*$1)[i] = *(double*)PyArray_GETPTR1((PyArrayObject*)data, i);
@@ -564,7 +564,7 @@ BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates & {
         // Cast the vector
         PyObject *data = PyArray_FROM_OTF((PyObject*)$input, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
         // Copy the actual data
-        unsigned int nQ(dims[0]);
+        unsigned int nQ(static_cast<unsigned int>(dims[0]));
         $1 = new BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates(nQ);
         for (unsigned int q=0; q<nQ; ++q){
             (*$1)[q] = *(double*)PyArray_GETPTR1((PyArrayObject*)data, q);
@@ -619,7 +619,7 @@ BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates & {
         // Cast the vector
         PyObject *data = PyArray_FROM_OTF((PyObject*)$input, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
         // Copy the actual data
-        unsigned int nQ(dims[0]);
+        unsigned int nQ(static_cast<unsigned int>(dims[0]));
         $1 = new BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates(nQ);
         for (unsigned int q=0; q<nQ; ++q){
             (*$1)[q] = *(double*)PyArray_GETPTR1((PyArrayObject*)data, q);
@@ -680,7 +680,7 @@ BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity & {
         // Cast the vector
         PyObject *data = PyArray_FROM_OTF((PyObject*)$input, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
         // Copy the actual data
-        unsigned int nQdot(dims[0]);
+        unsigned int nQdot(static_cast<unsigned int>(dims[0]));
         $1 = new BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity(nQdot);
         for (unsigned int qdot=0; qdot<nQdot; ++qdot){
             (*$1)[qdot] = *(double*)PyArray_GETPTR1((PyArrayObject*)data, qdot);
@@ -736,7 +736,7 @@ BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity * {
         // Cast the vector
         PyObject *data = PyArray_FROM_OTF((PyObject*)$input, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
         // Copy the actual data
-        unsigned int nQdot(dims[0]);
+        unsigned int nQdot(static_cast<unsigned int>(dims[0]));
         $1 = new BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity(nQdot);
         for (unsigned int qdot=0; qdot<nQdot; ++qdot){
             (*$1)[qdot] = *(double*)PyArray_GETPTR1((PyArrayObject*)data, qdot);
@@ -793,7 +793,7 @@ BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration & {
         // Cast the vector
         PyObject *data = PyArray_FROM_OTF((PyObject*)$input, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
         // Copy the actual data
-        unsigned int nQddot(dims[0]);
+        unsigned int nQddot(static_cast<unsigned int>(dims[0]));
         $1 = new BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration(nQddot);
         for (unsigned int qddot=0; qddot<nQddot; ++qddot){
             (*$1)[qddot] = *(double*)PyArray_GETPTR1((PyArrayObject*)data, qddot);
@@ -849,7 +849,7 @@ BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration * {
         // Cast the vector
         PyObject *data = PyArray_FROM_OTF((PyObject*)$input, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
         // Copy the actual data
-        unsigned int nQddot(dims[0]);
+        unsigned int nQddot(static_cast<unsigned int>(dims[0]));
         $1 = new BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration(nQddot);
         for (unsigned int qddot=0; qddot<nQddot; ++qddot){
             (*$1)[qddot] = *(double*)PyArray_GETPTR1((PyArrayObject*)data, qddot);
@@ -906,7 +906,7 @@ BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration * {
         PyObject *data = PyArray_FROM_OTF((PyObject*)$input, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
 
         // Copy the actual data
-        unsigned int nGeneralizedTorque(dims[0]);
+        unsigned int nGeneralizedTorque(static_cast<unsigned int>(dims[0]));
         $1 = new BIORBD_NAMESPACE::rigidbody::GeneralizedTorque(nGeneralizedTorque);
         for (unsigned int GeneralizedTorque=0; GeneralizedTorque<nGeneralizedTorque; ++GeneralizedTorque)
             (*$1)[GeneralizedTorque] = *(double*)PyArray_GETPTR1((PyArrayObject*)data, GeneralizedTorque);
@@ -1097,7 +1097,7 @@ BIORBD_NAMESPACE::utils::Vector3d &{
         PyObject *data = PyArray_FROM_OTF((PyObject*)$input, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
 
         // Copy the actual data
-        unsigned int nSpatialVector(dims[0]);
+        unsigned int nSpatialVector(static_cast<unsigned int>(dims[0]));
         if (nSpatialVector != 6 ){
             PyErr_SetString(PyExc_ValueError,
                             "SpatialVector must be a (6,) vector when using a numpy array");
