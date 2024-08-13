@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: ubuntu-20.04
+          - os: ubuntu-latest
             label: linux-64
             prefix: /usr/share/miniconda3/envs/biorbd_eigen
     name: ${{ matrix.label }}
