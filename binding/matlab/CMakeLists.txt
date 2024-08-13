@@ -50,17 +50,20 @@ foreach(CPP_FILE ${CPP_FILES})
             )
         endif(CMAKE_CL_64)
     elseif(APPLE)
-        if (CMAKE_SIZEOF_VOID_P MATCHES "8")
-            set_target_properties(${PROJECT_NAME} PROPERTIES
+        if (CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
+            set_target_properties(${PROJECT_NAME}_${SUFFIXES} PROPERTIES
                 SUFFIX ".mexmaci64"
                 PREFIX ""
             )
-        else(CMAKE_SIZEOF_VOID_P MATCHES "8")
-            set_target_properties(${PROJECT_NAME} PROPERTIES
-                SUFFIX ".mexmaci64"
+        elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "arm64") 
+            set_target_properties(${PROJECT_NAME}_${SUFFIXES} PROPERTIES
+                SUFFIX ".mexmaca64"
                 PREFIX ""
             )
-        endif (CMAKE_SIZEOF_VOID_P MATCHES "8")
+        else()
+            message(FATAL_ERROR "Unknown architecture: ${CMAKE_SYSTEM_PROCESSOR}") 
+        endif ()
+
     else()
         if (CMAKE_SIZEOF_VOID_P MATCHES "8")
             set_target_properties(${PROJECT_NAME} PROPERTIES
