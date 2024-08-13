@@ -5,6 +5,48 @@
     />
 </p>
 
+# Table of contents
+- [Table of contents](#table-of-contents)
+- [How to install](#how-to-install)
+  - [Anaconda (For Windows, Linux and Mac)](#anaconda-for-windows-linux-and-mac)
+  - [Download binaries (For MATLAB users on Windows, Linux and Mac)](#download-binaries-for-matlab-users-on-windows-linux-and-mac)
+  - [Compiling (For Windows, Linux and Mac)](#compiling-for-windows-linux-and-mac)
+    - [Dependencies](#dependencies)
+    - [CMake](#cmake)
+- [How to use](#how-to-use)
+  - [The C++ API](#the-c-api)
+    - [Create an empty yet valid model](#create-an-empty-yet-valid-model)
+    - [Read and write a bioMod file](#read-and-write-a-biomod-file)
+    - [Perform some analyses](#perform-some-analyses)
+  - [MATLAB](#matlab)
+    - [Perform some analyses](#perform-some-analyses-1)
+    - [Help](#help)
+  - [Python 3](#python-3)
+    - [Perform some analyses](#perform-some-analyses-2)
+- [Model files](#model-files)
+  - [*bioMod* files](#biomod-files)
+    - [Header](#header)
+      - [version](#version)
+      - [gravity](#gravity)
+      - [variables / endvariables](#variables--endvariables)
+    - [Definition of the model](#definition-of-the-model)
+      - [Segment](#segment)
+      - [Marker](#marker)
+      - [Imu](#imu)
+      - [Loopconstraint](#loopconstraint)
+      - [Actuators](#actuators)
+  - [Convert from OpenSim models](#convert-from-opensim-models)
+- [How to contribute](#how-to-contribute)
+- [Graphical User Interface (GUI)](#graphical-user-interface-gui)
+- [Documentation](#documentation)
+- [Troubleshoots](#troubleshoots)
+  - [Slow BIORBD](#slow-biorbd)
+- [Cite](#cite)
+
+
+
+
+
 BIORBD is a library to analyze biomechanical data. It provides several useful functions for the direct and inverse flow including rigid body (based on *Feathestone* equations implemented in RBDL) and muscle elements.
 
 Biomechanical data are often analyzed using similar flow, that is inverse or direct. BIORBD implements these common analyses providing high-level and easy to use Python and MATLAB interfaces of an efficient C++ implementation. 
@@ -36,6 +78,12 @@ The current building status for Anaconda release is as follow.
 | License | Name | Downloads | Version | Platforms |
 | --- | --- | --- | --- | --- |
 |   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-success" alt="License"/></a> | [![Conda Recipe](https://img.shields.io/badge/recipe-biorbd-green.svg)](https://anaconda.org/conda-forge/biorbd) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/biorbd.svg)](https://anaconda.org/conda-forge/biorbd) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/biorbd.svg)](https://anaconda.org/conda-forge/biorbd) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/biorbd.svg)](https://anaconda.org/conda-forge/biorbd) |
+
+## Download binaries (For MATLAB users on Windows, Linux and Mac)
+
+The MATLAB users can download the binaries directly from the Release page of `biorbd` at this URL: [https://github.com/pyomeca/biorbd/releases/latest](https://github.com/pyomeca/biorbd/releases/latest). 
+
+Once the folder is download, you simply unzip it, add it to the MATLAB's path and enjoy `biorbd`!
 
 ## Compiling (For Windows, Linux and Mac)
 The main drawback with downloading the pre-compiled version from Anaconda is that this version may be out-of-date (even if I do my best to keep the release versions up-to-date). Moreover, since it is already compiled, it doesn't allow you to modify BIORBD if you need to. Therefore, a more versatile way to enjoy BIORBD is to compile it by yourself.
@@ -392,50 +440,50 @@ segment second_segment
 endsegment
 ```
 
-##### parent
+##### parent <!-- omit from toc -->
 The `parent` tag is the name of the segment that particular segment is attached to. If no segment parent is provided, it is considered to be attached to the environment. The parent must be defined earlier in the file and is case dependent. This tag is waits for $1$ string.
 
-##### rt
+##### rt <!-- omit from toc -->
 The `homogeneous matrix` of transformation (rototranslation) of the current segment relative to its parent. If `rtinmatrix` is defined to `1`, `rt` waits for a 4 by 4 matrix (the 3 x 3 matrix of rotation and the 4th column being the translation and the last row being 0 0 0 1); if it is defined to `0` it waits for the 3 rotations, the rotation sequence and the translation. The default value is the identity matrix.
 
-##### rtinmatrix
+##### rtinmatrix <!-- omit from toc -->
 The tag that defines if the `rt` is in matrix or not. If the `version` of the file is higher or equal than $3$, the default value is false ($0$), otherwise, it true ($1$). 
 
-##### translations
+##### translations <!-- omit from toc -->
 The `translations` tag specifies the number of degrees-of-freedom in translation and their order. The possible values are `x`, `y` and/or `z` combined whatever fits the model. Please note that the vector of generalized coordinate will comply the the order wrote in this tag. If no translations are provided, then the segment has no translation relative to its parent. This tag waits for $1$ string.
 
-##### rotations
+##### rotations <!-- omit from toc -->
 The `rotations` tag specifies the number of degrees-of-freedom in rotation and their order. The possible values are `x`, `y` and/or `z` combined whatever fits the model. Please note that the vector of generalized coordinate will comply the the order wrote in this tag. If no rotations are provided, then the segment has no rotation relative to its parent. This tag waits for $1$ string.
 
-##### mass
+##### mass <!-- omit from toc -->
 The `mass` tag specifies the mass of the segment in kilogram. This tag waits for $1$ value. The default value is $0.00001$. Please note that a pure $0$ can create a singularity. 
 
-##### com
+##### com <!-- omit from toc -->
 The $3$ values position of the `center of mass` relative to the local reference of the segment. The default values are `0 0 0`. 
 
-##### inertia
+##### inertia <!-- omit from toc -->
 The `inertia` tag allows to specify the matrix of inertia of the segment ( computed with respect to the center of mass of the segment ). It waits for $9$ values. The default values are the `identity matrix`
 
-##### foreceplate or externalforceindex
+##### foreceplate or externalforceindex <!-- omit from toc -->
 This tag is deprecated and should therefore not be used.
 
-##### meshfile or ply
+##### meshfile or ply <!-- omit from toc -->
 The path of the meshing `.bioBone`, `.ply`, `.stl` file respectively. It can be relative to the current running folder or absolute (relative being preferred) and UNIX or Windows formatted (`/` vs `\\`, UNIX being preferred).
 
-##### mesh
+##### mesh <!-- omit from toc -->
 If the mesh is not written in a file, it can be written directly in the segment. If so, the `mesh` tag stands for the vertex. Therefore, there are as many `mesh` tags as vertex. It waits for $3$ values being the position relative to reference of the segment. 
 
-##### meshcolor
+##### meshcolor <!-- omit from toc -->
 The color of the segment mesh given in RGV values `[0, 1]`. Default is `0.89, 0.855, 0.788`, that is bone color-ish.
 
-##### meshscale
+##### meshscale <!-- omit from toc -->
 The scaling to apply to the provided mesh, given in `X Y Z` values. Default is `1 1 1`.
 
-##### meshrt
+##### meshrt <!-- omit from toc -->
 The RT to apply to the provided mesh, given in `RX RY RZ seq TX TY TZ` as for RT. The default value is `0 0 0 xyz 0 0 0`. 
 
 
-##### patch
+##### patch <!-- omit from toc -->
 The patches to define the orientation of the patches of the mesh. It waits for $3$ values being the $0-based$ of the index of the vertex defined by the `mesh`.
 
 #### Marker
@@ -450,19 +498,19 @@ marker my_marker
 endmarker
 ```
 
-##### parent
+##### parent <!-- omit from toc -->
 The `parent` tag is the name of the segment that particular segment is attached to. The parent must be defined earlier in the file and is case dependent. This tag is waits for $1$ string.
 
-##### position
+##### position <!-- omit from toc -->
 The `position` of the marker in the local reference frame of the segment. 
 
-##### technical
+##### technical <!-- omit from toc -->
 If the marker will be taged as technical (will be returned when asking technical markers). Default value is true ($1$).
 
-##### anatomical
+##### anatomical <!-- omit from toc -->
 If the marker will be taged as anatomical (will be returned when asking anatomical markers). Default value is false ($0$).
 
-##### axestoremove
+##### axestoremove <!-- omit from toc -->
 It is possible to project the marker onto some axes, if so, write the name of the axes to project onto here. Waits for the axes in a string.
 
 #### Imu
@@ -476,22 +524,22 @@ imu my_imu
     anatomical 0
 endimu
 ```
-##### parent
+##### parent <!-- omit from toc -->
 The `parent` tag is the name of the segment that particular segment is attached to. The parent must be defined earlier in the file and is case dependent. This tag is waits for $1$ string.
 
-##### rt
+##### rt <!-- omit from toc -->
 The `homogeneous matrix` of transformation (rototranslation) of the current segment relative to its parent. If `rtinmatrix` is defined to `1`, `rt` waits for a 4 by 4 matrix (the 3 x 3 matrix of rotation and the 4th column being the translation and the last row being 0 0 0 1); if it is defined to `0` it waits for the 3 rotations, the rotation sequence and the translation. The default value is the identity matrix.
 
-##### rtinmatrix
+##### rtinmatrix <!-- omit from toc -->
 The tag that defines if the `rt` is in matrix or not. If the `version` of the file is higher or equal than $3$, the default value is false ($0$), otherwise, it true ($1$). 
 
-##### technical
+##### technical <!-- omit from toc -->
 If the marker will be taged as technical (will be returned when asking technical markers). Default value is true ($1$).
 
-##### anatomical
+##### anatomical <!-- omit from toc -->
 If the marker will be taged as anatomical (will be returned when asking anatomical markers). Default value is false ($0$).
 
-#### Contact
+#### Contact <!-- omit from toc -->
 The position of a non acceleration point while computing the forward dynamics. 
 ```c
 contact my_contact
@@ -500,19 +548,19 @@ contact my_contact
     axis xyz
 endcontact
 ```
-##### parent
+##### parent <!-- omit from toc -->
 The `parent` tag is the name of the segment that particular segment is attached to. The parent must be defined earlier in the file and is case dependent. This tag is waits for $1$ string.
 
-##### position
+##### position <!-- omit from toc -->
 The `position` of the marker in the local reference frame of the segment. 
 
-##### axis
+##### axis <!-- omit from toc -->
 The name of the `axis` that the contact acts on. If the version of the file is $1$, this tag has no effect. 
 
-##### normal
+##### normal <!-- omit from toc -->
 The `normal` that the contact acts on. This tags waits for $3$ values with a norm $1$. If the version of the file is not $1$, this tag has no effect. To get the `x`, `y` and `z` axes, one must therefore define three separate contacts. 
 
-##### acceleration
+##### acceleration <!-- omit from toc -->
 The constant `acceleration` of the contact point. The default values are `0, 0, 0`. 
 
 #### Loopconstraint
@@ -521,7 +569,7 @@ The constant `acceleration` of the contact point. The default values are `0, 0, 
 The Actuators specifies the different parameters used to express the torque generated by a particular movement at a joint. 
 These different parameters were described by M. Jackson (The mechanics of the table contact phase of gymnastics vaulting, 2019).
 
-#### type
+##### type <!-- omit from toc -->
 Different types of actuator can be defined with the `type` tag : `Constant`, `Linear`, `Gauss3p`, `Gauss6p`, `Sigmoidgauss3p`.
 In function of the type of actuator the parameters are different.
 
@@ -543,56 +591,56 @@ actuator    default_segment
 
 ``` 
 
-#### dof (Constant, Linear, Gauss3p, Gauss6p, Sigmoidgauss3p)
+##### dof (Constant, Linear, Gauss3p, Gauss6p, Sigmoidgauss3p) <!-- omit from toc -->
 The `dof` tag defines the degree of fredoom of the segment. It can be a rotation (`Rot`) or a translation (`Trans`) on one 
 of the 3 axis (`x`, `y`, `z`). This argument is not required.
 
-#### direction (Constant, Linear, Gauss3p, Gauss6p, Sigmoidgauss3p)
+##### direction (Constant, Linear, Gauss3p, Gauss6p, Sigmoidgauss3p) <!-- omit from toc -->
 The `direction` of the torque can be positive or negative. This argument is not required.
 
-#### Tmax (Constant, Gauss3p, Gauss6p)
+##### Tmax (Constant, Gauss3p, Gauss6p) <!-- omit from toc -->
 `Tmax` is the maximum eccentric torque.
 
-#### T0 (Linear, Gauss3p, Gauss6p)
+##### T0 (Linear, Gauss3p, Gauss6p) <!-- omit from toc -->
 The tag `T0` defines the maximum concentric torque.
 
-##### wmax (Gauss3p, Gauss6p)
+##### wmax (Gauss3p, Gauss6p) <!-- omit from toc -->
 The values of `wmax` is the maximum angular velocity above which torque cannot be produced.
 
-##### wc (Gauss3p, Gauss6p)
+##### wc (Gauss3p, Gauss6p) <!-- omit from toc -->
 The `wc` tag specifies the angular velocity of the vertical asymptote of the concentric hyperbola based of the relation between tetanic torque and contractile component angular velocity.
 
-##### amin (Gauss3p, Gauss6p)
+##### amin (Gauss3p, Gauss6p) <!-- omit from toc -->
 The `amin` tag allows to specify the plateau low activation level (values between 0.5 and 0.99) based of the differential activation-velocity relationship.
 
-##### wr (Gauss3p, Gauss6p)
+##### wr (Gauss3p, Gauss6p) <!-- omit from toc -->
 The tag `wr` is the angular velocity range over which the ramp occurs based of the differential activation-velocity relationship.
 
-##### w1 (Gauss3p, Gauss6p)
+##### w1 (Gauss3p, Gauss6p) <!-- omit from toc -->
 `w1` represents the angular velocity of the midpoint between the maximum and the low plateau activation level based of the differential activation-velocity relationship.
 
-##### qopt (Gauss3p, Gauss6p, Sigmoidguass3p)
+##### qopt (Gauss3p, Gauss6p, Sigmoidguass3p) <!-- omit from toc -->
 The `qopt` tag allows to specify the optimum angle for torque production. This argument is required, the default value is `0`.
 
-##### r (Gauss3p, Gauss6p, Sigmoidguass3p)
+##### r (Gauss3p, Gauss6p, Sigmoidguass3p) <!-- omit from toc -->
 The tag `r` represented the width of the curve based of the torque-angle relationship. This argument is required, the default value is `0`.
 
-#### facteur (Gauss6p)
+##### facteur (Gauss6p) <!-- omit from toc -->
 ...
 
-#### r2 (Gauss6p)
+##### r2 (Gauss6p) <!-- omit from toc -->
 ...
 
-#### qopt2 (Gauss6p)
+##### qopt2 (Gauss6p) <!-- omit from toc -->
 ...
 
-#### theta (Sigmoidgauss3p)
+##### theta (Sigmoidgauss3p) <!-- omit from toc -->
 ...
 
-#### lambda(Sigmoidgauss3p)
+##### lambda(Sigmoidgauss3p) <!-- omit from toc -->
 ...
 
-#### offset (Sigmoidgauss3p)
+##### offset (Sigmoidgauss3p) <!-- omit from toc -->
 ...
 
 ## Convert from OpenSim models
