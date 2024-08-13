@@ -90,7 +90,7 @@ target_link_libraries(${PROJECT_NAME}
     "${BIORBD_NAME}")
 
 if (CMAKE_BUILD_TYPE STREQUAL "Coverage")
-    set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/.travis/cmake")
+    set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../modules)
 
     include(CodeCoverage)
     setup_target_for_coverage(${BIORBD_NAME}_coverage
