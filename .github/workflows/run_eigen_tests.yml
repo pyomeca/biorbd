@@ -65,12 +65,15 @@ jobs:
 
       - name: Install MATLAB on WINDOWS, LINUX and MACOS-Intel
         uses: matlab-actions/setup-matlab@v2
+        with:
+          cache: true
         if: matrix.label != 'osx-arm64' 
 
       - name: Install MATLAB on MACOS-arm64
         uses: matlab-actions/setup-matlab@v2
         with:
           release: R2023a
+          cache: true
         if: matrix.label == 'osx-arm64'
   
       - name: Build biorbd UNIX
