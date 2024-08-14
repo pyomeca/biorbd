@@ -28,11 +28,12 @@ void Matlab_LocalMarkers( int, mxArray *plhs[],
 
     // Récupérer les marqueurs selon que l'on veut tous ou seulement anatomiques ou techniques
     unsigned int nMarkers(0); // Nombre de marqueurs
-    std::vector<BIORBD_NAMESPACE::rigidbody::NodeSegment>
-    markers_tp; // récupérer les marqueurs
+    std::vector<BIORBD_NAMESPACE::rigidbody::NodeSegment> markers_tp; // récupérer les marqueurs
     if (!type.tolower().compare("all")) {
         nMarkers = model->nbMarkers();
-        markers_tp = model->BIORBD_NAMESPACE::rigidbody::Markers::markers(removeAxes);
+        // We need to call the pointer function as it is otherwised considered ambiguous
+        auto markerFcn = static_cast<std::vector<BIORBD_NAMESPACE::rigidbody::NodeSegment>(BIORBD_NAMESPACE::rigidbody::Markers::*)(bool) const>(&BIORBD_NAMESPACE::rigidbody::Markers::markers);
+        markers_tp = (model->*markerFcn)(removeAxes);
     } else if (!type.tolower().compare("anatomical")) {
         nMarkers = model->nbAnatomicalMarkers();
         markers_tp = model->BIORBD_NAMESPACE::rigidbody::Markers::anatomicalMarkers(removeAxes);
