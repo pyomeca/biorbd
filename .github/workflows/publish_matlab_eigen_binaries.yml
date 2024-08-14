@@ -106,8 +106,8 @@ jobs:
 
       - name: Build MATLAB archives on UNIX
         run: |
-          cp -r $HOME/biorbd_eigen_matlab .
-          zip -r biorbd_eigen_matlab_${{ matrix.label }}.zip biorbd_eigen_matlab
+          cp -r $HOME/biorbd_matlab .
+          zip -r biorbd_matlab_${{ matrix.label }}.zip biorbd_matlab
         if: matrix.label != 'win-64'
 
       - name: Build MATLAB archives on WINDOWS
