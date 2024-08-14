@@ -112,7 +112,7 @@ jobs:
 
       - name: Build MATLAB archives on WINDOWS
         run: |
-          7z a biorbd_eigen_matlab_${{ matrix.label }}.zip $HOME/biorbd_eigen_matlab
+          7z a biorbd_matlab_${{ matrix.label }}.zip $HOME/biorbd_matlab
         if: matrix.label == 'win-64'
 
       - name: Upload files to a GitHub release
@@ -120,7 +120,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          file: "biorbd_eigen_matlab_${{ matrix.label }}.zip"
+          file: "biorbd_matlab_${{ matrix.label }}.zip"
           update_latest_release: true
           verbose: true
           overwrite: true
