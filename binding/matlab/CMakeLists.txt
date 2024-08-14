@@ -3,6 +3,11 @@ cmake_minimum_required(VERSION 3.8)
 
 find_package(Matlab REQUIRED COMPONENTS MX_LIBRARY)
 
+# Installation path
+set(Matlab_${BIORBD_NAME}_INSTALL_DIR "${Matlab_ROOT_DIR}/toolbox" CACHE PATH
+    "Toolbox path to install, please note that the default directory may
+    require administrator access"
+)
 
 # Get the file to compile
 set(CPP_FILES
@@ -50,20 +55,19 @@ foreach(CPP_FILE ${CPP_FILES})
             )
         endif(CMAKE_CL_64)
     elseif(APPLE)
-        if (CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
-            set_target_properties(${PROJECT_NAME}_${SUFFIXES} PROPERTIES
+        if (CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "x86_64")
+            set_target_properties(${PROJECT_NAME} PROPERTIES
                 SUFFIX ".mexmaci64"
                 PREFIX ""
             )
-        elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "arm64") 
-            set_target_properties(${PROJECT_NAME}_${SUFFIXES} PROPERTIES
+        elseif(CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "arm64") 
+            set_target_properties(${PROJECT_NAME} PROPERTIES
                 SUFFIX ".mexmaca64"
                 PREFIX ""
             )
         else()
-            message(FATAL_ERROR "Unknown architecture: ${CMAKE_SYSTEM_PROCESSOR}") 
+            message(FATAL_ERROR "Unknown architecture: ${CMAKE_HOST_SYSTEM_PROCESSOR}") 
         endif ()
-
     else()
         if (CMAKE_SIZEOF_VOID_P MATCHES "8")
             set_target_properties(${PROJECT_NAME} PROPERTIES
@@ -96,8 +100,3 @@ foreach(CPP_FILE ${CPP_FILES})
         DESTINATION "${Matlab_${BIORBD_NAME}_INSTALL_DIR}/${PROJECT_NAME}")
 endforeach(CPP_FILE)
 
-# Installation path
-set(Matlab_${BIORBD_NAME}_INSTALL_DIR "${Matlab_ROOT_DIR}/toolbox" CACHE PATH
-    "Toolbox path to install, please note that the default directory may
-    require administrator access"
-)
