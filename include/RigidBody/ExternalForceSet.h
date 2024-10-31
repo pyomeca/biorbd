@@ -125,14 +125,14 @@ namespace BIORBD_NAMESPACE
 
             ///
             /// \brief Add a pure force at a specific point on the kinematic chain.
-            /// \param force The pure forces to apply on the body
+            /// \param forceInGlobal The pure forces to apply on the body
             /// \param segmentName The name of the segment the force is applied on
-            /// \param pointOfApplication The position in the reference frame of [segmentName]
+            /// \param pointOfApplicationInLocal The position in the reference frame of [segmentName]
             /// 
             void addTranslationalForce(
-                const utils::Vector3d& force,
+                const utils::Vector3d& forceInGlobal,
                 const utils::String& segmentName,
-                const utils::Vector3d& pointOfApplication
+                const utils::Vector3d& pointOfApplicationInLocal
             );
 
             ///
