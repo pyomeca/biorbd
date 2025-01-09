@@ -2,6 +2,7 @@ from .inertia_parameters_real import InertiaParametersReal
 from .marker_real import MarkerReal
 from .mesh_real import MeshReal
 from .rotations import Rotations
+from .range_of_motion import RangeOfMotion
 from .segment_coordinate_system_real import SegmentCoordinateSystemReal
 from .translations import Translations
 
@@ -14,6 +15,8 @@ class SegmentReal:
         segment_coordinate_system: SegmentCoordinateSystemReal = None,
         translations: Translations = Translations.NONE,
         rotations: Rotations = Rotations.NONE,
+        q_ranges: RangeOfMotion = None,
+        qdot_ranges: RangeOfMotion = None,
         inertia_parameters: InertiaParametersReal = None,
         mesh: MeshReal = None,
     ):
@@ -21,6 +24,8 @@ class SegmentReal:
         self.parent_name = parent_name
         self.translations = translations
         self.rotations = rotations
+        self.q_ranges = q_ranges
+        self.qdot_ranges = qdot_ranges
         self.markers = []
         self.segment_coordinate_system = segment_coordinate_system
         self.inertia_parameters = inertia_parameters
@@ -40,6 +45,10 @@ class SegmentReal:
             out_string += f"\ttranslations {self.translations.value}\n"
         if self.rotations != Rotations.NONE:
             out_string += f"\trotations {self.rotations.value}\n"
+        if self.q_ranges != None:
+            out_string += str(self.q_ranges)
+        if self.qdot_ranges != None:
+            out_string += str(self.qdot_ranges)
         if self.inertia_parameters:
             out_string += str(self.inertia_parameters)
         if self.mesh:

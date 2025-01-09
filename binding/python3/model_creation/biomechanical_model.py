@@ -60,6 +60,8 @@ class BiomechanicalModel:
                 segment_coordinate_system=scs,
                 translations=s.translations,
                 rotations=s.rotations,
+                q_ranges=s.q_ranges,
+                qdot_ranges=s.qdot_ranges,
                 inertia_parameters=inertia_parameters,
                 mesh=mesh,
             )

@@ -8,6 +8,7 @@ from .marker import Marker
 from .mesh import Mesh
 from .protocols import Data, GenericDynamicModel
 from .rotations import Rotations
+from .range_of_motion import RangeOfMotion, Ranges
 from .segment import Segment
 from .segment_coordinate_system import SegmentCoordinateSystem
 from .translations import Translations
