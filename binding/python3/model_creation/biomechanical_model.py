@@ -69,6 +69,9 @@ class BiomechanicalModel:
             for marker in s.markers:
                 model.segments[name].add_marker(marker.to_marker(data, model, scs))
 
+            for contact in s.contacts:
+                model.segments[name].add_contact(contact.to_contact(data))
+
         return model
 
     def write(self, save_path: str, data: Data):

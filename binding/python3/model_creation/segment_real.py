@@ -1,5 +1,6 @@
 from .inertia_parameters_real import InertiaParametersReal
 from .marker_real import MarkerReal
+from .contact import Contact
 from .mesh_real import MeshReal
 from .rotations import Rotations
 from .range_of_motion import RangeOfMotion
@@ -27,12 +28,18 @@ class SegmentReal:
         self.q_ranges = q_ranges
         self.qdot_ranges = qdot_ranges
         self.markers = []
+        self.contacts = []
         self.segment_coordinate_system = segment_coordinate_system
         self.inertia_parameters = inertia_parameters
         self.mesh = mesh
 
     def add_marker(self, marker: MarkerReal):
         self.markers.append(marker)
+
+    def add_contact(self, contact: Contact):
+        if contact.parent_name is None:
+            raise RuntimeError(f"Contacts must have parents. Contact {contact.name} does not have a parent.")
+        self.contacts.append(contact)
 
     def __str__(self):
         # Define the print function, so it automatically formats things in the file properly
@@ -60,4 +67,11 @@ class SegmentReal:
             for marker in self.markers:
                 marker.parent_name = marker.parent_name if marker.parent_name is not None else self.name
                 out_string += str(marker)
+
+        # Also print the contacts attached to the segment
+        if self.contacts:
+            for contact in self.contacts:
+                contact.parent_name = contact.parent_name
+                out_string += str(contact)
+
         return out_string

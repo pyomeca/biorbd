@@ -1,5 +1,6 @@
 from .inertia_parameters import InertiaParameters
 from .marker import Marker
+from .contact import Contact
 from .mesh import Mesh
 from .rotations import Rotations
 from .range_of_motion import RangeOfMotion, Ranges
@@ -46,6 +47,7 @@ class Segment:
         self.q_ranges = q_ranges
         self.qdot_ranges = qdot_ranges
         self.markers = []
+        self.contacts = []
         self.segment_coordinate_system = segment_coordinate_system
         self.inertia_parameters = inertia_parameters
         self.mesh = mesh
@@ -66,6 +68,24 @@ class Segment:
 
         marker.parent_name = self.name
         self.markers.append(marker)
+
+    def add_contact(self, contact: Contact):
+        """
+        Add a new contact to the segment
+
+        Parameters
+        ----------
+        contact
+            The contact to add
+        """
+        if contact.parent_name is None:
+            raise ValueError(f"Contacts must have parents. Contact {contact.name} does not have a parent.")
+        elif contact.parent_name != self.name:
+            raise ValueError(
+                "The contact name should be the same as the 'key'."
+            )
+        contact.parent_name = self.name
+        self.contacts.append(contact)
 
     def add_range(self, type: Ranges, min_bound, max_bound):
         """
