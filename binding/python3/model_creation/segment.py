@@ -11,7 +11,7 @@ from .translations import Translations
 class Segment:
     def __init__(
         self,
-        name: str = None,
+        name,
         parent_name: str = "",
         translations: Translations = Translations.NONE,
         rotations: Rotations = Rotations.NONE,

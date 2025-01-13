@@ -32,16 +32,6 @@ class ContactReal:
         self.position = position if isinstance(position, np.ndarray) else np.array(position)
         self.axis = axis
 
-    # @property
-    # def mean_position(self) -> np.ndarray:
-    #     """
-    #     Get the mean value (over time) of the marker position
-    #     """
-    #     p = np.array(self.position)
-    #     p = p if len(p.shape) == 1 else np.nanmean(p, axis=1)
-    #     p = p if len(p.shape) == 1 else np.nanmean(p, axis=0)
-    #     return p
-
     @staticmethod
     def from_data(
         data: Data,
@@ -68,8 +58,6 @@ class ContactReal:
             The axis of the contact
         """
 
-        # TODO: Charbie
-
         # Get the position of the contact points and do some sanity checks
         p: np.ndarray = function(data.values)
         if not isinstance(p, np.ndarray):
@@ -86,7 +74,6 @@ class ContactReal:
         # Define the print function, so it automatically formats things in the file properly
         out_string = f"contact {self.name}\n"
         out_string += f"\tparent {self.parent_name}\n"
-
         out_string += f"\tposition {self.position[0]:0.4f} {self.position[1]:0.4f} {self.position[2]:0.4f}\n"
         out_string += f"\taxis {self.axis.value}\n"
         out_string += "endcontact\n"
