@@ -47,6 +47,10 @@ class BiomechanicalModel:
             if s.mesh is not None:
                 mesh = s.mesh.to_mesh(data, model, scs)
 
+            mesh_file = None
+            if s.mesh_file is not None:
+                mesh_file = s.mesh_file.to_mesh_file(data)
+
             model.segments[s.name] = SegmentReal(
                 name=s.name,
                 parent_name=s.parent_name,
@@ -57,6 +61,7 @@ class BiomechanicalModel:
                 qdot_ranges=s.qdot_ranges,
                 inertia_parameters=inertia_parameters,
                 mesh=mesh,
+                mesh_file=mesh_file,
             )
 
             for marker in s.markers:

@@ -10,6 +10,7 @@ from .muscle import Muscle
 from .muscle_group import MuscleGroup
 from .via_point import ViaPoint
 from .mesh import Mesh
+from .mesh_file import MeshFile
 from .protocols import Data, GenericDynamicModel
 from .rotations import Rotations
 from .range_of_motion import RangeOfMotion, Ranges
@@ -25,6 +26,7 @@ from .contact_real import ContactReal
 from .muscle_real import MuscleReal, MuscleType, MuscleStateType
 from .via_point_real import ViaPointReal
 from .mesh_real import MeshReal
+from .mesh_file_real import MeshFileReal
 from .segment_real import SegmentReal
 from .segment_coordinate_system_real import SegmentCoordinateSystemReal
 from .inertia_parameters_real import InertiaParametersReal
