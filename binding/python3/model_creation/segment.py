@@ -36,6 +36,12 @@ class Segment:
             The sequence of translation
         rotations
             The sequence of rotation
+        q_ranges
+            The range of motion of the segment
+        qdot_ranges
+            The range of motion of the segment
+        segment_coordinate_system
+            The coordinate system of the segment
         inertia_parameters
             The inertia parameters of the segment
         mesh

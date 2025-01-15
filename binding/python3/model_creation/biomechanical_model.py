@@ -79,10 +79,6 @@ class BiomechanicalModel:
                 insertion_parent_name=mg.insertion_parent_name,
             )
 
-        return model
-
-    def add_real_muscles(self, model: BiomechanicalModelReal, data: Data):
-
         for name in self.muscles:
             m = self.muscles[name]
 
@@ -123,5 +119,4 @@ class BiomechanicalModel:
             The data to collapse the model from
         """
         model = self.to_real(data)
-        model = self.add_real_muscles(model, data)
         model.write(save_path)
