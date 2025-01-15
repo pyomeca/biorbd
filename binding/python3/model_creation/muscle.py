@@ -10,7 +10,7 @@ class Muscle:
     def __init__(
         self,
         name: str,
-        type: MuscleType,
+        muscle_type: MuscleType,
         state_type: MuscleStateType,
         muscle_group: str,
         origin_position_function: Callable,
@@ -27,11 +27,11 @@ class Muscle:
         ----------
         name
             The name of the muscle
-        type
+        muscle_type
             The type of the muscle
         """
         self.name = name
-        self.type = type
+        self.muscle_type = muscle_type
         self.state_type = state_type
         self.muscle_group = muscle_group
         self.origin_position_function = origin_position_function
@@ -43,12 +43,13 @@ class Muscle:
         self.maximal_excitation = maximal_excitation
 
     def to_muscle(
-        self, data: Data
+        self, model, data: Data
     ) -> MuscleReal:
         return MuscleReal.from_data(
             data,
+            model,
             self.name,
-            self.type,
+            self.muscle_type,
             self.state_type,
             self.muscle_group,
             self.origin_position_function,

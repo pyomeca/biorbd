@@ -8,6 +8,7 @@ from .marker import Marker
 from .contact import Contact
 from .muscle import Muscle
 from .muscle_group import MuscleGroup
+from .via_point import ViaPoint
 from .mesh import Mesh
 from .protocols import Data, GenericDynamicModel
 from .rotations import Rotations
@@ -22,6 +23,7 @@ from .axis_real import AxisReal
 from .marker_real import MarkerReal
 from .contact_real import ContactReal
 from .muscle_real import MuscleReal, MuscleType, MuscleStateType
+from .via_point_real import ViaPointReal
 from .mesh_real import MeshReal
 from .segment_real import SegmentReal
 from .segment_coordinate_system_real import SegmentCoordinateSystemReal

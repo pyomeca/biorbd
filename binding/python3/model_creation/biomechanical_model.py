@@ -11,6 +11,7 @@ class BiomechanicalModel:
         self.segments = {}
         self.muscle_groups = {}
         self.muscles = {}
+        self.via_points = {}
 
         if bio_sym_path is None:
             return
@@ -73,25 +74,32 @@ class BiomechanicalModel:
                 insertion_parent_name=mg.insertion_parent_name,
             )
 
+        return model
+
+
+    def add_real_muscles(self, model: BiomechanicalModelReal, data: Data):
+
         for name in self.muscles:
             m = self.muscles[name]
 
             if m.muscle_group not in model.muscle_groups:
                 raise RuntimeError(f"Please create the muscle group {m.muscle_group} before putting the muscle {m.name} in it.")
 
-            model.muscles[m.name] = MuscleReal(
-                name=m.name,
-                type=m.type,
-                state_type=m.state_type,
-                muscle_group=m.muscle_group,
-                origin_position=m.origin_position,
-                insertion_position=m.insertion_position,
-                optimal_length=m.optimal_length,
-                maximal_force=m.maximal_force,
-                tendon_slack_length=m.tendon_slack_length,
-                penation_angle=m.penation_angle)
+            model.muscles[m.name] = m.to_muscle(model, data)
+
+        for name in self.via_points:
+            vp = self.via_points[name]
+
+            if vp.muscle_name not in model.muscles:
+                raise RuntimeError(f"Please create the muscle {vp.muscle_name} before putting the via point {vp.name} in it.")
+
+            if vp.muscle_group not in model.muscle_groups:
+                raise RuntimeError(f"Please create the muscle group {vp.muscle_group} before putting the via point {vp.name} in it.")
+
+            model.via_points[vp.name] = vp.to_via_point(data)
 
         return model
+
 
     def write(self, save_path: str, data: Data):
         """
@@ -106,4 +114,5 @@ class BiomechanicalModel:
             The data to collapse the model from
         """
         model = self.to_real(data)
+        model = self.add_real_muscles(model, data)
         model.write(save_path)
