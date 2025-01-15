@@ -2,6 +2,7 @@ from .inertia_parameters_real import InertiaParametersReal
 from .marker_real import MarkerReal
 from .contact import Contact
 from .mesh_real import MeshReal
+from .mesh_file_real import MeshFileReal
 from .rotations import Rotations
 from .range_of_motion import RangeOfMotion
 from .segment_coordinate_system_real import SegmentCoordinateSystemReal
@@ -20,6 +21,7 @@ class SegmentReal:
         qdot_ranges: RangeOfMotion = None,
         inertia_parameters: InertiaParametersReal = None,
         mesh: MeshReal = None,
+        mesh_file: MeshFileReal = None,
     ):
         self.name = name
         self.parent_name = parent_name
@@ -32,6 +34,7 @@ class SegmentReal:
         self.segment_coordinate_system = segment_coordinate_system
         self.inertia_parameters = inertia_parameters
         self.mesh = mesh
+        self.mesh_file = mesh_file
 
     def add_marker(self, marker: MarkerReal):
         self.markers.append(marker)
@@ -43,15 +46,15 @@ class SegmentReal:
 
     def __str__(self):
         # Define the print function, so it automatically formats things in the file properly
-        out_string = f"segment {self.name}\n"
+        out_string = f"segment\t{self.name}\n"
         if self.parent_name:
-            out_string += f"\tparent {self.parent_name}\n"
+            out_string += f"\tparent\t{self.parent_name}\n"
         if self.segment_coordinate_system:
-            out_string += f"\tRT {self.segment_coordinate_system}\n"
+            out_string += f"\tRT\t{self.segment_coordinate_system}\n"
         if self.translations != Translations.NONE:
-            out_string += f"\ttranslations {self.translations.value}\n"
+            out_string += f"\ttranslations\t{self.translations.value}\n"
         if self.rotations != Rotations.NONE:
-            out_string += f"\trotations {self.rotations.value}\n"
+            out_string += f"\trotations\t{self.rotations.value}\n"
         if self.q_ranges != None:
             out_string += str(self.q_ranges)
         if self.qdot_ranges != None:
@@ -60,6 +63,8 @@ class SegmentReal:
             out_string += str(self.inertia_parameters)
         if self.mesh:
             out_string += str(self.mesh)
+        if self.mesh_file:
+            out_string += str(self.mesh_file)
         out_string += "endsegment\n"
 
         # Also print the markers attached to the segment

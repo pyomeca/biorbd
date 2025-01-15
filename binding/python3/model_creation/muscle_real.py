@@ -4,6 +4,7 @@ import numpy as np
 from enum import Enum
 
 from .protocols import Data
+from .via_point_real import ViaPointReal
 
 
 class MuscleType(Enum):
@@ -20,7 +21,7 @@ class MuscleReal:
     def __init__(
         self,
         name: str,
-        type: MuscleType,
+        muscle_type: MuscleType,
         state_type: MuscleStateType,
         muscle_group: str,
         origin_position: tuple[int | float, int | float, int | float] | np.ndarray,
@@ -30,13 +31,14 @@ class MuscleReal:
         tendon_slack_length: float,
         pennation_angle: float,
         maximal_excitation: float,
+        via_points: list[ViaPointReal] = None,
     ):
         """
         Parameters
         ----------
         name
             The name of the new contact
-        type
+        muscle_type
             The type of the muscle
         state_type
             The state type of the muscle
@@ -56,9 +58,11 @@ class MuscleReal:
             The pennation angle of the muscle
         maximal_excitation
             The maximal excitation of the muscle (usually 1.0, since it is normalized)
+        via_points
+            The via points of the muscle
         """
         self.name = name
-        self.type = type
+        self.muscle_type = muscle_type
         self.state_type = state_type
         self.muscle_group = muscle_group
         self.origin_position = origin_position if isinstance(origin_position, np.ndarray) else np.array(origin_position)
@@ -68,13 +72,15 @@ class MuscleReal:
         self.tendon_slack_length = tendon_slack_length
         self.pennation_angle = pennation_angle
         self.maximal_excitation = maximal_excitation
+        self.via_points = via_points
 
 
     @staticmethod
     def from_data(
         data: Data,
+        model,
         name: str,
-        type: MuscleType,
+        muscle_type: MuscleType,
         state_type: MuscleStateType,
         muscle_group: str,
         origin_position_function: Callable | np.ndarray[float],
@@ -95,7 +101,7 @@ class MuscleReal:
             The data to pick the data from
         name
             The name of the muscle
-        type
+        muscle_type
             The type of the muscle
         state_type
             The state type of the muscle
@@ -106,34 +112,33 @@ class MuscleReal:
         insertion_position_function
             The function (f(m) -> np.ndarray, where m is a dict of markers) that defines the insertion position of the muscle
         optimal_length_function
-            The function (f(m) -> float, where m is a dict of markers) that defines the optimal length of the muscle
+            The function (f(model, m) -> float, where m is a dict of markers) that defines the optimal length of the muscle
         maximal_force_function
             The function (f(m) -> float, where m is a dict of markers) that defines the maximal force of the muscle
         tendon_slack_length_function
-            The function (f(m) -> float, where m is a dict of markers) that defines the tendon slack length of the muscle
+            The function (f(model, m) -> float, where m is a dict of markers) that defines the tendon slack length of the muscle
         pennation_angle_function
-            The function (f(m) -> float, where m is a dict of markers) that defines the pennation angle of the muscle
+            The function (f(model, m) -> float, where m is a dict of markers) that defines the pennation angle of the muscle
         maximal_excitation
             The maximal excitation of the muscle (usually 1.0, since it is normalized)
         """
-
         origin_position: np.ndarray = origin_position_function(data.values)
         if not isinstance(origin_position, np.ndarray):
-            raise RuntimeError(f"The origin_position_function {origin_position_function} must return a np.ndarray of dimension 3xT (XYZ x time)")
-        if len(origin_position.shape) == 1:
-            origin_position = origin_position[:, np.newaxis]
-        if len(origin_position.shape) != 2 or origin_position.shape[0] != 3:
-            raise RuntimeError(f"The origin_position_function {origin_position_function} must return a np.ndarray of dimension 3xT (XYZ x time)")
+            raise RuntimeError(f"The origin_position_function {origin_position_function} must return a vector of dimension 3 (XYZ)")
+        if origin_position.shape == (3, 1):
+            origin_position = origin_position.reshape((3,))
+        elif origin_position.shape != (3,):
+            raise RuntimeError(f"The origin_position_function {origin_position_function} must return a vector of dimension 3 (XYZ)")
 
         insertion_position: np.ndarray = insertion_position_function(data.values)
         if not isinstance(insertion_position, np.ndarray):
-            raise RuntimeError(f"The insertion_position_function {insertion_position_function} must return a np.ndarray of dimension 3xT (XYZ x time)")
-        if len(insertion_position.shape) == 1:
-            insertion_position = insertion_position[:, np.newaxis]
-        if len(origin_position) != 2 or insertion_position.shape[0] != 3:
-            raise RuntimeError(f"The insertion_position_function {insertion_position_function} must return a np.ndarray of dimension 3xT (XYZ x time)")
+            raise RuntimeError(f"The insertion_position_function {insertion_position_function} must return a vector of dimension 3 (XYZ)")
+        if insertion_position.shape == (3, 1):
+            insertion_position = insertion_position.reshape((3,))
+        elif insertion_position.shape != (3,):
+            raise RuntimeError(f"The insertion_position_function {insertion_position_function} must return a vector of dimension 3 (XYZ)")
 
-        optimal_length: float = optimal_length_function(data.values)
+        optimal_length: float = optimal_length_function(model, data.values)
         if not isinstance(optimal_length, float):
             raise RuntimeError(f"The optimal_length_function {optimal_length_function} must return a float")
 
@@ -141,16 +146,16 @@ class MuscleReal:
         if not isinstance(maximal_force, float):
             raise RuntimeError(f"The maximal_force_function {maximal_force_function} must return a float")
 
-        tendon_slack_length: float = tendon_slack_length_function(data.values)
+        tendon_slack_length: float = tendon_slack_length_function(model, data.values)
         if not isinstance(tendon_slack_length, float):
             raise RuntimeError(f"The tendon_slack_length_function {tendon_slack_length_function} must return a float")
 
-        pennation_angle: float = pennation_angle_function(data.values)
+        pennation_angle: float = pennation_angle_function(model, data.values)
         if not isinstance(pennation_angle, float):
             raise RuntimeError(f"The pennation_angle_function {pennation_angle_function} must return a float")
 
         return MuscleReal(name,
-                            type,
+                            muscle_type,
                             state_type,
                             muscle_group,
                             origin_position,
@@ -163,25 +168,15 @@ class MuscleReal:
 
     def __str__(self):
         # Define the print function, so it automatically formats things in the file properly
-        out_string = f"muscle {self.name}\n"
-        out_string += f"\ttype: {self.type}\n"
-        out_string += f"\tstatetype {self.state_type}\n"
-        out_string += f"\tmusclegroup {self.muscle_group}\n"
-        out_string += f"\toriginposition {self.origin_position}\n"
-        out_string += f"\tinsertionposition {self.insertion_position}\n"
-        out_string += f"\toptimallength {self.optimal_length}\n"
-        out_string += f"\tmaximalforce {self.maximal_force}\n"
-        out_string += f"\ttendonslacklength {self.tendon_slack_length}\n"
-        out_string += f"\tpennationangle {self.penation_angle}\n"
+        out_string = f"muscle\t{self.name}\n"
+        out_string += f"\ttype\t{self.muscle_type.value}\n"
+        out_string += f"\tstatetype\t{self.state_type.value}\n"
+        out_string += f"\tmusclegroup\t{self.muscle_group}\n"
+        out_string += f"\toriginposition\t{np.round(self.origin_position[0], 4)}\t{np.round(self.origin_position[1], 4)}\t{np.round(self.origin_position[2], 4)}\n"
+        out_string += f"\tinsertionposition\t{np.round(self.insertion_position[0], 4)}\t{np.round(self.insertion_position[1], 4)}\t{np.round(self.insertion_position[2], 4)}\n"
+        out_string += f"\toptimallength\t{self.optimal_length:0.4f}\n"
+        out_string += f"\tmaximalforce\t{self.maximal_force:0.4f}\n"
+        out_string += f"\ttendonslacklength\t{self.tendon_slack_length:0.4f}\n"
+        out_string += f"\tpennationangle\t{self.pennation_angle:0.4f}\n"
         out_string += "endmuscle\n"
-
-        # Define each muscle's via points
-        for i_viapoint, via_point in enumerate(self.via_points):
-            out_string += f"viapoint {via_point.name}\n"
-            out_string += f"\tparent {via_point.parent_name}\n"
-            out_string += f"\tmuscle {via_point.muscle_name}\n"
-            out_string += f"\tmusclegroup {via_point.muscle_group}\n"
-            out_string += f"\tposition {via_point.position}\n"
-            out_string += "endviapoint\n"
-
         return out_string

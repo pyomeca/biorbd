@@ -2,6 +2,7 @@ from .inertia_parameters import InertiaParameters
 from .marker import Marker
 from .contact import Contact
 from .mesh import Mesh
+from .mesh_file import MeshFile
 from .rotations import Rotations
 from .range_of_motion import RangeOfMotion, Ranges
 from .segment_coordinate_system import SegmentCoordinateSystem
@@ -20,6 +21,7 @@ class Segment:
         segment_coordinate_system: SegmentCoordinateSystem = None,
         inertia_parameters: InertiaParameters = None,
         mesh: Mesh = None,
+        mesh_file: MeshFile = None,
     ):
         """
         Create a new generic segment.
@@ -38,6 +40,8 @@ class Segment:
             The inertia parameters of the segment
         mesh
             The mesh points of the segment
+        mesh_file
+            The mesh file of the segment
         """
 
         self.name = name
@@ -51,6 +55,7 @@ class Segment:
         self.segment_coordinate_system = segment_coordinate_system
         self.inertia_parameters = inertia_parameters
         self.mesh = mesh
+        self.mesh_file = mesh_file
 
     def add_marker(self, marker: Marker):
         """
@@ -87,7 +92,7 @@ class Segment:
         contact.parent_name = self.name
         self.contacts.append(contact)
 
-    def add_range(self, type: Ranges, min_bound, max_bound):
+    def add_range(self, range_type: Ranges, min_bound, max_bound):
         """
         Add a new rangeQ to the segment
 
@@ -96,9 +101,9 @@ class Segment:
         marker
             The marker to add
         """
-        if type == Ranges.Q:
-            self.q_ranges = RangeOfMotion(type=type, min_bound=min_bound, max_bound=max_bound)
-        elif type == Ranges.Qdot:
-            self.qdot_ranges = RangeOfMotion(type=type, min_bound=min_bound, max_bound=max_bound)
+        if range_type == Ranges.Q:
+            self.q_ranges = RangeOfMotion(range_type=range_type, min_bound=min_bound, max_bound=max_bound)
+        elif range_type == Ranges.Qdot:
+            self.qdot_ranges = RangeOfMotion(range_type=range_type, min_bound=min_bound, max_bound=max_bound)
         else:
-            raise RuntimeError(f"add_range's type must be Ranges.Q or Ranges.Qdot (you have {type})")
+            raise RuntimeError(f"add_range's range_type must be Ranges.Q or Ranges.Qdot (you have {range_type})")
