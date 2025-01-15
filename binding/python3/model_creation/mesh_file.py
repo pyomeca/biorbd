@@ -39,9 +39,9 @@ class MeshFile:
         self.rotation_function = rotation_function
         self.translation_function = translation_function
 
-
     def to_mesh_file(
-        self, data: Data,
+        self,
+        data: Data,
     ) -> MeshFileReal:
         return MeshFileReal.from_data(
             data,

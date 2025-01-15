@@ -2,6 +2,7 @@ from typing import Callable
 
 from .protocols import Data
 
+
 class MuscleGroup:
     def __init__(
         self,
@@ -38,4 +39,3 @@ class MuscleGroup:
         out_string += f"\tInsertionParent\t{self.insertion_parent_name}\n"
         out_string += "endmusclegroup\n"
         return out_string
-

@@ -4,6 +4,7 @@ from .protocols import Data
 from .translations import Translations
 from .contact_real import ContactReal
 
+
 class Contact:
     def __init__(
         self,
@@ -30,10 +31,7 @@ class Contact:
         self.parent_name = parent_name
         self.axis = axis
 
-
-    def to_contact(
-        self, data: Data
-    ) -> ContactReal:
+    def to_contact(self, data: Data) -> ContactReal:
         return ContactReal.from_data(
             data,
             self.name,

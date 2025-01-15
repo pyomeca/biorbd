@@ -81,14 +81,15 @@ class BiomechanicalModel:
 
         return model
 
-
     def add_real_muscles(self, model: BiomechanicalModelReal, data: Data):
 
         for name in self.muscles:
             m = self.muscles[name]
 
             if m.muscle_group not in model.muscle_groups:
-                raise RuntimeError(f"Please create the muscle group {m.muscle_group} before putting the muscle {m.name} in it.")
+                raise RuntimeError(
+                    f"Please create the muscle group {m.muscle_group} before putting the muscle {m.name} in it."
+                )
 
             model.muscles[m.name] = m.to_muscle(model, data)
 
@@ -96,15 +97,18 @@ class BiomechanicalModel:
             vp = self.via_points[name]
 
             if vp.muscle_name not in model.muscles:
-                raise RuntimeError(f"Please create the muscle {vp.muscle_name} before putting the via point {vp.name} in it.")
+                raise RuntimeError(
+                    f"Please create the muscle {vp.muscle_name} before putting the via point {vp.name} in it."
+                )
 
             if vp.muscle_group not in model.muscle_groups:
-                raise RuntimeError(f"Please create the muscle group {vp.muscle_group} before putting the via point {vp.name} in it.")
+                raise RuntimeError(
+                    f"Please create the muscle group {vp.muscle_group} before putting the via point {vp.name} in it."
+                )
 
             model.via_points[vp.name] = vp.to_via_point(data)
 
         return model
-
 
     def write(self, save_path: str, data: Data):
         """

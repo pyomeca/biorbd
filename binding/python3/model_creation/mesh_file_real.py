@@ -8,12 +8,12 @@ from .protocols import Data
 
 class MeshFileReal:
     def __init__(
-            self,
-            mesh_file_name: str,
-            mesh_color: np.ndarray[float] | list[float] | tuple[float],
-            mesh_scale: np.ndarray[float] | list[float] | tuple[float],
-            mesh_rotation: np.ndarray[float] | list[float] | tuple[float],
-            mesh_translation: np.ndarray[float] | list[float] | tuple[float],
+        self,
+        mesh_file_name: str,
+        mesh_color: np.ndarray[float] | list[float] | tuple[float],
+        mesh_scale: np.ndarray[float] | list[float] | tuple[float],
+        mesh_rotation: np.ndarray[float] | list[float] | tuple[float],
+        mesh_translation: np.ndarray[float] | list[float] | tuple[float],
     ):
         """
         Parameters
@@ -84,32 +84,37 @@ class MeshFileReal:
             if mesh_scale.shape == (3, 1):
                 mesh_scale = mesh_scale.reshape((3,))
             elif mesh_scale.shape != (3,):
-                raise RuntimeError(
-                    f"The scaling_function {scaling_function} must return a vector of dimension 3 (XYZ)")
+                raise RuntimeError(f"The scaling_function {scaling_function} must return a vector of dimension 3 (XYZ)")
 
         if rotation_function is None:
             mesh_rotation = np.array([0, 0, 0])
         else:
             mesh_rotation: np.ndarray = rotation_function(data.values)
             if not isinstance(mesh_rotation, np.ndarray):
-                raise RuntimeError(f"The rotation_function {rotation_function} must return a vector of dimension 3 (XYZ)")
+                raise RuntimeError(
+                    f"The rotation_function {rotation_function} must return a vector of dimension 3 (XYZ)"
+                )
             if mesh_rotation.shape == (3, 1):
                 mesh_rotation = mesh_rotation.reshape((3,))
             elif mesh_rotation.shape != (3,):
                 raise RuntimeError(
-                    f"The rotation_function {rotation_function} must return a vector of dimension 3 (XYZ)")
+                    f"The rotation_function {rotation_function} must return a vector of dimension 3 (XYZ)"
+                )
 
         if translation_function is None:
             mesh_translation = np.array([0, 0, 0])
         else:
             mesh_translation: np.ndarray = translation_function(data.values)
             if not isinstance(mesh_translation, np.ndarray):
-                raise RuntimeError(f"The translation_function {translation_function} must return a vector of dimension 3 (XYZ)")
+                raise RuntimeError(
+                    f"The translation_function {translation_function} must return a vector of dimension 3 (XYZ)"
+                )
             if mesh_translation.shape == (3, 1):
                 mesh_translation = mesh_translation.reshape((3,))
             elif mesh_translation.shape != (3,):
                 raise RuntimeError(
-                    f"The translation_function {translation_function} must return a vector of dimension 3 (XYZ)")
+                    f"The translation_function {translation_function} must return a vector of dimension 3 (XYZ)"
+                )
 
         return MeshFileReal(
             mesh_file_name=mesh_file_name,

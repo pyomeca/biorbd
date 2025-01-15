@@ -5,6 +5,7 @@ import numpy as np
 from .protocols import Data
 from .translations import Translations
 
+
 class ContactReal:
     def __init__(
         self,
@@ -63,8 +64,8 @@ class ContactReal:
         if not isinstance(p, np.ndarray):
             raise RuntimeError(f"The function {function} must return a np.ndarray of dimension 3xT (XYZ x time)")
         if p.shape == (3, 1):
-            p = p.reshape((3, ))
-        elif p.shape != (3, ):
+            p = p.reshape((3,))
+        elif p.shape != (3,):
             raise RuntimeError(f"The function {function} must return a vector of dimension 3 (XYZ)")
 
         return ContactReal(name, parent_name, p, axis)

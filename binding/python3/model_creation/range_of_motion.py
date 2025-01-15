@@ -1,4 +1,3 @@
-
 from enum import Enum
 
 
@@ -8,10 +7,7 @@ class Ranges(Enum):
 
 
 class RangeOfMotion:
-    def __init__(self,
-                 range_type: Ranges,
-                 min_bound: list[float],
-                 max_bound: list[float]):
+    def __init__(self, range_type: Ranges, min_bound: list[float], max_bound: list[float]):
 
         self.range_type = range_type
         self.min_bound = min_bound

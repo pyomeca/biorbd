@@ -4,6 +4,7 @@ import numpy as np
 
 from .protocols import Data
 
+
 class ViaPointReal:
     def __init__(
         self,
@@ -67,10 +68,12 @@ class ViaPointReal:
         # Get the position of the contact points and do some sanity checks
         position: np.ndarray = position_function(data.values)
         if not isinstance(position, np.ndarray):
-            raise RuntimeError(f"The function {position_function} must return a np.ndarray of dimension 3xT (XYZ x time)")
+            raise RuntimeError(
+                f"The function {position_function} must return a np.ndarray of dimension 3xT (XYZ x time)"
+            )
         if position.shape == (3, 1):
-            position = position.reshape((3, ))
-        elif position.shape != (3, ):
+            position = position.reshape((3,))
+        elif position.shape != (3,):
             raise RuntimeError(f"The function {position_function} must return a vector of dimension 3 (XYZ)")
 
         return ViaPointReal(name, parent_name, muscle_name, muscle_group, position)

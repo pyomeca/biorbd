@@ -66,14 +66,15 @@ class MuscleReal:
         self.state_type = state_type
         self.muscle_group = muscle_group
         self.origin_position = origin_position if isinstance(origin_position, np.ndarray) else np.array(origin_position)
-        self.insertion_position = insertion_position if isinstance(insertion_position, np.ndarray) else np.array(insertion_position)
+        self.insertion_position = (
+            insertion_position if isinstance(insertion_position, np.ndarray) else np.array(insertion_position)
+        )
         self.optimal_length = optimal_length
         self.maximal_force = maximal_force
         self.tendon_slack_length = tendon_slack_length
         self.pennation_angle = pennation_angle
         self.maximal_excitation = maximal_excitation
         self.via_points = via_points
-
 
     @staticmethod
     def from_data(
@@ -89,7 +90,7 @@ class MuscleReal:
         maximal_force_function: Callable | float,
         tendon_slack_length_function: Callable | float,
         pennation_angle_function: Callable | float,
-        maximal_excitation: float
+        maximal_excitation: float,
     ):
         """
         This is a constructor for the Muscle class. It evaluates the function that defines the muscle to get an
@@ -124,19 +125,27 @@ class MuscleReal:
         """
         origin_position: np.ndarray = origin_position_function(data.values)
         if not isinstance(origin_position, np.ndarray):
-            raise RuntimeError(f"The origin_position_function {origin_position_function} must return a vector of dimension 3 (XYZ)")
+            raise RuntimeError(
+                f"The origin_position_function {origin_position_function} must return a vector of dimension 3 (XYZ)"
+            )
         if origin_position.shape == (3, 1):
             origin_position = origin_position.reshape((3,))
         elif origin_position.shape != (3,):
-            raise RuntimeError(f"The origin_position_function {origin_position_function} must return a vector of dimension 3 (XYZ)")
+            raise RuntimeError(
+                f"The origin_position_function {origin_position_function} must return a vector of dimension 3 (XYZ)"
+            )
 
         insertion_position: np.ndarray = insertion_position_function(data.values)
         if not isinstance(insertion_position, np.ndarray):
-            raise RuntimeError(f"The insertion_position_function {insertion_position_function} must return a vector of dimension 3 (XYZ)")
+            raise RuntimeError(
+                f"The insertion_position_function {insertion_position_function} must return a vector of dimension 3 (XYZ)"
+            )
         if insertion_position.shape == (3, 1):
             insertion_position = insertion_position.reshape((3,))
         elif insertion_position.shape != (3,):
-            raise RuntimeError(f"The insertion_position_function {insertion_position_function} must return a vector of dimension 3 (XYZ)")
+            raise RuntimeError(
+                f"The insertion_position_function {insertion_position_function} must return a vector of dimension 3 (XYZ)"
+            )
 
         optimal_length: float = optimal_length_function(model, data.values)
         if not isinstance(optimal_length, float):
@@ -154,17 +163,19 @@ class MuscleReal:
         if not isinstance(pennation_angle, float):
             raise RuntimeError(f"The pennation_angle_function {pennation_angle_function} must return a float")
 
-        return MuscleReal(name,
-                            muscle_type,
-                            state_type,
-                            muscle_group,
-                            origin_position,
-                            insertion_position,
-                            optimal_length,
-                            maximal_force,
-                            tendon_slack_length,
-                            pennation_angle,
-                            maximal_excitation)
+        return MuscleReal(
+            name,
+            muscle_type,
+            state_type,
+            muscle_group,
+            origin_position,
+            insertion_position,
+            optimal_length,
+            maximal_force,
+            tendon_slack_length,
+            pennation_angle,
+            maximal_excitation,
+        )
 
     def __str__(self):
         # Define the print function, so it automatically formats things in the file properly

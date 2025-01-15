@@ -12,7 +12,6 @@ class BiomechanicalModelReal:
         self.muscles: dict[str:MuscleReal, ...] = {}
         self.via_points: dict[str:ViaPointReal, ...] = {}
 
-
     def __str__(self):
         out_string = "version 4\n\n"
 

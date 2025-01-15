@@ -3,6 +3,7 @@ from typing import Callable
 from .protocols import Data
 from .via_point_real import ViaPointReal
 
+
 class ViaPoint:
     def __init__(
         self,
@@ -28,15 +29,14 @@ class ViaPoint:
         """
         self.name = name
         position_function = position_function if position_function is not None else self.name
-        self.position_function = (lambda m, bio: m[position_function]) if isinstance(position_function, str) else position_function
+        self.position_function = (
+            (lambda m, bio: m[position_function]) if isinstance(position_function, str) else position_function
+        )
         self.parent_name = parent_name
         self.muscle_name = muscle_name
         self.muscle_group = muscle_group
 
-
-    def to_via_point(
-        self, data: Data
-    ) -> ViaPointReal:
+    def to_via_point(self, data: Data) -> ViaPointReal:
         return ViaPointReal.from_data(
             data,
             self.name,

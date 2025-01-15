@@ -5,7 +5,6 @@ from .protocols import Data
 from .muscle_real import MuscleReal, MuscleType, MuscleStateType
 
 
-
 class Muscle:
     def __init__(
         self,
@@ -21,7 +20,6 @@ class Muscle:
         pennation_angle_function: Callable | float,
         maximal_excitation: float = 1,
     ):
-
         """
         Parameters
         ----------
@@ -42,9 +40,7 @@ class Muscle:
         self.pennation_angle_function = pennation_angle_function
         self.maximal_excitation = maximal_excitation
 
-    def to_muscle(
-        self, model, data: Data
-    ) -> MuscleReal:
+    def to_muscle(self, model, data: Data) -> MuscleReal:
         return MuscleReal.from_data(
             data,
             model,

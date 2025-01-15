@@ -86,9 +86,7 @@ class Segment:
         if contact.parent_name is None:
             raise ValueError(f"Contacts must have parents. Contact {contact.name} does not have a parent.")
         elif contact.parent_name != self.name:
-            raise ValueError(
-                "The contact name should be the same as the 'key'."
-            )
+            raise ValueError("The contact name should be the same as the 'key'.")
         contact.parent_name = self.name
         self.contacts.append(contact)
 
