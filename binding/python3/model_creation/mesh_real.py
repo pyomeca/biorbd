@@ -72,5 +72,5 @@ class MeshReal:
             # Do a sanity check
             position = np.array(position)
             p = position if len(position.shape) == 1 else np.nanmean(position, axis=1)
-            out_string += f"\tmesh {p[0]:0.4f} {p[1]:0.4f} {p[2]:0.4f}\n"
+            out_string += f"\tmesh\t{p[0]:0.4f}\t{p[1]:0.4f}\t{p[2]:0.4f}\n"
         return out_string
