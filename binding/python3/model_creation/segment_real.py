@@ -55,9 +55,9 @@ class SegmentReal:
             out_string += f"\ttranslations\t{self.translations.value}\n"
         if self.rotations != Rotations.NONE:
             out_string += f"\trotations\t{self.rotations.value}\n"
-        if self.q_ranges != None:
+        if self.q_ranges is not None:
             out_string += str(self.q_ranges)
-        if self.qdot_ranges != None:
+        if self.qdot_ranges is not None:
             out_string += str(self.qdot_ranges)
         if self.inertia_parameters:
             out_string += str(self.inertia_parameters)
