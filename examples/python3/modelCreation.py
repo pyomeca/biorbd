@@ -244,7 +244,54 @@ def complex_model_from_scratch(mesh_path="../test/models/meshFiles/stl/pendulum.
 
     if remove_temporary:
         os.remove(kinematic_model_file_path)
-        
+
+    # TODO: @pariterre -> finally I would like to write this model to a biomod so that I can load it, is it OK ?
+
+
+def read_and_modify_model():
+
+    # Create the model from an existing biomod
+    biomod_path = "../../test/models/arm26_degroote.bioMod"
+    initial_model = biorbd.Model(biomod_path)
+    bio_model = BiomechanicalModelReal(biomod_path=biomod_path)
+    bio_model.write("modified.bioMod")
+
+    # Modify an existing segment
+    bio_model.segments["r_humerus_rotation2"].translations = Translations.XYZ
+    bio_model.segments["r_humerus_rotation2"].q_ranges = RangeOfMotion(range_type=Ranges.Q, min_bound=[-1, -1, -1, -np.pi], max_bound=[1, 1, 1, np.pi]),
+
+    # Add a new complex segment
+    bio_model.segments["new_segment"] = Segment(
+        name="new_segment",
+        translations=Translations.XYZ,
+        rotations=Rotations.X,
+        q_ranges=RangeOfMotion(range_type=Ranges.Q, min_bound=[-1, -1, -1, -np.pi], max_bound=[1, 1, 1, np.pi]),
+        qdot_ranges=RangeOfMotion(range_type=Ranges.Qdot, min_bound=[-10, -10, -10, -np.pi*10], max_bound=[10, 10, 10, np.pi*10])
+    )
+    bio_model.segments["new_segment"].add_contact(Contact(name="new_contact",
+                                                        function=lambda m: np.array([0, 0, 0]),
+                                                        parent_name="new_segment",
+                                                        axis=Translations.XYZ))
+    bio_model.muscle_groups["new_muscle_group"] = MuscleGroup(name="new_muscle_group",
+                                                                    origin_parent_name="base",
+                                                                    insertion_parent_name="new_muscle_group")
+    bio_model.muscles["new_muscle"] = Muscle("new_muscle",
+                                                muscle_type=MuscleType.HILLTHELEN,
+                                                state_type=MuscleStateType.DEGROOTE,
+                                                muscle_group="new_muscle_group",
+                                                origin_position_function=lambda m: np.array([0, 0, 0]),
+                                                insertion_position_function=lambda m: np.array([0, 0, 1]),
+                                                optimal_length_function=lambda model, m: 0.1,
+                                                maximal_force_function=lambda m: 100.0,
+                                                tendon_slack_length_function=lambda model, m: 0.05,
+                                                pennation_angle_function=lambda model, m: 0.05)
+    bio_model.via_points["new_via_point"] = ViaPoint("new_via_point",
+                                                        position_function=lambda m: np.array([0, 0, 0.5]),
+                                                        parent_name="new_segment",
+                                                        muscle_name="new_muscle",
+                                                        muscle_group="new_muscle_group",
+                                                        )
+
         
 def model_creation_from_measured_data(remove_temporary: bool = True):
     """
@@ -411,14 +458,17 @@ def model_creation_from_measured_data(remove_temporary: bool = True):
 
 
 def main():
-    # Create the model from user defined dimensions
-    model_creation_from_static_trial()
+    # # Create the model from user defined dimensions
+    # model_creation_from_static_trial()
+    #
+    # # Create a complex model from scratch
+    # complex_model_from_scratch()
 
-    # Cre a complex model from scratch
-    complex_model_from_scratch()
+    # Read and modify an existing biorbd model
+    read_and_modify_model()
 
-    # Create the model from a data file and markers as template
-    model_creation_from_measured_data()
+    # # Create the model from a data file and markers as template
+    # model_creation_from_measured_data()
 
 
 if __name__ == "__main__":
