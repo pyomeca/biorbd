@@ -81,7 +81,7 @@ class InertiaParametersReal:
         # Define the print function, so it automatically formats things in the file properly
         com = np.nanmean(self.center_of_mass, axis=1)[:3]
 
-        out_string = f"\tmass {self.mass}\n"
-        out_string += f"\tCenterOfMass {com[0]:0.5f} {com[1]:0.5f} {com[2]:0.5f}\n"
-        out_string += f"\tinertia_xxyyzz {self.inertia[0]} {self.inertia[1]} {self.inertia[2]}\n"
+        out_string = f"\tmass\t{self.mass}\n"
+        out_string += f"\tCenterOfMass\t{com[0]:0.5f}\t{com[1]:0.5f}\t{com[2]:0.5f}\n"
+        out_string += f"\tinertia_xxyyzz\t{self.inertia[0]}\t{self.inertia[1]}\t{self.inertia[2]}\n"
         return out_string
