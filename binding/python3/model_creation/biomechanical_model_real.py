@@ -3,6 +3,9 @@ import numpy as np
 
 from biorbd import Model
 
+from build_casadi.binding.python3.biorbd import MuscleGroup
+
+
 class BiomechanicalModelReal:
     def __init__(self, biomod_path: str = None):
         from .segment_real import SegmentReal  # Imported here to prevent from circular imports
@@ -44,6 +47,7 @@ class BiomechanicalModelReal:
         from .range_of_motion import RangeOfMotion, Ranges
         from .segment_coordinate_system_real import SegmentCoordinateSystemReal
         from .marker_real import MarkerReal
+        from .contact_real import ContactReal
 
 
         def get_segment_name(segment):
@@ -102,6 +106,12 @@ class BiomechanicalModelReal:
                                                     inertia=inertia)
             return inertial_parameters
 
+        def get_contact_axis(contact):
+            # TODO: Charbie -> to implement when I know where it is accessible --'
+            # "copy" from get_segment_translation
+            pass
+
+
         model_to_load = Model(biomod_path)
 
         # Fill segments' information
@@ -129,13 +139,44 @@ class BiomechanicalModelReal:
             self.segments[parent_name].add_marker(MarkerReal(name=marker_names[i_marker],
                                                             parent_name=parent_name,
                                                             position=marker.to_array()))
+        # Fill contacts' information
+        contact_names = [c.to_string() for c in model_to_load.contactNames()]
+        segment_names = list(self.segments.keys())
+        parent_ids = [str(c.parentId()) for c in model_to_load.rigidContacts()]
+        segment_ids = [str(s.id()) for s in model_to_load.segments()]
+        for i_contact, contact in enumerate(model_to_load.rigidContacts()):
+            parent_idx = segment_ids.index(parent_ids[i_contact])
+            parent_name = segment_names[parent_idx]
+            self.segments[parent_name].add_contact(ContactReal(name=contact_names[i_contact],
+                                                            parent_name=parent_name,
+                                                            position=contact.to_array()),
+                                                            axis=get_contact_axis(contact))
 
-        # getBodyBiorbdId
+        # Fill muscle groups' information
+        for i_muscle_group, muscle_group in enumerate(model_to_load.muscleGroups()):
+            name = muscle_group.name().to_string()
+            self.muscle_groups[name] = MuscleGroup(name=name,
+                                                    origin_parent_name=muscle_group.origin().to_string(),
+                                                    insertion_parent_name=muscle_group.insertion().to_string())
+        # Fill via points' information
+        # TODO: Charbie -> No idea where this is stored
+        # for i_via_point, via_point in enumerate(model_to_load.viaPoints()):
 
-
-        # contactNames / contactSegmentBiorbdId
-
-        # getMuscleGroupId muscleNames
+        # Fill muscles' information
+        for i_muscle, muscle in enumerate(model_to_load.muscles()):
+            name = muscle.name().to_string()
+            self.muscle_groups[name] = MuscleReal(name=name,
+                                                  muscle_type=muscle.type(),  # TODO: This returns an int
+                                                  state_type=muscle.stateType(),  # TODO: Does not exist
+                                                  muscle_group=muscle.muscleGroup(),  # TODO: Does not exist
+                                                  origin_position=muscle.position().originInLocal().to_array(),
+                                                  insertion_position=muscle.position().insertionInLocal().to_array(),
+                                                  optimal_length=muscle.characteristics().optimalLength(),
+                                                  maximal_force=muscle.characteristics().forceIsoMax(),
+                                                  tendon_slack_length=muscle.characteristics().tendonSlackLength(),
+                                                  pennation_angle=muscle.characteristics().pennationAngle(),
+                                                  maximal_excitation=muscle.maximalExcitation(),  # TOD: Does not exist
+                                                  via_points=muscle.viaPoints())  # TODO: Does not exist
 
 
     def __str__(self):
