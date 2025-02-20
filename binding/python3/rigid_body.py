@@ -26,6 +26,26 @@ def marker_index(model, marker_name: str) -> int:
     except ValueError:
         raise ValueError(f"{marker_name} is not in the biorbd model")
 
+def contact_index(model, contact_name: str) -> int:
+    """
+    Return the index in the model of the desired contact point.
+    A ValueError is raised if the marker is not in the model
+
+    Parameters
+    ----------
+    model: biorbd.Model
+        The biorbd model
+    contact_name: str
+        The name of the contact to get the index from
+    Returns
+    -------
+    The index of the contact.
+    """
+
+    try:
+        return [n.to_string() for n in model.contactNames()].index(contact_name)
+    except ValueError:
+        raise ValueError(f"{contact_name} is not in the biorbd model")
 
 def segment_index(model, segment_name):
     """
