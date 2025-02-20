@@ -104,7 +104,7 @@ def extended_kalman_filter(
 
     index_in_c3d = np.array(tuple(labels.index(name) if name in labels else -1 for name in marker_names))
     markers_in_c3d = np.ndarray((3, len(index_in_c3d), n_frames)) * np.nan
-    markers_in_c3d[:, index_in_c3d >= 0, :] = data[:3, index_in_c3d[index_in_c3d >= 0], frames] / 1000  # To meter
+    markers_in_c3d[:, index_in_c3d[index_in_c3d >= 0], :] = data[:3, index_in_c3d[index_in_c3d >= 0], frames] / 1000  # To meter
 
     # Create a Kalman filter structure
     freq = c3d["parameters"]["POINT"]["RATE"]["value"][0]
@@ -339,6 +339,8 @@ class InverseKinematics:
             raise ValueError('This method is not implemented please use "trf", "lm" or "only_lm" as argument')
 
         for f in range(self.nb_frames):
+            if f % 100 == 0:
+                print(f"Frame {f}/{self.nb_frames}")
             if initial_method != "lm":
                 x0 = (
                     np.array(
