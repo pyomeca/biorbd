@@ -38,18 +38,16 @@ jobs:
         id: cpu-cores
 
       - name: Setup environment
-        uses: conda-incubator/setup-miniconda@v2
+        uses: conda-incubator/setup-miniconda@v3
         with:
-          miniforge-variant: Mambaforge
           miniforge-version: latest
-          use-mamba: true
           activate-environment: biorbd_eigen
           environment-file: environment_eigen.yml
   
-      - name: Print mamba info
+      - name: Print conda info
         run: | 
-          mamba info
-          mamba list
+          conda info
+          conda list
 
       - name: Setup Linux dependencies
         run:   |
@@ -59,8 +57,8 @@ jobs:
 
       - name: Install extra common dependencies
         run: | 
-          mamba install cmake git pkgconfig swig pytest -cconda-forge
-          mamba list
+          conda install cmake git pkgconfig swig pytest -cconda-forge
+          conda list
           git submodule update --init --recursive
 
       - name: Install MATLAB on WINDOWS, LINUX and MACOS-Intel
