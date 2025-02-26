@@ -20,7 +20,7 @@ jobs:
       run:
         shell: bash -l {0}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       
       - name: Get number of CPU cores
         uses: SimenB/github-actions-cpu-cores@v1
@@ -29,16 +29,14 @@ jobs:
       - name: Setup environment
         uses: conda-incubator/setup-miniconda@v2
         with:
-          miniforge-variant: Mambaforge
           miniforge-version: latest
-          use-mamba: true
           activate-environment: biorbd_eigen
           environment-file: environment_eigen.yml
         
-      - name: Print mamba info
+      - name: Print conda info
         run: | 
-          mamba info
-          mamba list
+          conda info
+          conda list
   
       - name: Setup Linux dependencies
         run:   |
@@ -48,8 +46,8 @@ jobs:
         
       - name: Install extra common dependencies
         run: | 
-          mamba install cmake git pkgconfig codecov lcov -cconda-forge
-          mamba list
+          conda install cmake git pkgconfig codecov lcov -cconda-forge
+          conda list
           git submodule update --init --recursive
 
       - name: Perform code coverage 
