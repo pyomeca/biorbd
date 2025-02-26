@@ -927,11 +927,11 @@ UpdateKinematicsCustom(
         bool updateKin);
 
     ///
-    /// \brief Calculate the segment center of mass angular momentum with respect to the global center of mass
+    /// \brief Calculate the segment's contribution to the whole body angular momentum with respect to the global center of mass / formulae used: H_i = m_i * (r_i - r_com) x (v_i - v_com) + I_i * w_i) / The matrix returned contains a contribution for each last dof of a segment, zeros on all other DoFs.
     /// \param Q The generalized coordinates
     /// \param Qdot The generalized velocities
     /// \param updateKin If the kinematics of the model should be computed
-    /// \return The segments center of mass angular momentum
+    /// \return A matrix of each segment's angular momentum contribution (3xnbQ)
     ///
     std::vector<utils::Vector3d> CalcSegmentsAngularMomentum (
         const GeneralizedCoordinates &Q,
@@ -939,12 +939,12 @@ UpdateKinematicsCustom(
         bool updateKin);
 
     ///
-    /// \brief Calculate the segment center of mass angular momentum with respect to the global center of mass
+    /// \brief Calculate the segment's contribution to the whole body angular momentum with respect to the global center of mass / formulae used: H_i = m_i * (r_i - r_com) x (v_i - v_com) + I_i * w_i) / The matrix returned contains a contribution for each last dof of a segment, zeros on all other DoFs.
     /// \param Q The generalized coordinates
     /// \param Qdot The generalized velocities
     /// \param Qddot The generalized accelerations
     /// \param updateKin If the kinematics of the model should be computed
-    /// \return The segments center of mass angular momentum
+    /// \return A matrix of each segment's angular momentum contribution (3xnbQ)
     ///
     std::vector<utils::Vector3d> CalcSegmentsAngularMomentum (
         const GeneralizedCoordinates &Q,
