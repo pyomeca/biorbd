@@ -101,13 +101,13 @@ class MarkerReal:
 
     def __str__(self):
         # Define the print function, so it automatically formats things in the file properly
-        out_string = f"marker {self.name}\n"
-        out_string += f"\tparent {self.parent_name}\n"
+        out_string = f"marker\t{self.name}\n"
+        out_string += f"\tparent\t{self.parent_name}\n"
 
         p = self.mean_position
-        out_string += f"\tposition {p[0]:0.4f} {p[1]:0.4f} {p[2]:0.4f}\n"
-        out_string += f"\ttechnical {1 if self.is_technical else 0}\n"
-        out_string += f"\tanatomical {1 if self.is_anatomical else 0}\n"
+        out_string += f"\tposition\t{p[0]:0.4f}\t{p[1]:0.4f}\t{p[2]:0.4f}\n"
+        out_string += f"\ttechnical\t{1 if self.is_technical else 0}\n"
+        out_string += f"\tanatomical\t{1 if self.is_anatomical else 0}\n"
         out_string += "endmarker\n"
         return out_string
 
