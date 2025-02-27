@@ -333,6 +333,8 @@ def test_model_creation_from_data(brbd, remove_temporary: bool = True):
 
 
 def test_complex_model():
+    import sys
+    sys.path.append(os.path.join(os.path.dirname(__file__), "..", "..", "..", "models", "meshFiles", "stl"))
     from examples.python3 import modelCreation
     model_creation_folder = os.path.dirname(modelCreation.__file__)
     mesh_path = model_creation_folder + "/../../test/models/meshFiles/stl/pendulum.STL"
