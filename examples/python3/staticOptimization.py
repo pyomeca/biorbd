@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import numpy as np
 import biorbd
 
@@ -13,32 +15,42 @@ import biorbd
 #
 
 
-# Load a predefined model
-model = biorbd.Model("../arm26.bioMod")
-nq = model.nbQ()
-nqdot = model.nbQdot()
-nqddot = model.nbQddot()
-ntau = model.nbGeneralizedTorque()
-n_frames = 3
+def main():
+    # Load a predefined model
+    current_file_dir = Path(__file__).parent
+    model = biorbd.Model(f"{current_file_dir}/../arm26.bioMod")
+    nq = model.nbQ()
+    nqdot = model.nbQdot()
+    nqddot = model.nbQddot()
+    ntau = model.nbGeneralizedTorque()
+    n_frames = 3
 
-# Choose a position/velocity/torque to compute muscle activations from.
-# If only one frame the Vector are not mandatory and the Static Optimization function can be called
-# directly with numpy arrays
-Q = biorbd.VecBiorbdGeneralizedCoordinates()
-Qdot = biorbd.VecBiorbdGeneralizedVelocity()
-Qddot = biorbd.VecBiorbdGeneralizedAcceleration()
-Tau = biorbd.VecBiorbdGeneralizedTorque()
-for i in range(n_frames):
-    Q.append(np.zeros((nq,)))
-    Qdot.append(np.zeros((nqdot,)))
-    Qddot.append(np.zeros((nqddot,)))
-    Tau.append(model.InverseDynamics(Q[i], Qdot[i], Qddot[i]))
+    # Choose a position/velocity/torque to compute muscle activations from.
+    # If only one frame the Vector are not mandatory and the Static Optimization function can be called
+    # directly with numpy arrays
+    Q = biorbd.VecBiorbdGeneralizedCoordinates()
+    Qdot = biorbd.VecBiorbdGeneralizedVelocity()
+    Qddot = biorbd.VecBiorbdGeneralizedAcceleration()
+    Tau = biorbd.VecBiorbdGeneralizedTorque()
+    for i in range(n_frames):
+        Q.append(np.zeros((nq,)))
+        Qdot.append(np.zeros((nqdot,)))
+        Qddot.append(np.zeros((nqddot,)))
+        Tau.append(model.InverseDynamics(Q[i], Qdot[i], Qddot[i]))
 
-# Proceed with the static optimization
-optim = biorbd.StaticOptimization(model, Q, Qdot, Tau)
-optim.run()
-muscleActivationsPerFrame = optim.finalSolution()
+    # If biorbd was compiled with STATIC_OPTIM=OFF, biorbd.StaticOptimization won't exist
+    if not hasattr(biorbd, "StaticOptimization"):
+        raise RuntimeError("In order to use StaticOptimization, biorbd must be compiled with STATIC_OPTIM=ON")
+    
+    # Proceed with the static optimization
+    optim = biorbd.StaticOptimization(model, Q, Qdot, Tau)
+    optim.run()
+    muscleActivationsPerFrame = optim.finalSolution()
 
-# Print them to the console
-for activations in muscleActivationsPerFrame:
-    print(activations.to_array())
+    # Print them to the console
+    for activations in muscleActivationsPerFrame:
+        print(activations.to_array())
+
+
+if __name__ == "__main__":
+    main()

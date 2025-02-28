@@ -419,10 +419,3 @@ def test_complex_model(brbd, remove_temporary: bool = True):
 
     if remove_temporary:
         os.remove(kinematic_model_file_path)
-
-
-if __name__ == "__main__":
-    for brbd in brbd_to_test:
-        test_model_creation_from_static(brbd)
-        test_model_creation_from_data(brbd)
-        test_complex_model(brbd)

@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import numpy as np
 import biorbd
 
@@ -12,19 +14,25 @@ import biorbd
 #
 
 
-# Load a predefined model
-model = biorbd.Model("../pyomecaman.bioMod")
-nq = model.nbQ()
-nqdot = model.nbQdot()
-nqddot = model.nbQddot()
+def main():
+    # Load a predefined model
+    current_file_dir = Path(__file__).parent
+    model = biorbd.Model(f"{current_file_dir}/../pyomecaman.bioMod")
+    nq = model.nbQ()
+    nqdot = model.nbQdot()
+    nqddot = model.nbQddot()
 
-# Choose a position/velocity/acceleration to compute dynamics from
-Q = np.zeros((nq,))
-Qdot = np.zeros((nqdot,))
-Qddot = np.zeros((nqddot,))
+    # Choose a position/velocity/acceleration to compute dynamics from
+    Q = np.zeros((nq,))
+    Qdot = np.zeros((nqdot,))
+    Qddot = np.zeros((nqddot,))
 
-# Proceed with the inverse dynamics
-Tau = model.InverseDynamics(Q, Qdot, Qddot)
+    # Proceed with the inverse dynamics
+    Tau = model.InverseDynamics(Q, Qdot, Qddot)
 
-# Print them to the console
-print(Tau.to_array())
+    # Print them to the console
+    print(Tau.to_array())
+
+
+if __name__ == "__main__":
+    main()

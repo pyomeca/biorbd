@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 import numpy as np
 import biorbd
@@ -12,16 +13,13 @@ from biorbd.model_creation import (
     Mesh,
     MeshReal,
     MeshFile,
-    MeshFileReal,
     Segment,
     SegmentReal,
     SegmentCoordinateSystemReal,
     SegmentCoordinateSystem,
     Contact,
-    ContactReal,
     MuscleGroup,
     Muscle,
-    MuscleReal,
     MuscleType,
     MuscleStateType,
     Translations,
@@ -173,7 +171,7 @@ def model_creation_from_static_trial(remove_temporary: bool = True):
 
 
 
-def complex_model_from_scratch(mesh_path="../test/models/meshFiles/stl/pendulum.STL", remove_temporary: bool = True):
+def complex_model_from_scratch(mesh_path, remove_temporary: bool = True):
     """
     We define a new model by feeding in the actual dimension and position of the model.
     Please note that this model is not a human, it is only used to show the functionalities of the model creation module.
@@ -283,6 +281,7 @@ def model_creation_from_measured_data(remove_temporary: bool = True):
     de_leva = DeLevaTable(total_mass=100, sex="female")
 
     model.segments["TRUNK"] = Segment(
+        name="TRUNK",
         translations=Translations.YZ,
         rotations=Rotations.X,
         inertia_parameters=de_leva["TRUNK"],
@@ -290,6 +289,7 @@ def model_creation_from_measured_data(remove_temporary: bool = True):
     model.segments["TRUNK"].add_marker(Marker("PELVIS"))
 
     model.segments["HEAD"] = Segment(
+        name="HEAD",
         parent_name="TRUNK",
         segment_coordinate_system=SegmentCoordinateSystem(
             "BOTTOM_HEAD",
@@ -306,7 +306,7 @@ def model_creation_from_measured_data(remove_temporary: bool = True):
     model.segments["HEAD"].add_marker(Marker("HEAD_XZ"))
 
     model.segments["UPPER_ARM"] = Segment(
-        "UPPER_ARM",
+        name="UPPER_ARM",
         parent_name="TRUNK",
         rotations=Rotations.X,
         segment_coordinate_system=SegmentCoordinateSystem(
@@ -322,6 +322,7 @@ def model_creation_from_measured_data(remove_temporary: bool = True):
     model.segments["UPPER_ARM"].add_marker(Marker("SHOULDER_XY"))
 
     model.segments["LOWER_ARM"] = Segment(
+        name="LOWER_ARM",
         parent_name="UPPER_ARM",
         segment_coordinate_system=SegmentCoordinateSystem(
             origin="ELBOW",
@@ -336,6 +337,7 @@ def model_creation_from_measured_data(remove_temporary: bool = True):
     model.segments["LOWER_ARM"].add_marker(Marker("ELBOW_XY"))
 
     model.segments["HAND"] = Segment(
+        name="HAND",
         parent_name="LOWER_ARM",
         segment_coordinate_system=SegmentCoordinateSystem(
             origin="WRIST",
@@ -351,6 +353,7 @@ def model_creation_from_measured_data(remove_temporary: bool = True):
     model.segments["HAND"].add_marker(Marker("HAND_YZ"))
 
     model.segments["THIGH"] = Segment(
+        name="THIGH",
         parent_name="TRUNK",
         rotations=Rotations.X,
         segment_coordinate_system=SegmentCoordinateSystem(
@@ -366,6 +369,7 @@ def model_creation_from_measured_data(remove_temporary: bool = True):
     model.segments["THIGH"].add_marker(Marker("THIGH_Y"))
 
     model.segments["SHANK"] = Segment(
+        name="SHANK",
         parent_name="THIGH",
         rotations=Rotations.X,
         segment_coordinate_system=SegmentCoordinateSystem(
@@ -381,6 +385,7 @@ def model_creation_from_measured_data(remove_temporary: bool = True):
     model.segments["SHANK"].add_marker(Marker("KNEE_XZ"))
 
     model.segments["FOOT"] = Segment(
+        name="FOOT",
         parent_name="SHANK",
         rotations=Rotations.X,
         segment_coordinate_system=SegmentCoordinateSystem(
@@ -415,7 +420,8 @@ def main():
     model_creation_from_static_trial()
 
     # Cre a complex model from scratch
-    complex_model_from_scratch()
+    current_path_file = Path(__file__).parent
+    complex_model_from_scratch(mesh_path=f"{current_path_file}/meshFiles/pendulum.STL")
 
     # Create the model from a data file and markers as template
     model_creation_from_measured_data()
