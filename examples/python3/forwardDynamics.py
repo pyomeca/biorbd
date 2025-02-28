@@ -1,3 +1,5 @@
+from pathlib import Path
+    
 import numpy as np
 import biorbd
 
@@ -11,20 +13,25 @@ import biorbd
 # Please note that this example will work only with the Eigen backend
 #
 
+def main():
+    # Load a predefined model
+    current_file_dir = Path(__file__).parent
+    model = biorbd.Model(f"{current_file_dir}/../pyomecaman.bioMod")
+    nq = model.nbQ()
+    nqdot = model.nbQdot()
+    ntau = model.nbGeneralizedTorque()
 
-# Load a predefined model
-model = biorbd.Model("../pyomecaman.bioMod")
-nq = model.nbQ()
-nqdot = model.nbQdot()
-ntau = model.nbGeneralizedTorque()
+    # Choose a position/velocity/torque to compute dynamics from
+    Q = np.zeros((nq,))
+    Qdot = np.zeros((nqdot,))
+    Tau = np.zeros((ntau,))
 
-# Choose a position/velocity/torque to compute dynamics from
-Q = np.zeros((nq,))
-Qdot = np.zeros((nqdot,))
-Tau = np.zeros((ntau,))
+    # Proceed with the forward dynamics
+    Qddot = model.ForwardDynamics(Q, Qdot, Tau)
 
-# Proceed with the forward dynamics
-Qddot = model.ForwardDynamics(Q, Qdot, Tau)
+    # Print them to the console
+    print(Qddot.to_array())
 
-# Print them to the console
-print(Qddot.to_array())
+
+if __name__ == "__main__":
+    main()

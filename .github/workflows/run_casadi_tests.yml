@@ -130,7 +130,8 @@ jobs:
       - name: Run python binder tests 
         run: |
           BIORBD_FOLDER=`pwd`
-          cd $BIORBD_FOLDER/$BUILD_FOLDER/test/binding/Python3
+          cd $BIORBD_FOLDER/$BUILD_FOLDER/test/binding/python3
+          export CI_MAIN_EXAMPLES_FOLDER=$BIORBD_FOLDER/$EXAMPLES_FOLDER
           pytest .
           cd $BIORBD_FOLDER
 
