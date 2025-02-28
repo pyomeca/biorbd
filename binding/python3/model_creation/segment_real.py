@@ -12,7 +12,7 @@ from .translations import Translations
 class SegmentReal:
     def __init__(
         self,
-        name: str = None,
+        name: str,
         parent_name: str = "",
         segment_coordinate_system: SegmentCoordinateSystemReal = None,
         translations: Translations = Translations.NONE,
