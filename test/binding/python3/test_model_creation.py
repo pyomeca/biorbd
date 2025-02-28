@@ -11,6 +11,12 @@ try:
     brbd_to_test.append(biorbd)
 except ModuleNotFoundError:
     pass
+try:
+    import biorbd_casadi
+    
+    brbd_to_test.append(biorbd_casadi)
+except ModuleNotFoundError: 
+    pass
 
 
 import ezc3d
@@ -332,7 +338,15 @@ def test_model_creation_from_data(brbd, remove_temporary: bool = True):
 
 
 
-def test_complex_model():
-    from biorbd.examples.python3.modelCreation import complex_model_from_scratch
+@pytest.mark.parametrize("brbd", brbd_to_test)
+def test_complex_model(brbd):
+    from biorbd.model_creation import complex_model_from_scratch
     mesh_path = os.path.dirname(__file__) + "/../../models/meshFiles/stl/pendulum.STL"
     complex_model_from_scratch(mesh_path=mesh_path)
+    
+    
+
+if __name__ == "__main__":
+    for brbd in brbd_to_test:
+        test_model_creation_from_static(brbd)
+        test_model_creation_from_data(brbd)
