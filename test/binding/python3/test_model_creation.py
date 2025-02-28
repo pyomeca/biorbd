@@ -201,7 +201,7 @@ def test_model_creation_from_data(brbd, remove_temporary: bool = True):
 
     # Fill the kinematic chain model
     model = bmc.BiomechanicalModel()
-    de_leva = DeLevaTable(total_mass=100, sex="female")
+    de_leva = DeLevaTable(total_mass=100, sex="female", bmc=bmc)
 
     model.segments["TRUNK"] = bmc.Segment(
         name="TRUNK",

@@ -30,7 +30,7 @@ from biorbd.model_creation import (
 )
 import ezc3d
 
-from de_leva import DeLevaTable  #@pariterre: this version works on my env, but is is suspicious !
+from de_leva import DeLevaTable 
 
 
 #
