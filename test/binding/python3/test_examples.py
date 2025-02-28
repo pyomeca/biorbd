@@ -1,11 +1,15 @@
 def load_example_file(file_name: str):
     # Import the file as a module from the path
+    import os
     from pathlib import Path
     from importlib.util import spec_from_file_location, module_from_spec
     import sys
     
     # Get the path to the examples
-    examples_path = Path(__file__).parent.parent.parent.parent / "examples" / "python3"
+    if os.environ.get("CI_MAIN_EXAMPLES_FOLDER"):
+        examples_path = Path(os.environ["CI_MAIN_EXAMPLES_FOLDER"]) / "python3"    
+    else:
+        examples_path = Path(__file__).parent.parent.parent.parent / "examples" / "python3"
     
     # Import the example
     sys.path.append(str(examples_path))
