@@ -44,6 +44,9 @@ else()
 endif()
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_debug")
 
+# Make sure RBDL is compiled before compiling project
+add_dependencies(${PROJECT_NAME} RBDL)
+
 # Add the include
 target_include_directories(${PROJECT_NAME} PRIVATE
     "${CMAKE_SOURCE_DIR}/include"
