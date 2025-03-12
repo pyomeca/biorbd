@@ -67,13 +67,13 @@ elseif(${MATH_LIBRARY_BACKEND} STREQUAL "Casadi")
     set(BIORBD_LIB_SUFFIX "casadi")
 endif()
 set (BIORBD_NAME ${PROJECT_NAME}_${BIORBD_LIB_SUFFIX})
+include(FindOrBuildRBDL)
 
 if(${MATH_LIBRARY_BACKEND} STREQUAL "Eigen3")
     find_package(Eigen3 REQUIRED)
     set(MATH_BACKEND_INCLUDE_DIR "${EIGEN3_INCLUDE_DIR}")
     set(MATH_BACKEND_LIBRARIES "")
-    # find_package(RBDL REQUIRED)
-    include(FindOrBuildRBDL)
+    FindOrBuildRBDL(EIGEN)
     
 elseif(${MATH_LIBRARY_BACKEND} STREQUAL "Casadi")
     find_package(Casadi REQUIRED)
@@ -82,9 +82,10 @@ elseif(${MATH_LIBRARY_BACKEND} STREQUAL "Casadi")
         "${Casadi_INCLUDE_DIR}/.."
     )
     set(MATH_BACKEND_LIBRARIES "${Casadi_LIBRARY}")
-    find_package(RBDLCasadi REQUIRED)
-    set(RBDL_INCLUDE_DIR ${RBDLCasadi_INCLUDE_DIR}/rbdl-casadi ${RBDLCasadi_INCLUDE_DIR})
-    set(RBDL_LIBRARY ${RBDLCasadi_LIBRARY})
+    FindOrBuildRBDL(CASADI)
+    # find_package(RBDLCasadi REQUIRED)
+    # set(RBDL_INCLUDE_DIR ${RBDLCasadi_INCLUDE_DIR}/rbdl-casadi ${RBDLCasadi_INCLUDE_DIR})
+    # set(RBDL_LIBRARY ${RBDLCasadi_LIBRARY})
 endif()
 find_package(IPOPT)
 find_package(TinyXML)
@@ -156,6 +157,9 @@ set(BIORBD_BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 configure_file(${CMAKE_SOURCE_DIR}/include/biorbdConfig.h.in
     "${BIORBD_BINARY_DIR}/include/biorbdConfig.h"
 )
+
+# Make sure RBDL is compiled before compiling project
+add_dependencies(${BIORBD_NAME} RBDL)
 
 # Add headers
 # Include directories when building the library:
