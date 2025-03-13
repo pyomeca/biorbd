@@ -22,12 +22,12 @@ find_path (Casadi_INCLUDE_DIR "casadi.hpp"
     ${Casadi_ROOT_DIR}/include
 )
 
-# Find the dll
+# Find the library
 find_library (Casadi_LIBRARY NAMES casadi 
     PATHS 
     ${CMAKE_INSTALL_PREFIX}/lib 
     ${CMAKE_INSTALL_PREFIX}/Library/lib
-    ${Casadi_ROOT_DIR}
+    
 )
 
 # handle the QUIETLY and REQUIRED arguments and set Casadi_FOUND to TRUE if
@@ -37,3 +37,8 @@ find_package_handle_standard_args (Casadi DEFAULT_MSG
     Casadi_LIBRARY
     Casadi_INCLUDE_DIR
 )
+
+# Add DLL to the CasaDi library
+if (WIN32)
+    set (Casadi_LIBRARY ${Casadi_LIBRARY} ${Casadi_ROOT_DIR}/casadi/libcasadi.dll)
+endif ()
