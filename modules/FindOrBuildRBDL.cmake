@@ -4,7 +4,6 @@ macro(FindOrBuildRBDL MATH_BACKEND)
         message(FATAL_ERROR "FindOrBuildRBDL: Invalid option '${MATH_BACKEND}'. Use 'EIGEN' or 'CASADI'.")
     endif()
 
-    
     # Try to find RBDL first
     set(RBDL_FOUND FALSE CACHE INTERNAL "RBDL found or built")
     if (${MATH_BACKEND} STREQUAL "EIGEN")
@@ -84,6 +83,13 @@ macro(FindOrBuildRBDL MATH_BACKEND)
                 IMPORTED_IMPLIB "${RBDL_LIBRARY}"  # Import library for linking
                 IMPORTED_LOCATION "${RBDL_RUNTIME_DIR}/rbdl.dll"  # Runtime DLL location
             )
+        endif()
+
+        if (${MATH_BACKEND} STREQUAL "CASADI")
+            # Define include and library paths to mimic RBDL eigen which is the format expected by biorbd
+            target_link_libraries(RBDL INTERFACE Casadi_LIBRARY)
+            message(coucou)
+            message(${Casadi_LIBRARY})
         endif()
 
         set(RBDL_FOUND TRUE INTERNAL "RBDL found or built")
