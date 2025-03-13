@@ -18,7 +18,7 @@ endif()
 find_package(biorbd_casadi REQUIRED)
 find_package(RBDLCasadi REQUIRED)
 find_package(Eigen3 REQUIRED)
-find_package(TinyXML REQUIRED)
+find_package(TinyXML2 REQUIRED)
 find_package(Casadi REQUIRED)
 
 add_executable(${PROJECT_NAME} ${FILE})
@@ -29,7 +29,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     ${RBDLCasadi_INCLUDE_DIR}
     ${Casadi_INCLUDE_DIR}
     ${Casadi_INCLUDE_DIR}/..
-	${TinyXML_INCLUDE_DIR}
 )
 
 find_package(IPOPT)
@@ -44,7 +43,7 @@ target_link_libraries(${PROJECT_NAME}
     ${biorbd_casadi_LIBRARIES}
     ${RBDLCasadi_LIBRARY}
     ${Casadi_LIBRARY}
-	${TinyXML_LIBRARY}
+    tinyxml2::tinyxml2
 )
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/pyomecaman.bioMod 

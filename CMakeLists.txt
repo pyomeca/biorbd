@@ -10,6 +10,9 @@ set (CMAKE_CXX_STANDARD 11)
 
 # Set some variables
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/modules")
+include(FindOrBuildEigen3)
+include(FindOrBuildTinyXML2)
+include(FindOrBuildRBDL)
 
 # Set all the compile options
 option(MODULE_KALMAN 
@@ -67,10 +70,9 @@ elseif(${MATH_LIBRARY_BACKEND} STREQUAL "Casadi")
     set(BIORBD_LIB_SUFFIX "casadi")
 endif()
 set (BIORBD_NAME ${PROJECT_NAME}_${BIORBD_LIB_SUFFIX})
-include(FindOrBuildRBDL)
 
+FindOrBuildEigen3()
 if(${MATH_LIBRARY_BACKEND} STREQUAL "Eigen3")
-    find_package(Eigen3 REQUIRED)
     set(MATH_BACKEND_INCLUDE_DIR "${EIGEN3_INCLUDE_DIR}")
     set(MATH_BACKEND_LIBRARIES "")
     FindOrBuildRBDL(EIGEN)
@@ -88,7 +90,6 @@ elseif(${MATH_LIBRARY_BACKEND} STREQUAL "Casadi")
     # set(RBDL_LIBRARY ${RBDLCasadi_LIBRARY})
 endif()
 find_package(IPOPT)
-find_package(TinyXML)
 
 # Manage options
 # MODULE_KALMAN
@@ -127,13 +128,10 @@ else()
 endif()
 
 # MODULE_VTP_FILES_READER
-if (NOT TinyXML_FOUND)
-    set(TinyXML_INCLUDE_DIR "")
-    set(TinyXML_LIBRARY "")
-    if (MODULE_VTP_FILES_READER)
-        message(WARNING "VTP cannot be used since TinyXML was not found")
-        set(MODULE_VTP_FILES_READER OFF CACHE BOOL "" FORCE)
-    endif()
+if (MODULE_VTP_FILES_READER)
+    FindOrBuildTinyXML2()
+else()
+    set(TinyXML2_LIBRARY "")
 endif()
 
 
@@ -159,7 +157,14 @@ configure_file(${CMAKE_SOURCE_DIR}/include/biorbdConfig.h.in
 )
 
 # Make sure RBDL is compiled before compiling project
-add_dependencies(${BIORBD_NAME} RBDL)
+if (RBDL_IS_BUILT)
+    add_dependencies(${BIORBD_NAME} RBDL)
+endif()
+if (MODULE_VTP_FILES_READER)
+    if (TinyXML2_IS_BUILT)
+        add_dependencies(${BIORBD_NAME} TinyXML2)
+    endif()
+endif()
 
 # Add headers
 # Include directories when building the library:
@@ -168,8 +173,9 @@ target_include_directories(${BIORBD_NAME} PRIVATE
     "${BIORBD_BINARY_DIR}/include"
     "${RBDL_INCLUDE_DIR}"
     "${MATH_BACKEND_INCLUDE_DIR}"
-    "${TinyXML_INCLUDE_DIR}"
+    "${TinyXML2_INCLUDE_DIR}"
 )
+
 # Include directories when other targets in this project use this library:
 target_include_directories(${BIORBD_NAME} INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -236,7 +242,7 @@ target_link_libraries(${BIORBD_NAME}
     "${RBDL_LIBRARY}"
     "${MATH_BACKEND_LIBRARIES}"
     "${IPOPT_LIBRARY}"
-    "${TinyXML_LIBRARY}"
+    "${TinyXML2_LIBRARY}"
 )
 
 # install target
