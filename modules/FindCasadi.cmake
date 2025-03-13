@@ -10,11 +10,24 @@ if (Casadi_INCLUDE_DIR)
   set (Casadi_FIND_QUIETLY TRUE)
 endif (Casadi_INCLUDE_DIR)
 
+# Check if Casadi_ROOT_DIR is provided, otherwise add it to the available variables to the user
+if (NOT Casadi_ROOT_DIR)
+    set (Casadi_ROOT_DIR "" CACHE PATH "Root directory of Casadi")
+endif ()
+
 find_path (Casadi_INCLUDE_DIR "casadi.hpp" 
-    PATHS ${CMAKE_INSTALL_PREFIX}/include/casadi ${CMAKE_INSTALL_PREFIX}/Library/include/casadi
+    PATHS 
+    ${CMAKE_INSTALL_PREFIX}/include/casadi 
+    ${CMAKE_INSTALL_PREFIX}/Library/include/casadi
+    ${Casadi_ROOT_DIR}/include
 )
+
+# Find the dll
 find_library (Casadi_LIBRARY NAMES casadi 
-    PATHS ${CMAKE_INSTALL_PREFIX}/lib ${CMAKE_INSTALL_PREFIX}/Library/lib
+    PATHS 
+    ${CMAKE_INSTALL_PREFIX}/lib 
+    ${CMAKE_INSTALL_PREFIX}/Library/lib
+    ${Casadi_ROOT_DIR}
 )
 
 # handle the QUIETLY and REQUIRED arguments and set Casadi_FOUND to TRUE if
@@ -24,6 +37,3 @@ find_package_handle_standard_args (Casadi DEFAULT_MSG
     Casadi_LIBRARY
     Casadi_INCLUDE_DIR
 )
-
-
-
