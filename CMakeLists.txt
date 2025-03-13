@@ -10,9 +10,6 @@ set (CMAKE_CXX_STANDARD 11)
 
 # Set some variables
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/modules")
-include(FindOrBuildEigen3)
-include(FindOrBuildTinyXML2)
-include(FindOrBuildRBDL)
 
 # Set all the compile options
 option(MODULE_KALMAN 
@@ -71,6 +68,8 @@ elseif(${MATH_LIBRARY_BACKEND} STREQUAL "Casadi")
 endif()
 set (BIORBD_NAME ${PROJECT_NAME}_${BIORBD_LIB_SUFFIX})
 
+include(FindOrBuildEigen3)
+include(FindOrBuildRBDL)
 FindOrBuildEigen3()
 if(${MATH_LIBRARY_BACKEND} STREQUAL "Eigen3")
     set(MATH_BACKEND_INCLUDE_DIR "${EIGEN3_INCLUDE_DIR}")
@@ -129,6 +128,7 @@ endif()
 
 # MODULE_VTP_FILES_READER
 if (MODULE_VTP_FILES_READER)
+    include(FindOrBuildTinyXML2)
     FindOrBuildTinyXML2()
 else()
     set(TinyXML2_LIBRARY "")
