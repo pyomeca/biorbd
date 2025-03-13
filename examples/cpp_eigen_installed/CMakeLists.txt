@@ -18,7 +18,7 @@ endif()
 find_package(biorbd_eigen REQUIRED)
 find_package(RBDL REQUIRED)
 find_package(Eigen3 REQUIRED)
-find_package(TinyXML REQUIRED)
+find_package(TinyXML2 REQUIRED)
 
 add_executable(${PROJECT_NAME} ${FILE})
 
@@ -27,7 +27,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     ${biorbd_eigen_INCLUDE_DIR}
     ${RBDL_INCLUDE_DIR}
     ${EIGEN3_INCLUDE_DIR}
-	${TinyXML_INCLUDE_DIR}
 )
 find_package(IPOPT)
 if (IPOPT_FOUND)
@@ -40,7 +39,7 @@ endif()
 target_link_libraries(${PROJECT_NAME} 
     ${biorbd_eigen_LIBRARIES}
     ${RBDL_LIBRARY}
-	${TinyXML_LIBRARY}
+    tinyxml2::tinyxml2
 )
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/pyomecaman.bioMod 

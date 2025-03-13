@@ -9,5 +9,4 @@ dependencies:
 - rbdl >=3.3.0
 - scipy
 - ezc3d
-- tinyxml
 - ipopt
