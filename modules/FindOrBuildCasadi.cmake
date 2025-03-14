@@ -40,10 +40,10 @@ macro(FindOrBuildCasadi)
         include(ExternalProject)
 
         set(Casadi_IS_BUILT TRUE)
-        if (INSTALL_DEPENDENCIES_ON_SYSTEM)
-            set(Casadi_INSTALL_DIR ${CMAKE_INSTALL_PREFIX})
-        else()
+        if (NOT INSTALL_DEPENDENCIES_PREFIX OR INSTALL_DEPENDENCIES_PREFIX STREQUAL "")
             set(Casadi_INSTALL_DIR "${CMAKE_BINARY_DIR}/Casadi_install")
+        else()
+            set(Casadi_INSTALL_DIR ${INSTALL_DEPENDENCIES_PREFIX})
         endif()
         
         # Detect correct library extension (OS-independent)
@@ -59,9 +59,6 @@ macro(FindOrBuildCasadi)
             if (NOT Python3_FOUND)
                 message(FATAL_ERROR "Python3 not found. Please install it before building the Python interface.")
             endif()
-            message(coucou)
-            message(${Python3_SITELIB})
-            message(coucou)
         endif()
 
         ExternalProject_Add(Casadi_external

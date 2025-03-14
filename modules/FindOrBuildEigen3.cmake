@@ -13,10 +13,10 @@ macro(FindOrBuildEigen3)
         include(ExternalProject)
 
         set(EIGEN3_IS_BUILT TRUE)
-        if (INSTALL_DEPENDENCIES_ON_SYSTEM)
-            set(EIGEN3_INSTALL_DIR ${CMAKE_INSTALL_PREFIX})
-        else()
+        if (NOT INSTALL_DEPENDENCIES_PREFIX OR INSTALL_DEPENDENCIES_PREFIX STREQUAL "")
             set(EIGEN3_INSTALL_DIR "${CMAKE_BINARY_DIR}/Eigen3_install")
+        else()
+            set(EIGEN3_INSTALL_DIR ${INSTALL_DEPENDENCIES_PREFIX})
         endif()
 
         ExternalProject_Add(Eigen3_external
