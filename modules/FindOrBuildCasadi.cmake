@@ -1,22 +1,22 @@
-macro(FindOrBuildCasadi)   
-    # Try to find Casadi first
-    
-    # If python is found with casadi install and was installed using pip, the library will be installed in the site-packages directory
-    # So we should add the site-package folder to the searching for the library
-    find_package(Python3 COMPONENTS Interpreter)
-    if (Python3_FOUND)
-        execute_process(
-            COMMAND ${Python3_EXECUTABLE} -c "import casadi; print(casadi.__file__)"
-            OUTPUT_VARIABLE Casadi_FROM_PIP
-            OUTPUT_STRIP_TRAILING_WHITESPACE
-            ERROR_QUIET
-        )
-        get_filename_component(Casadi_FROM_PIP "${Casadi_FROM_PIP}" DIRECTORY)
-        set(Casadi_FROM_PIP ${Casadi_FROM_PIP}/cmake)
-    endif()
+macro(FindOrBuildCasadi)      
+    # # If python is found with casadi install and was installed using pip, the library will be installed in the site-packages directory
+    # # So we should add the site-package folder to the searching for the library
+    # find_package(Python3 COMPONENTS Interpreter)
+    # if (Python3_FOUND)
+    #     execute_process(
+    #         COMMAND ${Python3_EXECUTABLE} -c "import casadi; print(casadi.__file__)"
+    #         OUTPUT_VARIABLE Casadi_FROM_PIP
+    #         OUTPUT_STRIP_TRAILING_WHITESPACE
+    #         ERROR_QUIET
+    #     )
+    #     get_filename_component(Casadi_FROM_PIP "${Casadi_FROM_PIP}" DIRECTORY)
+    #     set(Casadi_FROM_PIP ${Casadi_FROM_PIP}/cmake)
+    # endif()
 
+    # Try to find Casadi first
     find_package(Casadi QUIET
-        PATHS ${Casadi_FROM_PIP}
+        # The linker does not work it the pip version of casadi. When this works, uncomment the following line and the Python section above
+        # PATHS ${Casadi_FROM_PIP}
     )
 
     if(Casadi_FOUND AND NOT Casadi_IS_BUILT)
@@ -54,6 +54,16 @@ macro(FindOrBuildCasadi)
         endif()
         set(Casadi_LIBRARY "${Casadi_INSTALL_DIR}/lib/${Casadi_LIB_NAME}")
 
+        if (BINDER_PYTHON3)
+            find_package(Python3 COMPONENTS Interpreter Development)
+            if (NOT Python3_FOUND)
+                message(FATAL_ERROR "Python3 not found. Please install it before building the Python interface.")
+            endif()
+            message(coucou)
+            message(${Python3_SITELIB})
+            message(coucou)
+        endif()
+
         ExternalProject_Add(Casadi_external
             GIT_REPOSITORY https://github.com/casadi/casadi.git
             GIT_TAG 3.6.7
@@ -61,6 +71,10 @@ macro(FindOrBuildCasadi)
                 -DCMAKE_INSTALL_PREFIX=${Casadi_INSTALL_DIR}
                 -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
                 -DCMAKE_POSITION_INDEPENDENT_CODE=ON
+                -DWITH_PYTHON=${BINDER_PYTHON3}
+                -DWITH_PYTHON3=${BINDER_PYTHON3}
+                -DPYTHON_PREFIX=${Python3_SITELIB}
+                -DPython_INCLUDE_DIR=${Python3_INCLUDE_DIRS}
             BUILD_BYPRODUCTS "${Casadi_LIBRARY}"
         )
 
