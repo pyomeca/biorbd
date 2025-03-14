@@ -2,6 +2,22 @@ from skbuild import setup
 from pathlib import Path
 import re
 import os
+import sys
+import platform
+import pathlib
+
+
+def get_install_site_packages():
+    # Get the local site packages folder for the installation that is used by "pip install ."
+    python_version = f"python{sys.version_info.major}.{sys.version_info.minor}"
+    platform_name = platform.system().lower()  # e.g., 'linux', 'windows', 'darwin'
+    
+    # Expected path inside _skbuild (before it exists)
+    fake_site_packages = pathlib.Path(f"_skbuild/{platform_name}/cmake-install/lib/{python_version}/site-packages")
+    
+    return fake_site_packages
+
+
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
 
@@ -23,6 +39,7 @@ with open(f"{dir_path}/CMakeLists.txt") as file:
 # Create an empty 'biorbd' folder if it doesn't exist (stub for setup.py)
 Path("biorbd").mkdir(exist_ok=True)
 
+
 setup(
     # NOTE: Could still add stuff like homepage or author mail, but since this isn't used to redistribute, not important
     name="biorbd",
@@ -40,6 +57,7 @@ setup(
         "-DCMAKE_INSTALL_BINDIR=biorbd",
         "-DCMAKE_INSTALL_LIBDIR=biorbd",
         "-DMATH_LIBRARY_BACKEND=Casadi",
-        "-DINSTALL_DEPENDENCIES_PREFIX=biorbd"
+        "-DINSTALL_DEPENDENCIES_PREFIX=biorbd",
+        f"-DPython3_SITELIB_INSTALL={get_install_site_packages()}"
     ],
 )
