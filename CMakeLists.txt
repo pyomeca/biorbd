@@ -32,8 +32,9 @@ option(BUILD_DOC
     "Build documentation" OFF)
 option(BUILD_TESTS 
     "Build all tests." OFF)
-option(INSTALL_DEPENDENCIES_ON_SYSTEM
-    "Install dependencies to CMAKE_INSTALL_PREFIX (ON) or in the BUILD folder ([OFF])" OFF)
+set(INSTALL_DEPENDENCIES_PREFIX "" CACHE STRING
+    "Where to install the dependencies")
+
 
 # Because of Eigen, it is not possible to compile biorbd as a dynamic library
 if (WIN32)
