@@ -26,6 +26,12 @@ find_package(Python3 REQUIRED
     COMPONENTS Interpreter Development NumPy
 )
 
+set(Python3_SITELIB_INSTALL "" CACHE STRING
+    "Override the default Python3 site-packages installation directory (default is Python3_SITELIB)")
+if(NOT Python3_SITELIB_INSTALL OR Python3_SITELIB_INSTALL STREQUAL "")
+    set(Python3_SITELIB_INSTALL "${Python3_SITELIB}")
+endif()
+
 if(WIN32)
     link_directories("${Python3_RUNTIME_LIBRARY_DIRS}/libs")
 endif()
@@ -88,23 +94,23 @@ elseif(${MATH_LIBRARY_BACKEND} STREQUAL "Casadi")
     set(BIORBD_PYTHON_DIR ${BIORBD_NAME})
 endif()
 INSTALL(FILES "${CMAKE_CURRENT_BINARY_DIR}/${BIORBD_NAME_NO_SUFFIX}.py"
-    DESTINATION "${Python3_SITELIB}/${BIORBD_PYTHON_DIR}"
+    DESTINATION "${Python3_SITELIB_INSTALL}/${BIORBD_PYTHON_DIR}"
 )
 
 file(GLOB PYTHON_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.py")
 INSTALL(FILES ${PYTHON_FILES}
-    DESTINATION "${Python3_SITELIB}/${BIORBD_PYTHON_DIR}"
+    DESTINATION "${Python3_SITELIB_INSTALL}/${BIORBD_PYTHON_DIR}"
 )
 file(GLOB PYTHON_FILES "${CMAKE_CURRENT_SOURCE_DIR}/model_creation/*.py")
 INSTALL(FILES ${PYTHON_FILES}
-    DESTINATION "${Python3_SITELIB}/${BIORBD_PYTHON_DIR}/model_creation"
+    DESTINATION "${Python3_SITELIB_INSTALL}/${BIORBD_PYTHON_DIR}/model_creation"
 )
 
 # Check if swig has its version 3 or 4, to choose the right place to put the library
 if(${SWIG_VERSION} MATCHES "^3(\.[0-9]*)*$")
-    set(PYTHON_INSTALL_DESTINATION "${Python3_SITELIB}")
+    set(PYTHON_INSTALL_DESTINATION "${Python3_SITELIB_INSTALL}")
 elseif(${SWIG_VERSION} MATCHES "^4(\.[0-9]*)*$")
-    set(PYTHON_INSTALL_DESTINATION "${Python3_SITELIB}/${BIORBD_PYTHON_DIR}")
+    set(PYTHON_INSTALL_DESTINATION "${Python3_SITELIB_INSTALL}/${BIORBD_PYTHON_DIR}")
 else()
     message( FATAL_ERROR "Swig must be version 3 or 4" )
 endif()
