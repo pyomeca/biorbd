@@ -3,7 +3,6 @@ macro(FindOrBuildEigen3)
     find_package(Eigen3 QUIET)
 
     if(EIGEN3_FOUND AND NOT EIGEN3_IS_BUILT)
-    message(STATUS "EIGEN3 found")
         set(EIGEN3_IS_BUILT FALSE)
         if(NOT DEFINED EIGEN3_INCLUDE_DIR OR EIGEN3_INCLUDE_DIR STREQUAL "")
             # Modern CMake does not set INCLUDE_DIR, so make it retro-compatible

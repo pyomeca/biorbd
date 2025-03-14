@@ -5,7 +5,6 @@ macro(FindOrBuildCasadi)
     # So we should add the site-package folder to the searching for the library
     find_package(Python3 COMPONENTS Interpreter)
     if (Python3_FOUND)
-        # Do not fail on error
         execute_process(
             COMMAND ${Python3_EXECUTABLE} -c "import casadi; print(casadi.__file__)"
             OUTPUT_VARIABLE Casadi_FROM_PIP
@@ -16,7 +15,7 @@ macro(FindOrBuildCasadi)
         set(Casadi_FROM_PIP ${Casadi_FROM_PIP}/cmake)
     endif()
 
-    find_package(Casadi
+    find_package(Casadi QUIET
         PATHS ${Casadi_FROM_PIP}
     )
 
@@ -28,13 +27,12 @@ macro(FindOrBuildCasadi)
             
             # We once tried to get it from INTERFACE_LINK_LIBRARIES but it was not working
             if(WIN32)
-                file(GLOB_RECURSE Casadi_LIBRARY "${Casadi_INCLUDE_DIR}/../casadi*.dll")
+                file(GLOB_RECURSE Casadi_LIBRARY "${Casadi_INCLUDE_DIR}/../casadi.dll")
             else()
-                file(GLOB_RECURSE Casadi_LIBRARY "${Casadi_INCLUDE_DIR}/../lib*.so")
+                file(GLOB_RECURSE Casadi_LIBRARY "${Casadi_INCLUDE_DIR}/../libcasadi.so")
             endif()
             
             set(Casadi_DIR_ARE_ADJUSTED FALSE)
-            message(${Casadi_INCLUDE_DIR})
         endif()
 
     else()
