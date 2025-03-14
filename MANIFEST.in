@@ -1,0 +1,43 @@
+# Include only essential Python code and metadata for installation.
+include setup.py pyproject.toml
+include environment.yml
+include LICENSE README.md
+include MANIFEST.in 
+exclude PKG-INFO
+
+# Include shared libraries or compiled files (if needed for runtime).
+prune *.data
+recursive-include biorbd *.so
+recursive-include biorbd *.dll
+recursive-include biorbd *.dylib
+recursive-include biorbd *.pyd
+recursive-include biorbd *.lib
+recursive-include biorbd *.py
+
+# Exclude source and development files
+include CMakeLists.txt *.cmake.in
+recursive-include binding/*
+recursive-include include/*
+recursive-include modules/*
+recursive-include share/*
+recursive-include src/*
+exclude .github/*
+exclude external/*
+exclude _skbuild/*
+prune .github/*
+prune external/*
+prune _skbuild/*
+
+# Exclude docs, tests and example data
+exclude doc/*
+exclude test/*
+exclude examples/*
+prune doc/*
+prune test/*
+prune examples/*
+
+# Exclude version control and temporary files
+global-exclude *.git*
+global-exclude __pycache__/*
+global-exclude *.py[co]
+
