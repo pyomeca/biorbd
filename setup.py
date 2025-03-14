@@ -7,16 +7,30 @@ import platform
 import pathlib
 
 
+def get_install_base():
+    current_folder = pathlib.Path(__file__).parent
+    platform_name = platform.system().lower()
+    if platform_name == "linux":
+        architecture = platform.architecture()[0]
+        if architecture == "64bit":
+            architecture = "x86_64"
+        elif architecture == "32bit":
+            architecture = "i686"
+        else:
+            raise RuntimeError(f"Unsupported architecture: {architecture}")
+        
+        python_version = f"{sys.version_info.major}.{sys.version_info.minor}"
+        platform_name = f"linux-{architecture}-{python_version}"
+    return f"{current_folder}/_skbuild/{platform_name}/cmake-install"
+
+
 def get_install_site_packages():
     # Get the local site packages folder for the installation that is used by "pip install ."
     python_version = f"python{sys.version_info.major}.{sys.version_info.minor}"
-    platform_name = platform.system().lower()  # e.g., 'linux', 'windows', 'darwin'
     
     # Expected path inside _skbuild (before it exists)
-    fake_site_packages = pathlib.Path(f"_skbuild/{platform_name}/cmake-install/lib/{python_version}/site-packages")
+    return pathlib.Path(f"{get_install_base()}/lib/{python_version}/site-packages")
     
-    return fake_site_packages
-
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
@@ -57,7 +71,7 @@ setup(
         "-DCMAKE_INSTALL_BINDIR=biorbd",
         "-DCMAKE_INSTALL_LIBDIR=biorbd",
         "-DMATH_LIBRARY_BACKEND=Casadi",
-        "-DINSTALL_DEPENDENCIES_PREFIX=biorbd",
+        f"-DINSTALL_DEPENDENCIES_PREFIX={get_install_base()}",
         f"-DPython3_SITELIB_INSTALL={get_install_site_packages()}"
     ],
 )

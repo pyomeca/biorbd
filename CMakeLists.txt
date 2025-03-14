@@ -87,7 +87,7 @@ if(${MATH_LIBRARY_BACKEND} STREQUAL "Eigen3")
 elseif(${MATH_LIBRARY_BACKEND} STREQUAL "Casadi")
     include(FindOrBuildCasadi)
     FindOrBuildCasadi()
-    set(MATH_BACKEND_INCLUDE_DIR "${Casadi_INCLUDE_DIR}" "${Casadi_INCLUDE_DIR}/..")
+    set(MATH_BACKEND_INCLUDE_DIR "${Casadi_INCLUDE_DIR}")
     
     set(MATH_BACKEND_LIBRARIES "${Casadi_LIBRARY}")
     FindOrBuildRBDL(CASADI)
@@ -178,6 +178,7 @@ add_dependencies(${BIORBD_NAME} ${BUILD_DEPENDENCIES})
 target_include_directories(${BIORBD_NAME} PRIVATE
     "${CMAKE_SOURCE_DIR}/include"
     "${BIORBD_BINARY_DIR}/include"
+    "${INSTALL_DEPENDENCIES_PREFIX}/include"
     "${RBDL_INCLUDE_DIR}"
     "${MATH_BACKEND_INCLUDE_DIR}"
     "${TinyXML2_INCLUDE_DIR}"
