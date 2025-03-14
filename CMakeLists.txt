@@ -32,6 +32,8 @@ option(BUILD_DOC
     "Build documentation" OFF)
 option(BUILD_TESTS 
     "Build all tests." OFF)
+option(INSTALL_DEPENDENCIES_ON_SYSTEM
+    "Install dependencies to CMAKE_INSTALL_PREFIX (ON) or in the BUILD folder ([OFF])" OFF)
 
 # Because of Eigen, it is not possible to compile biorbd as a dynamic library
 if (WIN32)
@@ -68,25 +70,33 @@ elseif(${MATH_LIBRARY_BACKEND} STREQUAL "Casadi")
 endif()
 set (BIORBD_NAME ${PROJECT_NAME}_${BIORBD_LIB_SUFFIX})
 
+# Define a list of dependencies to wait for if they are being built
+set(BUILD_DEPENDENCIES)
 include(FindOrBuildEigen3)
-include(FindOrBuildRBDL)
 FindOrBuildEigen3()
+include(FindOrBuildRBDL)
+if (EIGEN3_IS_BUILT)
+    list(APPEND BUILD_DEPENDENCIES EIGEN3_BUILD)
+endif()
 if(${MATH_LIBRARY_BACKEND} STREQUAL "Eigen3")
     set(MATH_BACKEND_INCLUDE_DIR "${EIGEN3_INCLUDE_DIR}")
     set(MATH_BACKEND_LIBRARIES "")
     FindOrBuildRBDL(EIGEN)
     
 elseif(${MATH_LIBRARY_BACKEND} STREQUAL "Casadi")
-    find_package(Casadi REQUIRED)
-    set(MATH_BACKEND_INCLUDE_DIR
-        "${Casadi_INCLUDE_DIR}"
-        "${Casadi_INCLUDE_DIR}/.."
-    )
+    include(FindOrBuildCasadi)
+    FindOrBuildCasadi()
+    set(MATH_BACKEND_INCLUDE_DIR "${Casadi_INCLUDE_DIR}" "${Casadi_INCLUDE_DIR}/..")
+    
     set(MATH_BACKEND_LIBRARIES "${Casadi_LIBRARY}")
     FindOrBuildRBDL(CASADI)
-    # find_package(RBDLCasadi REQUIRED)
-    # set(RBDL_INCLUDE_DIR ${RBDLCasadi_INCLUDE_DIR}/rbdl-casadi ${RBDLCasadi_INCLUDE_DIR})
-    # set(RBDL_LIBRARY ${RBDLCasadi_LIBRARY})
+    
+    if (CASADI_IS_BUILT)
+        list(APPEND BUILD_DEPENDENCIES CASADI_BUILD)
+    endif()
+    if (RBDL_IS_BUILT)
+        list(APPEND BUILD_DEPENDENCIES RBDL_BUILD)
+    endif()
 endif()
 find_package(IPOPT)
 
@@ -130,6 +140,9 @@ endif()
 if (MODULE_VTP_FILES_READER)
     include(FindOrBuildTinyXML2)
     FindOrBuildTinyXML2()
+    if (TinyXML2_IS_BUILT)
+        list(APPEND BUILD_DEPENDENCIES TinyXML2)
+    endif()
 else()
     set(TinyXML2_LIBRARY "")
 endif()
@@ -156,15 +169,8 @@ configure_file(${CMAKE_SOURCE_DIR}/include/biorbdConfig.h.in
     "${BIORBD_BINARY_DIR}/include/biorbdConfig.h"
 )
 
-# Make sure RBDL is compiled before compiling project
-if (RBDL_IS_BUILT)
-    add_dependencies(${BIORBD_NAME} RBDL)
-endif()
-if (MODULE_VTP_FILES_READER)
-    if (TinyXML2_IS_BUILT)
-        add_dependencies(${BIORBD_NAME} TinyXML2)
-    endif()
-endif()
+# Make sure everything is compiled before proceeding
+add_dependencies(${BIORBD_NAME} ${BUILD_DEPENDENCIES})
 
 # Add headers
 # Include directories when building the library:
