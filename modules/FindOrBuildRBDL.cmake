@@ -5,14 +5,13 @@ macro(FindOrBuildRBDL MATH_BACKEND)
     endif()
 
     # Try to find RBDL first
-    set(RBDL_FOUND FALSE CACHE INTERNAL "RBDL found or built")
     if (${MATH_BACKEND} STREQUAL "EIGEN")
         find_package(RBDL QUIET)
     
     elseif (${MATH_BACKEND} STREQUAL "CASADI")
         find_package(RBDLCasadi QUIET)
         if (RBDLCasadi_FOUND)
-            set(RBDL_FOUND TRUE CACHE INTERNAL "RBDL found or built")
+            set(RBDL_FOUND TRUE)
             
             # Define include and library paths to mimic RBDL eigen which is the format expected by biorbd
             set(RBDL_INCLUDE_DIR ${RBDLCasadi_INCLUDE_DIR}/rbdl-casadi ${RBDLCasadi_INCLUDE_DIR})
@@ -20,28 +19,44 @@ macro(FindOrBuildRBDL MATH_BACKEND)
         endif()
     endif()
 
-    if(RBDL_FOUND)
+    if(RBDL_FOUND AND NOT RBDL_IS_BUILT)
         set(RBDL_IS_BUILT FALSE)
     else()
         message(STATUS "RBDL not found, downloading and installing from GitHub")
         include(ExternalProject)
 
         set(RBDL_IS_BUILT TRUE)
-        set(RBDL_INSTALL_DIR "${CMAKE_BINARY_DIR}/rbdl_install")
+        if (INSTALL_DEPENDENCIES_ON_SYSTEM)
+            set(RBDL_INSTALL_DIR ${CMAKE_INSTALL_PREFIX})
+            set(RBDL_TARGET_STATIC OFF)
+        else()
+            set(RBDL_INSTALL_DIR "${CMAKE_BINARY_DIR}/RBDL_install")
+            set(RBDL_TARGET_STATIC ON)
+        endif()
 
         if (${MATH_BACKEND} STREQUAL "EIGEN")
             set(RBDL_BUILD_CASADI OFF)
             set(RBDL_LIBRARY_SUFFIX "")
+            set(CASADI_ARGS "")
         elseif (${MATH_BACKEND} STREQUAL "CASADI")
             set(RBDL_BUILD_CASADI ON)
             set(RBDL_LIBRARY_SUFFIX "-casadi")
+            set(CASADI_ARGS
+                -DCasadi_INCLUDE_DIR=${Casadi_INCLUDE_DIR}
+                -DCasadi_LIBRARY=${Casadi_LIBRARY}
+                -DCasadi_FOUND=${Casadi_FOUND}
+            )
         endif()
         
         # Detect correct static library extension (OS-independent)
         if(WIN32)
             set(RBDL_LIB_NAME "rbdl${RBDL_LIBRARY_SUFFIX}.lib") 
         else()
-            set(RBDL_LIB_NAME "librbdl${RBDL_LIBRARY_SUFFIX}.a")
+            if(${RBDL_TARGET_STATIC})
+                set(RBDL_LIB_NAME "librbdl${RBDL_LIBRARY_SUFFIX}.a")
+            else()
+                set(RBDL_LIB_NAME "librbdl${RBDL_LIBRARY_SUFFIX}.so")
+            endif()
         endif()
         set(RBDL_LIBRARY "${RBDL_INSTALL_DIR}/lib/${RBDL_LIB_NAME}")
 
@@ -51,14 +66,14 @@ macro(FindOrBuildRBDL MATH_BACKEND)
             CMAKE_ARGS
                 -DCMAKE_INSTALL_PREFIX=${RBDL_INSTALL_DIR}
                 -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-                -DRBDL_BUILD_STATIC=ON
+                -DRBDL_BUILD_STATIC=${RBDL_TARGET_STATIC}
                 -DRBDL_BUILD_CASADI=${RBDL_BUILD_CASADI}
                 -DEigen3_DIR=${EIGEN3_DIR}
                 -DCasadi_INCLUDE_DIR=${Casadi_INCLUDE_DIR}
                 -DCasadi_LIBRARY=${Casadi_LIBRARY}
                 -DCasadi_FOUND=${Casadi_FOUND}
                 -DCMAKE_POSITION_INDEPENDENT_CODE=ON
-            BUILD_BYPRODUCTS "${RBDL_INSTALL_DIR}/lib/${RBDL_LIB_NAME}"
+            BUILD_BYPRODUCTS "${RBDL_LIBRARY}"
         )
 
         # Define include and library paths
@@ -69,30 +84,34 @@ macro(FindOrBuildRBDL MATH_BACKEND)
         endif()
 
         # Ensure that the library gets built before linking
-        add_library(RBDL STATIC IMPORTED)
+        add_library(RBDL_BUILD STATIC IMPORTED)
         
-        set_target_properties(RBDL PROPERTIES
+        set_target_properties(RBDL_BUILD PROPERTIES
             IMPORTED_LOCATION "${RBDL_LIBRARY}"
             INTERFACE_INCLUDE_DIRECTORIES "${RBDL_INCLUDE_DIR}"
         )
-        add_dependencies(RBDL rbdl_external)
+        add_dependencies(RBDL_BUILD rbdl_external)
 
         # Windows DLL runtime setup
         if(WIN32)
-            set_target_properties(RBDL PROPERTIES
+            set_target_properties(RBDL_BUILD PROPERTIES
                 IMPORTED_IMPLIB "${RBDL_LIBRARY}"  # Import library for linking
                 IMPORTED_LOCATION "${RBDL_RUNTIME_DIR}/rbdl.dll"  # Runtime DLL location
             )
         endif()
 
+        if (EIGEN3_IS_BUILT)
+            add_dependencies(rbdl_external EIGEN3_BUILD)
+        endif()
         if (${MATH_BACKEND} STREQUAL "CASADI")
-            # Define include and library paths to mimic RBDL eigen which is the format expected by biorbd
-            target_link_libraries(RBDL INTERFACE Casadi_LIBRARY)
-            message(coucou)
-            message(${Casadi_LIBRARY})
+            if (Casadi_IS_BUILT)
+                add_dependencies(rbdl_external CASADI_BUILD)
+            endif()
+            target_include_directories(RBDL_BUILD INTERFACE ${Casadi_INCLUDE_DIR})
+            target_link_libraries(RBDL_BUILD INTERFACE ${Casadi_LIBRARY})
         endif()
 
-        set(RBDL_FOUND TRUE INTERNAL "RBDL found or built")
+        set(RBDL_FOUND TRUE)
     endif()
 
 

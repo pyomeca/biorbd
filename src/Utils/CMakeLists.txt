@@ -46,7 +46,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_debug")
 
 # Make sure RBDL is compiled before compiling project
 if (RBDL_IS_BUILT)
-    add_dependencies(${PROJECT_NAME} RBDL)
+    add_dependencies(${PROJECT_NAME} RBDL_BUILD)
 endif()
 
 # Add the include

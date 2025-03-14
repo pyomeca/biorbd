@@ -3,7 +3,13 @@ macro(FindOrBuildTinyXML2)
     include(ExternalProject)
 
     set(TinyXML2_IS_BUILT TRUE)
-    set(TinyXML2_INSTALL_DIR "${CMAKE_BINARY_DIR}/TinyXML2_install")
+    if (INSTALL_DEPENDENCIES_ON_SYSTEM)
+        set(TinyXML2_INSTALL_DIR ${CMAKE_INSTALL_PREFIX})
+        set(TynyXML2_BUILD_SHARED_LIBS ON)
+    else()
+        set(TinyXML2_INSTALL_DIR "${CMAKE_BINARY_DIR}/TinyXML2_install")
+        set(TynyXML2_BUILD_SHARED_LIB OFF)
+    endif()
 
     # Detect correct static library extension (OS-independent)
     if(WIN32)
@@ -18,7 +24,7 @@ macro(FindOrBuildTinyXML2)
         CMAKE_ARGS
             -DCMAKE_INSTALL_PREFIX=${TinyXML2_INSTALL_DIR}
             -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-            -DBUILD_SHARED_LIBS=OFF
+            -DBUILD_SHARED_LIBS=${TynyXML2_BUILD_SHARED_LIBS}
             -DCMAKE_POSITION_INDEPENDENT_CODE=ON
         BUILD_BYPRODUCTS "${TinyXML2_INSTALL_DIR}/lib/${TinyXML2_LIB_NAME}"
     )
@@ -27,7 +33,7 @@ macro(FindOrBuildTinyXML2)
     set(TinyXML2_DIR "${TinyXML2_INSTALL_DIR}/share/tinyxml2/cmake")
     set(TinyXML2_INCLUDE_DIR "${TinyXML2_INSTALL_DIR}/include")
     set(TinyXML2_LIBRARY "${TinyXML2_INSTALL_DIR}/lib/${TinyXML2_LIB_NAME}")
-    set(TinyXML2_FOUND TRUE INTERNAL "TinyXML2 found or built")
+    set(TinyXML2_FOUND TRUE)
 
     # Ensure all targets depending on TinyXML2 wait for it to build
     add_library(TinyXML2 INTERFACE IMPORTED)

@@ -1,9 +1,9 @@
 macro(FindOrBuildEigen3)   
     # Try to find EIGEN3 first
-    set(EIGEN3_FOUND FALSE CACHE INTERNAL "EIGEN3 found or built")
-    find_package(EIGEN3 QUIET)
+    find_package(Eigen3 QUIET)
 
-    if(EIGEN3_FOUND)
+    if(EIGEN3_FOUND AND NOT EIGEN3_IS_BUILT)
+    message(STATUS "EIGEN3 found")
         set(EIGEN3_IS_BUILT FALSE)
         if(NOT DEFINED EIGEN3_INCLUDE_DIR OR EIGEN3_INCLUDE_DIR STREQUAL "")
             # Modern CMake does not set INCLUDE_DIR, so make it retro-compatible
@@ -14,7 +14,11 @@ macro(FindOrBuildEigen3)
         include(ExternalProject)
 
         set(EIGEN3_IS_BUILT TRUE)
-        set(EIGEN3_INSTALL_DIR "${CMAKE_BINARY_DIR}/Eigen3_install")
+        if (INSTALL_DEPENDENCIES_ON_SYSTEM)
+            set(EIGEN3_INSTALL_DIR ${CMAKE_INSTALL_PREFIX})
+        else()
+            set(EIGEN3_INSTALL_DIR "${CMAKE_BINARY_DIR}/Eigen3_install")
+        endif()
 
         ExternalProject_Add(Eigen3_external
             GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
@@ -27,9 +31,11 @@ macro(FindOrBuildEigen3)
         )
 
         # Define outputs
+        add_library(EIGEN3_BUILD INTERFACE IMPORTED)
+        add_dependencies(EIGEN3_BUILD Eigen3_external)
         set(EIGEN3_DIR "${EIGEN3_INSTALL_DIR}/share/eigen3/cmake")
         set(EIGEN3_INCLUDE_DIR "${EIGEN3_INSTALL_DIR}/include/eigen3")
-        set(EIGEN3_FOUND TRUE INTERNAL "EIGEN3 found or built")
+        set(EIGEN3_FOUND TRUE)
     endif()
 
 
