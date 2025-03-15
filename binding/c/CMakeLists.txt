@@ -17,10 +17,11 @@ endif()
 # Add headers
 target_include_directories(${PROJECT_NAME} PRIVATE
     "${C_BINDING_PATH}"
-    "${CMAKE_SOURCE_DIR}/include"
-    "${BIORBD_BINARY_DIR}/include"
     "${RBDL_INCLUDE_DIR}"
     "${MATH_BACKEND_INCLUDE_DIR}"
+    "${CMAKE_SOURCE_DIR}/include"
+    "${BIORBD_BINARY_DIR}/include"
+    "${INSTALL_DEPENDENCIES_PREFIX}/include"
 )
 
 # Add postfix if needed

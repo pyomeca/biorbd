@@ -7,12 +7,12 @@ add_executable(${PROJECT_NAME} "${TEST_SRC_FILES}")
 
 # headers for the project
 target_include_directories(${PROJECT_NAME} PRIVATE
-    ${CMAKE_SOURCE_DIR}/include
-    ${CMAKE_SOURCE_DIR}/binding/c
-    "${CMAKE_SOURCE_DIR}/include"
-    "${BIORBD_BINARY_DIR}/include"
     "${RBDL_INCLUDE_DIR}"
     "${MATH_BACKEND_INCLUDE_DIR}"
+    "${CMAKE_SOURCE_DIR}/include"
+    "${CMAKE_SOURCE_DIR}/binding/c"
+    "${CMAKE_SOURCE_DIR}/include"
+    "${BIORBD_BINARY_DIR}/include"
 )
 
 # Standard linking to gtest stuff.

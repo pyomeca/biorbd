@@ -73,6 +73,9 @@ macro(FindOrBuildCasadi)
                 -DWITH_PYTHON3=${BINDER_PYTHON3}
                 -DPYTHON_PREFIX=${Python3_SITELIB}
                 -DPython_INCLUDE_DIR=${Python3_INCLUDE_DIRS}
+                -DWITH_IPOPT=OFF  # To be changed?
+                -DWITH_THREAD=ON
+                -DCASADI_PYTHON_PIP_METADATA_INSTALL=${BINDER_PYTHON3}
             BUILD_BYPRODUCTS "${Casadi_LIBRARY}"
         )
 
