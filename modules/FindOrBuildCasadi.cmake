@@ -17,6 +17,7 @@ macro(FindOrBuildCasadi)
     find_package(Casadi QUIET
         # The linker does not work it the pip version of casadi. When this works, uncomment the following line and the Python section above
         # PATHS ${Casadi_FROM_PIP}
+        PATHS ${INSTALL_DEPENDENCIES_PREFIX}
     )
 
     if(Casadi_FOUND AND NOT Casadi_IS_BUILT)
@@ -97,11 +98,8 @@ macro(FindOrBuildCasadi)
             # Do nothing
         elseif (EXISTS "${Casadi_INCLUDE_DIR}/casadi/casadi.hpp")
             set(Casadi_INCLUDE_DIR "${Casadi_INCLUDE_DIR}/casadi")
-        elseif (EXISTS "${INSTALL_DEPENDENCIES_PREFIX}/include/casadi.hpp")
-            set(Casadi_INCLUDE_DIR "${INSTALL_DEPENDENCIES_PREFIX}/include")
         endif()
         set(Casadi_DIR_ARE_ADJUSTED TRUE)
     endif()
 
-    
 endmacro()

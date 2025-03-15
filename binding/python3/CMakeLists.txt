@@ -26,7 +26,7 @@ find_package(Python3 REQUIRED
     COMPONENTS Interpreter Development NumPy
 )
 
-set(Python3_SITELIB_INSTALL "" CACHE STRING
+set(Python3_SITELIB_INSTALL "" CACHE PATH
     "Override the default Python3 site-packages installation directory (default is Python3_SITELIB)")
 if(NOT Python3_SITELIB_INSTALL OR Python3_SITELIB_INSTALL STREQUAL "")
     set(Python3_SITELIB_INSTALL "${Python3_SITELIB}")

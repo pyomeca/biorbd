@@ -32,7 +32,7 @@ option(BUILD_DOC
     "Build documentation" OFF)
 option(BUILD_TESTS 
     "Build all tests." OFF)
-set(INSTALL_DEPENDENCIES_PREFIX "" CACHE STRING
+set(INSTALL_DEPENDENCIES_PREFIX "" CACHE PATH
     "Where to install the dependencies")
 
 
@@ -92,9 +92,6 @@ elseif(${MATH_LIBRARY_BACKEND} STREQUAL "Casadi")
     set(MATH_BACKEND_LIBRARIES "${Casadi_LIBRARY}")
     FindOrBuildRBDL(CASADI)
     
-    if (CASADI_IS_BUILT)
-        list(APPEND BUILD_DEPENDENCIES CASADI_BUILD)
-    endif()
     if (RBDL_IS_BUILT)
         list(APPEND BUILD_DEPENDENCIES RBDL_BUILD)
     endif()
