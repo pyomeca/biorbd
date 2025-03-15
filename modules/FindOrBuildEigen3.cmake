@@ -1,6 +1,8 @@
 macro(FindOrBuildEigen3)   
     # Try to find EIGEN3 first
-    find_package(Eigen3 QUIET)
+    find_package(Eigen3 QUIET
+        PATHS ${INSTALL_DEPENDENCIES_PREFIX}
+    )
 
     if(EIGEN3_FOUND AND NOT EIGEN3_IS_BUILT)
         set(EIGEN3_IS_BUILT FALSE)

@@ -6,10 +6,14 @@ macro(FindOrBuildRBDL MATH_BACKEND)
 
     # Try to find RBDL first
     if (${MATH_BACKEND} STREQUAL "EIGEN")
+        set (CUSTOM_RBDL_PATH ${INSTALL_DEPENDENCIES_PREFIX})
         find_package(RBDL QUIET)
     
     elseif (${MATH_BACKEND} STREQUAL "CASADI")
+        set(RBDL_FOUND FALSE)
+        set (CUSTOM_RBDLCasadi_PATH ${INSTALL_DEPENDENCIES_PREFIX})
         find_package(RBDLCasadi QUIET)
+
         if (RBDLCasadi_FOUND)
             set(RBDL_FOUND TRUE)
             
@@ -76,10 +80,11 @@ macro(FindOrBuildRBDL MATH_BACKEND)
         )
 
         # Define include and library paths
-        set(RBDL_INCLUDE_DIR "${RBDL_INSTALL_DIR}/include")
         if (${MATH_BACKEND} STREQUAL "CASADI")
             # Append "rbdl-casadi" to the include path
-            set(RBDL_INCLUDE_DIR "${RBDL_INCLUDE_DIR}/rbdl-casadi")
+            set(RBDL_INCLUDE_DIR "${RBDL_INSTALL_DIR}/include/rbdl-casadi")
+        else()
+            set(RBDL_INCLUDE_DIR "${RBDL_INSTALL_DIR}/include")
         endif()
 
         # Ensure that the library gets built before linking
