@@ -18,7 +18,7 @@ macro(FindOrBuildRBDL MATH_BACKEND)
             set(RBDL_FOUND TRUE)
             
             # Define include and library paths to mimic RBDL eigen which is the format expected by biorbd
-            set(RBDL_INCLUDE_DIR ${RBDLCasadi_INCLUDE_DIR}/rbdl-casadi ${RBDLCasadi_INCLUDE_DIR})
+            set(RBDL_INCLUDE_DIR ${RBDLCasadi_INCLUDE_DIR}/rbdl-casadi)
             set(RBDL_LIBRARY ${RBDLCasadi_LIBRARY})
         endif()
     endif()
@@ -35,23 +35,27 @@ macro(FindOrBuildRBDL MATH_BACKEND)
         else()
             set(RBDL_INSTALL_DIR ${INSTALL_DEPENDENCIES_PREFIX})
         endif()
-        set(RBDL_TARGET_STATIC ON)
 
         if (${MATH_BACKEND} STREQUAL "EIGEN")
             set(RBDL_BUILD_CASADI OFF)
             set(RBDL_LIBRARY_SUFFIX "")
-            set(CASADI_ARGS "")
+            set(Casadi_DIR "")
         elseif (${MATH_BACKEND} STREQUAL "CASADI")
             set(RBDL_BUILD_CASADI ON)
             set(RBDL_LIBRARY_SUFFIX "-casadi")
-            set(CASADI_ARGS
-                -DCasadi_INCLUDE_DIR=${Casadi_INCLUDE_DIR}
-                -DCasadi_LIBRARY=${Casadi_LIBRARY}
-                -DCasadi_FOUND=${Casadi_FOUND}
-            )
+            if (Casadi_IS_BUILT)
+                set(Casadi_DIR "${INSTALL_DEPENDENCIES_PREFIX}")
+            else()
+                set(Casadi_DIR "${CMAKE_INSTALL_PREFIX}")
+            endif()
         endif()
         
         # Detect correct static library extension (OS-independent)
+        if (BUILD_SHARED_LIBS)
+            set(RBDL_TARGET_STATIC OFF)
+        else()
+            set(RBDL_TARGET_STATIC ON)
+        endif()
         if(WIN32)
             set(RBDL_LIB_NAME "rbdl${RBDL_LIBRARY_SUFFIX}.lib") 
         else()
@@ -72,7 +76,7 @@ macro(FindOrBuildRBDL MATH_BACKEND)
                 -DRBDL_BUILD_STATIC=${RBDL_TARGET_STATIC}
                 -DRBDL_BUILD_CASADI=${RBDL_BUILD_CASADI}
                 -DEigen3_DIR=${EIGEN3_DIR}
-                -DCasadi_INCLUDE_DIR=${Casadi_INCLUDE_DIR}
+                -DCasadi_DIR=${Casadi_DIR}
                 -DCasadi_LIBRARY=${Casadi_LIBRARY}
                 -DCasadi_FOUND=${Casadi_FOUND}
                 -DCMAKE_POSITION_INDEPENDENT_CODE=ON

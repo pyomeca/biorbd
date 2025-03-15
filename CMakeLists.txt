@@ -80,16 +80,16 @@ if (EIGEN3_IS_BUILT)
     list(APPEND BUILD_DEPENDENCIES EIGEN3_BUILD)
 endif()
 if(${MATH_LIBRARY_BACKEND} STREQUAL "Eigen3")
-    set(MATH_BACKEND_INCLUDE_DIR "${EIGEN3_INCLUDE_DIR}")
+    set(MATH_BACKEND_INCLUDE_DIR ${EIGEN3_INCLUDE_DIR})
     set(MATH_BACKEND_LIBRARIES "")
     FindOrBuildRBDL(EIGEN)
     
 elseif(${MATH_LIBRARY_BACKEND} STREQUAL "Casadi")
     include(FindOrBuildCasadi)
     FindOrBuildCasadi()
-    set(MATH_BACKEND_INCLUDE_DIR "${Casadi_INCLUDE_DIR}")
+    set(MATH_BACKEND_INCLUDE_DIR ${Casadi_INCLUDE_DIR})
+    set(MATH_BACKEND_LIBRARIES ${Casadi_LIBRARY})
     
-    set(MATH_BACKEND_LIBRARIES "${Casadi_LIBRARY}")
     FindOrBuildRBDL(CASADI)
     
     if (RBDL_IS_BUILT)
@@ -173,12 +173,12 @@ add_dependencies(${BIORBD_NAME} ${BUILD_DEPENDENCIES})
 # Add headers
 # Include directories when building the library:
 target_include_directories(${BIORBD_NAME} PRIVATE
-    "${CMAKE_SOURCE_DIR}/include"
-    "${BIORBD_BINARY_DIR}/include"
-    "${INSTALL_DEPENDENCIES_PREFIX}/include"
     "${RBDL_INCLUDE_DIR}"
     "${MATH_BACKEND_INCLUDE_DIR}"
     "${TinyXML2_INCLUDE_DIR}"
+    "${CMAKE_SOURCE_DIR}/include"
+    "${BIORBD_BINARY_DIR}/include"
+    "${INSTALL_DEPENDENCIES_PREFIX}/include"
 )
 
 # Include directories when other targets in this project use this library:
@@ -245,9 +245,9 @@ endif()
 target_link_libraries(${BIORBD_NAME}
     "${BIORBD_MODULE_NAMES}"
     "${RBDL_LIBRARY}"
-    "${MATH_BACKEND_LIBRARIES}"
     "${IPOPT_LIBRARY}"
     "${TinyXML2_LIBRARY}"
+    "${MATH_BACKEND_LIBRARIES}"
 )
 
 # install target

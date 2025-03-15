@@ -25,10 +25,10 @@ add_executable(${PROJECT_NAME} ${FILE})
 
 # Headers
 target_include_directories(${PROJECT_NAME} PUBLIC 
-    ${biorbd_casadi_INCLUDE_DIR}
     ${RBDLCasadi_INCLUDE_DIR}
     ${Casadi_INCLUDE_DIR}
     ${Casadi_INCLUDE_DIR}/..
+    ${biorbd_casadi_INCLUDE_DIR}
 )
 
 find_package(IPOPT)
