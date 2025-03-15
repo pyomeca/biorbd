@@ -188,19 +188,20 @@ target_include_directories(${BIORBD_NAME} INTERFACE
 )
 
 # Installation directories
+set(LIB_SUFFIX ${BIORBD_NAME} CACHE STRING "Define suffix path to put the library to" )
 if(WIN32)
     set(${BIORBD_NAME}_LIB_FOLDER "Lib")
     set(${BIORBD_NAME}_BIN_FOLDER "bin")
-    set(${BIORBD_NAME}_INCLUDE_FOLDER "include/${BIORBD_NAME}")
-    set(${BIORBD_NAME}_CMAKECONFIG_DIR "Lib/cmake/${BIORBD_NAME}")
+    set(${BIORBD_NAME}_INCLUDE_FOLDER "include/${LIB_SUFFIX}")
+    set(${BIORBD_NAME}_CMAKECONFIG_DIR "Lib/cmake/${LIB_SUFFIX}")
 else()
-    set(${BIORBD_NAME}_LIB_FOLDER "lib/${BIORBD_NAME}")
-    set(${BIORBD_NAME}_BIN_FOLDER "${CMAKE_INSTALL_PREFIX}/lib/${BIORBD_NAME}")
-    set(${BIORBD_NAME}_INCLUDE_FOLDER "include/${BIORBD_NAME}")
-    set(${BIORBD_NAME}_CMAKECONFIG_DIR "lib/cmake/${BIORBD_NAME}")
+    set(${BIORBD_NAME}_LIB_FOLDER "lib/${LIB_SUFFIX}")
+    set(${BIORBD_NAME}_BIN_FOLDER "${CMAKE_INSTALL_PREFIX}/lib/${LIB_SUFFIX}")
+    set(${BIORBD_NAME}_INCLUDE_FOLDER "include/${LIB_SUFFIX}")
+    set(${BIORBD_NAME}_CMAKECONFIG_DIR "lib/cmake/${LIB_SUFFIX}")
 endif()
 set_target_properties(${BIORBD_NAME} PROPERTIES
-    INSTALL_RPATH "${${BIORBD_NAME}_BIN_FOLDER}"
+    INSTALL_RPATH "${${BIORBD_NAME}_BIN_FOLDER};${INSTALL_DEPENDENCIES_PREFIX}/lib"
     INSTALL_RPATH_USE_LINK_PATH TRUE
 )
 

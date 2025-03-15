@@ -53,6 +53,10 @@ with open(f"{dir_path}/CMakeLists.txt") as file:
 # Create an empty 'biorbd' folder if it doesn't exist (stub for setup.py)
 Path("biorbd").mkdir(exist_ok=True)
 
+# Get the MATH_LIBRARY_BACKEND from environment variable
+math_library_backend = os.environ.get("MATH_LIBRARY_BACKEND")
+if math_library_backend not in ["Casadi", "Eigen3"]:
+    raise RuntimeError("MATH_LIBRARY_BACKEND environment variable must be set to either 'Casadi' or 'Eigen3'")
 
 setup(
     # NOTE: Could still add stuff like homepage or author mail, but since this isn't used to redistribute, not important
@@ -70,8 +74,9 @@ setup(
         "-DBINDER_PYTHON3:BOOL=ON",
         "-DCMAKE_INSTALL_BINDIR=biorbd",
         "-DCMAKE_INSTALL_LIBDIR=biorbd",
-        "-DMATH_LIBRARY_BACKEND=Casadi",
+        f"-DMATH_LIBRARY_BACKEND={math_library_backend}",
         f"-DINSTALL_DEPENDENCIES_PREFIX={get_install_base()}",
-        f"-DPython3_SITELIB_INSTALL={get_install_site_packages()}"
+        f"-DPython3_SITELIB_INSTALL={get_install_site_packages()}",
+        f"-DLIB_SUFFIX=''",
     ],
 )

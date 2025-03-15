@@ -17,6 +17,7 @@ name = "biorbd"
 dynamic = ["version"]
 dependencies = [
     "numpy",
+    "scipy"
 ]
 description = "Biomechanical add-ons to the RigidBody Dynamics Library"
 readme = "README.md"  # This links to your README file
@@ -27,7 +28,6 @@ authors = [
 license = {text = "MIT"}
 urls = { "Homepage" = "https://github.com/pyomeca/biorbd" }
 requires-python = ">=3.10"
-
 
 [tool.cibuildwheel]
 build-frontend = "build"
