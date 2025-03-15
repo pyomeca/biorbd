@@ -1,0 +1,130 @@
+name: Publish to PyPI
+
+on: 
+  release: 
+    types: [published]
+
+env:
+  BUILD_FOLDER: build
+  MATH_LIBRARY_BACKEND: Eigen3
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            label: linux-64
+          - os: macos-latest
+            label: osx-64
+          - os: macos-13
+            label: osx-32
+          - os: windows-latest
+            label: win-64
+    name: ${{ matrix.label }}
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash -l {0}
+        
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Get number of CPU cores
+        uses: SimenB/github-actions-cpu-cores@v1
+        id: cpu-cores
+
+      - name: Setup environment
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          miniforge-version: latest
+          activate-environment: biorbd
+        
+      - name: Install build packages
+        run: | 
+          conda install pip swig -cconda-forge
+          conda list
+          pip install build cibuildwheel==2.21.3
+
+      - name: Print conda info
+        run: | 
+          conda info
+          conda list
+            
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.21.3
+        with:
+          config-file: "pyproject.toml"
+        env:
+          CIBW_SKIP: "pp*-manylinux_i686"
+          CIBW_BEFORE_BUILD: >-
+            rm -rf _skbuild
+
+      - name: Store the wheels
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-package-distributions-${{ matrix.label }}
+          path: ./wheelhouse/*.whl
+          if-no-files-found: error
+
+      - name: Make the source distribution (only on one platform)
+        run: python -m build --sdist --wheel
+        if: matrix.label == 'linux-64'
+
+      - name: Upload the source distribution (only on one platform)
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-package-sdist-${{ matrix.label }}
+          path: dist/*.tar.gz
+        if: matrix.label == 'linux-64'
+                  
+  publish-to-pypi:
+    name: Publish to PyPI
+    needs:
+    - build
+
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/biorbd
+
+    permissions:
+      id-token: write  # IMPORTANT: mandatory for trusted publishing
+
+    steps:
+    - name: Download all the dists
+      uses: actions/download-artifact@v4
+      with:
+        pattern: python-package-*
+        path: dist/
+        merge-multiple: true
+
+    - name: Publish distribution to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+
+  publish-to-testpypi:
+    name: Publish to TestPyPI
+    needs:
+    - build
+    runs-on: ubuntu-latest
+
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/p/biorbd
+
+    permissions:
+      id-token: write  # IMPORTANT: mandatory for trusted publishing
+
+    steps:
+    - name: Download all the dists
+      uses: actions/download-artifact@v4
+      with:
+        pattern: python-package-distributions-*
+        path: dist/
+        merge-multiple: true
+
+    - name: Publish distribution to TestPyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        repository-url: https://test.pypi.org/legacy/
