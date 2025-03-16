@@ -77,8 +77,6 @@ macro(FindOrBuildRBDL MATH_BACKEND)
                 -DRBDL_BUILD_CASADI=${RBDL_BUILD_CASADI}
                 -DEigen3_DIR=${EIGEN3_DIR}
                 -DCasadi_DIR=${Casadi_DIR}
-                -DCasadi_LIBRARY=${Casadi_LIBRARY}
-                -DCasadi_FOUND=${Casadi_FOUND}
                 -DCMAKE_POSITION_INDEPENDENT_CODE=ON
             BUILD_BYPRODUCTS "${RBDL_LIBRARY}"
         )
