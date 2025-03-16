@@ -191,7 +191,12 @@ target_include_directories(${BIORBD_NAME} INTERFACE
 )
 
 # Installation directories
-set(LIB_SUFFIX ${BIORBD_NAME} CACHE STRING "Define suffix path to put the library to" )
+if (DEFINED OVERRIDE_LIB_SUFFIX)
+    set(LIB_SUFFIX ${OVERRIDE_LIB_SUFFIX})
+else()
+    set(LIB_SUFFIX ${BIORBD_NAME})
+endif()
+
 if(WIN32)
     set(${BIORBD_NAME}_LIB_FOLDER "Lib")
     set(${BIORBD_NAME}_BIN_FOLDER "bin")

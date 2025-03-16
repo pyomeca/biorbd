@@ -77,6 +77,6 @@ setup(
         f"-DMATH_LIBRARY_BACKEND={math_library_backend}",
         f"-DINSTALL_DEPENDENCIES_PREFIX={get_install_base()}",
         f"-DPython3_SITELIB_INSTALL={get_install_site_packages()}",
-        f"-DLIB_SUFFIX=''",
+        f"-DOVERRIDE_LIB_SUFFIX=''",
     ],
 )
