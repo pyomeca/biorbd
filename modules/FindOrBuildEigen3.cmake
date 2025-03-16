@@ -5,6 +5,8 @@ macro(FindOrBuildEigen3)
     )
 
     if(EIGEN3_FOUND AND NOT EIGEN3_IS_BUILT)
+        message (STATUS "EIGEN3 found")
+
         set(EIGEN3_IS_BUILT FALSE)
         if(NOT DEFINED EIGEN3_INCLUDE_DIR OR EIGEN3_INCLUDE_DIR STREQUAL "")
             # Modern CMake does not set INCLUDE_DIR, so make it retro-compatible
@@ -12,9 +14,9 @@ macro(FindOrBuildEigen3)
         endif()
     else()
         message(STATUS "EIGEN3 not found, downloading version 3.4 and installing from GitLab")
+        set(EIGEN3_IS_BUILT TRUE)
         include(ExternalProject)
 
-        set(EIGEN3_IS_BUILT TRUE)
         if (NOT INSTALL_DEPENDENCIES_PREFIX OR INSTALL_DEPENDENCIES_PREFIX STREQUAL "")
             set(EIGEN3_INSTALL_DIR "${CMAKE_BINARY_DIR}/Eigen3_install")
         else()
