@@ -1,4 +1,4 @@
-macro(FindOrBuildRBDL MATH_BACKEND)
+macro(FinddRBDLWithBackend MATH_BACKEND)
     # Check if MATH_BACKEND is EIGEN or CASADI
     if(NOT (${MATH_BACKEND} STREQUAL "EIGEN" OR ${MATH_BACKEND} STREQUAL "CASADI"))
         message(FATAL_ERROR "FindOrBuildRBDL: Invalid option '${MATH_BACKEND}'. Use 'EIGEN' or 'CASADI'.")
@@ -23,7 +23,7 @@ macro(FindOrBuildRBDL MATH_BACKEND)
         endif()
     endif()
 
-    if(RBDL_FOUND AND NOT RBDL_IS_BUILT)
+    if(RBDL_FOUND)
         message (STATUS "RBDL found")
 
     else()
