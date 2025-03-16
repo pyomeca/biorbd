@@ -25,6 +25,7 @@ macro(FindOrBuildCasadi)
         if(NOT DEFINED Casadi_INCLUDE_DIR OR Casadi_INCLUDE_DIR STREQUAL "")
             # Modern CMake does not set INCLUDE_DIR, so make it retro-compatible
             get_target_property(Casadi_INCLUDE_DIR casadi INTERFACE_INCLUDE_DIRECTORIES)
+            set(Casadi_INCLUDE_DIR "${Casadi_INCLUDE_DIR};${Casadi_INCLUDE_DIR}/casadi")
             
             # We once tried to get it from INTERFACE_LINK_LIBRARIES but it was not working
             if(WIN32)
@@ -33,7 +34,6 @@ macro(FindOrBuildCasadi)
                 file(GLOB_RECURSE Casadi_LIBRARY "${Casadi_INCLUDE_DIR}/../libcasadi.so")
             endif()
             
-            set(Casadi_DIR_ARE_ADJUSTED FALSE)
         endif()
 
     else()
@@ -81,7 +81,7 @@ macro(FindOrBuildCasadi)
 
         # Define outputs
         set(Casadi_DIR "${Casadi_INSTALL_DIR}/share/casadi/cmake")
-        set(Casadi_INCLUDE_DIR "${Casadi_INSTALL_DIR}/include/casadi")
+        set(Casadi_INCLUDE_DIR "${Casadi_INSTALL_DIR}/include/;${Casadi_INSTALL_DIR}/include/casadi")
         set(Casadi_FOUND TRUE)
         
         # Ensure that the library gets built before linking
@@ -92,17 +92,6 @@ macro(FindOrBuildCasadi)
         )        
         
         add_dependencies(CASADI_BUILD Casadi_external)
-    endif()
-
-    # For some reason, the include directory is sometimes one level too high or too low
-    if (NOT Casadi_DIR_ARE_ADJUSTED)
-        # Find the casadi.hpp file from Casadi_INCLUDE_DIR, CasaDI_INCLUDE_DIR/../ or Casadi_INCLUDE_DIR/casadi
-        if (EXISTS "${Casadi_INCLUDE_DIR}/casadi.hpp")
-            # Do nothing
-        elseif (EXISTS "${Casadi_INCLUDE_DIR}/casadi/casadi.hpp")
-            set(Casadi_INCLUDE_DIR "${Casadi_INCLUDE_DIR}/casadi")
-        endif()
-        set(Casadi_DIR_ARE_ADJUSTED TRUE)
     endif()
 
 endmacro()
