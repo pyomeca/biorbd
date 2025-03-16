@@ -52,7 +52,7 @@ jobs:
 
       - name: Install python dependencies
         run: | 
-          pip install pytest
+          pip install pytest numpy
 
       - name: Install MATLAB on WINDOWS, LINUX and MACOS-Intel
         uses: matlab-actions/setup-matlab@v2
