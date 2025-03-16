@@ -1,4 +1,4 @@
-name: Run the Eigen tests
+name: Run PIP tests
 
 on: [pull_request]
 
