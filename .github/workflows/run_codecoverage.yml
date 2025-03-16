@@ -35,7 +35,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          conda install rbdl tinyxml2 ipopt codecov lcov -cconda-forge
+          conda install -cconda-forge rbdl>=3.3.1 tinyxml2 ipopt
+          conda install -cconda-forge codecov lcov
           conda list
 
       - name: Setup Linux dependencies
@@ -48,8 +49,8 @@ jobs:
         run: |
           BIORBD_FOLDER=`pwd`
           CONDA_ENV_PATH=$CONDA/envs/biorbd
-          mkdir -p $BUILD_FOLDER
-          cd $BUILD_FOLDER
+          mkdir -p $BIORBD_FOLDER/$BUILD_FOLDER
+          cd $BIORBD_FOLDER/$BUILD_FOLDER
           cmake -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DMODULE_PASSIVE_TORQUES=ON -DMODULE_KALMAN=ON ..
           cp -r test/models/ .
           make biorbd_eigen_coverage -j${{ steps.cpu-cores.outputs.count }}
