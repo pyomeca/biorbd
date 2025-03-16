@@ -60,7 +60,9 @@
     #include "InternalForces/WrappingHalfCylinder.h"
     #include "InternalForces/Geometry.h"
 #endif
-
+#ifdef MODULE_VTP_FILES_READER
+#include "tinyxml2.h"
+#endif
 
 using namespace BIORBD_NAMESPACE;
 
@@ -2091,7 +2093,6 @@ rigidbody::Mesh Reader::readMeshFileObj(
 }
 
 #ifdef MODULE_VTP_FILES_READER
-#include "tinyxml2.h"
 
 rigidbody::Mesh Reader::readMeshFileVtp(
     const utils::Path &path)
@@ -2147,7 +2148,7 @@ rigidbody::Mesh Reader::readMeshFileVtp(
             mesh.addFace({vertex1, vertex2, vertex3});
         }
     }
-
+    
     return mesh;
 }
 #endif  // MODULE_VTP_FILES_READER
@@ -2251,12 +2252,7 @@ rigidbody::Mesh Reader::readMeshFileStl(
                 mesh.addPoint(vertex);
             }
             file.readFromBinary(dummy, 2);
-
-            rigidbody::MeshFace patchTp;
-            patchTp(0) = 3*i + 0;
-            patchTp(1) = 3*i + 1;
-            patchTp(2) = 3*i + 2;
-            mesh.addFace(patchTp);
+            mesh.addFace({3*i + 0, 3*i + 1, 3*i + 2});
         }
     } else {
         // Due to the test, the pointer is already at the first "facet"
@@ -2274,12 +2270,7 @@ rigidbody::Mesh Reader::readMeshFileStl(
                 mesh.addPoint(vertex);
                 file.read(tp);
             }
-
-            rigidbody::MeshFace patchTp;
-            patchTp(0) = 3*i + 0;
-            patchTp(1) = 3*i + 1;
-            patchTp(2) = 3*i + 2;
-            mesh.addFace(patchTp);
+            mesh.addFace({3*i + 0, 3*i + 1, 3*i + 2});
 
             for (size_t j=0; j<3; ++j) {
                 // Read 3 dummies

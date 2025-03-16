@@ -118,7 +118,6 @@ TEST(MeshFile, FileIoObj)
 TEST(MeshFile, FileIoVtp)
 {
     EXPECT_NO_THROW(Model model(modelPathWithVtp));
-    Model model(modelPathWithVtp);
 }
 #endif
 
