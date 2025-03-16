@@ -25,7 +25,13 @@ macro(FindOrBuildCasadi)
         if(NOT DEFINED Casadi_INCLUDE_DIR OR Casadi_INCLUDE_DIR STREQUAL "")
             # Modern CMake does not set INCLUDE_DIR, so make it retro-compatible
             get_target_property(Casadi_INCLUDE_DIR casadi INTERFACE_INCLUDE_DIRECTORIES)
-            set(Casadi_INCLUDE_DIR "${Casadi_INCLUDE_DIR};${Casadi_INCLUDE_DIR}/casadi")
+
+            # For some reason, the include directory is sometimes one level too high or too low
+            if (EXISTS "${Casadi_INCLUDE_DIR}/casadi.hpp")
+                # Do nothing
+            elseif (EXISTS "${Casadi_INCLUDE_DIR}/casadi/casadi.hpp")
+                set(Casadi_INCLUDE_DIR "${Casadi_INCLUDE_DIR}/casadi")
+            endif()
             
             # We once tried to get it from INTERFACE_LINK_LIBRARIES but it was not working
             if(WIN32)
