@@ -30,7 +30,7 @@ macro(FindOrBuildCasadi)
 
             # We once tried to get it from INTERFACE_LINK_LIBRARIES but it was not working
             if(WIN32)
-                file(GLOB_RECURSE Casadi_LIBRARY "${Casadi_INCLUDE_DIR}/../casadi.dll")
+                file(GLOB_RECURSE Casadi_LIBRARY "${Casadi_INCLUDE_DIR}/../casadi.lib")
             elseif(LINUX)
                 file(GLOB_RECURSE Casadi_LIBRARY "${Casadi_INCLUDE_DIR}/../libcasadi.so")
             elseif(APPLE)
