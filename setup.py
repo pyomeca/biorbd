@@ -21,6 +21,33 @@ def get_install_base():
         
         python_version = f"{sys.version_info.major}.{sys.version_info.minor}"
         platform_name = f"linux-{architecture}-{python_version}"
+    
+    elif platform_name == "darwin":
+        # Get the number of macos version (e.g. 13.0)
+        version = platform.mac_ver()[0].split(".")
+        version = f"{version[1]}.{version[2]}"
+        
+        architecture = platform.architecture()[0]
+        if architecture == "64bit":
+            architecture = "x86_64"
+        else:
+            raise RuntimeError(f"Unsupported architecture: {architecture}")
+        
+        python_version = f"{sys.version_info.major}.{sys.version_info.minor}"
+        platform_name = f"macosx-10.{version}-x86_64-{python_version}"
+        
+    elif platform_name == "win32":
+        architecture = platform.architecture()[0]
+        if architecture == "64bit":
+            architecture = "win-amd64"
+        elif architecture == "32bit":
+            architecture = "win32"
+        else:
+            raise RuntimeError(f"Unsupported architecture: {architecture}")
+        
+        python_version = f"{sys.version_info.major}.{sys.version_info.minor}"
+        platform_name = f"windows-{architecture}-{python_version}" 
+    
     return f"{current_folder}/_skbuild/{platform_name}/cmake-install"
 
 
