@@ -14,16 +14,12 @@ jobs:
         include:
           - os: ubuntu-latest
             label: linux-64
-            prefix: /usr/share/miniconda3/envs/biorbd_eigen
           # - os: macos-latest
           #   label: osx-arm64
-          #   prefix: /Users/runner/miniconda3/envs/biorbd_eigen
           - os: macos-13
             label: osx-intel
-            prefix: /Users/runner/miniconda3/envs/biorbd_eigen
           - os: windows-latest
             label: win-64
-            prefix: C:\Miniconda3\envs\biorbd_eigen
     name: ${{ matrix.label }}
     runs-on: ${{ matrix.os }}
     defaults:
@@ -36,18 +32,17 @@ jobs:
       - name: Get number of CPU cores
         uses: SimenB/github-actions-cpu-cores@v1
         id: cpu-cores
-
-      - name: Setup environment
-        uses: conda-incubator/setup-miniconda@v3
-        with:
-          miniforge-version: latest
-          activate-environment: biorbd_eigen
-          environment-file: environment_eigen.yml
   
-      - name: Print conda info
-        run: | 
-          conda info
-          conda list
+      - name: Install SWIG
+        run: |
+          if [[ "$RUNNER_OS" == "Linux" ]]; then
+            sudo apt-get update && sudo apt-get install -y swig
+          elif [[ "$RUNNER_OS" == "macOS" ]]; then
+            brew install swig
+          elif [[ "$RUNNER_OS" == "Windows" ]]; then
+            choco install swig -y
+          fi
+        shell: bash
 
       - name: Setup Linux dependencies
         run:   |
@@ -55,11 +50,9 @@ jobs:
          sudo apt install libstdc++-11-dev
         if: matrix.label == 'linux-64'
 
-      - name: Install extra common dependencies
+      - name: Install python dependencies
         run: | 
-          conda install cmake git pkgconfig swig pytest -cconda-forge
-          conda list
-          git submodule update --init --recursive
+          pip install pytest
 
       - name: Install MATLAB on WINDOWS, LINUX and MACOS-Intel
         uses: matlab-actions/setup-matlab@v2
@@ -78,10 +71,9 @@ jobs:
       - name: Build biorbd UNIX
         run: |
           BIORBD_FOLDER=`pwd`
-          CONDA_ENV_PATH=$CONDA/envs/biorbd_eigen
           mkdir -p $BIORBD_FOLDER/$BUILD_FOLDER
           cd $BIORBD_FOLDER/$BUILD_FOLDER
-          cmake -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DMATH_LIBRARY_BACKEND="Eigen3" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_KALMAN=ON -DMODULE_PASSIVE_TORQUES=ON -DMODULE_MUSCLES=ON -DBUILD_EXAMPLE=ON -DBINDER_C=ON -DBINDER_PYTHON3=ON -DBINDER_MATLAB=ON -DMatlab_biorbd_eigen_INSTALL_DIR=$HOME ..
+          cmake -DMATH_LIBRARY_BACKEND="Eigen3" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_KALMAN=ON -DMODULE_PASSIVE_TORQUES=ON -DMODULE_MUSCLES=ON -DBUILD_EXAMPLE=ON -DBINDER_C=ON -DBINDER_PYTHON3=ON -DBINDER_MATLAB=ON -DMatlab_biorbd_eigen_INSTALL_DIR=$HOME ..
           make install -j${{ steps.cpu-cores.outputs.count }}
           cd $BIORBD_FOLDER
         if: matrix.label != 'win-64'
@@ -105,11 +97,10 @@ jobs:
       - name: Test installed version on UNIX
         run: |
           BIORBD_FOLDER=`pwd`
-          CONDA_ENV_PATH=$CONDA/envs/biorbd_eigen
           cd $BIORBD_FOLDER/$EXAMPLES_FOLDER/cpp_eigen_installed
           mkdir -p $BUILD_FOLDER
           cd $BUILD_FOLDER
-          cmake -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DCMAKE_BUILD_TYPE=Release ..
+          cmake -DCMAKE_BUILD_TYPE=Release ..
           make -j${{ steps.cpu-cores.outputs.count }}
           ./forwardDynamicsExample
           cd $BIORBD_FOLDER
@@ -118,10 +109,9 @@ jobs:
       - name: Build biorbd WINDOWS
         run: |
           BIORBD_FOLDER=`pwd`
-          CONDA_ENV_PATH=$CONDA/envs/biorbd_eigen
           mkdir -p $BUILD_FOLDER
           cd $BUILD_FOLDER
-          cmake -G"Visual Studio 17 2022" -Ax64 -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DMATH_LIBRARY_BACKEND="Eigen3" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_KALMAN=ON -DMODULE_MUSCLES=ON -DBUILD_EXAMPLE=ON -DBINDER_C=ON -DBINDER_PYTHON3=ON -DBINDER_MATLAB=ON -DMatlab_biorbd_eigen_INSTALL_DIR=$HOME ..
+          cmake -G"Visual Studio 17 2022" -Ax64 -DMATH_LIBRARY_BACKEND="Eigen3" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_KALMAN=ON -DMODULE_MUSCLES=ON -DBUILD_EXAMPLE=ON -DBINDER_C=ON -DBINDER_PYTHON3=ON -DBINDER_MATLAB=ON -DMatlab_biorbd_eigen_INSTALL_DIR=$HOME ..
           cmake --build . --config Release --target install -j${{ steps.cpu-cores.outputs.count }}
           cd $BIORBD_FOLDER
         if: matrix.label == 'win-64'
@@ -151,7 +141,7 @@ jobs:
           cd $BIORBD_FOLDER/$EXAMPLES_FOLDER/cpp_eigen_installed
           mkdir -p $BUILD_FOLDER
           cd $BUILD_FOLDER
-          cmake -G"Visual Studio 17 2022" -Ax64 -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DCMAKE_BUILD_TYPE=Release ..
+          cmake -G"Visual Studio 17 2022" -Ax64 -DCMAKE_BUILD_TYPE=Release ..
           cmake --build . --config Release -j${{ steps.cpu-cores.outputs.count }}
           cp Release/forwardDynamicsExample.exe .
           ./forwardDynamicsExample.exe
