@@ -13,7 +13,7 @@ macro(FindOrBuildTinyXML2)
             
             # We once tried to get it from INTERFACE_LINK_LIBRARIES but it was not working
             if(WIN32)
-                file(GLOB_RECURSE TinyXML2_LIBRARY "${TinyXML2_INCLUDE_DIR}/../tinyxml2.dll")
+                file(GLOB_RECURSE TinyXML2_LIBRARY "${TinyXML2_INCLUDE_DIR}/../tinyxml2.lib")
             elseif(LINUX)
                 file(GLOB_RECURSE TinyXML2_LIBRARY "${TinyXML2_INCLUDE_DIR}/../libtinyxml2.so")
             elseif(APPLE)
