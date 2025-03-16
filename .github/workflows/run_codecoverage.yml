@@ -35,7 +35,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          conda install rbdl tinyxml2 pytest numpy swig codecov lcov -cconda-forge
+          conda installrbdl tinyxml2 ipopt codecov lcov -cconda-forge
           conda list
 
       - name: Setup Linux dependencies
