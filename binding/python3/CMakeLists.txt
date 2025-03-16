@@ -102,10 +102,6 @@ file(GLOB PYTHON_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.py")
 INSTALL(FILES ${PYTHON_FILES}
     DESTINATION "${Python3_SITELIB_INSTALL}/${BIORBD_PYTHON_DIR}"
 )
-file(GLOB PYTHON_FILES "${CMAKE_CURRENT_SOURCE_DIR}/model_creation/*.py")
-INSTALL(FILES ${PYTHON_FILES}
-    DESTINATION "${Python3_SITELIB_INSTALL}/${BIORBD_PYTHON_DIR}/model_creation"
-)
 
 # Check if swig has its version 3 or 4, to choose the right place to put the library
 if(${SWIG_VERSION} MATCHES "^3(\.[0-9]*)*$")

@@ -79,14 +79,6 @@ def test_example_inverse_kinematics_kalman():
     inverse_dynamics_kalman.main(show=False)
     
     
-def test_example_model_creation():
-    if "biorbd" not in available_biorbd:
-        pytest.skip("This example is written for biorbd, but not for the biorbd_casadi")
-    
-    model_creation = load_example_file("modelCreation.py")
-    model_creation.main()
-    
-    
 def test_example_static_optimization():
     if "biorbd" not in available_biorbd:
         pytest.skip("This example is written for biorbd, but not for the biorbd_casadi")
