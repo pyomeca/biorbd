@@ -13,6 +13,7 @@ jobs:
         include:
           - os: ubuntu-latest
             label: linux-64
+            prefix: /usr/share/miniconda3/envs/biorbd
     name: ${{ matrix.label }}
     runs-on: ${{ matrix.os }}
     defaults:
@@ -26,6 +27,17 @@ jobs:
         uses: SimenB/github-actions-cpu-cores@v1
         id: cpu-cores
 
+      - name: Setup environment
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          miniforge-version: latest
+          activate-environment: biorbd
+
+      - name: Install dependencies
+        run: |
+          conda install rbdl tinyxml2 pytest numpy swig codecov lcov -cconda-forge
+          conda list
+
       - name: Setup Linux dependencies
         run:   |
          sudo apt update
@@ -35,9 +47,10 @@ jobs:
       - name: Perform code coverage 
         run: |
           BIORBD_FOLDER=`pwd`
+          CONDA_ENV_PATH=$CONDA/envs/biorbd
           mkdir -p $BUILD_FOLDER
           cd $BUILD_FOLDER
-          cmake -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DMODULE_PASSIVE_TORQUES=ON -DMODULE_KALMAN=ON ..
+          cmake -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DMODULE_PASSIVE_TORQUES=ON -DMODULE_KALMAN=ON ..
           cp -r test/models/ .
           make biorbd_eigen_coverage -j${{ steps.cpu-cores.outputs.count }}
           lcov --directory . --capture --output-file coverage.info
