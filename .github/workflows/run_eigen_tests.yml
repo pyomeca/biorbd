@@ -45,7 +45,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          conda install rbdl tinyxml2 ipopt swig python>=3.12 numpy scipy pytest -cconda-forge
+          conda install -cconda-forge rbdl>=3.3.1 tinyxml2 ipopt 
+          conda install -cconda-forge swig python numpy scipy pytest
           conda list
 
       - name: Setup Linux dependencies
