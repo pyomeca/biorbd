@@ -139,8 +139,9 @@ if (MODULE_VTP_FILES_READER)
     include(FindOrBuildTinyXML2)
     FindOrBuildTinyXML2()
     if (TinyXML2_IS_BUILT)
-        list(APPEND BUILD_DEPENDENCIES TinyXML2)
+        list(APPEND BUILD_DEPENDENCIES TinyXML2_BUILD)
     endif()
+    
 else()
     set(TinyXML2_LIBRARY "")
 endif()
@@ -168,7 +169,9 @@ configure_file(${CMAKE_SOURCE_DIR}/include/biorbdConfig.h.in
 )
 
 # Make sure everything is compiled before proceeding
-add_dependencies(${BIORBD_NAME} ${BUILD_DEPENDENCIES})
+if (BUILD_DEPENDENCIES)
+    add_dependencies(${BIORBD_NAME} ${BUILD_DEPENDENCIES})
+endif()
 
 # Add headers
 # Include directories when building the library:
