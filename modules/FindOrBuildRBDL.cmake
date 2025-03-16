@@ -18,7 +18,7 @@ macro(FindOrBuildRBDL MATH_BACKEND)
             set(RBDL_FOUND TRUE)
             
             # Define include and library paths to mimic RBDL eigen which is the format expected by biorbd
-            set(RBDL_INCLUDE_DIR ${RBDLCasadi_INCLUDE_DIR}/rbdl-casadi)
+            set(RBDL_INCLUDE_DIR ${RBDLCasadi_INCLUDE_DIR})
             set(RBDL_LIBRARY ${RBDLCasadi_LIBRARY})
         endif()
     endif()
@@ -125,6 +125,5 @@ macro(FindOrBuildRBDL MATH_BACKEND)
 
         set(RBDL_FOUND TRUE)
     endif()
-
 
 endmacro()

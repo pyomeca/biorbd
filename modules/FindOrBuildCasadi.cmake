@@ -26,13 +26,6 @@ macro(FindOrBuildCasadi)
             # Modern CMake does not set INCLUDE_DIR, so make it retro-compatible
             get_target_property(Casadi_INCLUDE_DIR casadi INTERFACE_INCLUDE_DIRECTORIES)
 
-            # For some reason, the include directory is sometimes one level too high or too low
-            if (EXISTS "${Casadi_INCLUDE_DIR}/casadi.hpp")
-                # Do nothing
-            elseif (EXISTS "${Casadi_INCLUDE_DIR}/casadi/casadi.hpp")
-                set(Casadi_INCLUDE_DIR "${Casadi_INCLUDE_DIR}/casadi")
-            endif()
-            
             # We once tried to get it from INTERFACE_LINK_LIBRARIES but it was not working
             if(WIN32)
                 file(GLOB_RECURSE Casadi_LIBRARY "${Casadi_INCLUDE_DIR}/../casadi.dll")
@@ -42,6 +35,17 @@ macro(FindOrBuildCasadi)
                 file(GLOB_RECURSE Casadi_LIBRARY "${Casadi_INCLUDE_DIR}/../libcasadi.dylib")
             else()
                 message(FATAL_ERROR "Unsupported OS")
+            endif()
+            if (NOT Casadi_LIBRARY)
+                # This should not happen. It probably means Casadi changed their building procedure
+                message(FATAL_ERROR "Casadi library not found")
+            endif()
+            
+            # For some reason, the include directory is sometimes one level too high or too low
+            if (EXISTS "${Casadi_INCLUDE_DIR}/casadi.hpp")
+                # Do nothing
+            elseif (EXISTS "${Casadi_INCLUDE_DIR}/casadi/casadi.hpp")
+                set(Casadi_INCLUDE_DIR "${Casadi_INCLUDE_DIR}/casadi")
             endif()
             
         endif()
