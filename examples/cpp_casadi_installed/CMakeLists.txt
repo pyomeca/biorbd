@@ -16,7 +16,8 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 find_package(biorbd_casadi REQUIRED)
-find_package(RBDLCasadi REQUIRED)
+include(FinddRBDLWithBackend)
+FinddRBDLWithBackend(Casadi)
 find_package(Eigen3 REQUIRED)
 find_package(TinyXML2 REQUIRED)
 find_package(Casadi REQUIRED)
@@ -25,7 +26,7 @@ add_executable(${PROJECT_NAME} ${FILE})
 
 # Headers
 target_include_directories(${PROJECT_NAME} PUBLIC 
-    ${RBDLCasadi_INCLUDE_DIR}
+    ${RBDL_INCLUDE_DIR}
     ${Casadi_INCLUDE_DIR}
     ${Casadi_INCLUDE_DIR}/..
     ${biorbd_casadi_INCLUDE_DIR}
@@ -41,7 +42,7 @@ endif()
 # Linker and instalation
 target_link_libraries(${PROJECT_NAME} 
     ${biorbd_casadi_LIBRARIES}
-    ${RBDLCasadi_LIBRARY}
+    ${RBDL_LIBRARY}
     ${Casadi_LIBRARY}
     tinyxml2::tinyxml2
 )
