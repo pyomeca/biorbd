@@ -21,7 +21,9 @@ macro(FindOrBuildCasadi)
     )
 
     if(Casadi_FOUND AND NOT Casadi_IS_BUILT)
+        message (STATUS "Casadi found")
         set(Casadi_IS_BUILT FALSE)
+
         if(NOT DEFINED Casadi_INCLUDE_DIR OR Casadi_INCLUDE_DIR STREQUAL "")
             # Modern CMake does not set INCLUDE_DIR, so make it retro-compatible
             get_target_property(Casadi_INCLUDE_DIR casadi INTERFACE_INCLUDE_DIRECTORIES)
@@ -52,9 +54,9 @@ macro(FindOrBuildCasadi)
 
     else()
         message(STATUS "Casadi not found, downloading version 3.6.7 and installing from GitHub")
-        include(ExternalProject)
-
         set(Casadi_IS_BUILT TRUE)
+        include(ExternalProject)
+        
         if (NOT INSTALL_DEPENDENCIES_PREFIX OR INSTALL_DEPENDENCIES_PREFIX STREQUAL "")
             set(Casadi_INSTALL_DIR "${CMAKE_BINARY_DIR}/Casadi_install")
         else()

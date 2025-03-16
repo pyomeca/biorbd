@@ -1,12 +1,12 @@
-macro(FindOrBuildTinyXML2)   
-    include(ExternalProject)
-
+macro(FindOrBuildTinyXML2)  
     find_package(TinyXML2 QUIET
         PATHS ${INSTALL_DEPENDENCIES_PREFIX}
     )
 
     if (TinyXML2_FOUND AND NOT TinyXML2e_IS_BUILT)
+        message (STATUS "TinyXML2 found")
         set(TinyXML2_IS_BUILT FALSE)
+
         if (NOT DEFINED TinyXML2_INCLUDE_DIR OR TinyXML2_INCLUDE_DIR STREQUAL "")
             # Modern CMake does not set INCLUDE_DIR, so make it retro-compatible
             get_target_property(TinyXML2_INCLUDE_DIR tinyxml2::tinyxml2 INTERFACE_INCLUDE_DIRECTORIES)
@@ -25,8 +25,9 @@ macro(FindOrBuildTinyXML2)
 
     else()
         message(STATUS "TinyXML2 not found, downloading version 10.1.0 and installing from GitHub")
-
         set(TinyXML2_IS_BUILT TRUE)
+        include(ExternalProject)
+
         if (NOT INSTALL_DEPENDENCIES_PREFIX OR INSTALL_DEPENDENCIES_PREFIX STREQUAL "")
             set(TinyXML2_INSTALL_DIR "${CMAKE_BINARY_DIR}/TinyXML2_install")
         else()

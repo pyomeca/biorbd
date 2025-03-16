@@ -24,12 +24,14 @@ macro(FindOrBuildRBDL MATH_BACKEND)
     endif()
 
     if(RBDL_FOUND AND NOT RBDL_IS_BUILT)
+        message (STATUS "RBDL found")
         set(RBDL_IS_BUILT FALSE)
+
     else()
         message(STATUS "RBDL not found, downloading and installing from GitHub")
+        set(RBDL_IS_BUILT TRUE)
         include(ExternalProject)
 
-        set(RBDL_IS_BUILT TRUE)
         if (NOT INSTALL_DEPENDENCIES_PREFIX OR INSTALL_DEPENDENCIES_PREFIX STREQUAL "")
             set(RBDL_INSTALL_DIR "${CMAKE_BINARY_DIR}/RBDL_install")
         else()
