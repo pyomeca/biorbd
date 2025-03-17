@@ -10,6 +10,7 @@ import pathlib
 def get_install_base():
     current_folder = pathlib.Path(__file__).parent
     platform_name = platform.system().lower()
+    
     if platform_name == "linux":
         architecture = platform.architecture()[0]
         if architecture == "64bit":
@@ -36,17 +37,15 @@ def get_install_base():
         python_version = f"{sys.version_info.major}.{sys.version_info.minor}"
         platform_name = f"macosx-{version}-x86_64-{python_version}"
         
-    elif platform_name == "win32":
+    elif platform_name == "windows":
         architecture = platform.architecture()[0]
         if architecture == "64bit":
-            architecture = "win-amd64"
-        elif architecture == "32bit":
-            architecture = "win32"
+            architecture = "amd64"
         else:
             raise RuntimeError(f"Unsupported architecture: {architecture}")
         
         python_version = f"{sys.version_info.major}.{sys.version_info.minor}"
-        platform_name = f"windows-{architecture}-{python_version}" 
+        platform_name = f"win-{architecture}-{python_version}" 
     
     return f"{current_folder}/_skbuild/{platform_name}/cmake-install"
 
