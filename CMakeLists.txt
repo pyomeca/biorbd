@@ -32,6 +32,9 @@ option(BUILD_DOC
     "Build documentation" OFF)
 option(BUILD_TESTS 
     "Build all tests." OFF)
+set(INSTALL_DEPENDENCIES_PREFIX "" CACHE PATH
+    "Where to install the dependencies")
+
 
 # Because of Eigen, it is not possible to compile biorbd as a dynamic library
 if (WIN32)
@@ -68,24 +71,36 @@ elseif(${MATH_LIBRARY_BACKEND} STREQUAL "Casadi")
 endif()
 set (BIORBD_NAME ${PROJECT_NAME}_${BIORBD_LIB_SUFFIX})
 
+# Define a list of dependencies to wait for if they are being built
+set(BUILD_DEPENDENCIES)
+include(FindOrBuildEigen3)
+FindOrBuildEigen3()
+include(FindOrBuildRBDL)
+if (EIGEN3_IS_BUILT)
+    list(APPEND BUILD_DEPENDENCIES EIGEN3_BUILD)
+endif()
 if(${MATH_LIBRARY_BACKEND} STREQUAL "Eigen3")
-    find_package(Eigen3 REQUIRED)
-    set(MATH_BACKEND_INCLUDE_DIR "${EIGEN3_INCLUDE_DIR}")
+    set(MATH_BACKEND_INCLUDE_DIR ${EIGEN3_INCLUDE_DIR})
     set(MATH_BACKEND_LIBRARIES "")
-    find_package(RBDL REQUIRED)
+    FindOrBuildRBDL(EIGEN)
+    
 elseif(${MATH_LIBRARY_BACKEND} STREQUAL "Casadi")
-    find_package(Casadi REQUIRED)
-    set(MATH_BACKEND_INCLUDE_DIR
-        "${Casadi_INCLUDE_DIR}"
-        "${Casadi_INCLUDE_DIR}/.."
-    )
-    set(MATH_BACKEND_LIBRARIES "${Casadi_LIBRARY}")
-    find_package(RBDLCasadi REQUIRED)
-    set(RBDL_INCLUDE_DIR ${RBDLCasadi_INCLUDE_DIR}/rbdl-casadi ${RBDLCasadi_INCLUDE_DIR})
-    set(RBDL_LIBRARY ${RBDLCasadi_LIBRARY})
+    include(FindOrBuildCasadi)
+    FindOrBuildCasadi()
+    if (Casadi_IS_BUILT)
+        set(MATH_BACKEND_INCLUDE_DIR "${Casadi_INCLUDE_DIR}")
+    else()
+        set(MATH_BACKEND_INCLUDE_DIR "${Casadi_INCLUDE_DIR};${Casadi_INCLUDE_DIR}/..")
+    endif()
+    set(MATH_BACKEND_LIBRARIES ${Casadi_LIBRARY})
+    
+    FindOrBuildRBDL(CASADI)
+    
+    if (RBDL_IS_BUILT)
+        list(APPEND BUILD_DEPENDENCIES RBDL_BUILD)
+    endif()
 endif()
 find_package(IPOPT)
-find_package(TinyXML)
 
 # Manage options
 # MODULE_KALMAN
@@ -124,13 +139,15 @@ else()
 endif()
 
 # MODULE_VTP_FILES_READER
-if (NOT TinyXML_FOUND)
-    set(TinyXML_INCLUDE_DIR "")
-    set(TinyXML_LIBRARY "")
-    if (MODULE_VTP_FILES_READER)
-        message(WARNING "VTP cannot be used since TinyXML was not found")
-        set(MODULE_VTP_FILES_READER OFF CACHE BOOL "" FORCE)
+if (MODULE_VTP_FILES_READER)
+    include(FindOrBuildTinyXML2)
+    FindOrBuildTinyXML2()
+    if (TinyXML2_IS_BUILT)
+        list(APPEND BUILD_DEPENDENCIES TinyXML2_BUILD)
     endif()
+    
+else()
+    set(TinyXML2_LIBRARY "")
 endif()
 
 
@@ -155,15 +172,22 @@ configure_file(${CMAKE_SOURCE_DIR}/include/biorbdConfig.h.in
     "${BIORBD_BINARY_DIR}/include/biorbdConfig.h"
 )
 
+# Make sure everything is compiled before proceeding
+if (BUILD_DEPENDENCIES)
+    add_dependencies(${BIORBD_NAME} ${BUILD_DEPENDENCIES})
+endif()
+
 # Add headers
 # Include directories when building the library:
 target_include_directories(${BIORBD_NAME} PRIVATE
-    "${CMAKE_SOURCE_DIR}/include"
-    "${BIORBD_BINARY_DIR}/include"
     "${RBDL_INCLUDE_DIR}"
     "${MATH_BACKEND_INCLUDE_DIR}"
-    "${TinyXML_INCLUDE_DIR}"
+    "${TinyXML2_INCLUDE_DIR}"
+    "${CMAKE_SOURCE_DIR}/include"
+    "${BIORBD_BINARY_DIR}/include"
+    "${INSTALL_DEPENDENCIES_PREFIX}/include"
 )
+
 # Include directories when other targets in this project use this library:
 target_include_directories(${BIORBD_NAME} INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -171,19 +195,25 @@ target_include_directories(${BIORBD_NAME} INTERFACE
 )
 
 # Installation directories
+if (DEFINED OVERRIDE_LIB_SUFFIX)
+    set(LIB_SUFFIX ${OVERRIDE_LIB_SUFFIX})
+else()
+    set(LIB_SUFFIX ${BIORBD_NAME})
+endif()
+
 if(WIN32)
     set(${BIORBD_NAME}_LIB_FOLDER "Lib")
     set(${BIORBD_NAME}_BIN_FOLDER "bin")
-    set(${BIORBD_NAME}_INCLUDE_FOLDER "include/${BIORBD_NAME}")
-    set(${BIORBD_NAME}_CMAKECONFIG_DIR "Lib/cmake/${BIORBD_NAME}")
+    set(${BIORBD_NAME}_INCLUDE_FOLDER "include/${LIB_SUFFIX}")
+    set(${BIORBD_NAME}_CMAKECONFIG_DIR "Lib/cmake/${LIB_SUFFIX}")
 else()
-    set(${BIORBD_NAME}_LIB_FOLDER "lib/${BIORBD_NAME}")
-    set(${BIORBD_NAME}_BIN_FOLDER "${CMAKE_INSTALL_PREFIX}/lib/${BIORBD_NAME}")
-    set(${BIORBD_NAME}_INCLUDE_FOLDER "include/${BIORBD_NAME}")
-    set(${BIORBD_NAME}_CMAKECONFIG_DIR "lib/cmake/${BIORBD_NAME}")
+    set(${BIORBD_NAME}_LIB_FOLDER "lib/${LIB_SUFFIX}")
+    set(${BIORBD_NAME}_BIN_FOLDER "${CMAKE_INSTALL_PREFIX}/lib/${LIB_SUFFIX}")
+    set(${BIORBD_NAME}_INCLUDE_FOLDER "include/${LIB_SUFFIX}")
+    set(${BIORBD_NAME}_CMAKECONFIG_DIR "lib/cmake/${LIB_SUFFIX}")
 endif()
 set_target_properties(${BIORBD_NAME} PROPERTIES
-    INSTALL_RPATH "${${BIORBD_NAME}_BIN_FOLDER}"
+    INSTALL_RPATH "${${BIORBD_NAME}_BIN_FOLDER};${INSTALL_DEPENDENCIES_PREFIX}/lib"
     INSTALL_RPATH_USE_LINK_PATH TRUE
 )
 
@@ -228,9 +258,9 @@ endif()
 target_link_libraries(${BIORBD_NAME}
     "${BIORBD_MODULE_NAMES}"
     "${RBDL_LIBRARY}"
-    "${MATH_BACKEND_LIBRARIES}"
     "${IPOPT_LIBRARY}"
-    "${TinyXML_LIBRARY}"
+    "${TinyXML2_LIBRARY}"
+    "${MATH_BACKEND_LIBRARIES}"
 )
 
 # install target

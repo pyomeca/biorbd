@@ -26,6 +26,12 @@ find_package(Python3 REQUIRED
     COMPONENTS Interpreter Development NumPy
 )
 
+set(Python3_SITELIB_INSTALL "" CACHE PATH
+    "Override the default Python3 site-packages installation directory (default is Python3_SITELIB)")
+if(NOT Python3_SITELIB_INSTALL OR Python3_SITELIB_INSTALL STREQUAL "")
+    set(Python3_SITELIB_INSTALL "${Python3_SITELIB}")
+endif()
+
 if(WIN32)
     link_directories("${Python3_RUNTIME_LIBRARY_DIRS}/libs")
 endif()
@@ -60,12 +66,13 @@ endif()
 # Add headers
 target_include_directories(${PYTHON_PROJECT_NAME} PRIVATE
     "${RBDL_INCLUDE_DIR}"
-    "${CMAKE_SOURCE_DIR}/include"
-    "${BIORBD_BINARY_DIR}/include"
     "${MATH_BACKEND_INCLUDE_DIR}"
     "${IPOPT_INCLUDE_DIR}"
     "${Python3_INCLUDE_DIRS}"
     "${Python3_NumPy_INCLUDE_DIRS}"
+    "${CMAKE_SOURCE_DIR}/include"
+    "${BIORBD_BINARY_DIR}/include"
+    "${INSTALL_DEPENDENCIES_PREFIX}/include"
 )
 
 if(APPLE)
@@ -88,23 +95,19 @@ elseif(${MATH_LIBRARY_BACKEND} STREQUAL "Casadi")
     set(BIORBD_PYTHON_DIR ${BIORBD_NAME})
 endif()
 INSTALL(FILES "${CMAKE_CURRENT_BINARY_DIR}/${BIORBD_NAME_NO_SUFFIX}.py"
-    DESTINATION "${Python3_SITELIB}/${BIORBD_PYTHON_DIR}"
+    DESTINATION "${Python3_SITELIB_INSTALL}/${BIORBD_PYTHON_DIR}"
 )
 
 file(GLOB PYTHON_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.py")
 INSTALL(FILES ${PYTHON_FILES}
-    DESTINATION "${Python3_SITELIB}/${BIORBD_PYTHON_DIR}"
-)
-file(GLOB PYTHON_FILES "${CMAKE_CURRENT_SOURCE_DIR}/model_creation/*.py")
-INSTALL(FILES ${PYTHON_FILES}
-    DESTINATION "${Python3_SITELIB}/${BIORBD_PYTHON_DIR}/model_creation"
+    DESTINATION "${Python3_SITELIB_INSTALL}/${BIORBD_PYTHON_DIR}"
 )
 
 # Check if swig has its version 3 or 4, to choose the right place to put the library
 if(${SWIG_VERSION} MATCHES "^3(\.[0-9]*)*$")
-    set(PYTHON_INSTALL_DESTINATION "${Python3_SITELIB}")
+    set(PYTHON_INSTALL_DESTINATION "${Python3_SITELIB_INSTALL}")
 elseif(${SWIG_VERSION} MATCHES "^4(\.[0-9]*)*$")
-    set(PYTHON_INSTALL_DESTINATION "${Python3_SITELIB}/${BIORBD_PYTHON_DIR}")
+    set(PYTHON_INSTALL_DESTINATION "${Python3_SITELIB_INSTALL}/${BIORBD_PYTHON_DIR}")
 else()
     message( FATAL_ERROR "Swig must be version 3 or 4" )
 endif()
