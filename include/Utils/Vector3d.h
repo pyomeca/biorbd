@@ -19,10 +19,9 @@ class Vector;
 /// \brief Wrapper around Eigen Vector3d and attach it to a parent
 ///
 #ifdef SWIG
-class BIORBD_API Vector3d
+class BIORBD_API Vector3d : public Node
 #else
-class BIORBD_API Vector3d : public RigidBodyDynamics::Math::Vector3d,
-    public Node
+class BIORBD_API Vector3d : public RigidBodyDynamics::Math::Vector3d, public Node
 #endif
 {
 public:
