@@ -1,6 +1,6 @@
 macro(FindOrBuildCasadi)      
-    # # If python is found with casadi install and was installed using pip, the library will be installed in the site-packages directory
-    # # So we should add the site-package folder to the searching for the library
+    # # If python is found with casadi install and was installed using pip, the library is fully installed in the site-packages directory
+    # # So we can add the site-package folder to the searching for the library
     # find_package(Python3 COMPONENTS Interpreter)
     # if (Python3_FOUND)
     #     execute_process(
@@ -9,6 +9,12 @@ macro(FindOrBuildCasadi)
     #         OUTPUT_STRIP_TRAILING_WHITESPACE
     #         ERROR_QUIET
     #     )
+    #     if(Casadi_FROM_PIP)
+    #         # There is a bug in the config file which necessitate the casadi interface to be defined
+    #         # We create a dummy interface library to avoid issues
+    #         add_library(casadi INTERFACE IMPORTED GLOBAL)
+    #     endif()
+
     #     get_filename_component(Casadi_FROM_PIP "${Casadi_FROM_PIP}" DIRECTORY)
     #     set(Casadi_FROM_PIP ${Casadi_FROM_PIP}/cmake)
     # endif()
@@ -26,13 +32,13 @@ macro(FindOrBuildCasadi)
 
         if(NOT DEFINED Casadi_INCLUDE_DIR OR Casadi_INCLUDE_DIR STREQUAL "")
             # Modern CMake does not set INCLUDE_DIR, so make it retro-compatible
-            get_target_property(Casadi_INCLUDE_DIR casadi INTERFACE_INCLUDE_DIRECTORIES)
+            get_target_property(Casadi_INCLUDE_DIR casadi::casadi INTERFACE_INCLUDE_DIRECTORIES)
 
             # We once tried to get it from INTERFACE_LINK_LIBRARIES but it was not working
             if(WIN32)
                 file(GLOB_RECURSE Casadi_LIBRARY "${Casadi_INCLUDE_DIR}/../casadi.lib")
             elseif(LINUX)
-                file(GLOB_RECURSE Casadi_LIBRARY "${Casadi_INCLUDE_DIR}/../libcasadi.so")
+                file(GLOB_RECURSE Casadi_LIBRARY "${Casadi_INCLUDE_DIR}/../libcasadi*.so")
             elseif(APPLE)
                 file(GLOB_RECURSE Casadi_LIBRARY "${Casadi_INCLUDE_DIR}/../libcasadi.dylib")
             else()
@@ -42,7 +48,7 @@ macro(FindOrBuildCasadi)
                 # This should not happen. It probably means Casadi changed their building procedure
                 message(FATAL_ERROR "Casadi library not found")
             endif()
-            
+        
             # For some reason, the include directory is sometimes one level too high or too low
             if (EXISTS "${Casadi_INCLUDE_DIR}/casadi.hpp")
                 # Do nothing

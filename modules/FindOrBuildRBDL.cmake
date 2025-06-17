@@ -48,7 +48,11 @@ macro(FindOrBuildRBDL MATH_BACKEND)
             if (Casadi_IS_BUILT)
                 set(Casadi_DIR "${Casadi_INSTALL_DIR}")
             else()
-                set(Casadi_DIR "${CMAKE_INSTALL_PREFIX}")
+                if (NOT Casadi_FOUND)
+                    set(Casadi_DIR "${CMAKE_INSTALL_PREFIX}")
+                    unset(Casadi_INCLUDE_DIR)
+                    unset(Casadi_LIBRARY)
+                endif()
             endif()
         endif()
         
@@ -73,8 +77,8 @@ macro(FindOrBuildRBDL MATH_BACKEND)
                 endif() 
             endif()
         endif()
-        set(RBDL_LIBRARY "${RBDL_INSTALL_DIR}/lib/${RBDL_LIB_NAME}")
 
+        set(RBDL_LIBRARY "${RBDL_INSTALL_DIR}/lib/${RBDL_LIB_NAME}")
         ExternalProject_Add(rbdl_external
             GIT_REPOSITORY https://github.com/pariterre/rbdl.git
             GIT_TAG master
@@ -85,6 +89,8 @@ macro(FindOrBuildRBDL MATH_BACKEND)
                 -DRBDL_BUILD_CASADI=${RBDL_BUILD_CASADI}
                 -DEigen3_DIR=${EIGEN3_DIR}
                 -DCasadi_DIR=${Casadi_DIR}
+                -DCasadi_INCLUDE_DIR=${Casadi_INCLUDE_DIR}
+                -DCasadi_LIBRARY=${Casadi_LIBRARY}
                 -DCMAKE_POSITION_INDEPENDENT_CODE=ON
             BUILD_BYPRODUCTS "${RBDL_LIBRARY}"
         )
