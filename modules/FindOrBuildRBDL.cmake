@@ -54,9 +54,7 @@ macro(FindOrBuildRBDL MATH_BACKEND)
         
         # Detect correct static library extension (OS-independent)
         if (BUILD_SHARED_LIBS)
-            # set(RBDL_TARGET_STATIC OFF)
-            # TODO: For now, we always build static libraries
-            set(RBDL_TARGET_STATIC ON)
+            set(RBDL_TARGET_STATIC OFF)
         else()
             set(RBDL_TARGET_STATIC ON)
         endif()

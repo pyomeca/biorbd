@@ -40,10 +40,8 @@ macro(FindOrBuildTinyXML2)
             set(TinyXML2_INSTALL_DIR ${INSTALL_DEPENDENCIES_PREFIX})
         endif()
 
-        # TODO: For now, we always build static libraries
-        set(TynyXML2_BUILD_SHARED_LIBS OFF)
-
         # Detect correct static library extension (OS-independent)
+        set(TynyXML2_BUILD_SHARED_LIBS OFF)
         if(WIN32)
             set(TinyXML2_LIB_NAME "tinyxml2.lib")
         elseif(LINUX)

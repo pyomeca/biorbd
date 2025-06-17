@@ -250,7 +250,6 @@ if (MODULE_ACTUATORS)
     list(APPEND BIORBD_MODULE_NAMES "${ACTUATORS_MODULE_NAME}")
 endif()
 
-
 # Add linker
 target_link_libraries(${BIORBD_NAME}
     "${BIORBD_MODULE_NAMES}"
