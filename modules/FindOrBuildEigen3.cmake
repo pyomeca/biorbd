@@ -13,7 +13,7 @@ macro(FindOrBuildEigen3)
             get_target_property(EIGEN3_INCLUDE_DIR Eigen3::Eigen INTERFACE_INCLUDE_DIRECTORIES)
         endif()
     else()
-        message(STATUS "EIGEN3 not found, downloading version 3.4 and installing from GitLab")
+        message(STATUS "EIGEN3 not found, using version 3.4 from GitLab")
         set(EIGEN3_IS_BUILT TRUE)
         include(ExternalProject)
 

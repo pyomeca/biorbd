@@ -8,7 +8,7 @@ macro(FindOrBuildRBDL MATH_BACKEND)
     if (${MATH_BACKEND} STREQUAL "EIGEN")
         set (CUSTOM_RBDL_PATH ${INSTALL_DEPENDENCIES_PREFIX})
         find_package(RBDL QUIET)
-    
+        
     elseif (${MATH_BACKEND} STREQUAL "CASADI")
         set(RBDL_FOUND FALSE)
         set (CUSTOM_RBDLCasadi_PATH ${INSTALL_DEPENDENCIES_PREFIX})
@@ -28,7 +28,7 @@ macro(FindOrBuildRBDL MATH_BACKEND)
         set(RBDL_IS_BUILT FALSE)
 
     else()
-        message(STATUS "RBDL not found, downloading and installing from GitHub")
+        message(STATUS "RBDL not found, using version from GitHub")
         set(RBDL_IS_BUILT TRUE)
         include(ExternalProject)
 
@@ -54,7 +54,9 @@ macro(FindOrBuildRBDL MATH_BACKEND)
         
         # Detect correct static library extension (OS-independent)
         if (BUILD_SHARED_LIBS)
-            set(RBDL_TARGET_STATIC OFF)
+            # set(RBDL_TARGET_STATIC OFF)
+            # TODO: For now, we always build static libraries
+            set(RBDL_TARGET_STATIC ON)
         else()
             set(RBDL_TARGET_STATIC ON)
         endif()

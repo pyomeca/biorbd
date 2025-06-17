@@ -24,7 +24,7 @@ macro(FindOrBuildTinyXML2)
         endif()
 
     else()
-        message(STATUS "TinyXML2 not found, downloading version 10.1.0 and installing from GitHub")
+        message(STATUS "TinyXML2 not found, using version 10.1.0 from GitHub")
         set(TinyXML2_IS_BUILT TRUE)
         include(ExternalProject)
 
@@ -33,6 +33,8 @@ macro(FindOrBuildTinyXML2)
         else()
             set(TinyXML2_INSTALL_DIR ${INSTALL_DEPENDENCIES_PREFIX})
         endif()
+
+        # TODO: For now, we always build static libraries
         set(TynyXML2_BUILD_SHARED_LIBS OFF)
 
         # Detect correct static library extension (OS-independent)

@@ -1,7 +1,4 @@
-cmake_minimum_required(VERSION 3.8)
-if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.0")
-    cmake_policy(SET CMP0042 NEW)
-endif()
+cmake_minimum_required(VERSION 3.17)
 
 project(biorbd VERSION 1.11.2)
 set(BIORBD_ROOT_FOLDER ${PROJECT_SOURCE_DIR})

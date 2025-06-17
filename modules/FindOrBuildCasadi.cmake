@@ -53,7 +53,7 @@ macro(FindOrBuildCasadi)
         endif()
 
     else()
-        message(STATUS "Casadi not found, downloading version 3.6.7 and installing from GitHub")
+        message(STATUS "Casadi not found, using version 3.7.0 from GitHub")
         set(Casadi_IS_BUILT TRUE)
         include(ExternalProject)
         
@@ -63,15 +63,31 @@ macro(FindOrBuildCasadi)
             set(Casadi_INSTALL_DIR ${INSTALL_DEPENDENCIES_PREFIX})
         endif()
         
+        if (BUILD_SHARED_LIBS)
+            # TODO: For now, we always build static libraries
+            set(Casadi_BUILD_SHARED_LIBS OFF)
+            set(Casadi_BUILD_STATIC_LIBS ON)
+        else()
+            set(Casadi_BUILD_SHARED_LIBS OFF)
+            set(Casadi_BUILD_STATIC_LIBS ON)
+        endif()
+        
+
         # Detect correct library extension (OS-independent)
         if(WIN32)
             set(Casadi_LIB_NAME "casadi.lib")
-        elseif(LINUX)
-            set(Casadi_LIB_NAME "libcasadi.so")
-        elseif(APPLE)
-            set(Casadi_LIB_NAME "libcasadi.dylib")
         else()
-            message(FATAL_ERROR "Unsupported OS")
+            if(${Casadi_BUILD_SHARED_LIBS})
+                if(LINUX)
+                    set(RBDL_LIB_NAME "libcasadi.so")
+                elseif(APPLE)
+                    set(RBDL_LIB_NAME "libcasadi.dylib")
+                else()
+                    message(FATAL_ERROR "Unsupported OS")
+                endif() 
+            else()
+                set(RBDL_LIB_NAME "libcasadi.a")
+            endif()
         endif()
         set(Casadi_LIBRARY "${Casadi_INSTALL_DIR}/lib/${Casadi_LIB_NAME}")
 
@@ -84,18 +100,22 @@ macro(FindOrBuildCasadi)
 
         ExternalProject_Add(Casadi_external
             GIT_REPOSITORY https://github.com/casadi/casadi.git
-            GIT_TAG 3.6.7
+            GIT_TAG 3.7.0
             CMAKE_ARGS
                 -DCMAKE_INSTALL_PREFIX=${Casadi_INSTALL_DIR}
                 -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+                -DENABLE_SHARED=${Casadi_BUILD_SHARED_LIBS}
+                -DENABLE_STATIC=${Casadi_BUILD_STATIC_LIBS}
                 -DCMAKE_POSITION_INDEPENDENT_CODE=ON
                 -DWITH_PYTHON=${BINDER_PYTHON3}
                 -DWITH_PYTHON3=${BINDER_PYTHON3}
                 -DPYTHON_PREFIX=${Python3_SITELIB}
-                -DPython_INCLUDE_DIR=${Python3_INCLUDE_DIRS}
-                -DWITH_IPOPT=OFF  # To be changed?
+                -DWITH_IPOPT=ON
+                -DWITH_BUILD_IPOPT=ON
                 -DWITH_THREAD=ON
-                -DCASADI_PYTHON_PIP_METADATA_INSTALL=${BINDER_PYTHON3}
+                -DWITH_BUILD_MUMPS=ON
+                -DWITH_BUILD_METIS=ON
+                -DWITH_BUILD_LAPACK=ON
             BUILD_BYPRODUCTS "${Casadi_LIBRARY}"
         )
 
