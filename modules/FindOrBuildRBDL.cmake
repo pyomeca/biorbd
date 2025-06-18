@@ -7,12 +7,16 @@ macro(FindOrBuildRBDL MATH_BACKEND)
     # Try to find RBDL first
     if (${MATH_BACKEND} STREQUAL "EIGEN")
         set (CUSTOM_RBDL_PATH ${INSTALL_DEPENDENCIES_PREFIX})
-        find_package(RBDL QUIET)
+        find_package(RBDL QUIET
+            PATHS ${CUSTOM_RBDLCasadi_PATH} ${CMAKE_INSTALL_PREFIX}
+        )
         
     elseif (${MATH_BACKEND} STREQUAL "CASADI")
         set(RBDL_FOUND FALSE)
         set (CUSTOM_RBDLCasadi_PATH ${INSTALL_DEPENDENCIES_PREFIX})
-        find_package(RBDLCasadi QUIET)
+        find_package(RBDLCasadi QUIET
+            PATHS ${CUSTOM_RBDLCasadi_PATH} ${CMAKE_INSTALL_PREFIX}
+        )
 
         if (RBDLCasadi_FOUND)
             set(RBDL_FOUND TRUE)

@@ -1,6 +1,8 @@
 macro(FindOrBuildCasadi)      
-    # # If python is found with casadi install and was installed using pip, the library is fully installed in the site-packages directory
-    # # So we can add the site-package folder to the searching for the library
+    # If python is found with casadi install and was installed using pip, the library is fully installed in the site-packages directory
+    # So we can add the site-package folder to the searching for the library.
+    # This is however not working since the toolchain used to build on pip is incompatible with the one used to build the library
+    # If this ever changes, we can uncomment the following lines
     # find_package(Python3 COMPONENTS Interpreter)
     # if (Python3_FOUND)
     #     execute_process(
@@ -32,13 +34,13 @@ macro(FindOrBuildCasadi)
 
         if(NOT DEFINED Casadi_INCLUDE_DIR OR Casadi_INCLUDE_DIR STREQUAL "")
             # Modern CMake does not set INCLUDE_DIR, so make it retro-compatible
-            get_target_property(Casadi_INCLUDE_DIR casadi::casadi INTERFACE_INCLUDE_DIRECTORIES)
-
+            get_target_property(Casadi_INCLUDE_DIR casadi INTERFACE_INCLUDE_DIRECTORIES)
+            
             # We once tried to get it from INTERFACE_LINK_LIBRARIES but it was not working
             if(WIN32)
-                file(GLOB_RECURSE Casadi_LIBRARY "${Casadi_INCLUDE_DIR}/../casadi.lib")
+                file(GLOB_RECURSE Casadi_LIBRARY "${Casadi_INCLUDE_DIR}/../lib/casadi.lib")
             elseif(LINUX)
-                file(GLOB_RECURSE Casadi_LIBRARY "${Casadi_INCLUDE_DIR}/../libcasadi*.so")
+                file(GLOB_RECURSE Casadi_LIBRARY "${Casadi_INCLUDE_DIR}/../libcasadi.so")
             elseif(APPLE)
                 file(GLOB_RECURSE Casadi_LIBRARY "${Casadi_INCLUDE_DIR}/../libcasadi.dylib")
             else()
@@ -59,6 +61,10 @@ macro(FindOrBuildCasadi)
         endif()
 
     else()
+        if(WIN32)
+            message(FATAL_ERROR "Auto-build is not currently supported for Casadi on Windows. Please install it manually using (e.g. using conda)")
+        endif()
+        
         message(STATUS "Casadi not found, using version 3.7.0 from GitHub")
         set(Casadi_IS_BUILT TRUE)
         include(ExternalProject)
