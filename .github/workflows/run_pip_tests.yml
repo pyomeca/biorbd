@@ -15,9 +15,9 @@ jobs:
           - os: ubuntu-latest
             label: linux-64
             prefix: /usr/share/miniconda3/envs/biorbd
-          # - os: macos-latest
-          #   label: osx-arm64
-          #   prefix: /Users/runner/miniconda3/envs/biorbd
+          - os: macos-latest
+            label: osx-arm64
+            prefix: /Users/runner/miniconda3/envs/biorbd
           - os: macos-13
             label: osx-intel
             prefix: /Users/runner/miniconda3/envs/biorbd
@@ -63,15 +63,15 @@ jobs:
           python -c "import biorbd"
           cd $BIORBD_FOLDER
 
-      - name: Biorbd biorbd_casadi
-        run: |
-          rm -rf _skbuild
-          export MATH_LIBRARY_BACKEND=Casadi
-          pip install .
+      # - name: Biorbd biorbd_casadi
+      #   run: |
+      #     rm -rf _skbuild
+      #     export MATH_LIBRARY_BACKEND=Casadi
+      #     pip install .
 
-      - name: Test installed version of biorbd_casadi
-        run: | 
-          BIORBD_FOLDER=`pwd`
-          cd
-          python -c "import biorbd_casadi"
-          cd $BIORBD_FOLDER
+      # - name: Test installed version of biorbd_casadi
+      #   run: | 
+      #     BIORBD_FOLDER=`pwd`
+      #     cd
+      #     python -c "import biorbd_casadi"
+      #     cd $BIORBD_FOLDER

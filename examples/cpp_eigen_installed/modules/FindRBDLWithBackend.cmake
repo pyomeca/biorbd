@@ -1,4 +1,4 @@
-macro(FinddRBDLWithBackend MATH_BACKEND)
+macro(FindRBDLWithBackend MATH_BACKEND)
     # Check if MATH_BACKEND is EIGEN or CASADI
     if(NOT (${MATH_BACKEND} STREQUAL "EIGEN" OR ${MATH_BACKEND} STREQUAL "CASADI"))
         message(FATAL_ERROR "FindOrBuildRBDL: Invalid option '${MATH_BACKEND}'. Use 'EIGEN' or 'CASADI'.")
@@ -7,12 +7,16 @@ macro(FinddRBDLWithBackend MATH_BACKEND)
     # Try to find RBDL first
     if (${MATH_BACKEND} STREQUAL "EIGEN")
         set (CUSTOM_RBDL_PATH ${INSTALL_DEPENDENCIES_PREFIX})
-        find_package(RBDL QUIET)
+        find_package(RBDL QUIET
+            PATHS ${CUSTOM_RBDLCasadi_PATH} ${CMAKE_INSTALL_PREFIX}
+        )
     
     elseif (${MATH_BACKEND} STREQUAL "CASADI")
         set(RBDL_FOUND FALSE)
         set (CUSTOM_RBDLCasadi_PATH ${INSTALL_DEPENDENCIES_PREFIX})
-        find_package(RBDLCasadi QUIET)
+        find_package(RBDLCasadi QUIET
+            PATHS ${CUSTOM_RBDLCasadi_PATH} ${CMAKE_INSTALL_PREFIX}
+        )
 
         if (RBDLCasadi_FOUND)
             set(RBDL_FOUND TRUE)

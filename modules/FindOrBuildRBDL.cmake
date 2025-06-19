@@ -10,7 +10,7 @@ macro(FindOrBuildRBDL MATH_BACKEND)
         find_package(RBDL QUIET
             PATHS ${CUSTOM_RBDLCasadi_PATH} ${CMAKE_INSTALL_PREFIX}
         )
-        
+    
     elseif (${MATH_BACKEND} STREQUAL "CASADI")
         set(RBDL_FOUND FALSE)
         set (CUSTOM_RBDLCasadi_PATH ${INSTALL_DEPENDENCIES_PREFIX})
