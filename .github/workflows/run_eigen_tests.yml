@@ -170,7 +170,7 @@ jobs:
       - name: Test installed version on WINDOWS
         run: |
           BIORBD_FOLDER=`pwd`
-          CONDA_ENV_PATH=$CONDA/envs/biorbd_eigen
+          CONDA_ENV_PATH=$CONDA/envs/biorbd
           cd $BIORBD_FOLDER/$EXAMPLES_FOLDER/cpp_eigen_installed
           mkdir -p $BUILD_FOLDER
           cd $BUILD_FOLDER
