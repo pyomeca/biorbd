@@ -34,7 +34,12 @@ macro(FindOrBuildCasadi)
 
         if(NOT DEFINED Casadi_INCLUDE_DIR OR Casadi_INCLUDE_DIR STREQUAL "")
             # Modern CMake does not set INCLUDE_DIR, so make it retro-compatible
-            get_target_property(Casadi_INCLUDE_DIR casadi INTERFACE_INCLUDE_DIRECTORIES)
+            if (TARGET casadi)
+                set(Casadi_TARGET casadi)
+            else()
+                set(Casadi_TARGET casadi::casadi)
+            endif()
+            get_target_property(Casadi_INCLUDE_DIR ${Casadi_TARGET} INTERFACE_INCLUDE_DIRECTORIES)
             
             # We once tried to get it from INTERFACE_LINK_LIBRARIES but it was not working
             if(WIN32)
@@ -61,9 +66,10 @@ macro(FindOrBuildCasadi)
         endif()
 
     else()
-        if(WIN32)
-            message(FATAL_ERROR "Auto-build is not currently supported for Casadi on Windows. Please install it manually using (e.g. using conda)")
-        endif()
+        message(FATAL_ERROR 
+            "Auto-build is not currently supported for Casadi (until OpenBLAS support CMake > 3.5). "
+            "Please install it manually using (e.g. using conda)"
+        )
         
         message(STATUS "Casadi not found, using version 3.7.0 from GitHub")
         set(Casadi_IS_BUILT TRUE)
