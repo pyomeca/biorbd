@@ -644,10 +644,10 @@ The tag `r` represented the width of the curve based of the torque-angle relatio
 ...
 
 ## Convert from OpenSim models
-For users who have well-established models in OpenSim and wish to convert them to a `.bioMod`, there's a handy tool called Osim_to_biomod. 
+For users who have well-established models in OpenSim and wish to convert them to a `.bioMod`, there's a handy tool called BioBuddy. 
 This package facilitates the conversion process, ensuring that OpenSim models can be seamlessly integrated into our ecosystem.
 
-To get started with the Osim_to_biomod package, please refer to its documentation and source code available at [Osim_to_biomod](https://github.com/pyomeca/osim_to_biomod) GitHub Repository.
+To get started with the BioBuddy package, please refer to its documentation and source code available at [BioBuddy](https://github.com/pyomeca/biobuddy) GitHub Repository.
 
 Let us know if you'd like any further modifications!
 
