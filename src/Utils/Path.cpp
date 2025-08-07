@@ -349,6 +349,13 @@ const utils::String &utils::Path::originalPath() const
     return *m_originalPath;
 }
 
+void utils::Path::setFolder(
+    const utils::String &folder)
+{
+    *m_folder = folder;
+    setIsFolderAbsolute();
+}
+
 const utils::String &utils::Path::folder() const
 {
     return *m_folder;

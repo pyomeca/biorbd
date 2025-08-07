@@ -1282,6 +1282,15 @@ const rigidbody::Mesh &rigidbody::Joints::mesh(
     return segment(idx).characteristics().mesh();
 }
 
+void rigidbody::Joints::overrideMeshFolders(const utils::String &folder)
+{
+    for (size_t i = 0; i < nbSegment(); ++i)
+    {
+        // TODO : const_cast
+        segment(i).characteristics().mesh().path().setFolder(folder);
+    }
+}
+
 utils::Vector3d rigidbody::Joints::CalcAngularMomentum(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot,

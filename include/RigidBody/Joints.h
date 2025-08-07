@@ -863,6 +863,12 @@ UpdateKinematicsCustom(
     ///
     const Mesh& mesh(
         size_t  idx) const;
+
+    ///
+    /// \brief Set the folder for all the meshes
+    /// \param folder The folder to set
+    ///
+    void overrideMeshFolders(const utils::String& folder);
     // ----------------------- //
 
 
