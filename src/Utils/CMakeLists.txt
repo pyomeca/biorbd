@@ -44,17 +44,21 @@ else()
 endif()
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_debug")
 
+# Make sure RBDL is compiled before compiling project
+if (RBDL_IS_BUILT)
+    add_dependencies(${PROJECT_NAME} RBDL_BUILD)
+endif()
+
 # Add the include
 target_include_directories(${PROJECT_NAME} PRIVATE
-    "${CMAKE_SOURCE_DIR}/include"
-    "${BIORBD_BINARY_DIR}/include"
     "${RBDL_INCLUDE_DIR}"
     "${MATH_BACKEND_INCLUDE_DIR}"
+    "${CMAKE_SOURCE_DIR}/include"
+    "${BIORBD_BINARY_DIR}/include"
+    "${INSTALL_DEPENDENCIES_PREFIX}/include"
 )
-
 target_link_libraries(${PROJECT_NAME}
     "${RBDL_LIBRARY}"
-    "${MATH_BACKEND_LIBRARIES}"
 )
 
 # Installation

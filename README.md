@@ -97,12 +97,12 @@ The building status for the current BIORBD branches is as follow
 | DOI | [![DOI](https://zenodo.org/badge/124423173.svg)](https://zenodo.org/badge/latestdoi/124423173) |
 
 ### Dependencies
-BIORBD relies on several libraries (namely eigen ([http://eigen.tuxfamily.org]) or CasADi ([https://web.casadi.org/]), rbdl-casadi (https://github.com/pyomeca/rbdl-casadi), tinyxml(http://www.grinninglizard.com/tinyxmldocs/index.html) and Ipopt (https://github.com/coin-or/Ipopt)) that one must install prior to compiling. Fortunately, all these dependencies are also hosted on the *conda-forge* channel of Anaconda. Therefore the following command will install everything you need to compile BIORBD:
+BIORBD relies on several libraries (namely eigen ([http://eigen.tuxfamily.org]) or CasADi ([https://web.casadi.org/]), rbdl-casadi (https://github.com/pyomeca/rbdl-casadi), tinyxml2(https://github.com/leethomason/tinyxml2) and Ipopt (https://github.com/coin-or/Ipopt)) that one must install prior to compiling. Fortunately, all these dependencies are also hosted on the *conda-forge* channel of Anaconda or will automatically be compiled when building BIORBD. Therefore the following command will install everything you need to compile BIORBD:
 ```bash
-conda install -c conda-forge rbdl [tinyxml] [ipopt] [pkgconfig] [cmake] [scipy]
+conda install -c conda-forge rbdl [ipopt] [pkgconfig] [cmake] [scipy]
 ```
 Please note:
-- ```tinyxml``` is optional, but is required for reading VTP files;
+- ```tinyxml2``` will be automatically downloaded and linked if the `MODULE_VTP_FILES_READER` is set to `ON`;
 - ```ipopt``` is optional, but is required for the *Static optimization* module;
 - ```pkgconfig``` and ```cmake``` are very useful tools that can prevents lot of headaches when compiling; 
 
@@ -153,7 +153,7 @@ BIORBD comes with a CMake (https://cmake.org/) project. If you don't know how to
 >
 > `MODULE_STATIC_OPTIM` If you want (`ON`) or not (`OFF`) to build the Static optimization module. Default is `ON` (if `ipopt` is found).
 >
-> `MODULE_VTP_FILES_READER` If you want (`ON`) or not (`OFF`) to build with the vtp files reader module. Default is `ON` (if `tinyxml` is found). This allows to read mesh files produced by `OpenSim`.
+> `MODULE_VTP_FILES_READER` If you want (`ON`) or not (`OFF`) to build with the vtp files reader module. Default is `ON` (if `tinyxml2` is found). This allows to read mesh files produced by `OpenSim`.
 > 
 > `SKIP_ASSERT` If you want (`ON`) or not (`OFF`) to skip the asserts in the functions (e.g. checks for sizes). Default is `OFF`. Putting this to `OFF` reduces the risks of Segmentation Faults, it will however slow down the code when using `Eigen3` backend.
 >

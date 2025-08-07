@@ -24,6 +24,3 @@ find_package_handle_standard_args (Casadi DEFAULT_MSG
     Casadi_LIBRARY
     Casadi_INCLUDE_DIR
 )
-
-
-

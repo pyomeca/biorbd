@@ -304,8 +304,8 @@ void rigidbody::Segment::setJointDampings(
     utils::Error::check(isVectorHasDofDimension(jointDampings, false), "jointDampings must be empty or of the same size as the number of dof");
     
     if (jointDampings.size() == 0) {
-        int nTrans = *m_nbDofTrans;
-        int nRot = *m_isQuaternion ? 3 : *m_nbDofRot;
+        size_t nTrans = *m_nbDofTrans;
+        size_t nRot = *m_isQuaternion ? 3 : *m_nbDofRot;
         *m_jointDampings = std::vector<utils::Scalar>(nTrans + nRot, 0);
     } else {
         *m_jointDampings = jointDampings;
@@ -376,8 +376,8 @@ bool rigidbody::Segment::isVectorHasDofDimension(
     const std::vector<T>& vec, 
     bool isQLevel) const 
 {
-    int nTrans = *m_nbDofTrans;
-    int nRot = *m_isQuaternion ? (isQLevel ? 4 : 3) : *m_nbDofRot;
+    size_t nTrans = *m_nbDofTrans;
+    size_t nRot = *m_isQuaternion ? (isQLevel ? 4 : 3) : *m_nbDofRot;
     return vec.size() == 0 || vec.size() == nTrans + nRot;
 }
 
