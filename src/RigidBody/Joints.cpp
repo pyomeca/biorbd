@@ -1304,14 +1304,22 @@ utils::Vector3d rigidbody::Joints::CalcAngularMomentum (
 }
 
 std::vector<utils::Vector3d>
-rigidbody::Joints::CalcSegmentsAngularMomentum (
+rigidbody::Joints::CalcSegmentsAngularMomentum(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot,
     bool updateKin)
 {
+#ifdef BIORBD_USE_CASADI_MATH
+    rigidbody::Joints
+#else
+    rigidbody::Joints &
+#endif
+    updatedModel = this->UpdateKinematicsCustom(updateKin ? &Q : nullptr, updateKin ? &Qdot : nullptr, updateKin ? Qddot : nullptr);
+
     utils::Scalar mass;
     utils::Vector3d com;
-    this->CalcCenterOfMass (
+    RigidBodyDynamics::Utils::CalcCenterOfMass(
+        updatedModel, 
         Q, 
         Qdot, 
         nullptr, 
@@ -1321,70 +1329,84 @@ rigidbody::Joints::CalcSegmentsAngularMomentum (
         nullptr, 
         nullptr, 
         nullptr, 
-        updateKin
+        false
     );
-    utils::SpatialTransform X_to_COM (RigidBodyDynamics::Math::Xtrans(com));
+    utils::SpatialTransform X_to_COM(RigidBodyDynamics::Math::Xtrans(com));
 
     std::vector<utils::Vector3d> h_segment;
-    for (size_t i = 1; i < this->mBodies.size(); i++) {
-        this->Ic[i] = this->I[i];
-        this->hc[i] = this->Ic[i].toMatrix() * this->v[i];
+    for (size_t i = 1; i < thisupdateModel.mBodies.size(); i++)
+    {
+        updateModel.Ic[i] = updateModel.I[i];
+        updateModel.hc[i] = updateModel.Ic[i].toMatrix() * updateModel.v[i];
 
-        utils::SpatialVector h = this->X_lambda[i].applyTranspose (
-                    this->hc[i]);
-        if (this->lambda[i] != 0) {
+        utils::SpatialVector h = updateModel.X_lambda[i].applyTranspose(
+            updateModel.hc[i]);
+        if (updateModel.lambda[i] != 0)
+        {
             size_t j(i);
-            do {
-                j = this->lambda[j];
-                h = this->X_lambda[j].applyTranspose (h);
-            } while (this->lambda[j]!=0);
+            do
+            {
+                j = updateModel.lambda[j];
+                h = updateModel.X_lambda[j].applyTranspose(h);
+            } while (updateModel.lambda[j] != 0);
         }
-        h = X_to_COM.applyAdjoint (h);
-        h_segment.push_back(utils::Vector3d(h[0],h[1],h[2]));
+        h = X_to_COM.applyAdjoint(h);
+        h_segment.push_back(utils::Vector3d(h[0], h[1], h[2]));
     }
 
     return h_segment;
 }
 
 std::vector<utils::Vector3d>
-rigidbody::Joints::CalcSegmentsAngularMomentum (
+rigidbody::Joints::CalcSegmentsAngularMomentum(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot,
     const rigidbody::GeneralizedAcceleration &Qddot,
     bool updateKin)
 {
+#ifdef BIORBD_USE_CASADI_MATH
+    rigidbody::Joints
+#else
+    rigidbody::Joints &
+#endif
+    updatedModel = this->UpdateKinematicsCustom(updateKin ? &Q : nullptr, updateKin ? &Qdot : nullptr, updateKin ? Qddot : nullptr);
+    
     utils::Scalar mass;
     utils::Vector3d com;
-    this->CalcCenterOfMass (
+    RigidBodyDynamics::Utils::CalcCenterOfMass(
+        updatedModel, 
         Q, 
         Qdot, 
         &Qddot, 
         mass, 
-        com,
+        com, 
         nullptr, 
         nullptr, 
         nullptr, 
-        nullptr,
-        updateKin
+        nullptr, 
+        false
     );
-    utils::SpatialTransform X_to_COM (RigidBodyDynamics::Math::Xtrans(com));
+    utils::SpatialTransform X_to_COM(RigidBodyDynamics::Math::Xtrans(com));
 
     std::vector<utils::Vector3d> h_segment;
-    for (size_t i = 1; i < this->mBodies.size(); i++) {
-        this->Ic[i] = this->I[i];
-        this->hc[i] = this->Ic[i].toMatrix() * this->v[i];
+    for (size_t i = 1; i < updateModel.mBodies.size(); i++)
+    {
+        updateModel.Ic[i] = updateModel.I[i];
+        updateModel.hc[i] = updateModel.Ic[i].toMatrix() * updateModel.v[i];
 
-        utils::SpatialVector h = this->X_lambda[i].applyTranspose (
-                    this->hc[i]);
-        if (this->lambda[i] != 0) {
+        utils::SpatialVector h = updateModel.X_lambda[i].applyTranspose(
+            updateModel.hc[i]);
+        if (updateModel.lambda[i] != 0)
+        {
             size_t j(i);
-            do {
-                j = this->lambda[j];
-                h = this->X_lambda[j].applyTranspose (h);
-            } while (this->lambda[j]!=0);
+            do
+            {
+                j = updateModel.lambda[j];
+                h = updateModel.X_lambda[j].applyTranspose(h);
+            } while (updateModel.lambda[j] != 0);
         }
-        h = X_to_COM.applyAdjoint (h);
-        h_segment.push_back(utils::Vector3d(h[0],h[1],h[2]));
+        h = X_to_COM.applyAdjoint(h);
+        h_segment.push_back(utils::Vector3d(h[0], h[1], h[2]));
     }
 
     return h_segment;
