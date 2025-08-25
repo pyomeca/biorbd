@@ -146,7 +146,7 @@ function(FindOrBuildRBDL MATH_BACKEND)
     if(WIN32)
         set_target_properties(RBDL::RBDL PROPERTIES
             IMPORTED_IMPLIB "${RBDL_LIBRARY}"
-            IMPORTED_LOCATION "${RBDL_RUNTIME_DIR}/rbdl.dll"
+            IMPORTED_LOCATION "${RBDL_LIBRARY}"
         )
     endif()
 
