@@ -177,7 +177,6 @@ endif()
 # Add headers
 # Include directories when building the library:
 target_include_directories(${BIORBD_NAME} PRIVATE
-    "${RBDL_INCLUDE_DIR}"
     "${MATH_BACKEND_INCLUDE_DIR}"
     "${TinyXML2_INCLUDE_DIR}"
     "${CMAKE_SOURCE_DIR}/include"
@@ -253,7 +252,7 @@ endif()
 # Add linker
 target_link_libraries(${BIORBD_NAME}
     "${BIORBD_MODULE_NAMES}"
-    "${RBDL_LIBRARY}"
+    RBDL::RBDL
     "${IPOPT_LIBRARY}"
     "${TinyXML2_LIBRARY}"
     "${MATH_BACKEND_LIBRARIES}"

@@ -26,7 +26,6 @@ add_executable(${PROJECT_NAME} ${FILE})
 
 # Headers
 target_include_directories(${PROJECT_NAME} PUBLIC 
-    ${RBDL_INCLUDE_DIR}
     ${Casadi_INCLUDE_DIR}
     ${Casadi_INCLUDE_DIR}/..
     ${biorbd_casadi_INCLUDE_DIR}
@@ -42,7 +41,7 @@ endif()
 # Linker and instalation
 target_link_libraries(${PROJECT_NAME} 
     ${biorbd_casadi_LIBRARIES}
-    ${RBDL_LIBRARY}
+    RBDL::RBDL
     ${Casadi_LIBRARY}
     tinyxml2::tinyxml2
 )

@@ -74,7 +74,6 @@ add_dependencies(${PROJECT_NAME} ${BIORBD_NAME})
 
 # headers for the project
 target_include_directories(${PROJECT_NAME} PRIVATE
-    "${RBDL_INCLUDE_DIR}"
     "${MATH_BACKEND_INCLUDE_DIR}"
     "${IPOPT_INCLUDE_DIR}"
     "${CMAKE_SOURCE_DIR}/include"
@@ -87,7 +86,9 @@ target_link_libraries(${PROJECT_NAME}
 
 # Extra linking for the project.
 target_link_libraries(${PROJECT_NAME}
-    "${BIORBD_NAME}")
+    "${BIORBD_NAME}"
+    RBDL::RBDL
+)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Coverage")
     set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../modules)

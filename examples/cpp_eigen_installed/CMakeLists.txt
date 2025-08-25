@@ -25,7 +25,6 @@ add_executable(${PROJECT_NAME} ${FILE})
 
 # Headers
 target_include_directories(${PROJECT_NAME} PUBLIC 
-    ${RBDL_INCLUDE_DIR}
     ${EIGEN3_INCLUDE_DIR}
     ${biorbd_eigen_INCLUDE_DIR}
 )
@@ -39,7 +38,7 @@ endif()
 # Linker and instalation
 target_link_libraries(${PROJECT_NAME} 
     ${biorbd_eigen_LIBRARIES}
-    ${RBDL_LIBRARY}
+    RBDL::RBDL
     tinyxml2::tinyxml2
 )
 
