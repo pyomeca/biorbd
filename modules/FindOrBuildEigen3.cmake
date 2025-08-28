@@ -1,10 +1,7 @@
 function(FindOrBuildEigen3)
-    include(ExternalProject)
-
     # -------------------------------
     # Try finding existing install
     # -------------------------------
-
     find_package(Eigen3 QUIET
         PATHS ${INSTALL_DEPENDENCIES_PREFIX} ${CMAKE_INSTALL_PREFIX}
     )
@@ -18,6 +15,7 @@ function(FindOrBuildEigen3)
     # If not found → build from source
     # -------------------------------
     message(STATUS "EIGEN3 not found, using version 3.4 from GitLab")
+    include(ExternalProject)
     
     if (NOT INSTALL_DEPENDENCIES_PREFIX OR INSTALL_DEPENDENCIES_PREFIX STREQUAL "")
         set(EIGEN3_INSTALL_DIR "${CMAKE_BINARY_DIR}/Eigen3_install")

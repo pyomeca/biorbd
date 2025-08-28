@@ -1,6 +1,4 @@
 function(FindOrBuildRBDL MATH_BACKEND)
-    include(ExternalProject)
-
     # -------------------------------
     # Validate backend
     # -------------------------------
@@ -18,9 +16,31 @@ function(FindOrBuildRBDL MATH_BACKEND)
     endif()
     
     if(${MATH_BACKEND} STREQUAL "EIGEN")
-        find_package(RBDL QUIET
+        set(RBDL_PACKAGE_TO_FIND RBDL)   
+    elseif(${MATH_BACKEND} STREQUAL "CASADI")
+        set(RBDL_PACKAGE_TO_FIND RBDLCasadi)
+    endif()
+
+    find_package(${RBDL_PACKAGE_TO_FIND} QUIET
+        PATHS ${CUSTOM_RBDL_PATH} ${INSTALL_DEPENDENCIES_PREFIX} ${CMAKE_INSTALL_PREFIX}
+    )
+    if (
+        (${MATH_BACKEND} STREQUAL "EIGEN" AND NOT ${RBDL_INCLUDE_DIR}) OR 
+        (${MATH_BACKEND} STREQUAL "CASADI" AND NOT ${RBDLCasadi_INCLUDE_DIR})
+        )
+        # The CUSTOM_RBDL_PATH is automatically used to force the path by find_package which may 
+        # cause problem to find an installed version as it set RBDL_FOUND even though it is not. 
+        # So if the actual DIR is not found we unset it and try to find again. 
+        set(CUSTOM_RBDL_PATH_TP ${CUSTOM_RBDL_PATH})
+        unset(CUSTOM_RBDL_PATH)
+        # Retry with the custom path set
+        find_package(${RBDL_PACKAGE_TO_FIND} QUIET
             PATHS ${CUSTOM_RBDL_PATH} ${INSTALL_DEPENDENCIES_PREFIX} ${CMAKE_INSTALL_PREFIX}
         )
+        set(CUSTOM_RBDL_PATH ${CUSTOM_RBDL_PATH_TP})
+    endif()
+
+    if(${MATH_BACKEND} STREQUAL "EIGEN")
         if(TARGET RBDL::RBDL)
             message(STATUS "Found RBDL (Eigen backend) with modern target")
             return()
@@ -34,10 +54,7 @@ function(FindOrBuildRBDL MATH_BACKEND)
             return()
         endif()
 
-    elseif(MATH_BACKEND STREQUAL "CASADI")
-        find_package(RBDLCasadi QUIET
-            PATHS ${CUSTOM_RBDLCasadi_PATH} ${INSTALL_DEPENDENCIES_PREFIX} ${CMAKE_INSTALL_PREFIX}
-        )
+    elseif(${MATH_BACKEND} STREQUAL "CASADI")
         if(TARGET RBDL::RBDL)
             message(STATUS "Found RBDL (CasADi backend) with modern target")
             return()
@@ -49,7 +66,6 @@ function(FindOrBuildRBDL MATH_BACKEND)
                 INTERFACE_INCLUDE_DIRECTORIES "${RBDLCasadi_INCLUDE_DIR}"
             )
             return()
-            
         endif()
     endif()
 
@@ -57,6 +73,7 @@ function(FindOrBuildRBDL MATH_BACKEND)
     # If not found → build from source
     # -------------------------------
     message(STATUS "RBDL not found, using version master from GitHub")
+    include(ExternalProject)
 
     # Backend config
     if(${MATH_BACKEND} STREQUAL "EIGEN")
