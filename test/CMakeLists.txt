@@ -74,7 +74,6 @@ add_dependencies(${PROJECT_NAME} ${BIORBD_NAME})
 
 # headers for the project
 target_include_directories(${PROJECT_NAME} PRIVATE
-    "${MATH_BACKEND_INCLUDE_DIR}"
     "${IPOPT_INCLUDE_DIR}"
     "${CMAKE_SOURCE_DIR}/include"
     "${BIORBD_BINARY_DIR}/include"
@@ -82,12 +81,14 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 
 # Standard linking to gtest stuff.
 target_link_libraries(${PROJECT_NAME}
-    "gtest_main")
+    "gtest_main"
+)
 
 # Extra linking for the project.
 target_link_libraries(${PROJECT_NAME}
     "${BIORBD_NAME}"
     RBDL::RBDL
+    ${MATH_BACKEND_LIBRARIES}
 )
 
 if (CMAKE_BUILD_TYPE STREQUAL "Coverage")

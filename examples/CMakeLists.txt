@@ -29,7 +29,6 @@ foreach(FILE ${EXAMPLE_FILES})
     # Headers
     target_include_directories(${PROJECT_NAME} PRIVATE
         "${IPOPT_INCLUDE_DIR}"
-        "${MATH_BACKEND_INCLUDE_DIR}"
         "${CMAKE_SOURCE_DIR}/include"
         "${BIORBD_BINARY_DIR}/include"
         "${INSTALL_DEPENDENCIES_PREFIX}/include"
@@ -39,6 +38,7 @@ foreach(FILE ${EXAMPLE_FILES})
     target_link_libraries(${PROJECT_NAME}
         "${BIORBD_NAME}"
         RBDL::RBDL
+        ${MATH_BACKEND_LIBRARIES}
     )
 endforeach()
 

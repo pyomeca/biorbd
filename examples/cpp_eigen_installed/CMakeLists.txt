@@ -25,7 +25,6 @@ add_executable(${PROJECT_NAME} ${FILE})
 
 # Headers
 target_include_directories(${PROJECT_NAME} PUBLIC 
-    ${EIGEN3_INCLUDE_DIR}
     ${biorbd_eigen_INCLUDE_DIR}
 )
 find_package(IPOPT)
@@ -39,6 +38,7 @@ endif()
 target_link_libraries(${PROJECT_NAME} 
     ${biorbd_eigen_LIBRARIES}
     RBDL::RBDL
+    Eigen3::Eigen
     tinyxml2::tinyxml2
 )
 

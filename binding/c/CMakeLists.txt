@@ -17,7 +17,6 @@ endif()
 # Add headers
 target_include_directories(${PROJECT_NAME} PRIVATE
     "${C_BINDING_PATH}"
-    "${MATH_BACKEND_INCLUDE_DIR}"
     "${CMAKE_SOURCE_DIR}/include"
     "${BIORBD_BINARY_DIR}/include"
     "${INSTALL_DEPENDENCIES_PREFIX}/include"
@@ -36,6 +35,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 target_link_libraries(${PROJECT_NAME}
     ${BIORBD_NAME}
     RBDL::RBDL
+    ${MATH_BACKEND_LIBRARIES}
 )
 
 install(TARGETS ${PROJECT_NAME}

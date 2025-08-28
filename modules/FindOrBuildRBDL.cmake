@@ -11,6 +11,12 @@ function(FindOrBuildRBDL MATH_BACKEND)
     # -------------------------------
     # Try finding existing install
     # -------------------------------
+    if(NOT INSTALL_DEPENDENCIES_PREFIX OR INSTALL_DEPENDENCIES_PREFIX STREQUAL "")
+        set(CUSTOM_RBDL_PATH "${CMAKE_BINARY_DIR}/RBDL_install")
+    else()
+        set(CUSTOM_RBDL_PATH ${INSTALL_DEPENDENCIES_PREFIX})
+    endif()
+    
     if(${MATH_BACKEND} STREQUAL "EIGEN")
         find_package(RBDL QUIET
             PATHS ${CUSTOM_RBDL_PATH} ${INSTALL_DEPENDENCIES_PREFIX} ${CMAKE_INSTALL_PREFIX}
@@ -43,19 +49,14 @@ function(FindOrBuildRBDL MATH_BACKEND)
                 INTERFACE_INCLUDE_DIRECTORIES "${RBDLCasadi_INCLUDE_DIR}"
             )
             return()
+            
         endif()
     endif()
 
     # -------------------------------
     # If not found → build from source
     # -------------------------------
-    message(STATUS "RBDL not found, building from GitHub")
-
-    if(NOT INSTALL_DEPENDENCIES_PREFIX OR INSTALL_DEPENDENCIES_PREFIX STREQUAL "")
-        set(RBDL_INSTALL_DIR "${CMAKE_BINARY_DIR}/RBDL_install")
-    else()
-        set(RBDL_INSTALL_DIR ${INSTALL_DEPENDENCIES_PREFIX})
-    endif()
+    message(STATUS "RBDL not found, using version master from GitHub")
 
     # Backend config
     if(${MATH_BACKEND} STREQUAL "EIGEN")
@@ -101,9 +102,12 @@ function(FindOrBuildRBDL MATH_BACKEND)
         endif()
     endif()
 
+    set(RBDL_INSTALL_DIR "${CUSTOM_RBDL_PATH}")
     set(RBDL_LIBRARY "${RBDL_INSTALL_DIR}/lib/${RBDL_LIB_NAME}")
     set(RBDL_DEPENDS "")
-    if(MATH_BACKEND STREQUAL "CASADI" AND NOT Casadi_FOUND)
+    if(${MATH_BACKEND} STREQUAL "EIGEN" AND NOT TARGET Eigen3::Eigen)
+        list(APPEND RBDL_DEPENDS Eigen3_external)
+    elseif(${MATH_BACKEND} STREQUAL "CASADI" AND NOT Casadi_FOUND)
         list(APPEND RBDL_DEPENDS casadi_external)
     endif()
 
@@ -116,7 +120,7 @@ function(FindOrBuildRBDL MATH_BACKEND)
             -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
             -DRBDL_BUILD_STATIC=${RBDL_TARGET_STATIC}
             -DRBDL_BUILD_CASADI=${RBDL_BUILD_CASADI}
-            -DEigen3_DIR=${EIGEN3_DIR}
+            -DEigen3_DIR=${Eigen3_DIR}
             -DCasadi_DIR=${Casadi_DIR}
             -DCasadi_INCLUDE_DIR=${Casadi_INCLUDE_DIR}
             -DCasadi_LIBRARY=${Casadi_LIBRARY}

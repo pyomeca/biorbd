@@ -49,7 +49,6 @@ set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_debug")
 
 # Add the include
 target_include_directories(${PROJECT_NAME} PRIVATE
-    "${MATH_BACKEND_INCLUDE_DIR}"
     "${IPOPT_INCLUDE_DIR}"
     "${CMAKE_SOURCE_DIR}/include"
     "${BIORBD_BINARY_DIR}/include"
@@ -59,6 +58,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 # Add the dependencies for insuring build order
 target_link_libraries(${PROJECT_NAME}
     RBDL::RBDL
+    ${MATH_BACKEND_LIBRARIES}
     "${IPOPT_LIBRARY}"
     "${BIORBD_NAME}_utils"
     "${BIORBD_NAME}_rigidbody"

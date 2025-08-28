@@ -77,18 +77,12 @@ if (EIGEN3_IS_BUILT)
     list(APPEND BUILD_DEPENDENCIES EIGEN3_BUILD)
 endif()
 if(${MATH_LIBRARY_BACKEND} STREQUAL "Eigen3")
-    set(MATH_BACKEND_INCLUDE_DIR ${EIGEN3_INCLUDE_DIR})
-    set(MATH_BACKEND_LIBRARIES "")
+    set(MATH_BACKEND_LIBRARIES Eigen3::Eigen)
     FindOrBuildRBDL(EIGEN)
     
 elseif(${MATH_LIBRARY_BACKEND} STREQUAL "Casadi")
     include(FindOrBuildCasadi)
     FindOrBuildCasadi()
-    if (Casadi_IS_BUILT)
-        set(MATH_BACKEND_INCLUDE_DIR "${Casadi_INCLUDE_DIR}")
-    else()
-        set(MATH_BACKEND_INCLUDE_DIR "${Casadi_INCLUDE_DIR};${Casadi_INCLUDE_DIR}/..")
-    endif()
     set(MATH_BACKEND_LIBRARIES ${Casadi_LIBRARY})
     
     FindOrBuildRBDL(CASADI)
@@ -177,7 +171,6 @@ endif()
 # Add headers
 # Include directories when building the library:
 target_include_directories(${BIORBD_NAME} PRIVATE
-    "${MATH_BACKEND_INCLUDE_DIR}"
     "${TinyXML2_INCLUDE_DIR}"
     "${CMAKE_SOURCE_DIR}/include"
     "${BIORBD_BINARY_DIR}/include"
@@ -255,7 +248,7 @@ target_link_libraries(${BIORBD_NAME}
     RBDL::RBDL
     "${IPOPT_LIBRARY}"
     "${TinyXML2_LIBRARY}"
-    "${MATH_BACKEND_LIBRARIES}"
+    ${MATH_BACKEND_LIBRARIES}
 )
 
 # install target

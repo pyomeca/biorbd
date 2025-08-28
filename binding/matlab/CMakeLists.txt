@@ -36,7 +36,6 @@ foreach(CPP_FILE ${CPP_FILES})
 
     # Add headers
     target_include_directories(${PROJECT_NAME} PRIVATE
-        "${MATH_BACKEND_INCLUDE_DIR}"
         "${Matlab_INCLUDE_DIRS}"
         "${CMAKE_SOURCE_DIR}/include"
         "${BIORBD_BINARY_DIR}/include"
@@ -92,6 +91,7 @@ foreach(CPP_FILE ${CPP_FILES})
     target_link_libraries(${PROJECT_NAME}
         "${BIORBD_NAME}"
         RBDL::RBDL
+        ${MATH_BACKEND_LIBRARIES}
         "${Matlab_MX_LIBRARY}"
         "${Matlab_MEX_LIBRARY}"
     )

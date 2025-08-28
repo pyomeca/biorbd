@@ -66,7 +66,6 @@ endif()
 # Add headers
 target_include_directories(${PYTHON_PROJECT_NAME} PRIVATE
     "${RBDL_INCLUDE_DIR}"
-    "${MATH_BACKEND_INCLUDE_DIR}"
     "${IPOPT_INCLUDE_DIR}"
     "${Python3_INCLUDE_DIRS}"
     "${Python3_NumPy_INCLUDE_DIRS}"

@@ -7,7 +7,6 @@ add_executable(${PROJECT_NAME} "${TEST_SRC_FILES}")
 
 # headers for the project
 target_include_directories(${PROJECT_NAME} PRIVATE
-    "${MATH_BACKEND_INCLUDE_DIR}"
     "${CMAKE_SOURCE_DIR}/include"
     "${CMAKE_SOURCE_DIR}/binding/c"
     "${CMAKE_SOURCE_DIR}/include"
@@ -21,6 +20,7 @@ target_link_libraries(${PROJECT_NAME} "gtest_main")
 target_link_libraries(${PROJECT_NAME} 
     "${BIORBD_NAME}_c"
     RBDL::RBDL
+    ${MATH_BACKEND_LIBRARIES}
 )
 
 # Copy the necessary file for the tests
