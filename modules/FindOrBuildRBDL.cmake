@@ -44,7 +44,7 @@ function(FindOrBuildRBDL MATH_BACKEND)
         if(TARGET RBDL::RBDL)
             message(STATUS "Found RBDL (Eigen backend) with modern target")
             return()
-        elseif(RBDL_FOUND)
+        elseif(RBDL_LIBRARY)
             message(STATUS "Found RBDL (Eigen backend), wrapping legacy variables")
             add_library(RBDL::RBDL UNKNOWN IMPORTED)
             set_target_properties(RBDL::RBDL PROPERTIES
@@ -55,10 +55,16 @@ function(FindOrBuildRBDL MATH_BACKEND)
         endif()
 
     elseif(${MATH_BACKEND} STREQUAL "CASADI")
+        # We need to add "/casadi" as an extra include directory
+        get_target_property(Casadi_INCLUDE_DIRS casadi::casadi INTERFACE_INCLUDE_DIRECTORIES)
+        set_target_properties(casadi::casadi PROPERTIES
+            INTERFACE_INCLUDE_DIRECTORIES "${Casadi_INCLUDE_DIRS};${Casadi_INCLUDE_DIRS}/casadi"
+        )
+
         if(TARGET RBDL::RBDL)
             message(STATUS "Found RBDL (CasADi backend) with modern target")
             return()
-        elseif(RBDLCasadi_FOUND)
+        elseif(RBDLCasadi_LIBRARY)
             message(STATUS "Found RBDL (CasADi backend), wrapping legacy variables")
             add_library(RBDL::RBDL UNKNOWN IMPORTED)
             set_target_properties(RBDL::RBDL PROPERTIES
@@ -80,18 +86,19 @@ function(FindOrBuildRBDL MATH_BACKEND)
         set(RBDL_BUILD_CASADI OFF)
         set(RBDL_LIBRARY_SUFFIX "")
         set(Casadi_DIR "")
+        set(Casadi_INCLUDE_DIR "")
+        set(Casadi_LIBRARY "")
     elseif (${MATH_BACKEND} STREQUAL "CASADI")
         set(RBDL_BUILD_CASADI ON)
         set(RBDL_LIBRARY_SUFFIX "-casadi")
-
-        # If CasADi is already found, use it
-        if(${Casadi_FOUND})
-            set(Casadi_DIR "${Casadi_DIR}")
-        else()
-            # Else assume superbuild is providing it → use its install dir
-            set(Casadi_DIR "${Casadi_INSTALL_DIR}")
-        endif()
-
+        # Casadi_DIR is set from casadi::casadi
+        # We need to add the Casadi_LIBRARY to the casadi::casadi target
+        get_target_property(Casadi_INCLUDE_DIRS casadi::casadi INTERFACE_INCLUDE_DIRECTORIES)
+        list(GET Casadi_INCLUDE_DIRS 1 Casadi_INCLUDE_DIR)
+        
+        find_library(Casadi_LIBRARY NAMES casadi
+            PATHS "${INSTALL_DEPENDENCIES_PREFIX}/lib" "${CMAKE_INSTALL_PREFIX}/lib"
+        )
     else()
 		message(FATAL_ERROR "Backend not implemented")
     endif()
@@ -122,10 +129,11 @@ function(FindOrBuildRBDL MATH_BACKEND)
     set(RBDL_INSTALL_DIR "${CUSTOM_RBDL_PATH}")
     set(RBDL_LIBRARY "${RBDL_INSTALL_DIR}/lib/${RBDL_LIB_NAME}")
     set(RBDL_DEPENDS "")
-    if(${MATH_BACKEND} STREQUAL "EIGEN" AND NOT TARGET Eigen3::Eigen)
+    if(TARGET Eigen3_external)
         list(APPEND RBDL_DEPENDS Eigen3_external)
-    elseif(${MATH_BACKEND} STREQUAL "CASADI" AND NOT Casadi_FOUND)
-        list(APPEND RBDL_DEPENDS casadi_external)
+    endif()
+    if(TARGET Casadi_external)
+        list(APPEND RBDL_DEPENDS Casadi_external)
     endif()
 
     ExternalProject_Add(rbdl_external
@@ -172,16 +180,10 @@ function(FindOrBuildRBDL MATH_BACKEND)
     endif()
 
     # Dependencies
-    if(${EIGEN3_IS_BUILT})
-        add_dependencies(rbdl_external EIGEN3_BUILD)
-    endif()
-    if(${MATH_BACKEND} STREQUAL "CASADI")
-        if(Casadi_FOUND)
-            target_link_libraries(RBDL::RBDL INTERFACE ${Casadi_LIBRARY})
-            target_include_directories(RBDL::RBDL INTERFACE ${Casadi_INCLUDE_DIR})
-        else()
-            add_dependencies(rbdl_external casadi_external)
-            target_link_libraries(RBDL::RBDL INTERFACE Casadi::Casadi)
-        endif()
+    add_dependencies(rbdl_external ${RBDL_DEPENDS})
+    if(${MATH_BACKEND} STREQUAL "EIGEN")
+        target_link_libraries(RBDL::RBDL INTERFACE Eigen3::Eigen)
+    elseif(${MATH_BACKEND} STREQUAL "CASADI")
+        target_link_libraries(RBDL::RBDL INTERFACE casadi::casadi)
     endif()
 endfunction()

@@ -73,23 +73,14 @@ set(BUILD_DEPENDENCIES)
 include(FindOrBuildEigen3)
 FindOrBuildEigen3()
 include(FindOrBuildRBDL)
-if (EIGEN3_IS_BUILT)
-    list(APPEND BUILD_DEPENDENCIES EIGEN3_BUILD)
-endif()
 if(${MATH_LIBRARY_BACKEND} STREQUAL "Eigen3")
     set(MATH_BACKEND_LIBRARIES Eigen3::Eigen)
     FindOrBuildRBDL(EIGEN)
-    
 elseif(${MATH_LIBRARY_BACKEND} STREQUAL "Casadi")
     include(FindOrBuildCasadi)
     FindOrBuildCasadi()
-    set(MATH_BACKEND_LIBRARIES ${Casadi_LIBRARY})
-    
+    set(MATH_BACKEND_LIBRARIES casadi::casadi)
     FindOrBuildRBDL(CASADI)
-    
-    if (RBDL_IS_BUILT)
-        list(APPEND BUILD_DEPENDENCIES RBDL_BUILD)
-    endif()
 endif()
 find_package(IPOPT)
 
@@ -164,7 +155,13 @@ configure_file(${CMAKE_SOURCE_DIR}/include/biorbdConfig.h.in
 )
 
 # Make sure everything is compiled before proceeding
-if (BUILD_DEPENDENCIES)
+if(TARGET Eigen3_external)
+    add_dependencies(${BIORBD_NAME} Eigen3_external)
+endif()
+if(TARGET Casadi_external)
+    add_dependencies(${BIORBD_NAME} Casadi_external)
+endif()
+if (TARGET BUILD_DEPENDENCIES)
     add_dependencies(${BIORBD_NAME} ${BUILD_DEPENDENCIES})
 endif()
 
