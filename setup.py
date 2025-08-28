@@ -4,11 +4,10 @@ import re
 import os
 import sys
 import platform
-import pathlib
 
 
 def get_install_base():
-    current_folder = pathlib.Path(__file__).parent
+    current_folder = Path(__file__).parent
     platform_name = platform.system().lower()
     
     if platform_name == "linux":
@@ -54,8 +53,19 @@ def get_install_site_packages():
     # Get the local site packages folder for the installation that is used by "pip install ."
     python_version = f"python{sys.version_info.major}.{sys.version_info.minor}"
     
-    # Expected path inside _skbuild (before it exists)
-    return pathlib.Path(f"{get_install_base()}/lib/{python_version}/site-packages")
+    import site
+    site_packages = site.getsitepackages()
+    if not site_packages:
+        raise RuntimeError("Unable to find site-packages directory")
+
+    for site_package in site_packages:
+        if "site-packages" in site_package:
+            if python_version in site_package:
+                return Path(f"{get_install_base()}/lib/{python_version}/site-packages")
+            else: 
+                return Path(f"{get_install_base()}/lib/site-packages")
+    
+    return Path(f"{get_install_base()}/lib/{python_version}/site-packages")
     
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
