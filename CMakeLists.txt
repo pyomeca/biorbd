@@ -69,7 +69,6 @@ endif()
 set (BIORBD_NAME ${PROJECT_NAME}_${BIORBD_LIB_SUFFIX})
 
 # Define a list of dependencies to wait for if they are being built
-set(BUILD_DEPENDENCIES)
 include(FindOrBuildEigen3)
 FindOrBuildEigen3()
 include(FindOrBuildRBDL)
@@ -124,10 +123,6 @@ endif()
 if (MODULE_VTP_FILES_READER)
     include(FindOrBuildTinyXML2)
     FindOrBuildTinyXML2()
-    if (TinyXML2_IS_BUILT)
-        list(APPEND BUILD_DEPENDENCIES TinyXML2_BUILD)
-    endif()
-    
 else()
     set(TinyXML2_LIBRARY "")
 endif()
@@ -154,21 +149,9 @@ configure_file(${CMAKE_SOURCE_DIR}/include/biorbdConfig.h.in
     "${BIORBD_BINARY_DIR}/include/biorbdConfig.h"
 )
 
-# Make sure everything is compiled before proceeding
-if(TARGET Eigen3_external)
-    add_dependencies(${BIORBD_NAME} Eigen3_external)
-endif()
-if(TARGET Casadi_external)
-    add_dependencies(${BIORBD_NAME} Casadi_external)
-endif()
-if (TARGET BUILD_DEPENDENCIES)
-    add_dependencies(${BIORBD_NAME} ${BUILD_DEPENDENCIES})
-endif()
-
 # Add headers
 # Include directories when building the library:
 target_include_directories(${BIORBD_NAME} PRIVATE
-    "${TinyXML2_INCLUDE_DIR}"
     "${CMAKE_SOURCE_DIR}/include"
     "${BIORBD_BINARY_DIR}/include"
     "${INSTALL_DEPENDENCIES_PREFIX}/include"
@@ -244,7 +227,7 @@ target_link_libraries(${BIORBD_NAME}
     "${BIORBD_MODULE_NAMES}"
     RBDL::RBDL
     "${IPOPT_LIBRARY}"
-    "${TinyXML2_LIBRARY}"
+    tinyxml2::tinyxml2
     ${MATH_BACKEND_LIBRARIES}
 )
 
