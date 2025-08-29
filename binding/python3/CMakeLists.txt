@@ -7,6 +7,9 @@ endif()
 if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.27")
     cmake_policy(SET CMP0148 OLD)
 endif()
+if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "4.1.1")
+    cmake_policy(SET CMP0177 OLD)
+endif()
 
 # Windows needs a bigobj option
 if(MSVC)
