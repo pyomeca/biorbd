@@ -49,7 +49,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          conda install -cconda-forge rbdl>=3.3.1 tinyxml2 ipopt 
+          conda install -cconda-forge rbdl tinyxml2 ipopt 
           conda install -cconda-forge swig python numpy scipy pytest
           conda list
 
