@@ -56,6 +56,9 @@ swig_link_libraries(${PROJECT_NAME}
     "${BIORBD_NAME}"
     "${Python3_LIBRARIES}"
 )
+target_link_libraries(${PROJECT_NAME}
+    "${BIORBD_NAME}"
+)
 
 if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.13")
     set(PYTHON_PROJECT_NAME ${PROJECT_NAME})
