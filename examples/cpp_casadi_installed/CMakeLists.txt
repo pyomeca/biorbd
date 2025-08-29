@@ -17,7 +17,7 @@ endif()
 
 find_package(biorbd_casadi REQUIRED)
 include(FindRBDLWithBackend)
-FindRBDLWithBackend(Casadi)
+FindRBDLWithBackend(CASADI)
 find_package(Eigen3 REQUIRED)
 find_package(TinyXML2 REQUIRED)
 find_package(Casadi REQUIRED)

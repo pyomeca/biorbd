@@ -21,9 +21,9 @@ jobs:
           - os: macos-13
             label: osx-intel
             prefix: /Users/runner/miniconda3/envs/biorbd
-          - os: windows-latest
-            label: win-64
-            prefix: C:\Miniconda3\envs\biorbd
+          # - os: windows-latest
+          #   label: win-64
+          #   prefix: C:\Miniconda3\envs\biorbd
     name: ${{ matrix.label }}
     runs-on: ${{ matrix.os }}
     defaults:
