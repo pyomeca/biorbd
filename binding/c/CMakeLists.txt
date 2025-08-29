@@ -1,5 +1,5 @@
 project(${BIORBD_NAME}_c)
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.14)
 
 set(C_BINDING_PATH ${CMAKE_SOURCE_DIR}/binding/c)
 
@@ -17,9 +17,7 @@ endif()
 # Add headers
 target_include_directories(${PROJECT_NAME} PRIVATE
     "${C_BINDING_PATH}"
-    "${CMAKE_SOURCE_DIR}/include"
-    "${BIORBD_BINARY_DIR}/include"
-    "${INSTALL_DEPENDENCIES_PREFIX}/include"
+    "${IPOPT_INCLUDE_DIR}"
 )
 
 # Add postfix if needed
@@ -34,8 +32,6 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 # Linker and instalation
 target_link_libraries(${PROJECT_NAME}
     ${BIORBD_NAME}
-    RBDL::RBDL
-    ${MATH_BACKEND_LIBRARIES}
 )
 
 install(TARGETS ${PROJECT_NAME}

@@ -29,9 +29,6 @@ foreach(FILE ${EXAMPLE_FILES})
     # Headers
     target_include_directories(${PROJECT_NAME} PRIVATE
         "${IPOPT_INCLUDE_DIR}"
-        "${CMAKE_SOURCE_DIR}/include"
-        "${BIORBD_BINARY_DIR}/include"
-        "${INSTALL_DEPENDENCIES_PREFIX}/include"
     )
 
     # Linker and instalation

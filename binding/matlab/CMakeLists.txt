@@ -1,5 +1,5 @@
 project(${BIORBD_NAME}_matlab)
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.14)
 
 find_package(Matlab REQUIRED COMPONENTS MX_LIBRARY)
 
@@ -36,10 +36,8 @@ foreach(CPP_FILE ${CPP_FILES})
 
     # Add headers
     target_include_directories(${PROJECT_NAME} PRIVATE
+        "${IPOPT_INCLUDE_DIR}"
         "${Matlab_INCLUDE_DIRS}"
-        "${CMAKE_SOURCE_DIR}/include"
-        "${BIORBD_BINARY_DIR}/include"
-        "${INSTALL_DEPENDENCIES_PREFIX}/include"
     )
 
     # Set the name of the library
@@ -90,8 +88,6 @@ foreach(CPP_FILE ${CPP_FILES})
     # Linker and instalation
     target_link_libraries(${PROJECT_NAME}
         "${BIORBD_NAME}"
-        RBDL::RBDL
-        ${MATH_BACKEND_LIBRARIES}
         "${Matlab_MX_LIBRARY}"
         "${Matlab_MEX_LIBRARY}"
     )

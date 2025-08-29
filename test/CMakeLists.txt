@@ -25,7 +25,7 @@ if((NOT GTEST_INCLUDE_DIR) OR (NOT EXISTS "${GTEST_INCLUDE_DIR}"))
                     WORKING_DIRECTORY ${BIORBD_ROOT_FOLDER}
                     RESULT_VARIABLE GIT_SUBMOD_RESULT)
     if(NOT GIT_SUBMOD_RESULT EQUAL "0")
-        message(FATAL_ERROR "${GIT_EXECUTABLE} submodule update --init -- ${EZC3D_ROOT_FOLDER}/external/gtest failed, please checkout submodules manually")
+        message(FATAL_ERROR "${GIT_EXECUTABLE} submodule update --init -- ${BIORBD_ROOT_FOLDER}/external/gtest failed, please checkout submodules manually")
     endif()
     
     find_path(GTEST_INCLUDE_DIR "gtest.h" HINTS
@@ -75,8 +75,6 @@ add_dependencies(${PROJECT_NAME} ${BIORBD_NAME})
 # headers for the project
 target_include_directories(${PROJECT_NAME} PRIVATE
     "${IPOPT_INCLUDE_DIR}"
-    "${CMAKE_SOURCE_DIR}/include"
-    "${BIORBD_BINARY_DIR}/include"
 )
 
 # Standard linking to gtest stuff.
@@ -87,8 +85,6 @@ target_link_libraries(${PROJECT_NAME}
 # Extra linking for the project.
 target_link_libraries(${PROJECT_NAME}
     "${BIORBD_NAME}"
-    RBDL::RBDL
-    ${MATH_BACKEND_LIBRARIES}
 )
 
 if (CMAKE_BUILD_TYPE STREQUAL "Coverage")
