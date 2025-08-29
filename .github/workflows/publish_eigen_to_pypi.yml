@@ -19,8 +19,8 @@ jobs:
           #   label: osx-64
           - os: macos-13
             label: osx-32
-          # - os: windows-latest
-          #   label: win-64
+          - os: windows-latest
+            label: win-64
     name: ${{ matrix.label }}
     runs-on: ${{ matrix.os }}
     defaults:
@@ -43,7 +43,7 @@ jobs:
         
       - name: Install build packages
         run: | 
-          conda install pip swig -cconda-forge
+          conda install pip swig eigen -cconda-forge
           conda list
           pip install build cibuildwheel==2.21.3
 
