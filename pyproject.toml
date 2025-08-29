@@ -1,0 +1,33 @@
+[build-system]
+requires = [
+    "setuptools>=61.0",
+    "setuptools-scm>=8",
+    "wheel",
+    "scikit-build",
+    "cmake",
+    "ninja",
+    "swig",
+    "numpy",
+    "scipy",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "biorbd"
+dynamic = ["version"]
+dependencies = [
+    "numpy",
+    "scipy"
+]
+description = "Biomechanical add-ons to the RigidBody Dynamics Library"
+readme = "README.md"  # This links to your README file
+authors = [
+    {name = "Michaud, Benjamin"},
+    {name = "Begon, Mickaël"}
+]
+license = {text = "MIT"}
+urls = { "Homepage" = "https://github.com/pyomeca/biorbd" }
+requires-python = ">=3.10"
+
+[tool.cibuildwheel]
+build-frontend = "build"

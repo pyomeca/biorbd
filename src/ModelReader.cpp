@@ -60,7 +60,9 @@
     #include "InternalForces/WrappingHalfCylinder.h"
     #include "InternalForces/Geometry.h"
 #endif
-
+#ifdef MODULE_VTP_FILES_READER
+#include "tinyxml2.h"
+#endif
 
 using namespace BIORBD_NAMESPACE;
 
@@ -2091,90 +2093,62 @@ rigidbody::Mesh Reader::readMeshFileObj(
 }
 
 #ifdef MODULE_VTP_FILES_READER
-#include "tinyxml.h"
+
 rigidbody::Mesh Reader::readMeshFileVtp(
     const utils::Path &path)
 {
-    // Read an opensim formatted mesh file
+    // Read an OpenSim formatted mesh file
 
     // Read the file
 #ifdef _WIN32
-    utils::String filepath( utils::Path::toWindowsFormat(path.absolutePath()).c_str());
+    utils::String filepath(utils::Path::toWindowsFormat(path.absolutePath()).c_str());
 #else
-    utils::String filepath( path.absolutePath().c_str() );
+    utils::String filepath(path.absolutePath().c_str());
 #endif
 
-    TiXmlDocument doc(filepath);
-    utils::Error::check(doc.LoadFile(), "Failed to load file " + filepath);
-    TiXmlHandle hDoc(&doc);
+    tinyxml2::XMLDocument doc;
+    tinyxml2::XMLError err = doc.LoadFile(filepath.c_str());
+    utils::Error::check(err == tinyxml2::XML_SUCCESS, "Failed to load file " + filepath);
+
     rigidbody::Mesh mesh;
     mesh.setPath(path);
 
     // Navigate up to VTKFile/PolyData/Piece
-    TiXmlHandle polydata =
-        hDoc.ChildElement("VTKFile", 0)
-        .ChildElement("PolyData", 0)
-        .ChildElement("Piece", 0);
-    int numberOfPoints, NumberOfPolys;
-    polydata.ToElement()->QueryIntAttribute("NumberOfPoints", &numberOfPoints);
-    polydata.ToElement()->QueryIntAttribute("NumberOfPolys", &NumberOfPolys);
-
-    utils::String field;
+    tinyxml2::XMLElement* polydata = doc.FirstChildElement("VTKFile")
+                              ->FirstChildElement("PolyData")
+                              ->FirstChildElement("Piece");
+    
+    int numberOfPoints = 0, NumberOfPolys = 0;
+    polydata->QueryIntAttribute("NumberOfPoints", &numberOfPoints);
+    polydata->QueryIntAttribute("NumberOfPolys", &NumberOfPolys);
 
     // Get the points
+    utils::String field;
     {
-        utils::String points(
-            polydata.ChildElement("Points", 0)
-            .ChildElement("DataArray", 0).Element()->GetText());
-        std::stringstream ss( points );
+        tinyxml2::XMLElement* pointsElement = polydata->FirstChildElement("Points")
+                                       ->FirstChildElement("DataArray");
+        const char* pointsText = pointsElement ? pointsElement->GetText() : "";
+        std::stringstream ss(pointsText);
         for (int i = 0; i < numberOfPoints; ++i) {
             double x, y, z;
-            {
-                getline( ss, field, ' ' );
-                std::stringstream fs( field );
-                fs >> x;
-            }
-            {
-                getline( ss, field, ' ' );
-                std::stringstream fs( field );
-                fs >> y;
-            }
-            {
-                getline( ss, field, ' ' );
-                std::stringstream fs( field );
-                fs >> z;
-            }
+            ss >> x >> y >> z;
             mesh.addPoint(utils::Vector3d(x, y, z));
         }
     }
 
     // Get the patches
     {
-        utils::String polys(
-            polydata.ChildElement("Polys", 0)
-            .ChildElement("DataArray", 0).Element()->GetText());
-        std::stringstream ss( polys );
+        tinyxml2::XMLElement* polysElement = polydata->FirstChildElement("Polys")
+                                      ->FirstChildElement("DataArray");
+        const char* polysText = polysElement ? polysElement->GetText() : "";
+        std::stringstream ss(polysText);
         for (int i = 0; i < NumberOfPolys; ++i) {
             int vertex1, vertex2, vertex3;
-            {
-                getline( ss, field, ' ' );
-                std::stringstream fs( field );
-                fs >> vertex1;
-            }
-            {
-                getline( ss, field, ' ' );
-                std::stringstream fs( field );
-                fs >> vertex2;
-            }
-            {
-                getline( ss, field, ' ' );
-                std::stringstream fs( field );
-                fs >> vertex3;
-            }
+            ss >> vertex1 >> vertex2 >> vertex3;
             mesh.addFace({vertex1, vertex2, vertex3});
         }
     }
-
+    
     return mesh;
 }
 #endif  // MODULE_VTP_FILES_READER
@@ -2278,12 +2252,7 @@ rigidbody::Mesh Reader::readMeshFileStl(
                 mesh.addPoint(vertex);
             }
             file.readFromBinary(dummy, 2);
-
-            rigidbody::MeshFace patchTp;
-            patchTp(0) = 3*i + 0;
-            patchTp(1) = 3*i + 1;
-            patchTp(2) = 3*i + 2;
-            mesh.addFace(patchTp);
+            mesh.addFace({3*i + 0, 3*i + 1, 3*i + 2});
         }
     } else {
         // Due to the test, the pointer is already at the first "facet"
@@ -2301,12 +2270,7 @@ rigidbody::Mesh Reader::readMeshFileStl(
                 mesh.addPoint(vertex);
                 file.read(tp);
             }
-
-            rigidbody::MeshFace patchTp;
-            patchTp(0) = 3*i + 0;
-            patchTp(1) = 3*i + 1;
-            patchTp(2) = 3*i + 2;
-            mesh.addFace(patchTp);
+            mesh.addFace({3*i + 0, 3*i + 1, 3*i + 2});
 
             for (size_t j=0; j<3; ++j) {
                 // Read 3 dummies

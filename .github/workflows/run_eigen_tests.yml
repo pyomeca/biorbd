@@ -14,16 +14,20 @@ jobs:
         include:
           - os: ubuntu-latest
             label: linux-64
-            prefix: /usr/share/miniconda3/envs/biorbd_eigen
-          # - os: macos-latest
-          #   label: osx-arm64
-          #   prefix: /Users/runner/miniconda3/envs/biorbd_eigen
+            prefix: /usr/share/miniconda3/envs/biorbd
+            use_matlab: ON
+          - os: macos-latest
+            label: osx-arm64
+            prefix: /Users/runner/miniconda3/envs/biorbd
+            use_matlab: OFF
           - os: macos-13
             label: osx-intel
-            prefix: /Users/runner/miniconda3/envs/biorbd_eigen
+            prefix: /Users/runner/miniconda3/envs/biorbd
+            use_matlab: ON
           - os: windows-latest
             label: win-64
-            prefix: C:\Miniconda3\envs\biorbd_eigen
+            prefix: C:\Miniconda3\envs\biorbd
+            use_matlab: ON
     name: ${{ matrix.label }}
     runs-on: ${{ matrix.os }}
     defaults:
@@ -36,17 +40,17 @@ jobs:
       - name: Get number of CPU cores
         uses: SimenB/github-actions-cpu-cores@v1
         id: cpu-cores
-
+  
       - name: Setup environment
         uses: conda-incubator/setup-miniconda@v3
         with:
           miniforge-version: latest
-          activate-environment: biorbd_eigen
-          environment-file: environment_eigen.yml
-  
-      - name: Print conda info
-        run: | 
-          conda info
+          activate-environment: biorbd
+
+      - name: Install dependencies
+        run: |
+          conda install -cconda-forge rbdl tinyxml2 ipopt 
+          conda install -cconda-forge swig python numpy scipy pytest
           conda list
 
       - name: Setup Linux dependencies
@@ -54,12 +58,6 @@ jobs:
          sudo apt update
          sudo apt install libstdc++-11-dev
         if: matrix.label == 'linux-64'
-
-      - name: Install extra common dependencies
-        run: | 
-          conda install cmake git pkgconfig swig pytest -cconda-forge
-          conda list
-          git submodule update --init --recursive
 
       - name: Install MATLAB on WINDOWS, LINUX and MACOS-Intel
         uses: matlab-actions/setup-matlab@v2
@@ -78,10 +76,23 @@ jobs:
       - name: Build biorbd UNIX
         run: |
           BIORBD_FOLDER=`pwd`
-          CONDA_ENV_PATH=$CONDA/envs/biorbd_eigen
+          CONDA_ENV_PATH=$CONDA/envs/biorbd
           mkdir -p $BIORBD_FOLDER/$BUILD_FOLDER
           cd $BIORBD_FOLDER/$BUILD_FOLDER
-          cmake -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DMATH_LIBRARY_BACKEND="Eigen3" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_KALMAN=ON -DMODULE_PASSIVE_TORQUES=ON -DMODULE_MUSCLES=ON -DBUILD_EXAMPLE=ON -DBINDER_C=ON -DBINDER_PYTHON3=ON -DBINDER_MATLAB=ON -DMatlab_biorbd_eigen_INSTALL_DIR=$HOME ..
+          cmake .. \
+                -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH \
+                -DMATH_LIBRARY_BACKEND="Eigen3" \
+                -DCMAKE_BUILD_TYPE=Release \
+                -DBUILD_TESTS=ON \
+                -DMODULE_ACTUATORS=ON \
+                -DMODULE_KALMAN=ON \
+                -DMODULE_PASSIVE_TORQUES=ON \
+                -DMODULE_MUSCLES=ON \
+                -DBUILD_EXAMPLE=ON \
+                -DBINDER_C=ON \
+                -DBINDER_PYTHON3=ON \
+                -DBINDER_MATLAB=${{ matrix.use_matlab }} \
+                -DMatlab_biorbd_eigen_INSTALL_DIR=$HOME 
           make install -j${{ steps.cpu-cores.outputs.count }}
           cd $BIORBD_FOLDER
         if: matrix.label != 'win-64'
@@ -105,11 +116,13 @@ jobs:
       - name: Test installed version on UNIX
         run: |
           BIORBD_FOLDER=`pwd`
-          CONDA_ENV_PATH=$CONDA/envs/biorbd_eigen
+          CONDA_ENV_PATH=$CONDA/envs/biorbd
           cd $BIORBD_FOLDER/$EXAMPLES_FOLDER/cpp_eigen_installed
           mkdir -p $BUILD_FOLDER
           cd $BUILD_FOLDER
-          cmake -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DCMAKE_BUILD_TYPE=Release ..
+          cmake .. \
+                -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH \
+                -DCMAKE_BUILD_TYPE=Release 
           make -j${{ steps.cpu-cores.outputs.count }}
           ./forwardDynamicsExample
           cd $BIORBD_FOLDER
@@ -118,10 +131,20 @@ jobs:
       - name: Build biorbd WINDOWS
         run: |
           BIORBD_FOLDER=`pwd`
-          CONDA_ENV_PATH=$CONDA/envs/biorbd_eigen
+          CONDA_ENV_PATH=$CONDA/envs/biorbd
           mkdir -p $BUILD_FOLDER
           cd $BUILD_FOLDER
-          cmake -G"Visual Studio 17 2022" -Ax64 -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DMATH_LIBRARY_BACKEND="Eigen3" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_KALMAN=ON -DMODULE_MUSCLES=ON -DBUILD_EXAMPLE=ON -DBINDER_C=ON -DBINDER_PYTHON3=ON -DBINDER_MATLAB=ON -DMatlab_biorbd_eigen_INSTALL_DIR=$HOME ..
+          cmake .. \
+                -G"Visual Studio 17 2022" \
+                -Ax64 \
+                -DMATH_LIBRARY_BACKEND="Eigen3" \
+                -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH \
+                -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON \
+                -DMODULE_ACTUATORS=ON -DMODULE_KALMAN=ON \
+                -DMODULE_MUSCLES=ON -DBUILD_EXAMPLE=ON \
+                -DBINDER_C=ON -DBINDER_PYTHON3=ON \
+                -DBINDER_MATLAB=${{ matrix.use_matlab }} \
+                -DMatlab_biorbd_eigen_INSTALL_DIR=$HOME
           cmake --build . --config Release --target install -j${{ steps.cpu-cores.outputs.count }}
           cd $BIORBD_FOLDER
         if: matrix.label == 'win-64'
@@ -147,11 +170,15 @@ jobs:
       - name: Test installed version on WINDOWS
         run: |
           BIORBD_FOLDER=`pwd`
-          CONDA_ENV_PATH=$CONDA/envs/biorbd_eigen
+          CONDA_ENV_PATH=$CONDA/envs/biorbd
           cd $BIORBD_FOLDER/$EXAMPLES_FOLDER/cpp_eigen_installed
           mkdir -p $BUILD_FOLDER
           cd $BUILD_FOLDER
-          cmake -G"Visual Studio 17 2022" -Ax64 -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DCMAKE_BUILD_TYPE=Release ..
+          cmake .. \
+            -G"Visual Studio 17 2022" \
+            -Ax64 \
+            -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH \
+            -DCMAKE_BUILD_TYPE=Release 
           cmake --build . --config Release -j${{ steps.cpu-cores.outputs.count }}
           cp Release/forwardDynamicsExample.exe .
           ./forwardDynamicsExample.exe

@@ -4,3 +4,187 @@
 [python]
 Segfault when using Tags (it doesn't control for the size of Q)
 
+
+
+
+[INSTALL]
+To make your library installable and usable in another CMake project via find_package(), you need to configure the installation process and export the library's targets in a way that CMake can find them. Here's how you can set that up.
+Steps to Make the Library Installable and Usable via find_package():
+
+    Define Installation Directories
+    Install the Library and Headers
+    Generate and Install the CMake Configuration Files
+    Export Targets
+    Use the Library in Another CMake Project
+
+1. Define Installation Directories
+
+You will need to decide where the library and its headers will be installed. This is typically done using CMAKE_INSTALL_PREFIX (which defaults to /usr/local on most systems, or you can specify a custom path).
+
+In the top-level CMakeLists.txt, you can define the installation directories for your targets:
+
+cmake
+
+# Set the version of your project
+project(MyProject VERSION 1.0.0)
+
+# Define where the files will be installed (optional, defaults to /usr/local)
+include(GNUInstallDirs)
+
+2. Install the Library and Headers
+
+In your library's CMakeLists.txt (e.g., in src/CMakeLists.txt), use the install() command to install both the compiled library and its header files.
+
+cmake
+
+# src/CMakeLists.txt
+
+# Define the MainLib library
+add_library(MainLib SHARED main.cpp)
+
+# Link the Utils library
+target_link_libraries(MainLib PRIVATE Utils)
+
+# Specify the public include directory for MainLib
+target_include_directories(MainLib PUBLIC $<INSTALL_INTERFACE:include>)
+
+# Install the library and headers
+install(TARGETS MainLib
+    EXPORT MainLibTargets          # Export the target so it can be found
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}  # Install the shared library
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}  # For static library (if needed)
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}  # For executables (if any)
+)
+
+# Install header files
+install(FILES main.hpp DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/MainLib)
+
+For the Utils library (in src/Utils/CMakeLists.txt):
+
+cmake
+
+# src/Utils/CMakeLists.txt
+
+# Define the Utils library
+add_library(Utils SHARED utils.cpp)
+
+# Specify the public include directory for Utils
+target_include_directories(Utils PUBLIC $<INSTALL_INTERFACE:include>)
+
+# Install the library and headers
+install(TARGETS Utils
+    EXPORT UtilsTargets
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)
+
+# Install header files for Utils
+install(FILES utils.hpp DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/Utils)
+
+3. Generate and Install the CMake Configuration Files
+
+To make the library usable via find_package(), you need to generate and install a CMake configuration file (MyProjectConfig.cmake) and export your targets.
+
+In the top-level CMakeLists.txt:
+
+cmake
+
+# Export the targets to a file so other projects can find them
+install(EXPORT MainLibTargets
+    FILE MainLibTargets.cmake
+    NAMESPACE MainLib::                # Optional: add a namespace to the library target
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/MainLib
+)
+
+# Install the CMake package configuration file
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/MainLibConfigVersion.cmake"
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY AnyNewerVersion
+)
+
+install(FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/MainLibConfigVersion.cmake"
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/MainLib
+)
+
+Create a MainLibConfig.cmake.in file, which will be processed by CMake to generate the MainLibConfig.cmake file:
+
+cmake
+
+# MainLibConfig.cmake.in
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+
+# Make the exported targets available to the calling project
+include("${CMAKE_CURRENT_LIST_DIR}/MainLibTargets.cmake")
+
+Then, in the top-level CMakeLists.txt, install the processed configuration file:
+
+cmake
+
+configure_package_config_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/MainLibConfig.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/MainLibConfig.cmake"
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/MainLib
+)
+
+install(FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/MainLibConfig.cmake"
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/MainLib
+)
+
+4. Export the Targets
+
+Ensure that the targets from Utils and MainLib are properly exported. This is done using the EXPORT argument in the install() commands for both libraries, as shown earlier. This will generate files such as MainLibTargets.cmake that contain the necessary information for linking the library in another project.
+5. Use the Library in Another CMake Project
+
+In another project that wants to use MainLib and Utils, you can use find_package() to locate and use the installed library.
+
+For example, in the new project's CMakeLists.txt:
+
+cmake
+
+cmake_minimum_required(VERSION 3.10)
+project(AnotherProject)
+
+# Find the MainLib package (this will automatically find and link Utils too)
+find_package(MainLib 1.0.0 REQUIRED CONFIG)
+
+# Create an executable and link MainLib
+add_executable(my_new_executable main.cpp)
+target_link_libraries(my_new_executable PRIVATE MainLib::MainLib)
+
+6. Testing the Installation
+
+Once you've configured everything, you can test the installation and use:
+
+    Build the library:
+
+    bash
+
+mkdir build && cd build
+cmake ..
+make
+
+Install the library:
+
+bash
+
+    make install
+
+    This will install MainLib and Utils into the installation directory (default /usr/local or specified by CMAKE_INSTALL_PREFIX).
+
+    In the other project, you can now use find_package(MainLib) to locate and link MainLib and Utils.
+
+Summary
+
+    add_subdirectory() is used to include subdirectories for building your libraries.
+    install() is used to install the libraries and headers to system directories.
+    CMake configuration files (MyProjectConfig.cmake, MyProjectTargets.cmake) are necessary to allow other projects to find and use the installed library.
+    find_package() is used in other projects to find and link to your library.
+
+By following these steps, your MainLib and Utils libraries can be installed and found by other CMake-based projects.
+

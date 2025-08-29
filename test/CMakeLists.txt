@@ -25,7 +25,7 @@ if((NOT GTEST_INCLUDE_DIR) OR (NOT EXISTS "${GTEST_INCLUDE_DIR}"))
                     WORKING_DIRECTORY ${BIORBD_ROOT_FOLDER}
                     RESULT_VARIABLE GIT_SUBMOD_RESULT)
     if(NOT GIT_SUBMOD_RESULT EQUAL "0")
-        message(FATAL_ERROR "${GIT_EXECUTABLE} submodule update --init -- ${EZC3D_ROOT_FOLDER}/external/gtest failed, please checkout submodules manually")
+        message(FATAL_ERROR "${GIT_EXECUTABLE} submodule update --init -- ${BIORBD_ROOT_FOLDER}/external/gtest failed, please checkout submodules manually")
     endif()
     
     find_path(GTEST_INCLUDE_DIR "gtest.h" HINTS
@@ -74,20 +74,18 @@ add_dependencies(${PROJECT_NAME} ${BIORBD_NAME})
 
 # headers for the project
 target_include_directories(${PROJECT_NAME} PRIVATE
-    "${CMAKE_SOURCE_DIR}/include"
-    "${BIORBD_BINARY_DIR}/include"
-    "${RBDL_INCLUDE_DIR}"
-    "${MATH_BACKEND_INCLUDE_DIR}"
     "${IPOPT_INCLUDE_DIR}"
 )
 
 # Standard linking to gtest stuff.
 target_link_libraries(${PROJECT_NAME}
-    "gtest_main")
+    "gtest_main"
+)
 
 # Extra linking for the project.
 target_link_libraries(${PROJECT_NAME}
-    "${BIORBD_NAME}")
+    "${BIORBD_NAME}"
+)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Coverage")
     set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../modules)
@@ -121,10 +119,6 @@ if (BINDER_PYTHON3)
         "${CMAKE_SOURCE_DIR}/test/binding/python3/*.py")
     file(COPY ${BIORBD_PYTHON3_TEST_FILES}
         DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/binding/python3")
-    file(GLOB BIORBD_PYTHON3_TEST_FILES_EXTRA
-        "${CMAKE_SOURCE_DIR}/test/binding/python3/de_leva/*.py")
-    file(COPY ${BIORBD_PYTHON3_TEST_FILES_EXTRA}
-        DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/binding/python3/de_leva")
 endif()
 
 # This is so you can do 'make test' to see all your tests run, instead of

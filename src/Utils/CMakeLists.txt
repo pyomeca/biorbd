@@ -46,15 +46,14 @@ set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_debug")
 
 # Add the include
 target_include_directories(${PROJECT_NAME} PRIVATE
+    "${MATH_BACKEND_INCLUDE_DIR}"
     "${CMAKE_SOURCE_DIR}/include"
     "${BIORBD_BINARY_DIR}/include"
-    "${RBDL_INCLUDE_DIR}"
-    "${MATH_BACKEND_INCLUDE_DIR}"
+    "${INSTALL_DEPENDENCIES_PREFIX}/include"
 )
-
 target_link_libraries(${PROJECT_NAME}
-    "${RBDL_LIBRARY}"
-    "${MATH_BACKEND_LIBRARIES}"
+    RBDL::RBDL
+    ${MATH_BACKEND_LIBRARIES}
 )
 
 # Installation

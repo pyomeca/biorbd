@@ -1,0 +1,77 @@
+name: Run PIP tests
+
+on: [pull_request]
+
+env:
+  BUILD_FOLDER: build
+  EXAMPLES_FOLDER: examples
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-13, windows-latest]
+        include:
+          - os: ubuntu-latest
+            label: linux-64
+            prefix: /usr/share/miniconda3/envs/biorbd
+          # - os: macos-latest
+          #   label: osx-arm64
+          #   prefix: /Users/runner/miniconda3/envs/biorbd
+          - os: macos-13
+            label: osx-intel
+            prefix: /Users/runner/miniconda3/envs/biorbd
+          - os: windows-latest
+            label: win-64
+            prefix: C:\Miniconda3\envs\biorbd
+    name: ${{ matrix.label }}
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+  
+      - name: Setup environment
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          miniforge-version: latest
+          activate-environment: biorbd
+
+      - name: Install dependencies
+        run: |
+          conda install -cconda-forge swig pip eigen
+          conda list
+
+      - name: Setup Linux dependencies
+        run:   |
+         sudo apt update
+         sudo apt install libstdc++-11-dev
+        if: matrix.label == 'linux-64'
+  
+      - name: Build biorbd
+        run: |
+          rm -rf _skbuild
+          export MATH_LIBRARY_BACKEND=Eigen3
+          pip install .
+  
+      - name: Test installed version of biorbd
+        run: | 
+          BIORBD_FOLDER=`pwd`
+          cd
+          python -c "import biorbd"
+          cd $BIORBD_FOLDER
+
+      # - name: Biorbd biorbd_casadi
+      #   run: |
+      #     rm -rf _skbuild
+      #     export MATH_LIBRARY_BACKEND=Casadi
+      #     pip install .
+
+      # - name: Test installed version of biorbd_casadi
+      #   run: | 
+      #     BIORBD_FOLDER=`pwd`
+      #     cd
+      #     python -c "import biorbd_casadi"
+      #     cd $BIORBD_FOLDER

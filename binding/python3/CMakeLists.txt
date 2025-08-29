@@ -1,11 +1,10 @@
 cmake_minimum_required(VERSION 3.14)
-if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.13")
-    project(_${BIORBD_NAME})
-else()
-    project(${BIORBD_NAME})
-endif()
+project(_${BIORBD_NAME})
 if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.27")
     cmake_policy(SET CMP0148 OLD)
+endif()
+if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "4.1.1")
+    cmake_policy(SET CMP0177 OLD)
 endif()
 
 # Windows needs a bigobj option
@@ -13,6 +12,17 @@ if(MSVC)
     set(COMPILE_FLAGS "/bigobj")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${COMPILE_FLAGS}")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMPILE_FLAGS}")
+endif()
+
+# We need to trick MSVC into keeping the rbdl-casadi as the first import. If we
+# just add it, it is pushed at the end because BIORBD will also includes it but
+# as an external:import. Added the /../ tricks the parser into not recognizing
+# that it is in fact the same directory
+set(FORCED_FIRST_INCLUDE_DIRS "")
+if(MSVC AND ${MATH_LIBRARY_BACKEND} STREQUAL "Casadi")
+    set(FORCED_FIRST_INCLUDE_DIRS
+        "${RBDLCasadi_INCLUDE_DIR}/../rbdl-casadi"
+    )
 endif()
 
 # Include python
@@ -25,6 +35,12 @@ set(Python3_EXECUTABLE ${PYTHON_EXECUTABLE})
 find_package(Python3 REQUIRED
     COMPONENTS Interpreter Development NumPy
 )
+
+set(Python3_SITELIB_INSTALL "" CACHE PATH
+    "Override the default Python3 site-packages installation directory (default is Python3_SITELIB)")
+if(NOT Python3_SITELIB_INSTALL OR Python3_SITELIB_INSTALL STREQUAL "")
+    set(Python3_SITELIB_INSTALL "${Python3_SITELIB}")
+endif()
 
 if(WIN32)
     link_directories("${Python3_RUNTIME_LIBRARY_DIRS}/libs")
@@ -59,10 +75,7 @@ endif()
 
 # Add headers
 target_include_directories(${PYTHON_PROJECT_NAME} PRIVATE
-    "${RBDL_INCLUDE_DIR}"
-    "${CMAKE_SOURCE_DIR}/include"
-    "${BIORBD_BINARY_DIR}/include"
-    "${MATH_BACKEND_INCLUDE_DIR}"
+    "${FORCED_FIRST_INCLUDE_DIRS}"
     "${IPOPT_INCLUDE_DIR}"
     "${Python3_INCLUDE_DIRS}"
     "${Python3_NumPy_INCLUDE_DIRS}"
@@ -88,23 +101,19 @@ elseif(${MATH_LIBRARY_BACKEND} STREQUAL "Casadi")
     set(BIORBD_PYTHON_DIR ${BIORBD_NAME})
 endif()
 INSTALL(FILES "${CMAKE_CURRENT_BINARY_DIR}/${BIORBD_NAME_NO_SUFFIX}.py"
-    DESTINATION "${Python3_SITELIB}/${BIORBD_PYTHON_DIR}"
+    DESTINATION "${Python3_SITELIB_INSTALL}/${BIORBD_PYTHON_DIR}"
 )
 
 file(GLOB PYTHON_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.py")
 INSTALL(FILES ${PYTHON_FILES}
-    DESTINATION "${Python3_SITELIB}/${BIORBD_PYTHON_DIR}"
-)
-file(GLOB PYTHON_FILES "${CMAKE_CURRENT_SOURCE_DIR}/model_creation/*.py")
-INSTALL(FILES ${PYTHON_FILES}
-    DESTINATION "${Python3_SITELIB}/${BIORBD_PYTHON_DIR}/model_creation"
+    DESTINATION "${Python3_SITELIB_INSTALL}/${BIORBD_PYTHON_DIR}"
 )
 
 # Check if swig has its version 3 or 4, to choose the right place to put the library
 if(${SWIG_VERSION} MATCHES "^3(\.[0-9]*)*$")
-    set(PYTHON_INSTALL_DESTINATION "${Python3_SITELIB}")
+    set(PYTHON_INSTALL_DESTINATION "${Python3_SITELIB_INSTALL}")
 elseif(${SWIG_VERSION} MATCHES "^4(\.[0-9]*)*$")
-    set(PYTHON_INSTALL_DESTINATION "${Python3_SITELIB}/${BIORBD_PYTHON_DIR}")
+    set(PYTHON_INSTALL_DESTINATION "${Python3_SITELIB_INSTALL}/${BIORBD_PYTHON_DIR}")
 else()
     message( FATAL_ERROR "Swig must be version 3 or 4" )
 endif()

@@ -1,0 +1,24 @@
+# Include required files
+include LICENSE
+pyproject.toml
+README.md
+
+# Include shared libraries or compiled files (if needed for runtime).
+recursive-include biorbd *.so *.dll *.dylib *.pyd *.lib *.py
+
+# Exclude source and development files
+exclude CMakeLists.txt *.cmake.in
+prune .github
+prune external
+prune _skbuild
+
+# Exclude docs, tests and example data
+prune doc
+prune test
+prune examples
+
+# Exclude version control and temporary files
+global-exclude *.git*
+global-exclude __pycache__/*
+global-exclude *.py[co]
+

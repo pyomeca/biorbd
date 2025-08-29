@@ -13,54 +13,58 @@ jobs:
         include:
           - os: ubuntu-latest
             label: linux-64
-            prefix: /usr/share/miniconda3/envs/biorbd_eigen
+            prefix: /usr/share/miniconda3/envs/biorbd
     name: ${{ matrix.label }}
     runs-on: ${{ matrix.os }}
     defaults:
       run:
         shell: bash -l {0}
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
       
       - name: Get number of CPU cores
         uses: SimenB/github-actions-cpu-cores@v1
         id: cpu-cores
 
       - name: Setup environment
-        uses: conda-incubator/setup-miniconda@v2
+        uses: conda-incubator/setup-miniconda@v3
         with:
           miniforge-version: latest
-          activate-environment: biorbd_eigen
-          environment-file: environment_eigen.yml
-        
-      - name: Print conda info
-        run: | 
-          conda info
+          activate-environment: biorbd
+
+      - name: Install dependencies
+        run: |
+          conda install -cconda-forge rbdl>=3.3.1 tinyxml2 ipopt
+          conda install -cconda-forge codecov lcov
           conda list
-  
+
       - name: Setup Linux dependencies
         run:   |
          sudo apt update
          sudo apt install libstdc++-11-dev
         if: matrix.label == 'linux-64'
-        
-      - name: Install extra common dependencies
-        run: | 
-          conda install cmake git pkgconfig codecov lcov -cconda-forge
-          conda list
-          git submodule update --init --recursive
 
       - name: Perform code coverage 
         run: |
           BIORBD_FOLDER=`pwd`
-          CONDA_ENV_PATH=$CONDA/envs/biorbd_eigen
-          mkdir -p $BUILD_FOLDER
-          cd $BUILD_FOLDER
-          cmake -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DMODULE_PASSIVE_TORQUES=ON -DMODULE_KALMAN=ON ..
+          CONDA_ENV_PATH=$CONDA/envs/biorbd
+          mkdir -p $BIORBD_FOLDER/$BUILD_FOLDER
+          cd $BIORBD_FOLDER/$BUILD_FOLDER
+          cmake .. \
+                -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH \
+                -DCMAKE_BUILD_TYPE=Coverage \
+                -DBUILD_TESTS=ON \
+                -DBUILD_EXAMPLE=OFF \
+                -DMODULE_ACTUATORS=ON \
+                -DMODULE_MUSCLES=ON \
+                -DMODULE_PASSIVE_TORQUES=ON \
+                -DMODULE_KALMAN=ON
           cp -r test/models/ .
           make biorbd_eigen_coverage -j${{ steps.cpu-cores.outputs.count }}
           lcov --directory . --capture --output-file coverage.info
           lcov --remove coverage.info '/usr/*' --output-file coverage.info
           lcov --list coverage.info
+          export CODECOV_TOKEN=${{ secrets.CODECOV_TOKEN }}
           bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"
           cd $BIORBD_FOLDER
