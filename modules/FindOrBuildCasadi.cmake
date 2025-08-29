@@ -130,7 +130,7 @@ function(FindOrBuildCasadi)
 
     add_library(casadi::casadi INTERFACE IMPORTED)
     set_target_properties(casadi::casadi PROPERTIES
-        IMPORTED_LOCATION "${Casadi_LIBRARY}"
+        IMPORTED_LOCATION_RELEASE "${Casadi_LIBRARY}"
         INTERFACE_INCLUDE_DIRECTORIES "${Casadi_INCLUDE_DIR}"
     )        
     set(Casadi_DIR "${Casadi_INSTALL_DIR}/share/casadi/cmake" PARENT_SCOPE)

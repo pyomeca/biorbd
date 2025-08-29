@@ -9,7 +9,7 @@ import platform
 def get_install_base():
     current_folder = Path(__file__).parent
     platform_name = platform.system().lower()
-    
+
     if platform_name == "linux":
         architecture = platform.architecture()[0]
         if architecture == "64bit":
@@ -18,42 +18,43 @@ def get_install_base():
             architecture = "i686"
         else:
             raise RuntimeError(f"Unsupported architecture: {architecture}")
-        
+
         python_version = f"{sys.version_info.major}.{sys.version_info.minor}"
         platform_name = f"linux-{architecture}-{python_version}"
-    
+
     elif platform_name == "darwin":
         # Get the number of macos version (e.g. 13.0)
         version = platform.mac_ver()[0].split(".")
         version = f"{version[0]}.0"
-        
+
         architecture = platform.architecture()[0]
         if architecture == "64bit":
             architecture = "x86_64"
         else:
             raise RuntimeError(f"Unsupported architecture: {architecture}")
-        
+
         python_version = f"{sys.version_info.major}.{sys.version_info.minor}"
         platform_name = f"macosx-{version}-x86_64-{python_version}"
-        
+
     elif platform_name == "windows":
         architecture = platform.architecture()[0]
         if architecture == "64bit":
             architecture = "amd64"
         else:
             raise RuntimeError(f"Unsupported architecture: {architecture}")
-        
+
         python_version = f"{sys.version_info.major}.{sys.version_info.minor}"
-        platform_name = f"win-{architecture}-{python_version}" 
-    
+        platform_name = f"win-{architecture}-{python_version}"
+
     return f"{current_folder}/_skbuild/{platform_name}/cmake-install"
 
 
 def get_install_site_packages():
     # Get the local site packages folder for the installation that is used by "pip install ."
     python_version = f"python{sys.version_info.major}.{sys.version_info.minor}"
-    
+
     import site
+
     site_packages = site.getsitepackages()
     if not site_packages:
         raise RuntimeError("Unable to find site-packages directory")
@@ -62,19 +63,20 @@ def get_install_site_packages():
         if "site-packages" in site_package:
             if python_version in site_package:
                 return Path(f"{get_install_base()}/lib/{python_version}/site-packages")
-            else: 
+            else:
                 return Path(f"{get_install_base()}/lib/site-packages")
-    
+
     return Path(f"{get_install_base()}/lib/{python_version}/site-packages")
-    
+
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
 
 try:
     import pypandoc
+
     long_description = pypandoc.convert("README.md", "r")
-except(IOError, ImportError):
+except (IOError, ImportError):
     long_description = open("README.md").read()
 
 with open(f"{dir_path}/CMakeLists.txt") as file:
@@ -101,8 +103,8 @@ setup(
     author="Michaud, Benjamin and Begon, Mickaël",
     description="Biomechanical add-ons to the RigidBody Dynamics Library",
     long_description=long_description,
-    long_description_content_type= "text/markdown",
-    url = "https://github.com/pyomeca/biorbd",
+    long_description_content_type="text/markdown",
+    url="https://github.com/pyomeca/biorbd",
     license="MIT",
     packages=["biorbd"],
     cmake_args=[

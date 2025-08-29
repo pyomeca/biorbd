@@ -14,30 +14,32 @@ function(FindOrBuildRBDL MATH_BACKEND)
     else()
         set(CUSTOM_RBDL_PATH ${INSTALL_DEPENDENCIES_PREFIX})
     endif()
+    # The CUSTOM_RBDL_PATH is automatically used to force the path by find_package which may 
+    # cause problem to find an installed version as it set RBDL_FOUND even though it is not. 
+    # So we need to unset and retry finding if it prevented from actually finding the package
+    set(CUSTOM_RBDL_PATH_COPY ${CUSTOM_RBDL_PATH})
     
-    if(${MATH_BACKEND} STREQUAL "EIGEN")
-        set(RBDL_PACKAGE_TO_FIND RBDL)   
-    elseif(${MATH_BACKEND} STREQUAL "CASADI")
-        set(RBDL_PACKAGE_TO_FIND RBDLCasadi)
-    endif()
-
-    find_package(${RBDL_PACKAGE_TO_FIND} QUIET
+    find_package(RBDL QUIET
         PATHS ${CUSTOM_RBDL_PATH} ${INSTALL_DEPENDENCIES_PREFIX} ${CMAKE_INSTALL_PREFIX}
     )
-    if (
-        (${MATH_BACKEND} STREQUAL "EIGEN" AND NOT ${RBDL_INCLUDE_DIR}) OR 
-        (${MATH_BACKEND} STREQUAL "CASADI" AND NOT ${RBDLCasadi_INCLUDE_DIR})
-        )
-        # The CUSTOM_RBDL_PATH is automatically used to force the path by find_package which may 
-        # cause problem to find an installed version as it set RBDL_FOUND even though it is not. 
-        # So if the actual DIR is not found we unset it and try to find again. 
-        set(CUSTOM_RBDL_PATH_TP ${CUSTOM_RBDL_PATH})
+    if (NOT ${RBDL_INCLUDE_DIR})
         unset(CUSTOM_RBDL_PATH)
-        # Retry with the custom path set
-        find_package(${RBDL_PACKAGE_TO_FIND} QUIET
+        find_package(RBDL QUIET
             PATHS ${CUSTOM_RBDL_PATH} ${INSTALL_DEPENDENCIES_PREFIX} ${CMAKE_INSTALL_PREFIX}
         )
-        set(CUSTOM_RBDL_PATH ${CUSTOM_RBDL_PATH_TP})
+        set(CUSTOM_RBDL_PATH ${CUSTOM_RBDL_PATH_COPY})
+    endif()
+    if(${MATH_BACKEND} STREQUAL "CASADI")
+        find_package(RBDLCasadi QUIET
+            PATHS ${CUSTOM_RBDL_PATH} ${INSTALL_DEPENDENCIES_PREFIX} ${CMAKE_INSTALL_PREFIX}
+        )
+        if (NOT ${RBDLCasadi_INCLUDE_DIR})
+            unset(CUSTOM_RBDL_PATH)
+            find_package(RBDLCasadi QUIET
+                PATHS ${CUSTOM_RBDL_PATH} ${INSTALL_DEPENDENCIES_PREFIX} ${CMAKE_INSTALL_PREFIX}
+            )
+            set(CUSTOM_RBDL_PATH ${CUSTOM_RBDL_PATH_COPY})
+        endif()
     endif()
 
     if(${MATH_BACKEND} STREQUAL "EIGEN")
@@ -96,9 +98,7 @@ function(FindOrBuildRBDL MATH_BACKEND)
         get_target_property(Casadi_INCLUDE_DIRS casadi::casadi INTERFACE_INCLUDE_DIRECTORIES)
         list(GET Casadi_INCLUDE_DIRS 1 Casadi_INCLUDE_DIR)
         
-        find_library(Casadi_LIBRARY NAMES casadi
-            PATHS "${INSTALL_DEPENDENCIES_PREFIX}/lib" "${CMAKE_INSTALL_PREFIX}/lib"
-        )
+        get_target_property(Casadi_LIBRARY casadi::casadi IMPORTED_LOCATION_RELEASE)
     else()
 		message(FATAL_ERROR "Backend not implemented")
     endif()
@@ -135,7 +135,7 @@ function(FindOrBuildRBDL MATH_BACKEND)
     if(TARGET Casadi_external)
         list(APPEND RBDL_DEPENDS Casadi_external)
     endif()
-
+    
     ExternalProject_Add(rbdl_external
         GIT_REPOSITORY https://github.com/pariterre/rbdl.git
         GIT_TAG master
@@ -180,10 +180,12 @@ function(FindOrBuildRBDL MATH_BACKEND)
     endif()
 
     # Dependencies
-    add_dependencies(rbdl_external ${RBDL_DEPENDS})
-    if(${MATH_BACKEND} STREQUAL "EIGEN")
-        target_link_libraries(RBDL::RBDL INTERFACE Eigen3::Eigen)
-    elseif(${MATH_BACKEND} STREQUAL "CASADI")
+    if(RBDL_DEPENDS)
+        add_dependencies(rbdl_external ${RBDL_DEPENDS})
+    endif()
+    
+    target_link_libraries(RBDL::RBDL INTERFACE Eigen3::Eigen)
+    if(${MATH_BACKEND} STREQUAL "CASADI")
         target_link_libraries(RBDL::RBDL INTERFACE casadi::casadi)
     endif()
 endfunction()
