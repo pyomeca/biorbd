@@ -60,7 +60,7 @@ function(FindOrBuildRBDL MATH_BACKEND)
         # We need to add "/casadi" as an extra include directory
         get_target_property(Casadi_INCLUDE_DIRS casadi::casadi INTERFACE_INCLUDE_DIRECTORIES)
         set_target_properties(casadi::casadi PROPERTIES
-            INTERFACE_INCLUDE_DIRECTORIES "${Casadi_INCLUDE_DIRS};${Casadi_INCLUDE_DIRS}/casadi"
+            INTERFACE_INCLUDE_DIRECTORIES "${Casadi_INCLUDE_DIRS}/casadi;${Casadi_INCLUDE_DIRS}"
         )
 
         if(TARGET RBDL::RBDL)
@@ -96,7 +96,7 @@ function(FindOrBuildRBDL MATH_BACKEND)
         # Casadi_DIR is set from casadi::casadi
         # We need to add the Casadi_LIBRARY to the casadi::casadi target
         get_target_property(Casadi_INCLUDE_DIRS casadi::casadi INTERFACE_INCLUDE_DIRECTORIES)
-        list(GET Casadi_INCLUDE_DIRS 1 Casadi_INCLUDE_DIR)
+        list(GET Casadi_INCLUDE_DIRS 0 Casadi_INCLUDE_DIR)
         
         get_target_property(Casadi_LIBRARY casadi::casadi IMPORTED_LOCATION_RELEASE)
     else()

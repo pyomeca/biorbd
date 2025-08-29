@@ -28,9 +28,7 @@ foreach(FILE ${EXAMPLE_FILES})
 
     # Headers
     target_include_directories(${PROJECT_NAME} PRIVATE
-        "${RBDL_INCLUDE_DIR}"
         "${IPOPT_INCLUDE_DIR}"
-        "${MATH_BACKEND_INCLUDE_DIR}"
         "${CMAKE_SOURCE_DIR}/include"
         "${BIORBD_BINARY_DIR}/include"
         "${INSTALL_DEPENDENCIES_PREFIX}/include"
