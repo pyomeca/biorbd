@@ -57,7 +57,7 @@ jobs:
         with:
           config-file: "pyproject.toml"
         env:
-          MATH_LIBRARY_BACKEND: ${{ env.MATH_LIBRARY_BACKEND }}
+          MATH_LIBRARY_BACKEND: "Eigen3"
           CIBW_SKIP: "pp*-manylinux_i686"
           CIBW_BEFORE_BUILD: >-
             rm -rf _skbuild
