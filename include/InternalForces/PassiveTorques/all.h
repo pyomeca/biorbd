@@ -8,5 +8,4 @@
 #include "InternalForces/PassiveTorques/PassiveTorqueLinear.h"
 #include "InternalForces/PassiveTorques/PassiveTorques.h"
 
-#endif // BIORBD_PASSIVE_TORQUES_ALL_H
-
+#endif  // BIORBD_PASSIVE_TORQUES_ALL_H

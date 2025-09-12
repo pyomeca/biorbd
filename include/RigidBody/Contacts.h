@@ -1,24 +1,23 @@
 #ifndef BIORBD_RIGIDBODY_CONTACTS_H
 #define BIORBD_RIGIDBODY_CONTACTS_H
 
-#include <vector>
-#include <memory>
-#include <rbdl/Constraints.h>
 #include "biorbdConfig.h"
 
-namespace BIORBD_NAMESPACE
-{
-namespace utils
-{
+#include <memory>
+#include <vector>
+
+#include <rbdl/Constraints.h>
+
+namespace BIORBD_NAMESPACE {
+namespace utils {
 class RotoTrans;
 class Vector3d;
 class Vector;
 class String;
 class SpatialVector;
-}
+}  // namespace utils
 
-namespace rigidbody
-{
+namespace rigidbody {
 class ExternalForceSet;
 class GeneralizedCoordinates;
 class GeneralizedVelocity;
@@ -35,295 +34,307 @@ class BIORBD_API Contacts
 class BIORBD_API Contacts : public RigidBodyDynamics::ConstraintSet
 #endif
 {
-public:
-    ///
-    /// \brief Construct contacts
-    ///
-    Contacts();
+ public:
+  ///
+  /// \brief Construct contacts
+  ///
+  Contacts();
 
-    ///
-    /// \brief Deep copy of contacts
-    /// \return Copy of contacts
-    ///
-    Contacts DeepCopy() const;
+  ///
+  /// \brief Deep copy of contacts
+  /// \return Copy of contacts
+  ///
+  Contacts DeepCopy() const;
 
-    ///
-    /// \brief Deep copy of contacts
-    /// \param other The contacts to copy
-    ///
-    void DeepCopy(
-        const Contacts& other);
+  ///
+  /// \brief Deep copy of contacts
+  /// \param other The contacts to copy
+  ///
+  void DeepCopy(const Contacts &other);
 
-    ///
-    /// \brief Add a constraint to the constraint set
-    /// \param bodyId The body which is affected directly by the constraint
-    /// \param bodyPoint The point that is constrained relative to the contact body
-    /// \param worldNormal The normal along the constraint acts (in base coordinates)
-    /// \param name A human readable name
-    /// \param name A human readable name of the parent (should correspond to the body_id)
-    ///
-    size_t AddConstraint(
-        size_t bodyId,
-        const utils::Vector3d &bodyPoint,
-        const utils::Vector3d &worldNormal,
-        const utils::String& name,
-        const utils::String& parentName);
+  ///
+  /// \brief Add a constraint to the constraint set
+  /// \param bodyId The body which is affected directly by the constraint
+  /// \param bodyPoint The point that is constrained relative to the contact
+  /// body
+  /// \param worldNormal The normal along the constraint acts (in base
+  /// coordinates)
+  /// \param name A human readable name
+  /// \param name A human readable name of the parent (should correspond to the
+  /// body_id)
+  ///
+  size_t AddConstraint(
+      size_t bodyId,
+      const utils::Vector3d &bodyPoint,
+      const utils::Vector3d &worldNormal,
+      const utils::String &name,
+      const utils::String &parentName);
 
-    ///
-    /// \brief Add a constraint to the constraint set
-    /// \param bodyId The body which is affected directly by the constraint
-    /// \param bodyPoint The point that is constrained relative to the contact body
-    /// \param axis The axis along which the constraint acts
-    /// \param name A human readable name
-    /// \param name A human readable name of the parent (should correspond to the body_id)
-    ///
+  ///
+  /// \brief Add a constraint to the constraint set
+  /// \param bodyId The body which is affected directly by the constraint
+  /// \param bodyPoint The point that is constrained relative to the contact
+  /// body
+  /// \param axis The axis along which the constraint acts
+  /// \param name A human readable name
+  /// \param name A human readable name of the parent (should correspond to the
+  /// body_id)
+  ///
 
-    size_t AddConstraint(
-        size_t bodyId,
-        const utils::Vector3d &bodyPoint,
-        const utils::String& axis,
-        const utils::String& name,
-        const utils::String& parentName);
+  size_t AddConstraint(
+      size_t bodyId,
+      const utils::Vector3d &bodyPoint,
+      const utils::String &axis,
+      const utils::String &name,
+      const utils::String &parentName);
 
-    ///
-    /// \brief Add a loop constraint to the constraint set
-    /// \param body_id_predecessor The identifier of the predecessor body
-    /// \param body_id_successor The identifier of the successor body
-    /// \param X_predecessor A spatial transform localizing the constrained frames on the predecessor body, expressed with respect to the predecessor body frame
-    /// \param X_successor A spatial transform localizing the constrained frames on the successor body, expressed with respect to the successor body frame
-    /// \param axis A spatial vector indicating the axis along which the constraint acts
-    /// \param name A human readable name
-    /// \param enableStabilization Whether stabilization should be enabled or not
-    /// \param stabilizationParam The value used for stabilization
-    ///
-    size_t AddLoopConstraint(
-        size_t body_id_predecessor,
-        size_t body_id_successor,
-        const utils::RotoTrans& X_predecessor,
-        const utils::RotoTrans& X_successor,
-        const utils::SpatialVector& axis,
-        const utils::String& name,
-        bool enableStabilization = false,
-        double stabilizationParam = 0.1);
+  ///
+  /// \brief Add a loop constraint to the constraint set
+  /// \param body_id_predecessor The identifier of the predecessor body
+  /// \param body_id_successor The identifier of the successor body
+  /// \param X_predecessor A spatial transform localizing the constrained frames
+  /// on the predecessor body, expressed with respect to the predecessor body
+  /// frame
+  /// \param X_successor A spatial transform localizing the constrained frames
+  /// on the successor body, expressed with respect to the successor body frame
+  /// \param axis A spatial vector indicating the axis along which the
+  /// constraint acts
+  /// \param name A human readable name
+  /// \param enableStabilization Whether stabilization should be enabled or not
+  /// \param stabilizationParam The value used for stabilization
+  ///
+  size_t AddLoopConstraint(
+      size_t body_id_predecessor,
+      size_t body_id_successor,
+      const utils::RotoTrans &X_predecessor,
+      const utils::RotoTrans &X_successor,
+      const utils::SpatialVector &axis,
+      const utils::String &name,
+      bool enableStabilization = false,
+      double stabilizationParam = 0.1);
 
-    ///
-    /// \brief compute the forces generated from loop constraints
-    /// \param Q The generalized coordinates
-    /// \param Qdot The generalized velocities
-    /// \param Tau The generalized torques
-    /// \return The forces generated by the loop closure at the predecessor in the global frame
-    ///
-    std::vector< utils::SpatialVector > calcLoopConstraintForces(
-        const rigidbody::GeneralizedCoordinates &Q,
-        const rigidbody::GeneralizedVelocity &Qdot,
-        const rigidbody::GeneralizedTorque &Tau);
+  ///
+  /// \brief compute the forces generated from loop constraints
+  /// \param Q The generalized coordinates
+  /// \param Qdot The generalized velocities
+  /// \param Tau The generalized torques
+  /// \return The forces generated by the loop closure at the predecessor in the
+  /// global frame
+  ///
+  std::vector<utils::SpatialVector> calcLoopConstraintForces(
+      const rigidbody::GeneralizedCoordinates &Q,
+      const rigidbody::GeneralizedVelocity &Qdot,
+      const rigidbody::GeneralizedTorque &Tau);
 
-    ///
-    /// \brief compute the forces generated from loop constraints
-    /// \param Q The generalized coordinates
-    /// \param Qdot The generalized velocities
-    /// \param Tau The generalized torques
-    /// \param externalForces the external forces
-    /// \return The forces generated by the loop closure at the predecessor in the global frame
-    ///
-    std::vector< utils::SpatialVector > calcLoopConstraintForces(
-        const rigidbody::GeneralizedCoordinates& Q,
-        const rigidbody::GeneralizedVelocity& Qdot,
-        const rigidbody::GeneralizedTorque& Tau,
-        rigidbody::ExternalForceSet& externalForces);
+  ///
+  /// \brief compute the forces generated from loop constraints
+  /// \param Q The generalized coordinates
+  /// \param Qdot The generalized velocities
+  /// \param Tau The generalized torques
+  /// \param externalForces the external forces
+  /// \return The forces generated by the loop closure at the predecessor in the
+  /// global frame
+  ///
+  std::vector<utils::SpatialVector> calcLoopConstraintForces(
+      const rigidbody::GeneralizedCoordinates &Q,
+      const rigidbody::GeneralizedVelocity &Qdot,
+      const rigidbody::GeneralizedTorque &Tau,
+      rigidbody::ExternalForceSet &externalForces);
 
-    ///
-    /// \brief Destroy the class properly
-    ///
-    virtual ~Contacts();
+  ///
+  /// \brief Destroy the class properly
+  ///
+  virtual ~Contacts();
 
-    ///
-    /// \brief Get constraints
-    /// \return The constraints
-    ///
-    Contacts &getConstraints();
+  ///
+  /// \brief Get constraints
+  /// \return The constraints
+  ///
+  Contacts &getConstraints();
 
-    ///
-    /// \brief Check if there are contacts
-    /// \return The presence of contacts
-    ///
-    bool hasContacts() const;
+  ///
+  /// \brief Check if there are contacts
+  /// \return The presence of contacts
+  ///
+  bool hasContacts() const;
 
-    ///
-    /// \brief Check if there are loop constraints
-    /// \return The presence of loop constraints
-    ///
-    bool hasLoopConstraints() const;
+  ///
+  /// \brief Check if there are loop constraints
+  /// \return The presence of loop constraints
+  ///
+  bool hasLoopConstraints() const;
 
-    ///
-    /// \brief Return the number of contacts
-    /// \return The number of contacts
-    ///
-    size_t nbContacts() const;
+  ///
+  /// \brief Return the number of contacts
+  /// \return The number of contacts
+  ///
+  size_t nbContacts() const;
 
-    ///
-    /// \brief Return the number of loop constraints
-    /// \return The number of loop constraints
-    ///
-    size_t nbLoopConstraints() const;
+  ///
+  /// \brief Return the number of loop constraints
+  /// \return The number of loop constraints
+  ///
+  size_t nbLoopConstraints() const;
 
-    ///
-    /// \brief Return the name of the all contacts
-    /// \return The name of the contacts
-    ///
-    std::vector<utils::String> contactNames();
+  ///
+  /// \brief Return the name of the all contacts
+  /// \return The name of the contacts
+  ///
+  std::vector<utils::String> contactNames();
 
-    ///
-    /// \brief Return the name of the contact of a specified axis
-    /// \param i The axis
-    /// \return The name of the contact of a specified axis
-    ///
-    utils::String contactName(size_t i);
+  ///
+  /// \brief Return the name of the contact of a specified axis
+  /// \param i The axis
+  /// \return The name of the contact of a specified axis
+  ///
+  utils::String contactName(size_t i);
 
-    ///
-    /// \brief Return the constraints position in the global reference
-    /// \param Q The generalized coordinates of the joints
-    /// \param updateKin Whether the kinematics of the model should be updated from Q
-    /// \return The constraints positions in the global reference
-    ///
-    std::vector<utils::Vector3d> constraintsInGlobal(
-        const GeneralizedCoordinates &Q,
-        bool updateKin);
+  ///
+  /// \brief Return the constraints position in the global reference
+  /// \param Q The generalized coordinates of the joints
+  /// \param updateKin Whether the kinematics of the model should be updated
+  /// from Q
+  /// \return The constraints positions in the global reference
+  ///
+  std::vector<utils::Vector3d> constraintsInGlobal(
+      const GeneralizedCoordinates &Q,
+      bool updateKin);
 
-    ///
-    /// \brief Return the force acting on the constraint
-    /// \return The force acting on the constraint
-    ///
-    utils::Vector getForce() const;
+  ///
+  /// \brief Return the force acting on the constraint
+  /// \return The force acting on the constraint
+  ///
+  utils::Vector getForce() const;
 
-    ///
-    /// \brief Return the segment idx of the contact in biorbd formalism
-    /// \param idx The index of the contact
-    /// \return segment idx of the contact in biorbd formalism
-    ///
-    int contactSegmentBiorbdId(
-            int  idx) const;
+  ///
+  /// \brief Return the segment idx of the contact in biorbd formalism
+  /// \param idx The index of the contact
+  /// \return segment idx of the contact in biorbd formalism
+  ///
+  int contactSegmentBiorbdId(int idx) const;
 
-    ///
-    /// \brief Return the index of rigid contacts for a specified segment index
-    /// \param idx The index of the segment
-    /// \return the index of rigid contacts for the specified segment idx
-    ///
-    std::vector<size_t> segmentRigidContactIdx(
-            int segment_idx) const;
+  ///
+  /// \brief Return the index of rigid contacts for a specified segment index
+  /// \param idx The index of the segment
+  /// \return the index of rigid contacts for the specified segment idx
+  ///
+  std::vector<size_t> segmentRigidContactIdx(int segment_idx) const;
 
-    ///
-    /// \brief Returns the number of rigid contacts (ignoring the loop constraints)
-    /// \return The number of rigid contacts (ignoring the loop constraints)
-    ///
-    int nbRigidContacts() const;
+  ///
+  /// \brief Returns the number of rigid contacts (ignoring the loop
+  /// constraints)
+  /// \return The number of rigid contacts (ignoring the loop constraints)
+  ///
+  int nbRigidContacts() const;
 
-    ///
-    /// \brief Returns all the rigid contacts as declared in the model
-    /// \return All the rigid contacts as declared in the model
-    ///
-    const std::vector<NodeSegment>& rigidContacts() const;
+  ///
+  /// \brief Returns all the rigid contacts as declared in the model
+  /// \return All the rigid contacts as declared in the model
+  ///
+  const std::vector<NodeSegment> &rigidContacts() const;
 
-    ///
-    /// \brief Returns the rigid contact idx as declared in the model
-    /// \param idx The index of the contact
-    /// \return All the rigid contacts as declared in the model
-    ///
-    const NodeSegment& rigidContact(size_t idx) const;
+  ///
+  /// \brief Returns the rigid contact idx as declared in the model
+  /// \param idx The index of the contact
+  /// \return All the rigid contacts as declared in the model
+  ///
+  const NodeSegment &rigidContact(size_t idx) const;
 
-    ///
-    /// \brief Return the rigidContact position in the global reference
-    /// \param Q The generalized coordinates of the joints
-    /// \param idx The index of the contact
-    /// \param updateKin Whether the kinematics of the model should be updated from Q
-    /// \return The rigidContact position in the global reference
-    ///
-    utils::Vector3d rigidContact(
-        const GeneralizedCoordinates &Q,
-        size_t idx,
-        bool updateKin);
+  ///
+  /// \brief Return the rigidContact position in the global reference
+  /// \param Q The generalized coordinates of the joints
+  /// \param idx The index of the contact
+  /// \param updateKin Whether the kinematics of the model should be updated
+  /// from Q
+  /// \return The rigidContact position in the global reference
+  ///
+  utils::Vector3d
+  rigidContact(const GeneralizedCoordinates &Q, size_t idx, bool updateKin);
 
-    ///
-    /// \brief Return all the rigidContacts position in the global reference
-    /// \param Q The generalized coordinates of the joints
-    /// \param updateKin Whether the kinematics of the model should be updated from Q
-    /// \return All the rigidContacts positions in the global reference
-    ///
-    std::vector<utils::Vector3d> rigidContacts(
-        const GeneralizedCoordinates &Q,
-        bool updateKin);
+  ///
+  /// \brief Return all the rigidContacts position in the global reference
+  /// \param Q The generalized coordinates of the joints
+  /// \param updateKin Whether the kinematics of the model should be updated
+  /// from Q
+  /// \return All the rigidContacts positions in the global reference
+  ///
+  std::vector<utils::Vector3d> rigidContacts(
+      const GeneralizedCoordinates &Q,
+      bool updateKin);
 
-    ///
-    /// \brief Return the velocity of the chosen contact
-    /// \param Q The generalized coordinates
-    /// \param Qdot The generalized velocities
-    /// \param idx The index of the contact
-    /// \param updateKin If the model should be updated
-    /// \return The velocity of the chosen contact
-    ///
-    utils::Vector3d rigidContactVelocity(
-        const rigidbody::GeneralizedCoordinates &Q,
-        const rigidbody::GeneralizedVelocity &Qdot,
-        size_t idx,
-        bool updateKin = true);
+  ///
+  /// \brief Return the velocity of the chosen contact
+  /// \param Q The generalized coordinates
+  /// \param Qdot The generalized velocities
+  /// \param idx The index of the contact
+  /// \param updateKin If the model should be updated
+  /// \return The velocity of the chosen contact
+  ///
+  utils::Vector3d rigidContactVelocity(
+      const rigidbody::GeneralizedCoordinates &Q,
+      const rigidbody::GeneralizedVelocity &Qdot,
+      size_t idx,
+      bool updateKin = true);
 
-    ///
-    /// \brief Return the velocities of all the contacts
-    /// \param Q The generalized coordinates
-    /// \param Qdot The generalized velocities
-    /// \param Qddot The generalized velocities
-    /// \return The velocities of all the contacts
-    ///
-    std::vector<utils::Vector3d> rigidContactsVelocity(
-        const rigidbody::GeneralizedCoordinates &Q,
-        const rigidbody::GeneralizedVelocity &Qdot,
-        bool updateKin = true);
+  ///
+  /// \brief Return the velocities of all the contacts
+  /// \param Q The generalized coordinates
+  /// \param Qdot The generalized velocities
+  /// \param Qddot The generalized velocities
+  /// \return The velocities of all the contacts
+  ///
+  std::vector<utils::Vector3d> rigidContactsVelocity(
+      const rigidbody::GeneralizedCoordinates &Q,
+      const rigidbody::GeneralizedVelocity &Qdot,
+      bool updateKin = true);
 
-    ///
-    /// \brief Return the acceleration of the chosen contact
-    /// \param Q The generalized coordinates
-    /// \param Qdot The generalized velocities
-    /// \param Qddot The generalized velocities
-    /// \param idx The index of the contact
-    /// \param updateKin If the model should be updated
-    /// \return The acceleration of the chosen contact
-    ///
-    utils::Vector3d rigidContactAcceleration(
-        const rigidbody::GeneralizedCoordinates &Q,
-        const rigidbody::GeneralizedVelocity &Qdot,
-        const rigidbody::GeneralizedAcceleration &dQdot,
-        size_t idx,
-        bool updateKin = true);
+  ///
+  /// \brief Return the acceleration of the chosen contact
+  /// \param Q The generalized coordinates
+  /// \param Qdot The generalized velocities
+  /// \param Qddot The generalized velocities
+  /// \param idx The index of the contact
+  /// \param updateKin If the model should be updated
+  /// \return The acceleration of the chosen contact
+  ///
+  utils::Vector3d rigidContactAcceleration(
+      const rigidbody::GeneralizedCoordinates &Q,
+      const rigidbody::GeneralizedVelocity &Qdot,
+      const rigidbody::GeneralizedAcceleration &dQdot,
+      size_t idx,
+      bool updateKin = true);
 
-    ///
-    /// \brief Return the acceleration of all the contacts
-    /// \param Q The generalized coordinates
-    /// \param Qdot The generalized velocities
-    /// \param Qddot The generalized velocities
-    /// \return The acceleration of all the contacts
-    ///
-    std::vector<utils::Vector3d> rigidContactsAcceleration(
-        const rigidbody::GeneralizedCoordinates &Q,
-        const rigidbody::GeneralizedVelocity &Qdot,
-        const rigidbody::GeneralizedAcceleration &dQdot,
-        bool updateKin = true);
+  ///
+  /// \brief Return the acceleration of all the contacts
+  /// \param Q The generalized coordinates
+  /// \param Qdot The generalized velocities
+  /// \param Qddot The generalized velocities
+  /// \return The acceleration of all the contacts
+  ///
+  std::vector<utils::Vector3d> rigidContactsAcceleration(
+      const rigidbody::GeneralizedCoordinates &Q,
+      const rigidbody::GeneralizedVelocity &Qdot,
+      const rigidbody::GeneralizedAcceleration &dQdot,
+      bool updateKin = true);
 
-protected:
-    /// 
-    /// \brief Swap the status of the axes provided, that is adding x, y or z if it is not there and remove them otherwise.
-    /// This effectively transform an allowed axes set to a axes to remove set, or vice versa.
-    /// \param axesToSwap a vector of up to three values (being "x", "y" or "z")
-    ///
-    utils::String swapAxes(
-        const utils::String& axesToSwap) const;
+ protected:
+  ///
+  /// \brief Swap the status of the axes provided, that is adding x, y or z if
+  /// it is not there and remove them otherwise. This effectively transform an
+  /// allowed axes set to a axes to remove set, or vice versa.
+  /// \param axesToSwap a vector of up to three values (being "x", "y" or "z")
+  ///
+  utils::String swapAxes(const utils::String &axesToSwap) const;
 
-    std::shared_ptr<size_t> m_nbreConstraint; ///< Number of constraints
-    std::shared_ptr<bool> m_isBinded; ///< If the model is ready
-    std::shared_ptr<std::vector<rigidbody::NodeSegment>> m_rigidContacts; ///< The rigid contacts declared in the model (copy of RBDL information)
-    std::shared_ptr<size_t> m_nbLoopConstraint; ///< Number of constraints
+  std::shared_ptr<size_t> m_nbreConstraint;  ///< Number of constraints
+  std::shared_ptr<bool> m_isBinded;          ///< If the model is ready
+  std::shared_ptr<std::vector<rigidbody::NodeSegment>>
+      m_rigidContacts;  ///< The rigid contacts declared in the model (copy of
+                        ///< RBDL information)
+  std::shared_ptr<size_t> m_nbLoopConstraint;  ///< Number of constraints
 };
 
-}
-}
+}  // namespace rigidbody
+}  // namespace BIORBD_NAMESPACE
 
-#endif // BIORBD_RIGIDBODY_CONTACTS_H
+#endif  // BIORBD_RIGIDBODY_CONTACTS_H

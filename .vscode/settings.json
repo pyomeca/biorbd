@@ -1,0 +1,12 @@
+{
+    "cmake.configureOnOpen": false,
+    "cmake.buildDirectory": "${workspaceFolder}/build",
+    "C_Cpp.clang_format_fallbackStyle": "{ BasedOnStyle: Google }",
+    "editor.formatOnSave": true,
+    "[c]": {
+        "editor.defaultFormatter": "ms-vscode.cpptools"
+    },
+    "[cpp]": {
+        "editor.defaultFormatter": "ms-vscode.cpptools"
+    },
+}

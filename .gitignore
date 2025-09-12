@@ -103,9 +103,6 @@ Pipfile.lock
 # mypy
 .mypy_cache/
 
-# Visual code
-.vscode
-
 # Visual studio
 .vs
 

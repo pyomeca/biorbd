@@ -2,18 +2,19 @@
 #define BIORBD_MODEL_H
 
 #include "biorbdConfig.h"
-#include "Utils/Path.h"
-#include "RigidBody/RotoTransNodes.h"
-#include "RigidBody/Joints.h"
-#include "RigidBody/Markers.h"
+
 #include "RigidBody/Contacts.h"
 #include "RigidBody/IMUs.h"
+#include "RigidBody/Joints.h"
+#include "RigidBody/Markers.h"
+#include "RigidBody/RotoTransNodes.h"
 #include "RigidBody/SoftContacts.h"
+#include "Utils/Path.h"
 #ifdef MODULE_ACTUATORS
-    #include "InternalForces/Actuators/Actuators.h"
+#include "InternalForces/Actuators/Actuators.h"
 #endif
 #ifdef MODULE_MUSCLES
-    #include "InternalForces/Muscles/Muscles.h"
+#include "InternalForces/Muscles/Muscles.h"
 #endif
 #ifdef MODULE_PASSIVE_TORQUES
 #include "InternalForces/PassiveTorques/PassiveTorques.h"
@@ -28,13 +29,14 @@
 /// \section intro_sec Introduction
 ///
 /// This is the document for the library biorbd
-/// (<a href="http://github.com/pyomeca/biorbd">http://github.com/pyomeca/biorbd</a>).
-/// The main goal of this library is to provide biomechanics tools for simulation
-/// and modeling.
+/// (<a
+/// href="http://github.com/pyomeca/biorbd">http://github.com/pyomeca/biorbd</a>).
+/// The main goal of this library is to provide biomechanics tools for
+/// simulation and modeling.
 ///
-/// biorbd is a library to analyze biomechanical data. It provides several useful
-/// functions for the direct and inverse flow including rigid body (based on
-/// Feathestone equations implemented in RBDL) and muscle elements.
+/// biorbd is a library to analyze biomechanical data. It provides several
+/// useful functions for the direct and inverse flow including rigid body (based
+/// on Feathestone equations implemented in RBDL) and muscle elements.
 /// Biomechanical data are often analyzed using similar flow, that is
 /// inverse or direct. biorbd implements these common analyses providing
 /// high-level and easy to use Python and MATLAB interfaces of an
@@ -66,68 +68,70 @@
 ///
 BIORBD_NAMESPACE::utils::String getVersion();
 
-namespace BIORBD_NAMESPACE
-{
-    namespace rigidbody {
-        class ExternalForceSet;
-    }
+namespace BIORBD_NAMESPACE {
+namespace rigidbody {
+class ExternalForceSet;
+}
 
 ///
 /// \brief The actual musculoskeletal model that holds everything in biorbd
 ///
-class BIORBD_API Model :
-    public rigidbody::Joints
-    ,public rigidbody::Markers
-    ,public rigidbody::IMUs
-    ,public rigidbody::RotoTransNodes
-    ,public rigidbody::Contacts
+class BIORBD_API Model : public rigidbody::Joints,
+                         public rigidbody::Markers,
+                         public rigidbody::IMUs,
+                         public rigidbody::RotoTransNodes,
+                         public rigidbody::Contacts
 #ifdef MODULE_ACTUATORS
-    ,public internal_forces::actuator::Actuators
+    ,
+                         public internal_forces::actuator::Actuators
 #endif
 #ifdef MODULE_MUSCLES
-    ,public internal_forces::muscles::Muscles
+    ,
+                         public internal_forces::muscles::Muscles
 #endif
 #ifdef MODULE_PASSIVE_TORQUES
-    ,public internal_forces::passive_torques::PassiveTorques
+    ,
+                         public internal_forces::passive_torques::PassiveTorques
 #endif
 #ifdef MODULE_LIGAMENTS
-    ,public internal_forces::ligaments::Ligaments
+    ,
+                         public internal_forces::ligaments::Ligaments
 #endif
-    ,public rigidbody::SoftContacts
-{
-public:
-    ///
-    /// \brief Construct an empty model that can be manually filled
-    ///
-    Model();
+    ,
+                         public rigidbody::SoftContacts {
+ public:
+  ///
+  /// \brief Construct an empty model that can be manually filled
+  ///
+  Model();
 
-    ///
-    /// \brief Construct a model from a bioMod file
-    /// \param path The path of the file
-    ///
-    Model(
-        const utils::Path& path);
+  ///
+  /// \brief Construct a model from a bioMod file
+  /// \param path The path of the file
+  ///
+  Model(const utils::Path& path);
 
-    ///
-    /// \brief Get an external forces set designed for the current model
-    /// \param useLinearForces If this force set has external forces 
-    /// \param useSoftContacts If this force set has soft contacts
-    /// 
-    rigidbody::ExternalForceSet externalForceSet(
-        bool useLinearForces = true,
-        bool useSoftContacts = true
-    );
+  ///
+  /// \brief Get an external forces set designed for the current model
+  /// \param useLinearForces If this force set has external forces
+  /// \param useSoftContacts If this force set has soft contacts
+  ///
+  rigidbody::ExternalForceSet externalForceSet(
+      bool useLinearForces = true,
+      bool useSoftContacts = true);
 
-private:
-    std::shared_ptr<utils::Path> m_path;
-public:
-    ///
-    /// \brief Returns the path of .bioMod file used to load the model. If no file was used, it remains empty
-    /// \return The path of .bioMod file used to load the model
-    ///
-    utils::Path path() const;
+ private:
+  std::shared_ptr<utils::Path> m_path;
+
+ public:
+  ///
+  /// \brief Returns the path of .bioMod file used to load the model. If no file
+  /// was used, it remains empty
+  /// \return The path of .bioMod file used to load the model
+  ///
+  utils::Path path() const;
 };
 
-}
+}  // namespace BIORBD_NAMESPACE
 
-#endif // BIORBD_MODEL_H
+#endif  // BIORBD_MODEL_H
