@@ -273,14 +273,13 @@ public:
         size_t idx,
         const SegmentCharacteristics& characteristics);
 
-
     ///
     /// \brief Get a segment of index idx
     /// \param idx Index of the segment
     /// \return The segment
     ///
     Segment& segment(
-        size_t idx) const;
+        size_t idx);
 
     ///
     /// \brief Get a segment of a specific name
@@ -288,6 +287,22 @@ public:
     /// \return The segment
     ///
     Segment& segment(
+        const utils::String& name);
+
+    ///
+    /// \brief Get a segment of index idx
+    /// \param idx Index of the segment
+    /// \return The segment
+    ///
+    const Segment& segment(
+        size_t idx) const;
+
+    ///
+    /// \brief Get a segment of a specific name
+    /// \param name The name of the segment to return
+    /// \return The segment
+    ///
+    const Segment& segment(
         const utils::String& name) const;
 
     ///

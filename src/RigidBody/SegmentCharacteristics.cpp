@@ -9,33 +9,27 @@
 
 using namespace BIORBD_NAMESPACE;
 
-rigidbody::SegmentCharacteristics::SegmentCharacteristics() :
-    Body(),
-    m_length(std::make_shared<utils::Scalar>(0)),
-    m_mesh(std::make_shared<rigidbody::Mesh>())
+rigidbody::SegmentCharacteristics::SegmentCharacteristics() : Body(),
+                                                              m_length(std::make_shared<utils::Scalar>(0)),
+                                                              m_mesh(std::make_shared<rigidbody::Mesh>())
 {
-
 }
 rigidbody::SegmentCharacteristics::SegmentCharacteristics(
     const utils::Scalar &mass,
     const utils::Vector3d &com,
-    const utils::Matrix3d &inertia) :
-    Body(mass, com, inertia),
-    m_length(std::make_shared<utils::Scalar>(0)),
-    m_mesh(std::make_shared<rigidbody::Mesh>())
+    const utils::Matrix3d &inertia) : Body(mass, com, inertia),
+                                      m_length(std::make_shared<utils::Scalar>(0)),
+                                      m_mesh(std::make_shared<rigidbody::Mesh>())
 {
-
 }
 rigidbody::SegmentCharacteristics::SegmentCharacteristics(
     const utils::Scalar &mass,
     const utils::Vector3d &com,
     const utils::Matrix3d &inertia,
-    const rigidbody::Mesh &mesh) :
-    Body(mass, com, inertia),
-    m_length(std::make_shared<utils::Scalar>(0)),
-    m_mesh(std::make_shared<rigidbody::Mesh>(mesh))
+    const rigidbody::Mesh &mesh) : Body(mass, com, inertia),
+                                   m_length(std::make_shared<utils::Scalar>(0)),
+                                   m_mesh(std::make_shared<rigidbody::Mesh>(mesh))
 {
-
 }
 
 rigidbody::SegmentCharacteristics
@@ -49,13 +43,13 @@ rigidbody::SegmentCharacteristics::DeepCopy() const
 void rigidbody::SegmentCharacteristics::DeepCopy(
     const SegmentCharacteristics &other)
 {
-    static_cast<RigidBodyDynamics::Body&>(*this) = other;
+    static_cast<RigidBodyDynamics::Body &>(*this) = other;
     *m_length = *other.m_length;
     *m_mesh = other.m_mesh->DeepCopy();
 }
 
 void rigidbody::SegmentCharacteristics::setLength(
-    const utils::Scalar& val)
+    const utils::Scalar &val)
 {
     *m_length = val;
 }
@@ -87,8 +81,13 @@ void rigidbody::SegmentCharacteristics::setCoM(
     mCenterOfMass = com;
 }
 
+rigidbody::Mesh &rigidbody::SegmentCharacteristics::mesh()
+{
+    return *m_mesh;
+}
+
 const rigidbody::Mesh &rigidbody::SegmentCharacteristics::mesh()
-const
+    const
 {
     return *m_mesh;
 }
@@ -99,7 +98,7 @@ const utils::Matrix3d rigidbody::SegmentCharacteristics::inertia() const
 }
 
 void rigidbody::SegmentCharacteristics::setInertia(
-        const utils::Matrix3d &inertia)
+    const utils::Matrix3d &inertia)
 {
     mInertia = inertia;
 }

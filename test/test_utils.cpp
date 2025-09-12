@@ -22,12 +22,11 @@ static double requiredPrecision(1e-10);
 
 using namespace BIORBD_NAMESPACE;
 
-
 // Load some models
 #ifdef MODULE_ACTUATORS
 static std::string
-modelPathForGeneralTesting("models/pyomecaman_withActuators.bioMod");
-#else // MODULE_ACTUATORS
+    modelPathForGeneralTesting("models/pyomecaman_withActuators.bioMod");
+#else  // MODULE_ACTUATORS
 static std::string modelPathForGeneralTesting("models/pyomecaman.bioMod");
 #endif // MODULE_ACTUATORS
 
@@ -81,15 +80,19 @@ TEST(Path, Create)
     {
         EXPECT_STREQ(
             utils::Path::toUnixFormat(
-                "MyUgly\\\\WindowsPath\\\\ToMyFile.biorbd").c_str(),
-            utils::String (
-                "MyUgly/WindowsPath/ToMyFile.biorbd").c_str());
+                "MyUgly\\\\WindowsPath\\\\ToMyFile.biorbd")
+                .c_str(),
+            utils::String(
+                "MyUgly/WindowsPath/ToMyFile.biorbd")
+                .c_str());
 
         EXPECT_STREQ(
             utils::Path::toWindowsFormat(
-                "MyCute/UnixPath/ToMyFile.biorbd").c_str(),
-            utils::String (
-                "MyCute\\\\UnixPath\\\\ToMyFile.biorbd").c_str());
+                "MyCute/UnixPath/ToMyFile.biorbd")
+                .c_str(),
+            utils::String(
+                "MyCute\\\\UnixPath\\\\ToMyFile.biorbd")
+                .c_str());
     }
 
     {
@@ -130,7 +133,8 @@ TEST(Path, Create)
         utils::Path relativePath("MyLovely/RelativePath/ToMyLovelyFile.biorbd");
         EXPECT_STREQ(relativePath.absolutePath().c_str(),
                      (utils::Path::currentDir() +
-                      "MyLovely/RelativePath/ToMyLovelyFile.biorbd").c_str());
+                      "MyLovely/RelativePath/ToMyLovelyFile.biorbd")
+                         .c_str());
         EXPECT_STREQ(relativePath.absoluteFolder().c_str(),
                      (utils::Path::currentDir() + "MyLovely/RelativePath/").c_str());
         EXPECT_STREQ(relativePath.filename().c_str(), "ToMyLovelyFile");
@@ -143,10 +147,11 @@ TEST(Path, Create)
 
     {
         utils::Path
-        weirdRelativePath("./MyLovely/RelativePath/ToMyLovelyFile.biorbd");
+            weirdRelativePath("./MyLovely/RelativePath/ToMyLovelyFile.biorbd");
         EXPECT_STREQ(weirdRelativePath.absolutePath().c_str(),
                      (utils::Path::currentDir() +
-                      "MyLovely/RelativePath/ToMyLovelyFile.biorbd").c_str());
+                      "MyLovely/RelativePath/ToMyLovelyFile.biorbd")
+                         .c_str());
         EXPECT_STREQ(weirdRelativePath.absoluteFolder().c_str(),
                      (utils::Path::currentDir() + "MyLovely/RelativePath/").c_str());
         EXPECT_STREQ(weirdRelativePath.filename().c_str(), "ToMyLovelyFile");
@@ -159,10 +164,11 @@ TEST(Path, Create)
 
     {
         utils::Path
-        parentRelativePath("../MyLovely/ParentPath/ToMyLovelyFile.biorbd");
+            parentRelativePath("../MyLovely/ParentPath/ToMyLovelyFile.biorbd");
         EXPECT_STREQ(parentRelativePath.absolutePath().c_str(),
                      (utils::Path::currentDir() +
-                      "../MyLovely/ParentPath/ToMyLovelyFile.biorbd").c_str());
+                      "../MyLovely/ParentPath/ToMyLovelyFile.biorbd")
+                         .c_str());
         EXPECT_STREQ(parentRelativePath.absoluteFolder().c_str(),
                      (utils::Path::currentDir() + "../MyLovely/ParentPath/").c_str());
         EXPECT_STREQ(parentRelativePath.filename().c_str(), "ToMyLovelyFile");
@@ -198,6 +204,19 @@ TEST(Path, Create)
         EXPECT_STREQ(almostNoPath.originalPath().c_str(),
                      "./MyKinbDofLonelyFile.biorbd");
     }
+}
+
+TEST(Path, modify)
+{
+#ifdef _WIN32
+    auto basePath = utils::Path::currentDir();
+#else
+    auto basePath = utils::Path::currentDir();
+#endif
+
+    utils::Path path("MyOldFolder/MyFile.bioMesh");
+    path.setFolder(basePath + "MyNewFolder");
+    EXPECT_STREQ(path.absolutePath().c_str(), (basePath + "MyNewFolder/MyFile.bioMesh").c_str());
 }
 
 TEST(Path, Copy)
@@ -238,9 +257,9 @@ TEST(Vector3d, rotate)
     SCALAR_TO_DOUBLE(x, node[0]);
     SCALAR_TO_DOUBLE(y, node[1]);
     SCALAR_TO_DOUBLE(z, node[2]);
-    nodeXrot.applyRT( utils::RotoTrans(utils::Vector3d(M_PI, 0, 0),
-                      utils::Vector3d(0, 0, 0),
-                      "xyz") );
+    nodeXrot.applyRT(utils::RotoTrans(utils::Vector3d(M_PI, 0, 0),
+                                      utils::Vector3d(0, 0, 0),
+                                      "xyz"));
     {
         SCALAR_TO_DOUBLE(nodeX, nodeXrot[0]);
         SCALAR_TO_DOUBLE(nodeY, nodeXrot[1]);
@@ -251,9 +270,9 @@ TEST(Vector3d, rotate)
     }
 
     utils::Vector3d nodeYrot(node.DeepCopy());
-    nodeYrot.applyRT( utils::RotoTrans(utils::Vector3d(0, M_PI, 0),
-                      utils::Vector3d(0, 0, 0),
-                      "xyz") );
+    nodeYrot.applyRT(utils::RotoTrans(utils::Vector3d(0, M_PI, 0),
+                                      utils::Vector3d(0, 0, 0),
+                                      "xyz"));
     {
         SCALAR_TO_DOUBLE(nodeX, nodeYrot[0]);
         SCALAR_TO_DOUBLE(nodeY, nodeYrot[1]);
@@ -264,9 +283,9 @@ TEST(Vector3d, rotate)
     }
 
     utils::Vector3d nodeZrot(node.DeepCopy());
-    nodeZrot.applyRT( utils::RotoTrans(utils::Vector3d(0, 0, M_PI),
-                      utils::Vector3d(0, 0, 0),
-                      "xyz") );
+    nodeZrot.applyRT(utils::RotoTrans(utils::Vector3d(0, 0, M_PI),
+                                      utils::Vector3d(0, 0, 0),
+                                      "xyz"));
     {
         SCALAR_TO_DOUBLE(nodeX, nodeZrot[0]);
         SCALAR_TO_DOUBLE(nodeY, nodeZrot[1]);
@@ -277,9 +296,9 @@ TEST(Vector3d, rotate)
     }
 
     utils::Vector3d nodeZrot2(node.DeepCopy());
-    nodeZrot2.applyRT( utils::RotoTrans(utils::Vector3d(M_PI, 0, 0),
-                       utils::Vector3d(0, 0, 0),
-                       "zxy") );
+    nodeZrot2.applyRT(utils::RotoTrans(utils::Vector3d(M_PI, 0, 0),
+                                       utils::Vector3d(0, 0, 0),
+                                       "zxy"));
     {
         SCALAR_TO_DOUBLE(nodeX, nodeZrot2[0]);
         SCALAR_TO_DOUBLE(nodeY, nodeZrot2[1]);
@@ -291,9 +310,9 @@ TEST(Vector3d, rotate)
 
     double trans(2);
     utils::Vector3d nodeRot(node.DeepCopy());
-    nodeRot.applyRT( utils::RotoTrans(utils::Vector3d(M_PI/6,
-                     M_PI/6, M_PI/6),
-                     utils::Vector3d(trans, trans, trans), "xyz") );
+    nodeRot.applyRT(utils::RotoTrans(utils::Vector3d(M_PI / 6,
+                                                     M_PI / 6, M_PI / 6),
+                                     utils::Vector3d(trans, trans, trans), "xyz"));
     {
         SCALAR_TO_DOUBLE(nodeX, nodeRot[0]);
         SCALAR_TO_DOUBLE(nodeY, nodeRot[1]);
@@ -304,8 +323,8 @@ TEST(Vector3d, rotate)
     }
 
     utils::Vector3d nodeTrans(node.DeepCopy());
-    nodeTrans.applyRT( utils::RotoTrans(utils::Vector3d(0, 0, 0),
-                       utils::Vector3d(2, 2, 2), "xyz") );
+    nodeTrans.applyRT(utils::RotoTrans(utils::Vector3d(0, 0, 0),
+                                       utils::Vector3d(2, 2, 2), "xyz"));
     {
         SCALAR_TO_DOUBLE(nodeX, nodeTrans[0]);
         SCALAR_TO_DOUBLE(nodeY, nodeTrans[1]);
@@ -403,16 +422,12 @@ TEST(Matrix, Copy)
 {
     DECLARE_MATRIX(mainMatrix, 4, 4);
     FILL_MATRIX(
-        mainMatrix, 
+        mainMatrix,
         std::vector<double>(
-            {
-                0, 1, 2, 3,
-                4, 5, 6, 7,
-                8, 9, 10, 11,
-                12, 13, 14, 15
-            }
-        )
-    );
+            {0, 1, 2, 3,
+             4, 5, 6, 7,
+             8, 9, 10, 11,
+             12, 13, 14, 15}));
     utils::Matrix shallowCopy(mainMatrix);
 
     // Test for the values
@@ -457,35 +472,32 @@ TEST(Matrix, unitTest)
 {
     DECLARE_MATRIX(mat1, 3, 4);
     FILL_MATRIX(mat1, std::vector<double>(
-        {
-            4.1, 5.1, 6.1, 7.1,
-            8.1, 9.1, 10.1, 11.1,
-            12.1, 13.1, 14.1, 15.1
-            
-        }
-    ));
+                          {4.1, 5.1, 6.1, 7.1,
+                           8.1, 9.1, 10.1, 11.1,
+                           12.1, 13.1, 14.1, 15.1
+
+                          }));
 
     {
         DECLARE_MATRIX(mat2, 3, 4);
         FILL_MATRIX(mat2, std::vector<double>(
-            {
-                4.1, 5.1, 6.1, 7.1,
-                8.1, 9.1, 10.1, 11.1,
-                12.1, 13.1, 14.1, 15.1    
-            }));
+                              {4.1, 5.1, 6.1, 7.1,
+                               8.1, 9.1, 10.1, 11.1,
+                               12.1, 13.1, 14.1, 15.1}));
 
         utils::Matrix sum(mat1 + mat2);
         std::vector<double> expectedSum = {
-            4.1*2, 5.1*2, 6.1*2, 7.1*2,
-            8.1*2, 9.1*2, 10.1*2, 11.1*2,
-            12.1*2, 13.1*2, 14.1*2, 15.1*2
-        };
+            4.1 * 2, 5.1 * 2, 6.1 * 2, 7.1 * 2,
+            8.1 * 2, 9.1 * 2, 10.1 * 2, 11.1 * 2,
+            12.1 * 2, 13.1 * 2, 14.1 * 2, 15.1 * 2};
 
         EXPECT_EQ(sum.rows(), 3);
         EXPECT_EQ(sum.cols(), 4);
         int cmp(0);
-        for (unsigned int i=0; i<sum.rows(); ++i) {
-            for (unsigned int j=0; j<sum.cols(); ++j) {
+        for (unsigned int i = 0; i < sum.rows(); ++i)
+        {
+            for (unsigned int j = 0; j < sum.cols(); ++j)
+            {
                 SCALAR_TO_DOUBLE(s, sum(i, j));
                 EXPECT_NEAR(s, expectedSum[cmp++], requiredPrecision);
             }
@@ -494,24 +506,23 @@ TEST(Matrix, unitTest)
 
     {
         DECLARE_MATRIX(mat2, 4, 2);
-        FILL_MATRIX(mat2, std::vector<double>({
-            4.1, 5.1,
-            6.1, 7.1,
-            8.1, 9.1,
-            10.1, 11.1
-        }));
+        FILL_MATRIX(mat2, std::vector<double>({4.1, 5.1,
+                                               6.1, 7.1,
+                                               8.1, 9.1,
+                                               10.1, 11.1}));
 
         utils::Matrix mult(mat1 * mat2);
         std::vector<double> expectedMult = {
-            169.04,  191.44,
-            282.64,  321.04,
-            396.24,  450.64
-        };
+            169.04, 191.44,
+            282.64, 321.04,
+            396.24, 450.64};
         EXPECT_EQ(mult.rows(), 3);
         EXPECT_EQ(mult.cols(), 2);
         int cmp(0);
-        for (unsigned int i=0; i<mult.rows(); ++i) {
-            for (unsigned int j=0; j<mult.cols(); ++j) {
+        for (unsigned int i = 0; i < mult.rows(); ++i)
+        {
+            for (unsigned int j = 0; j < mult.cols(); ++j)
+            {
                 SCALAR_TO_DOUBLE(m, mult(i, j));
                 EXPECT_NEAR(m, expectedMult[cmp++], requiredPrecision);
             }
@@ -527,15 +538,17 @@ TEST(Matrix, unitTest)
 
         EXPECT_EQ(mult.rows(), 3);
         EXPECT_EQ(mult.cols(), 1);
-        int cmp(0); 
-        for (unsigned int i=0; i<mult.rows(); ++i) {
+        int cmp(0);
+        for (unsigned int i = 0; i < mult.rows(); ++i)
+        {
             SCALAR_TO_DOUBLE(m, mult(i));
             EXPECT_NEAR(m, expectedMult[cmp++], requiredPrecision);
         }
     }
 }
 
-TEST(matrix3d, unitTest){
+TEST(matrix3d, unitTest)
+{
     utils::Matrix3d R(1, 2, 3,
                       4, 5, 6,
                       7, 8, 9);
@@ -551,40 +564,39 @@ TEST(matrix3d, unitTest){
 
     {
         utils::Matrix3d orthoNorm = R.orthoNormalize();
-        std::vector<double> expectedMult({
-                                             -0.419386184128578,  -0.2775187761147384,  0.8643486318991006,
-                                             -0.2775187761147384,  0.9457394527596399,  0.16899768163401963,
-                                              0.8643486318991006,  0.16899768163401974, 0.47364673136893787
-                                         });
+        std::vector<double> expectedMult({-0.419386184128578, -0.2775187761147384, 0.8643486318991006,
+                                          -0.2775187761147384, 0.9457394527596399, 0.16899768163401963,
+                                          0.8643486318991006, 0.16899768163401974, 0.47364673136893787});
         int cmp(0);
-        for (size_t i=0; i<3; ++i) {
-            for (size_t j=0; j<3; ++j) {
+        for (size_t i = 0; i < 3; ++i)
+        {
+            for (size_t j = 0; j < 3; ++j)
+            {
                 SCALAR_TO_DOUBLE(m, orthoNorm(i, j));
                 EXPECT_NEAR(m, expectedMult[cmp++], requiredPrecision);
             }
         }
     }
-
 }
 #endif
 
 TEST(Rotation, unitTest)
 {
     utils::Rotation rot1(
-        utils::Vector3d(M_PI/3, M_PI/3, -M_PI/3), "xyz");
+        utils::Vector3d(M_PI / 3, M_PI / 3, -M_PI / 3), "xyz");
     utils::Rotation rot2(
-        utils::Vector3d(M_PI/3, M_PI/3, M_PI/3), "xyz");
+        utils::Vector3d(M_PI / 3, M_PI / 3, M_PI / 3), "xyz");
 
     {
         utils::Rotation mult(rot1 * rot2);
-        std::vector<double> expectedMult({
-            0.87439881604791125, 0.4185095264191645, 0.24551270189221938,
-            0.48131011839520887, -0.68413452641916439, -0.54799682452694543,
-            -0.06137817547305488, 0.59733552217964769, -0.79963928962874664
-        });
+        std::vector<double> expectedMult({0.87439881604791125, 0.4185095264191645, 0.24551270189221938,
+                                          0.48131011839520887, -0.68413452641916439, -0.54799682452694543,
+                                          -0.06137817547305488, 0.59733552217964769, -0.79963928962874664});
         int cmp(0);
-        for (unsigned int i=0; i<3; ++i) {
-            for (unsigned int j=0; j<3; ++j) {
+        for (unsigned int i = 0; i < 3; ++i)
+        {
+            for (unsigned int j = 0; j < 3; ++j)
+            {
                 SCALAR_TO_DOUBLE(m, mult(i, j));
                 EXPECT_NEAR(m, expectedMult[cmp++], requiredPrecision);
             }
@@ -597,30 +609,30 @@ TEST(RotoTrans, unitTest)
     {
         utils::RotoTrans rt(
             utils::Vector3d(1, 1, 1), utils::Vector3d(1, 1, 1), "xyz");
-        std::vector<double> rtExpected({
-            0.29192658172642888, -0.45464871341284091,  0.84147098480789650, 1,
-            0.83722241402998721, -0.30389665486452672, -0.45464871341284091, 1,
-            0.46242567005663016,  0.83722241402998732,  0.29192658172642888, 1,
-            0, 0, 0, 1
-        });
+        std::vector<double> rtExpected({0.29192658172642888, -0.45464871341284091, 0.84147098480789650, 1,
+                                        0.83722241402998721, -0.30389665486452672, -0.45464871341284091, 1,
+                                        0.46242567005663016, 0.83722241402998732, 0.29192658172642888, 1,
+                                        0, 0, 0, 1});
         int cmp(0);
-        for (unsigned int i = 0; i<4; ++i) {
-            for (unsigned int j = 0; j<4; ++j) {
+        for (unsigned int i = 0; i < 4; ++i)
+        {
+            for (unsigned int j = 0; j < 4; ++j)
+            {
                 SCALAR_TO_DOUBLE(val, rt(i, j));
                 EXPECT_NEAR(val, rtExpected[cmp++], requiredPrecision);
             }
         }
 
         utils::RotoTrans rt_t(rt.transpose());
-        std::vector<double> rtTransposedExpected({
-            0.29192658172642888,  0.83722241402998721, 0.46242567005663016, -1.5915746658130461,
-            -0.45464871341284091, -0.30389665486452672, 0.83722241402998732, -0.07867704575261969,
-            0.84147098480789650, -0.45464871341284091, 0.29192658172642888, -0.67874885312148447,
-            0, 0, 0, 1
-        });
+        std::vector<double> rtTransposedExpected({0.29192658172642888, 0.83722241402998721, 0.46242567005663016, -1.5915746658130461,
+                                                  -0.45464871341284091, -0.30389665486452672, 0.83722241402998732, -0.07867704575261969,
+                                                  0.84147098480789650, -0.45464871341284091, 0.29192658172642888, -0.67874885312148447,
+                                                  0, 0, 0, 1});
         cmp = 0;
-        for (unsigned int i = 0; i<4; ++i) {
-            for (unsigned int j = 0; j<4; ++j) {
+        for (unsigned int i = 0; i < 4; ++i)
+        {
+            for (unsigned int j = 0; j < 4; ++j)
+            {
                 SCALAR_TO_DOUBLE(val, rt_t(i, j));
                 EXPECT_NEAR(val, rtTransposedExpected[cmp++], requiredPrecision);
             }
@@ -628,7 +640,8 @@ TEST(RotoTrans, unitTest)
 
         utils::Vector3d marker(1, 1, 1);
         marker.applyRT(rt_t);
-        for (unsigned int i=0; i<3; ++i) {
+        for (unsigned int i = 0; i < 3; ++i)
+        {
             SCALAR_TO_DOUBLE(val, marker(i, 0));
             EXPECT_NEAR(val, 0, requiredPrecision);
         }
@@ -644,17 +657,17 @@ TEST(RotoTrans, unitTest)
                     origin, {origin, axis1}, {origin, axis2}, {"x", "y"}, "x"));
             utils::RotoTrans rt2(
                 utils::RotoTrans::fromMarkers(
-                    origin,  {origin, axis2}, {origin, axis1}, {"y", "x"}, "x"));
+                    origin, {origin, axis2}, {origin, axis1}, {"y", "x"}, "x"));
 
-            std::vector<double> rtExpected({
-                0.79091157883870022, 0.4082482904638631, 0.4558423058385518, 1,
-                0.09304842103984709, -0.8164965809277261, 0.5698028822981898, 2,
-                0.6048147367590061, -0.4082482904638631, -0.6837634587578276, 3,
-                0, 0, 0, 1
-            });
+            std::vector<double> rtExpected({0.79091157883870022, 0.4082482904638631, 0.4558423058385518, 1,
+                                            0.09304842103984709, -0.8164965809277261, 0.5698028822981898, 2,
+                                            0.6048147367590061, -0.4082482904638631, -0.6837634587578276, 3,
+                                            0, 0, 0, 1});
             int cmp(0);
-            for (unsigned int i = 0; i<4; ++i) {
-                for (unsigned int j = 0; j<4; ++j) {
+            for (unsigned int i = 0; i < 4; ++i)
+            {
+                for (unsigned int j = 0; j < 4; ++j)
+                {
                     SCALAR_TO_DOUBLE(val1, rt(i, j));
                     SCALAR_TO_DOUBLE(val2, rt2(i, j));
                     EXPECT_NEAR(val1, rtExpected[cmp], requiredPrecision);
@@ -670,15 +683,15 @@ TEST(RotoTrans, unitTest)
             utils::RotoTrans rt2(
                 utils::RotoTrans::fromMarkers(
                     origin, {origin, axis2}, {origin, axis1}, {"y", "x"}, "y"));
-            std::vector<double> rtExpected({
-                0.8320502943378437, 0.31606977062050695, 0.4558423058385518, 1,
-                0,                  -0.8217814036133181, 0.5698028822981898, 2,
-                0.5547001962252291, -0.47410465593076045, -0.6837634587578276, 3,
-                0, 0, 0, 1
-            });
+            std::vector<double> rtExpected({0.8320502943378437, 0.31606977062050695, 0.4558423058385518, 1,
+                                            0, -0.8217814036133181, 0.5698028822981898, 2,
+                                            0.5547001962252291, -0.47410465593076045, -0.6837634587578276, 3,
+                                            0, 0, 0, 1});
             int cmp(0);
-            for (unsigned int i = 0; i<4; ++i) {
-                for (unsigned int j = 0; j<4; ++j) {
+            for (unsigned int i = 0; i < 4; ++i)
+            {
+                for (unsigned int j = 0; j < 4; ++j)
+                {
                     SCALAR_TO_DOUBLE(val1, rt(i, j));
                     SCALAR_TO_DOUBLE(val2, rt2(i, j));
                     EXPECT_NEAR(val1, rtExpected[cmp], requiredPrecision);
@@ -694,15 +707,15 @@ TEST(RotoTrans, unitTest)
             utils::RotoTrans rt2(
                 utils::RotoTrans::fromMarkers(
                     origin, {origin, axis2}, {origin, axis1}, {"z", "x"}, "x"));
-            std::vector<double> rtExpected({
-                0.7909115788387002, -0.4558423058385518, 0.4082482904638631, 1,
-                0.09304842103984709, -0.5698028822981898, -0.8164965809277261, 2,
-                0.6048147367590061, 0.6837634587578276, -0.4082482904638631, 3,
-                0, 0, 0, 1
-            });
+            std::vector<double> rtExpected({0.7909115788387002, -0.4558423058385518, 0.4082482904638631, 1,
+                                            0.09304842103984709, -0.5698028822981898, -0.8164965809277261, 2,
+                                            0.6048147367590061, 0.6837634587578276, -0.4082482904638631, 3,
+                                            0, 0, 0, 1});
             int cmp(0);
-            for (unsigned int i = 0; i<4; ++i) {
-                for (unsigned int j = 0; j<4; ++j) {
+            for (unsigned int i = 0; i < 4; ++i)
+            {
+                for (unsigned int j = 0; j < 4; ++j)
+                {
                     SCALAR_TO_DOUBLE(val1, rt(i, j));
                     SCALAR_TO_DOUBLE(val2, rt2(i, j));
                     EXPECT_NEAR(val1, rtExpected[cmp], requiredPrecision);
@@ -718,15 +731,15 @@ TEST(RotoTrans, unitTest)
             utils::RotoTrans rt2(
                 utils::RotoTrans::fromMarkers(
                     origin, {origin, axis2}, {origin, axis1}, {"z", "x"}, "z"));
-            std::vector<double> rtExpected({
-                0.8320502943378437, -0.4558423058385518, 0.31606977062050695, 1,
-                0.0,                -0.5698028822981898, -0.8217814036133181, 2,
-                0.5547001962252291, 0.6837634587578276, -0.47410465593076045, 3,
-                0, 0, 0, 1
-            });
+            std::vector<double> rtExpected({0.8320502943378437, -0.4558423058385518, 0.31606977062050695, 1,
+                                            0.0, -0.5698028822981898, -0.8217814036133181, 2,
+                                            0.5547001962252291, 0.6837634587578276, -0.47410465593076045, 3,
+                                            0, 0, 0, 1});
             int cmp(0);
-            for (unsigned int i = 0; i<4; ++i) {
-                for (unsigned int j = 0; j<4; ++j) {
+            for (unsigned int i = 0; i < 4; ++i)
+            {
+                for (unsigned int j = 0; j < 4; ++j)
+                {
                     SCALAR_TO_DOUBLE(val1, rt(i, j));
                     SCALAR_TO_DOUBLE(val2, rt2(i, j));
                     EXPECT_NEAR(val1, rtExpected[cmp], requiredPrecision);
@@ -742,15 +755,15 @@ TEST(RotoTrans, unitTest)
             utils::RotoTrans rt2(
                 utils::RotoTrans::fromMarkers(
                     origin, {origin, axis2}, {origin, axis1}, {"z", "y"}, "y"));
-            std::vector<double> rtExpected({
-                0.4558423058385518, 0.7909115788387002, 0.4082482904638631, 1,
-                0.5698028822981898, 0.09304842103984709, -0.8164965809277261, 2,
-                -0.6837634587578276, 0.6048147367590061, -0.4082482904638631, 3,
-                0, 0, 0, 1
-            });
+            std::vector<double> rtExpected({0.4558423058385518, 0.7909115788387002, 0.4082482904638631, 1,
+                                            0.5698028822981898, 0.09304842103984709, -0.8164965809277261, 2,
+                                            -0.6837634587578276, 0.6048147367590061, -0.4082482904638631, 3,
+                                            0, 0, 0, 1});
             int cmp(0);
-            for (unsigned int i = 0; i<4; ++i) {
-                for (unsigned int j = 0; j<4; ++j) {
+            for (unsigned int i = 0; i < 4; ++i)
+            {
+                for (unsigned int j = 0; j < 4; ++j)
+                {
                     SCALAR_TO_DOUBLE(val1, rt(i, j));
                     SCALAR_TO_DOUBLE(val2, rt2(i, j));
                     EXPECT_NEAR(val1, rtExpected[cmp], requiredPrecision);
@@ -766,15 +779,15 @@ TEST(RotoTrans, unitTest)
             utils::RotoTrans rt2(
                 utils::RotoTrans::fromMarkers(
                     origin, {origin, axis2}, {origin, axis1}, {"z", "y"}, "z"));
-            std::vector<double> rtExpected({
-                0.4558423058385518, 0.8320502943378437, 0.31606977062050695, 1,
-                0.5698028822981898, 0.0,                -0.8217814036133181, 2,
-                -0.6837634587578276, 0.5547001962252291, -0.47410465593076045, 3,
-                0, 0, 0, 1
-            });
+            std::vector<double> rtExpected({0.4558423058385518, 0.8320502943378437, 0.31606977062050695, 1,
+                                            0.5698028822981898, 0.0, -0.8217814036133181, 2,
+                                            -0.6837634587578276, 0.5547001962252291, -0.47410465593076045, 3,
+                                            0, 0, 0, 1});
             int cmp(0);
-            for (unsigned int i = 0; i<4; ++i) {
-                for (unsigned int j = 0; j<4; ++j) {
+            for (unsigned int i = 0; i < 4; ++i)
+            {
+                for (unsigned int j = 0; j < 4; ++j)
+                {
                     SCALAR_TO_DOUBLE(val1, rt(i, j));
                     SCALAR_TO_DOUBLE(val2, rt2(i, j));
                     EXPECT_NEAR(val1, rtExpected[cmp], requiredPrecision);
@@ -837,7 +850,6 @@ TEST(RotoTransNode, Copy)
         EXPECT_NEAR(DeepCopyNow22, -0.22484509536615291, requiredPrecision);
         EXPECT_NEAR(DeepCopyLater22, -0.22484509536615291, requiredPrecision);
     }
-
 }
 
 TEST(ModelReading, equations)
@@ -849,7 +861,8 @@ TEST(ModelReading, equations)
     rigidbody::GeneralizedCoordinates Q(m);
     Q.setZero();
     std::vector<utils::Vector3d> mesh(m.meshPoints(Q, 0, true));
-    for (auto& node : mesh) {
+    for (auto &node : mesh)
+    {
         SCALAR_TO_DOUBLE(nodeX, node.x());
         SCALAR_TO_DOUBLE(nodeY, node.y());
         EXPECT_DOUBLE_EQ(nodeX, nodeY);
@@ -872,7 +885,7 @@ TEST(Quaternion, creation)
         EXPECT_NEAR(kStab, 1, requiredPrecision);
     }
     {
-        utils::Quaternion quat(1,2,3,4);
+        utils::Quaternion quat(1, 2, 3, 4);
         SCALAR_TO_DOUBLE(quatW, quat.w());
         SCALAR_TO_DOUBLE(quatX, quat.x());
         SCALAR_TO_DOUBLE(quatY, quat.y());
@@ -893,7 +906,7 @@ TEST(Quaternion, creation)
     }
     {
 #ifdef BIORBD_USE_EIGEN3_MATH
-        utils::Quaternion quat(Eigen::Vector4d(1,2,3,4));
+        utils::Quaternion quat(Eigen::Vector4d(1, 2, 3, 4));
         EXPECT_NEAR(quat.w(), 1, requiredPrecision);
         EXPECT_NEAR(quat.x(), 2, requiredPrecision);
         EXPECT_NEAR(quat.y(), 3, requiredPrecision);
@@ -901,7 +914,7 @@ TEST(Quaternion, creation)
 #endif
     }
     {
-        utils::Quaternion quat(1, utils::Vector3d(2,3,4));
+        utils::Quaternion quat(1, utils::Vector3d(2, 3, 4));
         SCALAR_TO_DOUBLE(quatW, quat.w());
         SCALAR_TO_DOUBLE(quatX, quat.x());
         SCALAR_TO_DOUBLE(quatY, quat.y());
@@ -912,7 +925,7 @@ TEST(Quaternion, creation)
         EXPECT_NEAR(quatZ, 4, requiredPrecision);
     }
     {
-        utils::Quaternion quat1(1,2,3,4,5);
+        utils::Quaternion quat1(1, 2, 3, 4, 5);
         utils::Quaternion quat2(quat1);
         utils::Quaternion quat3 = quat1;
 
@@ -940,7 +953,7 @@ TEST(Quaternion, creation)
     }
     {
 #ifdef BIORBD_USE_EIGEN3_MATH
-        Eigen::Vector4d quat1(1,2,3,4);
+        Eigen::Vector4d quat1(1, 2, 3, 4);
         utils::Quaternion quat2(quat1);
         utils::Quaternion quat3;
         quat3 = quat1;
@@ -962,9 +975,9 @@ TEST(Quaternion, creation)
 
 TEST(Quaternion, addition)
 {
-    utils::Quaternion q1(1,2,3,4,2);
-    utils::Quaternion q2(2,3,4,5,3);
-    utils::Quaternion q12 = q1+q2;
+    utils::Quaternion q1(1, 2, 3, 4, 2);
+    utils::Quaternion q2(2, 3, 4, 5, 3);
+    utils::Quaternion q12 = q1 + q2;
 
     SCALAR_TO_DOUBLE(q12W, q12.w());
     SCALAR_TO_DOUBLE(q12X, q12.x());
@@ -980,13 +993,13 @@ TEST(Quaternion, addition)
 
 TEST(Quaternion, multiplication)
 {
-    utils::Quaternion q1(1,2,3,4,2);
-    utils::Quaternion q2(2,3,4,5,3);
+    utils::Quaternion q1(1, 2, 3, 4, 2);
+    utils::Quaternion q2(2, 3, 4, 5, 3);
     double d(5);
     float f(5);
 
     {
-        utils::Quaternion q12 = q1*q2;
+        utils::Quaternion q12 = q1 * q2;
         SCALAR_TO_DOUBLE(q12W, q12.w());
         SCALAR_TO_DOUBLE(q12X, q12.x());
         SCALAR_TO_DOUBLE(q12Y, q12.y());
@@ -999,7 +1012,7 @@ TEST(Quaternion, multiplication)
         EXPECT_NEAR(q12stab, 2.5, requiredPrecision);
     }
     {
-        utils::Quaternion q1d = q1*d;
+        utils::Quaternion q1d = q1 * d;
         SCALAR_TO_DOUBLE(q1dW, q1d.w());
         SCALAR_TO_DOUBLE(q1dX, q1d.x());
         SCALAR_TO_DOUBLE(q1dY, q1d.y());
@@ -1013,7 +1026,7 @@ TEST(Quaternion, multiplication)
     }
 
     {
-        utils::Quaternion q1f = q1*f;
+        utils::Quaternion q1f = q1 * f;
         SCALAR_TO_DOUBLE(q1fW, q1f.w());
         SCALAR_TO_DOUBLE(q1fX, q1f.x());
         SCALAR_TO_DOUBLE(q1fY, q1f.y());
@@ -1160,17 +1173,19 @@ TEST(Quaternion, conversion)
         EXPECT_NEAR(mat22, -49, requiredPrecision);
     }
     {
-        utils::Vector3d rot (0.2, 0.3, 0.4);
+        utils::Vector3d rot(0.2, 0.3, 0.4);
         utils::RotoTrans rt_from_euler;
         rt_from_euler = utils::RotoTrans::fromEulerAngles(rot,
-                        utils::Vector3d(), "xyz");
+                                                          utils::Vector3d(), "xyz");
 
         utils::Quaternion q(
             utils::Quaternion::fromXYZAngles(rot, 5));
         utils::RotoTrans rt_from_quat(q.toMatrix());
 
-        for (unsigned int i=0; i<4; ++i) {
-            for (unsigned int j=0; j<4; ++j) {
+        for (unsigned int i = 0; i < 4; ++i)
+        {
+            for (unsigned int j = 0; j < 4; ++j)
+            {
                 SCALAR_TO_DOUBLE(valEuler, rt_from_euler(i, j));
                 SCALAR_TO_DOUBLE(valQuat, rt_from_quat(i, j));
                 EXPECT_NEAR(valEuler, valQuat, requiredPrecision);
@@ -1178,8 +1193,9 @@ TEST(Quaternion, conversion)
         }
 
         utils::Quaternion qFromRt(utils::Quaternion::fromMatrix(
-                                              rt_from_quat));
-        for (unsigned int i=0; i<4; ++i) {
+            rt_from_quat));
+        for (unsigned int i = 0; i < 4; ++i)
+        {
             SCALAR_TO_DOUBLE(valQ, q(i));
             SCALAR_TO_DOUBLE(valQRt, qFromRt(i));
             EXPECT_NEAR(valQ, valQRt, requiredPrecision);
@@ -1193,7 +1209,7 @@ TEST(Quaternion, otherOperations)
     {
         utils::Quaternion q(2, 3, 4, 5, 6);
         utils::Quaternion q2(3, 4, 5, 6, 8);
-        utils::Quaternion qSlerp(q.slerp (7, q2));
+        utils::Quaternion qSlerp(q.slerp(7, q2));
 
         SCALAR_TO_DOUBLE(qSlerpW, qSlerp.w());
         SCALAR_TO_DOUBLE(qSlerpX, qSlerp.x());
@@ -1220,7 +1236,8 @@ TEST(Quaternion, otherOperations)
         EXPECT_NEAR(qConjY, -4, requiredPrecision);
         EXPECT_NEAR(qConjZ, -5, requiredPrecision);
         EXPECT_NEAR(qConjStab, 6, requiredPrecision);
-    } {
+    }
+    {
         utils::Quaternion q(2, 3, 4, 5, 6);
         utils::Quaternion qTime(
             q.timeStep(utils::Vector3d(7, 8, 9), 0.1));
@@ -1235,7 +1252,8 @@ TEST(Quaternion, otherOperations)
         EXPECT_NEAR(qTimeY, 3.4370175820938655, requiredPrecision);
         EXPECT_NEAR(qTimeZ, 4.8489346122578709, requiredPrecision);
         EXPECT_NEAR(qTimeStab, 6, requiredPrecision);
-    } {
+    }
+    {
         utils::Quaternion q(2, 3, 4, 5, 6);
         utils::Vector3d vec(q.rotate(utils::Vector3d(7, 8, 9)));
 
@@ -1245,7 +1263,8 @@ TEST(Quaternion, otherOperations)
         EXPECT_NEAR(vecX, 282, requiredPrecision);
         EXPECT_NEAR(vecY, 384, requiredPrecision);
         EXPECT_NEAR(vecZ, 582, requiredPrecision);
-    } {
+    }
+    {
         utils::Quaternion q(2, 3, 4, 5, 6);
         utils::Quaternion qdot(q.omegaToQuatDot(utils::Vector3d(7, 8, 9)));
 
@@ -1259,12 +1278,12 @@ TEST(Quaternion, otherOperations)
         EXPECT_NEAR(qdotY, 12, requiredPrecision);
         EXPECT_NEAR(qdotZ, 7, requiredPrecision);
         EXPECT_NEAR(qdotStab, 6, requiredPrecision);
-    } 
+    }
 #ifndef BIORBD_USE_CASADI_MATH
     {
         utils::Quaternion q1(1, 0, 0, 0, 5);
         DECLARE_VECTOR(v, 3);
-        FILL_VECTOR(v, std::vector<double>({1,2,3}));
+        FILL_VECTOR(v, std::vector<double>({1, 2, 3}));
         q1.derivate(v);
         {
             SCALAR_TO_DOUBLE(q1W, q1.w());
@@ -1282,7 +1301,7 @@ TEST(Quaternion, otherOperations)
         double x(0.7035975447302919);
         double y(0.7035975447302919);
         double z(0.07035975447302918);
-        utils::Quaternion q2(w,x,y,z, 5);
+        utils::Quaternion q2(w, x, y, z, 5);
         q2.derivate(v);
         {
             SCALAR_TO_DOUBLE(q2W, q2.w());
@@ -1290,9 +1309,9 @@ TEST(Quaternion, otherOperations)
             SCALAR_TO_DOUBLE(q2Y, q2.y());
             SCALAR_TO_DOUBLE(q2Z, q2.z());
             SCALAR_TO_DOUBLE(q2Stab, q2.kStab());
-            EXPECT_NEAR(q2W,-1.1609359488049815, requiredPrecision);
+            EXPECT_NEAR(q2W, -1.1609359488049815, requiredPrecision);
             EXPECT_NEAR(q2X, 1.0202164398589233, requiredPrecision);
-            EXPECT_NEAR(q2Y,-0.9498566853858941, requiredPrecision);
+            EXPECT_NEAR(q2Y, -0.9498566853858941, requiredPrecision);
             EXPECT_NEAR(q2Z, 0.45733840407468973, requiredPrecision);
             EXPECT_NEAR(q2Stab, 5, requiredPrecision);
         }
@@ -1303,10 +1322,10 @@ TEST(Quaternion, otherOperations)
 TEST(Quaternion, velocities)
 {
     {
-        utils::Vector3d e(0.1,0.2,0.3);
-        utils::Vector3d eR(0.4,0.5,0.6);
+        utils::Vector3d e(0.1, 0.2, 0.3);
+        utils::Vector3d eR(0.4, 0.5, 0.6);
         utils::Quaternion q;
-        utils::Vector3d w(q.eulerDotToOmega(eR,e,"xyz"));
+        utils::Vector3d w(q.eulerDotToOmega(eR, e, "xyz"));
 
         SCALAR_TO_DOUBLE(w0, w[0]);
         SCALAR_TO_DOUBLE(w1, w[1]);
@@ -1314,8 +1333,8 @@ TEST(Quaternion, velocities)
         EXPECT_NEAR(w0, 0.243827661581261, requiredPrecision);
         EXPECT_NEAR(w1, 0.0816881748534787, requiredPrecision);
         EXPECT_NEAR(w2, 0.320375788494034, requiredPrecision);
-        
-        utils::Vector3d eulDot(q.omegaToEulerDot(eR,w,"xyz"));
+
+        utils::Vector3d eulDot(q.omegaToEulerDot(eR, w, "xyz"));
 
         SCALAR_TO_DOUBLE(eulDot0, eulDot[0]);
         SCALAR_TO_DOUBLE(eulDot1, eulDot[1]);
@@ -1324,13 +1343,12 @@ TEST(Quaternion, velocities)
         EXPECT_NEAR(eulDot1, 0.2, requiredPrecision);
         EXPECT_NEAR(eulDot2, 0.3, requiredPrecision);
     }
-
 }
 
 TEST(Quaternion, normalization)
 {
     {
-        utils::Quaternion q(1,1,1,1);
+        utils::Quaternion q(1, 1, 1, 1);
         q.normalize();
         SCALAR_TO_DOUBLE(q0, q[0]);
         SCALAR_TO_DOUBLE(q1, q[1]);
@@ -1341,21 +1359,20 @@ TEST(Quaternion, normalization)
         EXPECT_NEAR(q2, 0.5, requiredPrecision);
         EXPECT_NEAR(q3, 0.5, requiredPrecision);
     }
-
 }
 
 TEST(Vector, operation)
 {
 
-    //TODO: Addition Scalar + Vector is undefined
+    // TODO: Addition Scalar + Vector is undefined
     //{
-    //    utils::Vector v(4);
-    //    v[0] = 1.1;
-    //    v[1] = 1.2;
-    //    v[2] = 1.3;
-    //    v[3] = 1.4;
-    //    utils::Scalar s(5);
-    //    utils::Vector multVectAndScalar(v + s);
+    //     utils::Vector v(4);
+    //     v[0] = 1.1;
+    //     v[1] = 1.2;
+    //     v[2] = 1.3;
+    //     v[3] = 1.4;
+    //     utils::Scalar s(5);
+    //     utils::Vector multVectAndScalar(v + s);
 
     //    utils::Vector expectedMultVectAndScalar(4);
     //    expectedMultVectAndScalar << 6.1, 6.2, 6.3, 6.4;
@@ -1376,7 +1393,8 @@ TEST(Vector, operation)
 
         std::vector<double> expectedMultVectAndScalar({5.5, 6.0, 6.5, 7.0});
 
-        for (unsigned int i = 0; i < 4; ++i) {
+        for (unsigned int i = 0; i < 4; ++i)
+        {
             SCALAR_TO_DOUBLE(val, multVectAndScalar(i));
             EXPECT_NEAR(val, expectedMultVectAndScalar[i], requiredPrecision);
         }
@@ -1404,15 +1422,14 @@ TEST(Vector, normGradient)
         FILL_VECTOR(v, std::vector<double>({1.1, 1.2, 1.3, 1.4}));
 
         utils::Vector nG(v.normGradient(2, false));
-        std::vector<double> expectednG({
-            0.43825049008927769, 0.47809144373375745, 0.51793239737823726, 0.55777335102271697
-        });
+        std::vector<double> expectednG({0.43825049008927769, 0.47809144373375745, 0.51793239737823726, 0.55777335102271697});
 
-        for (size_t i = 0; i < 4; ++i) {
+        for (size_t i = 0; i < 4; ++i)
+        {
             SCALAR_TO_DOUBLE(val, nG(i));
             EXPECT_NEAR(val, expectednG[i], requiredPrecision);
         }
     }
 }
 
-#endif 
+#endif
