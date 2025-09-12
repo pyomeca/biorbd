@@ -1,5 +1,9 @@
 version   4
 
+// If using meshfile, one can inform biorbd to search for a specific folder
+// This won't work though if the meshfile path are absolute
+// mesh_folder_prefix PATH_TO_MESH_FOLDER
+
 // Informations about Pelvis segment
     // Segment
     segment    Pelvis

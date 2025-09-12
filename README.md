@@ -393,6 +393,9 @@ version 4
 ```
 From that point, the order of the tags is not important, header can even be at the end of the file. For simplicity though we suggest to put everything related to the header at the top of the file. 
 
+#### mesh_folder_prefix
+The `mesh_folder_prefix` is to prefix all the [meshfile](#meshfile-or-ply) path. Warning, this is undefined if the paths are given as absolute paths. 
+
 #### gravity
 The `gravity` tag is used to reorient and/or change the magnitude of the gravity. The default value is $(0, 0, -9.81)$. This tag waits for $3$ values.
 ```c
@@ -469,6 +472,8 @@ This tag is deprecated and should therefore not be used.
 
 ##### meshfile or ply <!-- omit from toc -->
 The path of the meshing `.bioBone`, `.ply`, `.stl` file respectively. It can be relative to the current running folder or absolute (relative being preferred) and UNIX or Windows formatted (`/` vs `\\`, UNIX being preferred).
+
+If the folder is relative, one can pass the [`mesh_folder_prefix`](#mesh_folder_prefix) in order to prefix all the mesh path. 
 
 ##### mesh <!-- omit from toc -->
 If the mesh is not written in a file, it can be written directly in the segment. If so, the `mesh` tag stands for the vertex. Therefore, there are as many `mesh` tags as vertex. It waits for $3$ values being the position relative to reference of the segment. 

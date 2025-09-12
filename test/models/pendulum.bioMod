@@ -1,5 +1,7 @@
 version 4
 
+mesh_folder_prefix meshFiles/stl/
+
 segment Seg1
     translations	y
     rotations	x
@@ -12,7 +14,7 @@ segment Seg1
 	    0.0000	0.0335	-0.0032
 	    0.0000	-0.0032	0.0090
     com  -0.0005 0.0688 -0.9542
-    meshfile meshFiles/stl/pendulum_ascii.STL
+    meshfile pendulum_ascii.STL
 endsegment
 
     // Marker 1
@@ -41,7 +43,7 @@ segment Seg2
 	    0.0000	0.0335	-0.0032
 	    0.0000	-0.0032	0.0090
     com  -0.0005 0.0688 -0.9542
-    meshfile meshFiles/stl/pendulum.STL
+    meshfile pendulum.STL
 endsegment
 
     // Marker 1
