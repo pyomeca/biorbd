@@ -223,7 +223,7 @@ public:
 
     ///
     /// \brief Return the muscle points in global reference frame
-    /// \param updatedModel The joint model
+    /// \param updatedModel The updated joint model (The user must ensure that the model is updated to the proper level)
     /// \param Q The generalized coordinates
     /// \param updateMuscleParameters Update the kinematic related parameters of the muscles
     /// \return The muscle points in global reference frame

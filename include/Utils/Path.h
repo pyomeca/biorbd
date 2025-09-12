@@ -208,6 +208,13 @@ public:
     const String& originalPath() const;
 
     ///
+    /// \brief Set the folder of the file
+    /// \param folder The folder of the file
+    ///
+    void setFolder(
+        const String &folder);
+
+    ///
     /// \brief Return the folder of the file
     /// \return The folder of the file
     ///

@@ -1,7 +1,6 @@
 version 4
 
 // SEGMENT DEFINITION
-
 // Information about base segment
     // Segment
     segment base
@@ -35,7 +34,7 @@ version 4
             0.0    1.0    0.0    -0.007
             0.0    0.0    1.0    0.17
             0.0    0.0    0.0    1.0
-        //meshfile arm_r_humerus.vtp
+        //meshfile folder2/arm_r_humerus.vtp
     endsegment
     // Segment
     segment r_humerus_rotation1

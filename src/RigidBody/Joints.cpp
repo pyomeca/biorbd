@@ -230,7 +230,7 @@ void rigidbody::Joints::updateSegmentCharacteristics(
 }
 
 rigidbody::Segment &rigidbody::Joints::segment(
-    size_t idx) const
+    size_t idx)
 {
     utils::Error::check(idx < m_segments->size(),
                         "Asked for a wrong segment (out of range)");
@@ -238,6 +238,20 @@ rigidbody::Segment &rigidbody::Joints::segment(
 }
 
 rigidbody::Segment &rigidbody::Joints::segment(
+    const utils::String &name)
+{
+    return segment(static_cast<size_t>(getBodyBiorbdId(name.c_str())));
+}
+
+const rigidbody::Segment &rigidbody::Joints::segment(
+    size_t idx) const
+{
+    utils::Error::check(idx < m_segments->size(),
+                        "Asked for a wrong segment (out of range)");
+    return (*m_segments)[idx];
+}
+
+const rigidbody::Segment &rigidbody::Joints::segment(
     const utils::String &name) const
 {
     return segment(static_cast<size_t>(getBodyBiorbdId(name.c_str())));
@@ -1280,6 +1294,14 @@ const rigidbody::Mesh &rigidbody::Joints::mesh(
     size_t idx) const
 {
     return segment(idx).characteristics().mesh();
+}
+
+void rigidbody::Joints::overrideMeshFolders(const utils::String &folder)
+{
+    for (size_t i = 0; i < nbSegment(); ++i)
+    {
+        segment(i).characteristics().mesh().path().setFolder(folder);
+    }
 }
 
 utils::Vector3d rigidbody::Joints::CalcAngularMomentum(
