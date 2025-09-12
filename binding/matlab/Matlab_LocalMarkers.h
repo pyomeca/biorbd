@@ -2,69 +2,87 @@
 #define BIORBD_MATLAB_LOCAL_MARKERS_H
 
 #include <mex.h>
+
 #include "BiorbdModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
 
-void Matlab_LocalMarkers( int, mxArray *plhs[],
-                          int nrhs, const mxArray*prhs[] )
-{
+void Matlab_LocalMarkers(
+    int,
+    mxArray *plhs[],
+    int nrhs,
+    const mxArray *prhs[]) {
+  // Verifier les arguments d'entrée
+  checkNombreInputParametres(
+      nrhs,
+      2,
+      4,
+      "2 arguments are required [+2 optional] where the 2nd is the handler on "
+      "the model, 3rd is the wanted markerType to be return ('all' [default], "
+      "'technical' or anatomical') and 4th if you want to remove axes as "
+      "specified in the model file [default = true]");
+  // Recevoir le model
+  BIORBD_NAMESPACE::Model *model =
+      convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
 
-    // Verifier les arguments d'entrée
-    checkNombreInputParametres(nrhs, 2, 4,
-                               "2 arguments are required [+2 optional] where the 2nd is the handler on the model, 3rd is the wanted markerType to be return ('all' [default], 'technical' or anatomical') and 4th if you want to remove axes as specified in the model file [default = true]");
-    // Recevoir le model
-    BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
+  // Gestion du type
+  BIORBD_NAMESPACE::utils::String type("all");
+  if (nrhs >= 3) {
+    type = getString(prhs, 2);
+  }
+  bool removeAxes(true);
+  if (nrhs >= 4) {
+    removeAxes = getBool(prhs, 3);
+  }
 
-    // Gestion du type
-    BIORBD_NAMESPACE::utils::String type("all");
-    if (nrhs >= 3) {
-        type = getString(prhs,2);
-    }
-    bool removeAxes(true);
-    if (nrhs >= 4) {
-        removeAxes = getBool(prhs, 3);
-    }
+  // Récupérer les marqueurs selon que l'on veut tous ou seulement anatomiques
+  // ou techniques
+  unsigned int nMarkers(0);  // Nombre de marqueurs
+  std::vector<BIORBD_NAMESPACE::rigidbody::NodeSegment>
+      markers_tp;  // récupérer les marqueurs
+  if (!type.tolower().compare("all")) {
+    nMarkers = model->nbMarkers();
+    // We need to call the pointer function as it is otherwised considered
+    // ambiguous
+    auto markerFcn =
+        static_cast<std::vector<BIORBD_NAMESPACE::rigidbody::NodeSegment> (
+            BIORBD_NAMESPACE::rigidbody::Markers::*)(bool) const>(
+            &BIORBD_NAMESPACE::rigidbody::Markers::markers);
+    markers_tp = (model->*markerFcn)(removeAxes);
+  } else if (!type.tolower().compare("anatomical")) {
+    nMarkers = model->nbAnatomicalMarkers();
+    markers_tp = model->BIORBD_NAMESPACE::rigidbody::Markers::anatomicalMarkers(
+        removeAxes);
+  } else if (!type.tolower().compare("technical")) {
+    nMarkers = model->nbTechnicalMarkers();
+    markers_tp = model->BIORBD_NAMESPACE::rigidbody::Markers::technicalMarkers(
+        removeAxes);
+  } else {
+    std::ostringstream msg;
+    msg << "Wrong type for markers!";
+    mexErrMsgTxt(msg.str().c_str());
+  }
 
-    // Récupérer les marqueurs selon que l'on veut tous ou seulement anatomiques ou techniques
-    unsigned int nMarkers(0); // Nombre de marqueurs
-    std::vector<BIORBD_NAMESPACE::rigidbody::NodeSegment> markers_tp; // récupérer les marqueurs
-    if (!type.tolower().compare("all")) {
-        nMarkers = model->nbMarkers();
-        // We need to call the pointer function as it is otherwised considered ambiguous
-        auto markerFcn = static_cast<std::vector<BIORBD_NAMESPACE::rigidbody::NodeSegment>(BIORBD_NAMESPACE::rigidbody::Markers::*)(bool) const>(&BIORBD_NAMESPACE::rigidbody::Markers::markers);
-        markers_tp = (model->*markerFcn)(removeAxes);
-    } else if (!type.tolower().compare("anatomical")) {
-        nMarkers = model->nbAnatomicalMarkers();
-        markers_tp = model->BIORBD_NAMESPACE::rigidbody::Markers::anatomicalMarkers(removeAxes);
-    } else if (!type.tolower().compare("technical")) {
-        nMarkers = model->nbTechnicalMarkers();
-        markers_tp = model->BIORBD_NAMESPACE::rigidbody::Markers::technicalMarkers(removeAxes);
-    } else {
-        std::ostringstream msg;
-        msg << "Wrong type for markers!";
-        mexErrMsgTxt(msg.str().c_str());
-    }
+  // Create a matrix for the return argument
+  mwSize dims[2];
+  dims[0] = 3;
+  dims[1] = nMarkers;
 
-    // Create a matrix for the return argument
-    mwSize dims[2];
-    dims[0] = 3;
-    dims[1] = nMarkers;
+  plhs[0] = mxCreateNumericArray(2, dims, mxDOUBLE_CLASS, mxREAL);
+  double *markers = mxGetPr(plhs[0]);
 
-    plhs[0] = mxCreateNumericArray(2, dims, mxDOUBLE_CLASS, mxREAL);
-    double *markers = mxGetPr(plhs[0]);
+  // Remplir le output
+  unsigned int cmp(0);
+  std::vector<BIORBD_NAMESPACE::rigidbody::NodeSegment>::iterator it =
+      markers_tp.begin();
+  for (unsigned int i = 0; (it + i) != markers_tp.end(); ++i) {
+    markers[cmp + 0] = (*(it + i))(0);
+    markers[cmp + 1] = (*(it + i))(1);
+    markers[cmp + 2] = (*(it + i))(2);
+    cmp += 3;
+  }
 
-    // Remplir le output
-    unsigned int cmp(0);
-    std::vector<BIORBD_NAMESPACE::rigidbody::NodeSegment>::iterator it=markers_tp.begin();
-    for (unsigned int i=0; (it+i)!=markers_tp.end(); ++i) {
-        markers[cmp+0] = (*(it+i))(0);
-        markers[cmp+1] = (*(it+i))(1);
-        markers[cmp+2] = (*(it+i))(2);
-        cmp += 3;
-    }
-
-    return;
+  return;
 }
 
-#endif // BIORBD_MATLAB_LOCAL_MARKERS_H
+#endif  // BIORBD_MATLAB_LOCAL_MARKERS_H

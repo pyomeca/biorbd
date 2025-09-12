@@ -1,16 +1,17 @@
 #ifndef BIORBD_ALL_H
 #define BIORBD_ALL_H
 
+#include "biorbdConfig.h"
+
 #include <rbdl/rbdl.h>
 
-#include "biorbdConfig.h"
 #include "BiorbdModel.h"
 #include "ModelReader.h"
 #include "ModelWriter.h"
-
-#include "Utils/all.h"
 #include "RigidBody/all.h"
-#if defined(MODULE_ACTUATORS) || defined(MODULE_MUSCLES) || defined(MODULE_PASSIVE_TORQUES) || defined(MODULE_LIGAMENTS)
+#include "Utils/all.h"
+#if defined(MODULE_ACTUATORS) || defined(MODULE_MUSCLES) || \
+    defined(MODULE_PASSIVE_TORQUES) || defined(MODULE_LIGAMENTS)
 #include "InternalForces/all.h"
 #endif
 
@@ -30,10 +31,8 @@
 #include "InternalForces/Ligaments/all.h"
 #endif
 
-
 #ifdef BIORBD_USE_CASADI_MATH
 #include "Utils/CasadiExpand.h"
 #endif
 
-#endif // BIORBD_ALL_H
-
+#endif  // BIORBD_ALL_H

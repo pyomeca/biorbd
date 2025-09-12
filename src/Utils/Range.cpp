@@ -3,48 +3,25 @@
 
 using namespace BIORBD_NAMESPACE;
 
-utils::Range::Range(
-    double min,
-    double max) :
-    m_min(std::make_shared<double>(min)),
-    m_max(std::make_shared<double>(max))
-{
+utils::Range::Range(double min, double max)
+    : m_min(std::make_shared<double>(min)),
+      m_max(std::make_shared<double>(max)) {}
 
+utils::Range utils::Range::DeepCopy() const {
+  utils::Range copy;
+  copy.DeepCopy(*this);
+  return copy;
 }
 
-utils::Range
-utils::Range::DeepCopy() const
-{
-    utils::Range copy;
-    copy.DeepCopy(*this);
-    return copy;
+void utils::Range::DeepCopy(const utils::Range &other) {
+  *m_min = *other.m_min;
+  *m_max = *other.m_max;
 }
 
-void utils::Range::DeepCopy(
-    const utils::Range &other)
-{
-    *m_min = *other.m_min;
-    *m_max = *other.m_max;
-}
+void utils::Range::setMin(double min) { *m_min = min; }
 
-void utils::Range::setMin(
-    double min)
-{
-    *m_min = min;
-}
+double utils::Range::min() const { return *m_min; }
 
-double utils::Range::min() const
-{
-    return *m_min;
-}
+void utils::Range::setMax(double max) { *m_max = max; }
 
-void utils::Range::setMax(
-    double max)
-{
-    *m_max = max;
-}
-
-double utils::Range::max() const
-{
-    return *m_max;
-}
+double utils::Range::max() const { return *m_max; }

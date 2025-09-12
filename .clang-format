@@ -1,0 +1,32 @@
+BasedOnStyle: Google
+IndentWidth: 2
+
+SortIncludes: true
+IncludeBlocks: Regroup
+
+AlignAfterOpenBracket: AlwaysBreak
+BinPackArguments: false
+BinPackParameters: false
+AllowAllParametersOfDeclarationOnNextLine: false
+
+
+IncludeCategories:
+  # 1. biorbdConfig.h is always first
+  - Regex: '^"biorbdConfig.h"'
+    Priority: 0
+
+  # 2. Special case: rbdl/Model.h
+  - Regex: '^<rbdl/Model.h>'
+    Priority: 2
+  
+  # 3. Other rbdl headers
+  - Regex: '^<rbdl/.*>'
+    Priority: 3
+
+  # 4. Generic system headers <...> (but not rbdl yet)
+  - Regex: '^<.*>'
+    Priority: 1
+
+  # 5. Fallback (any other includes, e.g. "...")
+  - Regex: '.*'
+    Priority: 4

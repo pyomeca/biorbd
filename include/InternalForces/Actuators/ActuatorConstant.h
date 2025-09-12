@@ -2,87 +2,79 @@
 #define BIORBD_ACTUATORS_ACTUATOR_CONSTANT_H
 
 #include "biorbdConfig.h"
+
 #include "InternalForces/Actuators/Actuator.h"
 
-namespace BIORBD_NAMESPACE
-{
-namespace internal_forces
-{
-namespace actuator
-{
+namespace BIORBD_NAMESPACE {
+namespace internal_forces {
+namespace actuator {
 
 ///
-/// \brief Class ActuatorConstant is a joint actuator type which maximum is contant
+/// \brief Class ActuatorConstant is a joint actuator type which maximum is
+/// contant
 ///
-class BIORBD_API ActuatorConstant : public Actuator
-{
-public:
-    ///
-    /// \brief Construct a constant actuator
-    ///
-    ActuatorConstant();
+class BIORBD_API ActuatorConstant : public Actuator {
+ public:
+  ///
+  /// \brief Construct a constant actuator
+  ///
+  ActuatorConstant();
 
-    ///
-    /// \brief Construct a constant actuator from another actuator
-    /// \param other The other constant actuator
-    ///
-    ActuatorConstant(
-        const ActuatorConstant& other);
+  ///
+  /// \brief Construct a constant actuator from another actuator
+  /// \param other The other constant actuator
+  ///
+  ActuatorConstant(const ActuatorConstant& other);
 
-    ///
-    /// \brief Construct a constant actuator
-    /// \param direction The direction of the actuator (+1 or -1)
-    /// \param Tmax The maximum torque that can be done
-    /// \param dofIdx Index of the DoF associated with actuator
-    ///
-    ActuatorConstant(
-        int direction,
-        const utils::Scalar& Tmax,
-        size_t dofIdx);
+  ///
+  /// \brief Construct a constant actuator
+  /// \param direction The direction of the actuator (+1 or -1)
+  /// \param Tmax The maximum torque that can be done
+  /// \param dofIdx Index of the DoF associated with actuator
+  ///
+  ActuatorConstant(int direction, const utils::Scalar& Tmax, size_t dofIdx);
 
-    ///
-    /// \brief Construct a constant actuator
-    /// \param direction The direction of the actuator (+1 or -1)
-    /// \param Tmax The maximum torque that can be done
-    /// \param dofIdx Index of the DoF associated with actuator
-    /// \param jointName The name of the parent joint
-    ///
-    ActuatorConstant(
-        int direction,
-        const utils::Scalar& Tmax,
-        size_t dofIdx,
-        const utils::String &jointName);
+  ///
+  /// \brief Construct a constant actuator
+  /// \param direction The direction of the actuator (+1 or -1)
+  /// \param Tmax The maximum torque that can be done
+  /// \param dofIdx Index of the DoF associated with actuator
+  /// \param jointName The name of the parent joint
+  ///
+  ActuatorConstant(
+      int direction,
+      const utils::Scalar& Tmax,
+      size_t dofIdx,
+      const utils::String& jointName);
 
-    ///
-    /// \brief Deep copy of the constant actuator
-    /// \return A copy of the constant actuator
-    ///
-    ActuatorConstant DeepCopy() const;
+  ///
+  /// \brief Deep copy of the constant actuator
+  /// \return A copy of the constant actuator
+  ///
+  ActuatorConstant DeepCopy() const;
 
-    ///
-    /// \brief Deep copy of the constant actuator to another constant actuator
-    /// \param other The constant actuator to copy
-    ///
-    void DeepCopy(
-        const ActuatorConstant& other);
+  ///
+  /// \brief Deep copy of the constant actuator to another constant actuator
+  /// \param other The constant actuator to copy
+  ///
+  void DeepCopy(const ActuatorConstant& other);
 
-    ///
-    /// \brief Return the maximal torque
-    /// \return The maximal torque
-    ///
-    virtual utils::Scalar torqueMax();
+  ///
+  /// \brief Return the maximal torque
+  /// \return The maximal torque
+  ///
+  virtual utils::Scalar torqueMax();
 
-protected:
-    ///
-    /// \brief Set the type of the constant actuator
-    ///
-    virtual void setType();
-    std::shared_ptr<utils::Scalar> m_Tmax; ///< Maximal torque that can be done
-
+ protected:
+  ///
+  /// \brief Set the type of the constant actuator
+  ///
+  virtual void setType();
+  std::shared_ptr<utils::Scalar> m_Tmax;  ///< Maximal torque that can be done
 };
 
-}
-}
-}
+}  // namespace actuator
+}  // namespace internal_forces
+}  // namespace BIORBD_NAMESPACE
 
-#endif // BIORBD_ACTUATORS_ACTUATOR_CONSTANT_H
+#endif  // BIORBD_ACTUATORS_ACTUATOR_CONSTANT_H

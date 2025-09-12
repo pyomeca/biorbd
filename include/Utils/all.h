@@ -7,19 +7,18 @@
 #include "Utils/IfStream.h"
 #include "Utils/Matrix.h"
 #include "Utils/Node.h"
-#include "Utils/Scalar.h"
-#include "Utils/Vector3d.h"
 #include "Utils/Path.h"
 #include "Utils/Quaternion.h"
 #include "Utils/Range.h"
 #include "Utils/Rotation.h"
 #include "Utils/RotoTrans.h"
 #include "Utils/RotoTransNode.h"
+#include "Utils/Scalar.h"
 #include "Utils/SpatialVector.h"
 #include "Utils/String.h"
 #include "Utils/Timer.h"
 #include "Utils/UtilsEnum.h"
 #include "Utils/Vector.h"
+#include "Utils/Vector3d.h"
 
-#endif // BIORBD_UTILS_ALL_H
-
+#endif  // BIORBD_UTILS_ALL_H

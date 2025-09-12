@@ -2,33 +2,28 @@
 #define BIORBD_UTILS_WRITER_H
 
 #include "biorbdConfig.h"
-namespace BIORBD_NAMESPACE
-{
+namespace BIORBD_NAMESPACE {
 class Model;
 
-namespace utils
-{
+namespace utils {
 class Path;
 }
 
 ///
 /// \brief Main class for writer
 ///
-class BIORBD_API Writer
-{
-public:
+class BIORBD_API Writer {
+ public:
 #ifndef BIORBD_USE_CASADI_MATH
-    ///
-    /// \brief Writes the model on the computer
-    /// \param model The model to write
-    /// \param pathToWrite The path to write
-    ///
-    static void writeModel(
-        Model &model,
-        const utils::Path& pathToWrite);
+  ///
+  /// \brief Writes the model on the computer
+  /// \param model The model to write
+  /// \param pathToWrite The path to write
+  ///
+  static void writeModel(Model& model, const utils::Path& pathToWrite);
 #endif
 };
 
-}
+}  // namespace BIORBD_NAMESPACE
 
-#endif // BIORBD_UTILS_WRITER_H
+#endif  // BIORBD_UTILS_WRITER_H

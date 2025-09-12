@@ -2,16 +2,13 @@
 #define BIORBD_MUSCLES_HILL_TYPE_H
 
 #include "biorbdConfig.h"
+
 #include "InternalForces/Muscles/Muscle.h"
 #include "Utils/Scalar.h"
 
-
-namespace BIORBD_NAMESPACE
-{
-namespace internal_forces
-{
-namespace muscles
-{
+namespace BIORBD_NAMESPACE {
+namespace internal_forces {
+namespace muscles {
 class MuscleGeometry;
 ///
 /// \brief Base class for all HillType muscles
@@ -26,229 +23,221 @@ class MuscleGeometry;
 /// - \f$eccentricForceMultiplier = 1.8\f$
 /// - \f$damping = 0.1\f$
 ///
-class BIORBD_API HillType : public Muscle
-{
-public:
-    ///
-    /// \brief Contruct a Hill-type muscle
-    ///
-    HillType();
+class BIORBD_API HillType : public Muscle {
+ public:
+  ///
+  /// \brief Contruct a Hill-type muscle
+  ///
+  HillType();
 
-    ///
-    /// \brief Construct a Hill-type muscle
-    /// \param name The muscle name
-    /// \param geometry The muscle geometry
-    /// \param characteristics The muscle characteristics
-    ///
-    HillType(
-        const utils::String& name,
-        const MuscleGeometry& geometry,
-        const Characteristics& characteristics);
+  ///
+  /// \brief Construct a Hill-type muscle
+  /// \param name The muscle name
+  /// \param geometry The muscle geometry
+  /// \param characteristics The muscle characteristics
+  ///
+  HillType(
+      const utils::String& name,
+      const MuscleGeometry& geometry,
+      const Characteristics& characteristics);
 
-    ///
-    /// \brief Construct a Hill-type muscle
-    /// \param name The muscle name
-    /// \param geometry The muscle geometry
-    /// \param characteristics The muscle characteristics
-    /// \param emg The muscle dynamic state
-    ///
-    HillType(
-        const utils::String& name,
-        const MuscleGeometry& geometry,
-        const Characteristics& characteristics,
-        const State& emg);
+  ///
+  /// \brief Construct a Hill-type muscle
+  /// \param name The muscle name
+  /// \param geometry The muscle geometry
+  /// \param characteristics The muscle characteristics
+  /// \param emg The muscle dynamic state
+  ///
+  HillType(
+      const utils::String& name,
+      const MuscleGeometry& geometry,
+      const Characteristics& characteristics,
+      const State& emg);
 
-    ///
-    /// \brief Construct a Hill-type muscle
-    /// \param name The muscle name
-    /// \param geometry The muscle geometry
-    /// \param characteristics The muscle characteristics
-    /// \param pathModifiers The set of path modifiers
-    ///
-    HillType(
-        const utils::String& name,
-        const MuscleGeometry& geometry,
-        const Characteristics& characteristics,
-        const internal_forces::PathModifiers& pathModifiers);
+  ///
+  /// \brief Construct a Hill-type muscle
+  /// \param name The muscle name
+  /// \param geometry The muscle geometry
+  /// \param characteristics The muscle characteristics
+  /// \param pathModifiers The set of path modifiers
+  ///
+  HillType(
+      const utils::String& name,
+      const MuscleGeometry& geometry,
+      const Characteristics& characteristics,
+      const internal_forces::PathModifiers& pathModifiers);
 
-    ///
-    /// \brief Construct a Hill-type muscle
-    /// \param name The muscle name
-    /// \param geometry The muscle geometry
-    /// \param characteristics The muscle characteristics
-    /// \param pathModifiers The set of path modifiers
-    /// \param emg The dynamic state
-    ///
-    HillType(
-        const utils::String& name,
-        const MuscleGeometry& geometry,
-        const Characteristics& characteristics,
-        const internal_forces::PathModifiers& pathModifiers,
-        const State& emg);
+  ///
+  /// \brief Construct a Hill-type muscle
+  /// \param name The muscle name
+  /// \param geometry The muscle geometry
+  /// \param characteristics The muscle characteristics
+  /// \param pathModifiers The set of path modifiers
+  /// \param emg The dynamic state
+  ///
+  HillType(
+      const utils::String& name,
+      const MuscleGeometry& geometry,
+      const Characteristics& characteristics,
+      const internal_forces::PathModifiers& pathModifiers,
+      const State& emg);
 
-    ///
-    /// \brief Construct a Hill-type muscle from another muscle
-    /// \param other The other muscle
-    ///
-    HillType(
-        const Muscle& other);
+  ///
+  /// \brief Construct a Hill-type muscle from another muscle
+  /// \param other The other muscle
+  ///
+  HillType(const Muscle& other);
 
-    ///
-    /// \brief Construct a Hill-type muscle from another muscle
-    /// \param other THe other muscle
-    ///
-    HillType(
-        const std::shared_ptr<Muscle> other);
+  ///
+  /// \brief Construct a Hill-type muscle from another muscle
+  /// \param other THe other muscle
+  ///
+  HillType(const std::shared_ptr<Muscle> other);
 
-    ///
-    /// \brief Deep copy of a Hill-type muscle
-    /// \return A deep copy of a Hill-type muscle
-    ///
-    HillType DeepCopy() const;
+  ///
+  /// \brief Deep copy of a Hill-type muscle
+  /// \return A deep copy of a Hill-type muscle
+  ///
+  HillType DeepCopy() const;
 
-    ///
-    /// \brief Deep copy of a Hill-type muscle in a new Hill-type muscle
-    /// \param other The Hill-type to copy
-    ///
-    void DeepCopy(
-        const HillType& other);
+  ///
+  /// \brief Deep copy of a Hill-type muscle in a new Hill-type muscle
+  /// \param other The Hill-type to copy
+  ///
+  void DeepCopy(const HillType& other);
 
-    ///
-    /// \brief Return the muscle force vector at origin and insertion
-    /// \param emg The EMG data
-    /// \return The force vector at origin and insertion
-    ///
-    virtual const utils::Scalar& force(
-        const State& emg);
+  ///
+  /// \brief Return the muscle force vector at origin and insertion
+  /// \param emg The EMG data
+  /// \return The force vector at origin and insertion
+  ///
+  virtual const utils::Scalar& force(const State& emg);
 
-    ///
-    /// \brief Return the muscle force vector at origin and insertion
-    /// \param updatedModel The joint model previously updated to the proper level
-    /// \param Q The generalized coordinates
-    /// \param Qdot The generalized velocities
-    /// \param emg The EMG data
-    /// \param updateMuscleParameters Update the kinematic related parameters of the muscles
-    /// \return The force vector at origin and insertion
-    ///
-    virtual const utils::Scalar& force(
-        rigidbody::Joints& updatedModel,
-        const rigidbody::GeneralizedCoordinates& Q,
-        const rigidbody::GeneralizedVelocity& Qdot,
-        const State& emg,
-        bool updateMuscleParameters = true);
+  ///
+  /// \brief Return the muscle force vector at origin and insertion
+  /// \param updatedModel The joint model previously updated to the proper level
+  /// \param Q The generalized coordinates
+  /// \param Qdot The generalized velocities
+  /// \param emg The EMG data
+  /// \param updateMuscleParameters Update the kinematic related parameters of
+  /// the muscles
+  /// \return The force vector at origin and insertion
+  ///
+  virtual const utils::Scalar& force(
+      rigidbody::Joints& updatedModel,
+      const rigidbody::GeneralizedCoordinates& Q,
+      const rigidbody::GeneralizedVelocity& Qdot,
+      const State& emg,
+      bool updateMuscleParameters = true);
 
-    ///
-    /// \brief Return the muscle force vector at origin and insertion
-    /// \param updatedModel The joint model previously updated to the proper level
-    /// \param Q The generalized coordinates
-    /// \param emg The EMG data
-    /// \param updateMuscleParameters Update the kinematic related parameters of the muscles
-    /// \return The force vector at origin and insertion
-    ///
-    virtual const utils::Scalar& force(
-        rigidbody::Joints& updatedModel,
-        const rigidbody::GeneralizedCoordinates& Q,
-        const State& emg,
-        bool updateMuscleParameters = true);
+  ///
+  /// \brief Return the muscle force vector at origin and insertion
+  /// \param updatedModel The joint model previously updated to the proper level
+  /// \param Q The generalized coordinates
+  /// \param emg The EMG data
+  /// \param updateMuscleParameters Update the kinematic related parameters of
+  /// the muscles
+  /// \return The force vector at origin and insertion
+  ///
+  virtual const utils::Scalar& force(
+      rigidbody::Joints& updatedModel,
+      const rigidbody::GeneralizedCoordinates& Q,
+      const State& emg,
+      bool updateMuscleParameters = true);
 
-    ///
-    /// \brief Return the Force-Length of the contractile element
-    /// \return The Force-Length of the contractile element
-    ///
-    const utils::Scalar& FlCE(
-        const State& emg);
+  ///
+  /// \brief Return the Force-Length of the contractile element
+  /// \return The Force-Length of the contractile element
+  ///
+  const utils::Scalar& FlCE(const State& emg);
 
-    ///
-    /// \brief Return the Force-Length of the passive element
-    /// \return The Force-Length of the passive element
-    ///
-    const utils::Scalar& FlPE();
+  ///
+  /// \brief Return the Force-Length of the passive element
+  /// \return The Force-Length of the passive element
+  ///
+  const utils::Scalar& FlPE();
 
-    ///
-    /// \brief Return the Force-Velocity of the contractile element
-    /// \return The Force-Velocity of the contractile element
-    ///
-    const utils::Scalar& FvCE();
+  ///
+  /// \brief Return the Force-Velocity of the contractile element
+  /// \return The Force-Velocity of the contractile element
+  ///
+  const utils::Scalar& FvCE();
 
-    ///
-    /// \brief Return the muscle damping (spring force)
-    /// \return The muscle damping
-    ///
-    const utils::Scalar& damping();
+  ///
+  /// \brief Return the muscle damping (spring force)
+  /// \return The muscle damping
+  ///
+  const utils::Scalar& damping();
 
-protected:
-    ///
-    /// \brief Set type to Hill
-    ///
-    virtual void setType();
+ protected:
+  ///
+  /// \brief Set type to Hill
+  ///
+  virtual void setType();
 
-    ///
-    /// \brief Compute the muscle damping
-    ///
-    virtual void computeDamping();
+  ///
+  /// \brief Compute the muscle damping
+  ///
+  virtual void computeDamping();
 
-    ///
-    /// \brief Compute the Force-length of the contractile element
-    ///
-    virtual void computeFlCE(
-        const State &emg);
+  ///
+  /// \brief Compute the Force-length of the contractile element
+  ///
+  virtual void computeFlCE(const State& emg);
 
-    ///
-    /// \brief Compute the Force-Velocity of the contractile element
-    ///
-    virtual void computeFvCE();
+  ///
+  /// \brief Compute the Force-Velocity of the contractile element
+  ///
+  virtual void computeFvCE();
 
-    ///
-    /// \brief Compute the Force-Length of the passive element
-    ///
-    virtual void computeFlPE();
+  ///
+  /// \brief Compute the Force-Length of the passive element
+  ///
+  virtual void computeFlPE();
 
-    ///
-    /// \brief Function allowing modification of the way the multiplication is done in computeForce(EMG)
-    /// \param emg The EMG data
-    /// \return The force from activation
-    virtual utils::Scalar getForceFromActivation(
-        const State &emg);
+  ///
+  /// \brief Function allowing modification of the way the multiplication is
+  /// done in computeForce(EMG)
+  /// \param emg The EMG data
+  /// \return The force from activation
+  virtual utils::Scalar getForceFromActivation(const State& emg);
 
-    ///
-    /// \brief Normalize the EMG data
-    /// \param emg EMG data
-    ///
-    virtual void normalizeEmg(
-        State& emg);
+  ///
+  /// \brief Normalize the EMG data
+  /// \param emg EMG data
+  ///
+  virtual void normalizeEmg(State& emg);
 
-    // Attributs intermédiaires lors du calcul de la force
-    std::shared_ptr<utils::Scalar>
-    m_damping; ///< Muscle damping (spring force)
-    std::shared_ptr<utils::Scalar>
-    m_FlCE; ///<Force-Length of the contractile element
-    std::shared_ptr<utils::Scalar>
-    m_FlPE; ///< Force-Length of the passive element
-    std::shared_ptr<utils::Scalar>
-    m_FvCE; ///<Force-Velocity of the contractile element
+  // Attributs intermédiaires lors du calcul de la force
+  std::shared_ptr<utils::Scalar> m_damping;  ///< Muscle damping (spring force)
+  std::shared_ptr<utils::Scalar>
+      m_FlCE;  ///< Force-Length of the contractile element
+  std::shared_ptr<utils::Scalar>
+      m_FlPE;  ///< Force-Length of the passive element
+  std::shared_ptr<utils::Scalar>
+      m_FvCE;  ///< Force-Velocity of the contractile element
 
-    // Declaration of multiple constants
-    std::shared_ptr<utils::Scalar>
-    m_cste_FlCE_1; ///< constant 1 used in the FlCE
-    std::shared_ptr<utils::Scalar>
-    m_cste_FlCE_2; ///< constant 2 used in the FlCE
-    std::shared_ptr<utils::Scalar>
-    m_cste_FvCE_1; ///< constant 1 used in the FvCE
-    std::shared_ptr<utils::Scalar>
-    m_cste_FvCE_2; ///< constant 2 used in the FvCE
-    std::shared_ptr<utils::Scalar>
-    m_cste_FlPE_1; ///< constant 1 used in the FlPE
-    std::shared_ptr<utils::Scalar>
-    m_cste_FlPE_2; ///< constant 2 used in the FlPE
-    std::shared_ptr<utils::Scalar>
-    m_cste_eccentricForceMultiplier; ///< Constant used for ForceVelocity
-    std::shared_ptr<utils::Scalar>
-    m_cste_damping; ///< parameters used in damping
-
+  // Declaration of multiple constants
+  std::shared_ptr<utils::Scalar>
+      m_cste_FlCE_1;  ///< constant 1 used in the FlCE
+  std::shared_ptr<utils::Scalar>
+      m_cste_FlCE_2;  ///< constant 2 used in the FlCE
+  std::shared_ptr<utils::Scalar>
+      m_cste_FvCE_1;  ///< constant 1 used in the FvCE
+  std::shared_ptr<utils::Scalar>
+      m_cste_FvCE_2;  ///< constant 2 used in the FvCE
+  std::shared_ptr<utils::Scalar>
+      m_cste_FlPE_1;  ///< constant 1 used in the FlPE
+  std::shared_ptr<utils::Scalar>
+      m_cste_FlPE_2;  ///< constant 2 used in the FlPE
+  std::shared_ptr<utils::Scalar>
+      m_cste_eccentricForceMultiplier;  ///< Constant used for ForceVelocity
+  std::shared_ptr<utils::Scalar>
+      m_cste_damping;  ///< parameters used in damping
 };
 
-}
-}
-}
+}  // namespace muscles
+}  // namespace internal_forces
+}  // namespace BIORBD_NAMESPACE
 
-#endif // BIORBD_MUSCLES_HILL_TYPE_H
+#endif  // BIORBD_MUSCLES_HILL_TYPE_H

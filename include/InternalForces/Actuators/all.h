@@ -10,5 +10,4 @@
 #include "InternalForces/Actuators/ActuatorSigmoidGauss3p.h"
 #include "InternalForces/Actuators/Actuators.h"
 
-#endif // BIORBD_ACTUATORS_ALL_H
-
+#endif  // BIORBD_ACTUATORS_ALL_H

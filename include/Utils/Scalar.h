@@ -2,13 +2,11 @@
 #define BIORBD_UTILS_SCALAR_H
 
 #include "biorbdConfig.h"
+
 #include "rbdl/rbdl_math.h"
 
-namespace BIORBD_NAMESPACE
-{
-namespace utils
-{
-
+namespace BIORBD_NAMESPACE {
+namespace utils {
 
 #ifdef BIORBD_USE_CASADI_MATH
 
@@ -19,30 +17,26 @@ namespace utils
 class Scalar
 {
 #else
-class Scalar : public RigidBodyDynamics::Math::Scalar
-{
+class Scalar : public RigidBodyDynamics::Math::Scalar {
 #endif
 
-public:
-    ///
-    /// \brief Constructor for a casadi::MX scalar
-    ///
-    Scalar();
+ public:
+  ///
+  /// \brief Constructor for a casadi::MX scalar
+  ///
+  Scalar();
 
-    ///
-    /// \brief Constructor for a casadi::MX scalar
-    /// \param val The value to copy
-    ///
-    Scalar(
-        double val);
+  ///
+  /// \brief Constructor for a casadi::MX scalar
+  /// \param val The value to copy
+  ///
+  Scalar(double val);
 
-    ///
-    /// \brief Constructor for a casadi::MX scalar
-    /// \param val The value to copy. A test is performed to ensure val is 1x1
-    ///
-    Scalar(
-        const casadi::MX& val);
-
+  ///
+  /// \brief Constructor for a casadi::MX scalar
+  /// \param val The value to copy. A test is performed to ensure val is 1x1
+  ///
+  Scalar(const casadi::MX& val);
 };
 
 #else
@@ -50,12 +44,12 @@ public:
 #ifdef SWIG
     typedef double Scalar;
 #else
-    typedef RigidBodyDynamics::Math::Scalar Scalar;
+typedef RigidBodyDynamics::Math::Scalar Scalar;
 #endif
 
 #endif
 
-}
-}
+}  // namespace utils
+}  // namespace BIORBD_NAMESPACE
 
-#endif // BIORBD_UTILS_SCALAR_H
+#endif  // BIORBD_UTILS_SCALAR_H
