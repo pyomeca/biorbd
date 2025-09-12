@@ -6,78 +6,121 @@ from .surface_max_torque_actuator import *
 from .rigid_body import *
 from .utils import *
 
-# TODO: This below
-class GeneralizedCoordinates():
-    def __init__(self, q):
-        """
-        Initialize the GeneralizedCoordinates with a numpy array.
-        :param q: Generalized coordinates as a numpy array
-        """
-        self._q = np.array(q, dtype=float)
 
-    @property
-    def values(self):
-        """
-        Get the values of the generalized coordinates.
-        :return: The generalized coordinates as a numpy array
-        """
-        return self._q
+# If we are using the Eigen backend, returns are np.arrays, if we are using CasADi backend, returns are MX
+# So declare an "Array" typedef that will be np.array or MX depending on the backend
+if biorbd.currentLinearAlgebraBackend() == 1:
+    from casadi import MX
 
-class MuscleThelen():
-    def __init__(self, muscle):
-        """
-        Initialize the MuscleThelen with a muscle object.
-        :param muscle: The muscle object
-        """
-        self._muscle = muscle
+    BiorbdArray = MX
+else:
+    BiorbdArray = np.ndarray
 
-    @property
-    def internal_muscle(self):
-        """
-        Get the internal muscle of the MuscleThelen instance.
-        :return: The internal muscle
-        """
-        self.MUSCLE_TYPE = {
-            "biorbd.MuscleThelen": self._muscle,
-            "biorbd.Muscle": self._muscle,
-            "biorbd.InternalForces.Muscles.MuscleThelen": self._muscle,
-            "biorbd.InternalForces.Muscles.Muscle": self._muscle
-        }
-        return self._muscle.muscles() -> "biorbd.Muscle" -> biorbd.MuscleThelen
 
-class Biorbd():
+# Declare a method that converts output to BiorbdArray
+def _to_biorbd_array(x):
+    if biorbd.currentLinearAlgebraBackend() == 1:
+        return x.to_mx()
+    return x.to_array()
+
+
+class Biorbd:
     def __init__(self, path):
-        self._model = ...
+        self._model = biorbd.Model(path)
 
     @property
-    def internal_model(self):
+    def internal_model(self) -> biorbd.Model:
         """
         Get the internal model of the Biorbd instance.
-        :return: The internal model
+
+        Returns
+        -------
+        The internal model. It can be used to access any resources that are not yet wrapped in Python binder.
         """
         return self._model
 
+    @property
     def dof_names(self) -> list[str]:
         """
         Get the names of the degrees of freedom in the model.
-        :return: A list of degree of freedom names
+
+        Returns
+        -------
+        A list of degree of freedom names
         """
-        return [self._model.dofName(i).to_string() for i in range(self._model.nbQ())]
+        return [dof.to_string() for dof in self._model.nameDof()]
 
-    def muscle_states(self, q: np.array, qdot: np.array, tau: np.array):
+    @property
+    def nb_q(self) -> int:
+        """
+        Get the number of generalized coordinates in the model.
 
-    def forward_dynamics(self, q: np.array, qdot, tau, gravity=None):
+        Returns
+        -------
+        The number of generalized coordinates
+        """
+        return self._model.nbQ()
+
+    @property
+    def nb_qdot(self) -> int:
+        """
+        Get the number of generalized velocities in the model.
+
+        Returns
+        -------
+        The number of generalized velocities
+        """
+        return self._model.nbQdot()
+
+    @property
+    def nb_tau(self) -> int:
+        """
+        Get the number of generalized torques in the model.
+
+        Returns
+        -------
+        The number of generalized torques
+        """
+        return self._model.nbGeneralizedTorque()
+
+    def forward_dynamics(self, q: BiorbdArray, qdot: BiorbdArray, tau: BiorbdArray) -> BiorbdArray:
         """
         Perform forward dynamics on the model.
-        :param q: Generalized coordinates
-        :param qdot: Generalized velocities
-        :param tau: Generalized forces
-        :param gravity: Gravity vector (optional)
-        :return: Generalized accelerations
+
+        Parameters
+        ----------
+        q: BiorbdArray
+            Generalized coordinates
+        qdot: BiorbdArray
+            Generalized velocities
+        tau: BiorbdArray
+            Generalized forces
+
+        Returns
+        -------
+        Generalized accelerations
         """
-        if gravity is None:
-            gravity = np.zeros((self._model.nbQ(), 1))
-        return self._model.ForwardDynamics(q, qdot, tau)
+        return _to_biorbd_array(self._model.ForwardDynamics(q, qdot, tau))
+
+    def inverse_dynamics(self, q: BiorbdArray, qdot: BiorbdArray, qddot: BiorbdArray) -> BiorbdArray:
+        """
+        Perform inverse dynamics on the model.
+
+        Parameters
+        ----------
+        q: BiorbdArray
+            Generalized coordinates
+        qdot: BiorbdArray
+            Generalized velocities
+        qddot: BiorbdArray
+            Generalized accelerations
+
+        Returns
+        -------
+        Generalized forces
+        """
+        return _to_biorbd_array(self._model.InverseDynamics(q, qdot, qddot))
+
 
 if biorbd.currentLinearAlgebraBackend() == 1:
     from casadi import Function, MX, SX, horzcat
