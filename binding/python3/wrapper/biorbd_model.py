@@ -80,6 +80,17 @@ class Biorbd:
         return self._model.nbQdot()
 
     @property
+    def nb_qddot(self) -> int:
+        """
+        Get the number of generalized accelerations in the model.
+
+        Returns
+        -------
+        The number of generalized accelerations
+        """
+        return self._model.nbQddot()
+
+    @property
     def nb_tau(self) -> int:
         """
         Get the number of generalized torques in the model.

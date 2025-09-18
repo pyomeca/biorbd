@@ -117,6 +117,7 @@ def test_wrapper_dynamics(brbd):
 
     assert model.nb_q == model.internal.nbQ()
     assert model.nb_qdot == model.internal.nbQdot()
+    assert model.nb_qddot == model.internal.nbQddot()
     assert model.nb_tau == model.internal.nbGeneralizedTorque()
     assert model.dof_names == [dof.to_string() for dof in model.internal.nameDof()]
 
