@@ -287,7 +287,15 @@ class Biorbd:
             self._external_force_set = ExternalForceSet.from_model(self)
         return self._external_force_set
 
-    def forward_dynamics(self, q: BiorbdArray, qdot: BiorbdArray, tau: BiorbdArray) -> BiorbdArray:
+    def forward_dynamics(
+        self,
+        q: BiorbdArray,
+        qdot: BiorbdArray,
+        tau: BiorbdArray,
+        ignore_external_forces: bool = False,
+        ignore_contacts: bool = False,
+        return_contact_forces: bool = False,
+    ) -> BiorbdArray | tuple[BiorbdArray, BiorbdArray]:
         """
         Perform forward dynamics on the model.
 
@@ -301,20 +309,45 @@ class Biorbd:
             Generalized velocities
         tau: BiorbdArray
             Generalized forces
+        ignore_contacts: bool, optional
+            If true, contact forces will be ignored. Default is False.
+        ignore_external_forces: bool, optional
+            If true, external forces will be ignored. Default is False.
+        return_contact_forces: bool, optional
+            If true, the contact forces will be returned as an extra parameter. Default is False.
+            If [ignore_contacts] is True, this parameter is ignored.
 
         Returns
         -------
         Generalized accelerations
         """
-        q = _to_biorbd_array_input(q)
-        qdot = _to_biorbd_array_input(qdot)
-        tau = _to_biorbd_array_input(tau)
+        # Set the ignore_contacts to True if there is no contact in the model
+        if self._model.nbContacts() == 0:
+            ignore_contacts = True
 
-        return _to_biorbd_array_output(
-            self._model.ForwardDynamics(q, qdot, tau, self.external_force_set._external_force_set)
-        )
+        input_parameters = [_to_biorbd_array_input(q), _to_biorbd_array_input(qdot), _to_biorbd_array_input(tau)]
 
-    def inverse_dynamics(self, q: BiorbdArray, qdot: BiorbdArray, qddot: BiorbdArray) -> BiorbdArray:
+        if not ignore_contacts and return_contact_forces:
+            cs = self._model.getConstraints()
+            input_parameters.append(cs)
+
+        if not ignore_external_forces and self._external_force_set is not None:
+            input_parameters.append(self.external_force_set._external_force_set)
+
+        if ignore_contacts:
+            return _to_biorbd_array_output(self._model.ForwardDynamics(*input_parameters))
+        else:
+            qddot = _to_biorbd_array_output(self._model.ForwardDynamicsConstraintsDirect(*input_parameters))
+
+            if return_contact_forces:
+                contact_forces = _to_biorbd_array_output(cs.getForce())
+                return qddot, contact_forces
+            else:
+                return qddot
+
+    def inverse_dynamics(
+        self, q: BiorbdArray, qdot: BiorbdArray, qddot: BiorbdArray, ignore_external_forces: bool = False
+    ) -> BiorbdArray:
         """
         Perform inverse dynamics on the model.
 
@@ -328,16 +361,19 @@ class Biorbd:
             Generalized velocities
         qddot: BiorbdArray
             Generalized accelerations
+        ignore_external_forces: bool, optional
+            If true, external forces will be ignored. Default is False.
 
         Returns
         -------
         Generalized forces
         """
-        q = _to_biorbd_array_input(q)
-        qdot = _to_biorbd_array_input(qdot)
-        qddot = _to_biorbd_array_input(qddot)
+        input_parameters = [_to_biorbd_array_input(q), _to_biorbd_array_input(qdot), _to_biorbd_array_input(qddot)]
 
-        return _to_biorbd_array_output(self._model.InverseDynamics(q, qdot, qddot))
+        if not ignore_external_forces and self._external_force_set is not None:
+            input_parameters.append(self.external_force_set._external_force_set)
+
+        return _to_biorbd_array_output(self._model.InverseDynamics(*input_parameters))
 
 
 if biorbd.currentLinearAlgebraBackend() == 1:
