@@ -25,14 +25,90 @@ def test_wrapper_segments(brbd):
 
     assert len(model.segments) == len(model.internal.segments())
 
+    # Test accessors
+    assert model.segments[0].name == "Pelvis"
+    assert model.segments["Pelvis"].name == "Pelvis"
+
+    # Test a specific segment
     segment = model.segments[0]
+
     # Name
     assert segment.name == "Pelvis"
+
+    # Translation and rotation sequences
+    assert segment.translations == "yz"
+    assert segment.rotations == "x"
 
     # Mass
     assert segment.mass == 9.03529
     segment.mass = 100
     assert segment.mass == 100
+
+    # Center of mass
+    np.testing.assert_almost_equal(segment.center_of_mass, [0, 0, 0.0885])
+    segment.center_of_mass = [1, 2, 3]
+    np.testing.assert_almost_equal(segment.center_of_mass, [1, 2, 3])
+
+    # Inertia
+    np.testing.assert_almost_equal(segment.inertia, [[0.04664, 0.0, 0.0], [0.0, 0.07178, 0.0], [0.0, 0.0, 0.06989]])
+    segment.inertia = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+    np.testing.assert_almost_equal(segment.inertia, [[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+
+
+@pytest.mark.parametrize("brbd", brbd_to_test)
+def test_wrapper_markers(brbd):
+    model = brbd.Biorbd("../../models/pyomecaman.bioMod")
+
+    assert len(model.markers) == len(model.internal.markers())
+
+    # Test accessors
+    assert model.markers[0].name == "pelv1"
+    assert model.markers["pelv1"].name == "pelv1"
+
+    # Test a specific marker
+    marker = model.markers[0]
+
+    # Parent
+    assert marker.parent_name == "Pelvis"
+
+    # Name
+    assert marker.name == "pelv1"
+
+    # Position
+    np.testing.assert_almost_equal(marker.position, [-0.1038, 0.0821, 0.0])
+    marker.position = [1, 2, 3]
+    np.testing.assert_almost_equal(marker.position, [1, 2, 3])
+
+    # X, Y, Z
+    assert marker.x == 1
+    marker.x = 4
+    assert marker.x == 4
+
+    assert marker.y == 2
+    marker.y = 5
+    assert marker.y == 5
+
+    assert marker.z == 3
+    marker.z = 6
+    assert marker.z == 6
+
+    # Is technical or anatomical
+    assert marker.is_anatomical is False
+    assert marker.is_technical is False
+
+    # Perform FK to get global position
+    q = [0.1] * model.nb_q
+    # First try without updating kinematics
+    markers = model.markers(q, update_kinematics=False)
+    np.testing.assert_almost_equal(markers[0].position, [-0.1038, 0.0821, 0.0])
+
+    # Then with updating kinematics
+    markers = model.markers(q, update_kinematics=True)
+    np.testing.assert_almost_equal(markers[0].position, [-0.1038, 0.18168984, 0.10819632])
+
+    # Then test that the update_kinematics is still applied
+    markers = model.markers(q, update_kinematics=False)
+    np.testing.assert_almost_equal(markers[0].position, [-0.1038, 0.18168984, 0.10819632])
 
 
 @pytest.mark.parametrize("brbd", brbd_to_test)
@@ -222,3 +298,11 @@ def test_wrapper_external_forces(brbd):
     # Remove all external forces
     model.external_force_set.reset()
     np.testing.assert_array_almost_equal(forward_dynamics(q, qdot, tau, ignore_contacts=True), ref_qddot)
+
+
+if __name__ == "__main__":
+    for brbd in brbd_to_test:
+        test_wrapper_segments(brbd)
+        test_wrapper_markers(brbd)
+        test_wrapper_dynamics(brbd)
+        test_wrapper_external_forces(brbd)

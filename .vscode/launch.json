@@ -5,22 +5,22 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Forward dynamics Python example",
+            "name": "Python: Current example file",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/examples/python3/forward_dynamics.py",
+            "program": "${file}",
             "cwd": "${workspaceFolder}/examples/python3",
             "console": "integratedTerminal",
-            "justMyCode": false,
+            "justMyCode": false
         },
         {
-            "name": "External forces Python example",
+            "name": "Python: Current test file",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/examples/python3/external_forces.py",
-            "cwd": "${workspaceFolder}/examples/python3",
+            "program": "${file}",
+            "cwd": "${workspaceFolder}/test/binding/python3",
             "console": "integratedTerminal",
-            "justMyCode": false,
-        },
+            "justMyCode": false
+        }
     ]
 }
