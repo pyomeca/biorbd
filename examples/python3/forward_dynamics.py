@@ -32,7 +32,7 @@ def main():
     print(qddot)
 
     # Alternatively, one can directly access the internal model
-    qddot_via_internal = model.internal_model.ForwardDynamics(q, qdot, tau)
+    qddot_via_internal = model.internal.ForwardDynamics(q, qdot, tau)
     # And check that both methods give the same result
     print(qddot_via_internal.to_array())
 

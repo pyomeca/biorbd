@@ -1,3 +1,5 @@
+import re
+
 brbd_to_test = []
 try:
     import biorbd
@@ -18,13 +20,29 @@ import pytest
 
 
 @pytest.mark.parametrize("brbd", brbd_to_test)
-def test_wrapper_methods(brbd):
+def test_wrapper_segments(brbd):
     model = brbd.Biorbd("../../models/pyomecaman.bioMod")
 
-    assert model.nb_q == model.internal_model.nbQ()
-    assert model.nb_qdot == model.internal_model.nbQdot()
-    assert model.nb_tau == model.internal_model.nbGeneralizedTorque()
-    assert model.dof_names == [dof.to_string() for dof in model.internal_model.nameDof()]
+    assert len(model.segments) == len(model.internal.segments())
+
+    segment = model.segments[0]
+    # Name
+    assert segment.name == "Pelvis"
+
+    # Mass
+    assert segment.mass == 9.03529
+    segment.mass = 100
+    assert segment.mass == 100
+
+
+@pytest.mark.parametrize("brbd", brbd_to_test)
+def test_wrapper_dynamics(brbd):
+    model = brbd.Biorbd("../../models/pyomecaman.bioMod")
+
+    assert model.nb_q == model.internal.nbQ()
+    assert model.nb_qdot == model.internal.nbQdot()
+    assert model.nb_tau == model.internal.nbGeneralizedTorque()
+    assert model.dof_names == [dof.to_string() for dof in model.internal.nameDof()]
 
     if brbd.currentLinearAlgebraBackend() == 1:
         q_sym = MX.sym("q", (model.nb_q,))
@@ -34,25 +52,140 @@ def test_wrapper_methods(brbd):
 
         forward_dynamics = brbd.to_casadi_func("ForwardDynamics", model.forward_dynamics, q_sym, qdot_sym, tau_sym)
         forward_dynamics_internal = brbd.to_casadi_func(
-            "ForwardDynamicsInternal", model.internal_model.ForwardDynamics, q_sym, qdot_sym, tau_sym
+            "ForwardDynamicsInternal", model.internal.ForwardDynamics, q_sym, qdot_sym, tau_sym
         )
 
         inverse_dynamics = brbd.to_casadi_func("InverseDynamics", model.inverse_dynamics, q_sym, qdot_sym, qddot_sym)
         invers_dynamics_internal = brbd.to_casadi_func(
-            "InverseDynamicsInternal", model.internal_model.InverseDynamics, q_sym, qdot_sym, qddot_sym
+            "InverseDynamicsInternal", model.internal.InverseDynamics, q_sym, qdot_sym, qddot_sym
         )
 
     else:
         forward_dynamics = model.forward_dynamics
-        forward_dynamics_internal = model.internal_model.ForwardDynamics
+        forward_dynamics_internal = model.internal.ForwardDynamics
 
         inverse_dynamics = model.inverse_dynamics
-        invers_dynamics_internal = model.internal_model.InverseDynamics
+        invers_dynamics_internal = model.internal.InverseDynamics
 
-    q = np.arange((model.nb_q,))
-    qdot = np.arange((model.nb_qdot,))
-    qddot = np.arange((model.nb_qdot,))
-    tau = np.arange((model.nb_tau,))
+    q = np.arange(model.nb_q)
+    qdot = np.arange(model.nb_qdot)
+    qddot = np.arange(model.nb_qdot)
+    tau = np.arange(model.nb_tau)
 
-    assert forward_dynamics(q, qdot, tau) == forward_dynamics_internal(q, qdot, tau)
-    assert inverse_dynamics(q, qdot, qddot) == invers_dynamics_internal(q, qdot, qddot)
+    np.testing.assert_almost_equal(forward_dynamics(q, qdot, tau), forward_dynamics_internal(q, qdot, tau).to_array())
+    np.testing.assert_almost_equal(
+        inverse_dynamics(q, qdot, qddot), invers_dynamics_internal(q, qdot, qddot).to_array()
+    )
+
+
+@pytest.mark.parametrize("brbd", brbd_to_test)
+def test_wrapper_external_forces(brbd):
+    # Load a predefined model
+    model = brbd.Biorbd("../../models/pyomecaman.bioMod")
+
+    # Segment on which the external force will be applied
+    segment = model.segments[0]
+
+    if brbd.currentLinearAlgebraBackend() == 1:
+        q_sym = MX.sym("q", (model.nb_q,))
+        qdot_sym = MX.sym("qdot", (model.nb_qdot,))
+        tau_sym = MX.sym("tau", (model.nb_tau,))
+
+        forward_dynamics = brbd.to_casadi_func("ForwardDynamics", model.forward_dynamics, q_sym, qdot_sym, tau_sym)
+    else:
+        forward_dynamics = model.forward_dynamics
+
+    # Computing forward dynamics as reference
+    q = [0] * model.nb_q
+    qdot = [0] * model.nb_qdot
+    tau = [0] * model.nb_tau
+    ref_qddot = forward_dynamics(q=q, qdot=qdot, tau=tau)
+    np.testing.assert_array_almost_equal(
+        ref_qddot,
+        [0, -9.81, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    )
+
+    # Testing failing cases
+    with pytest.raises(ValueError, match=re.escape("The input vector must be of size 3 (force) or 6 (spatial vector)")):
+        model.external_force_set.add(segment_name=segment.name, force=[0, 0], point_of_application=[0, 0, 0])
+        model.external_force_set.add(segment_name=segment.name, force=[0, 0, 0, 0], point_of_application=[0, 0, 0])
+    with pytest.raises(
+        ValueError,
+        match="The point of application must be provided when adding a force in the global reference frame",
+    ):
+        model.external_force_set.add(segment_name=segment.name, force=[0, 0, 9.81 * segment.mass])
+    with pytest.raises(
+        ValueError,
+        match=re.escape(
+            "Adding a force in local reference frame is not implemented (and probably not what you want). "
+            "You probably want to add a spatial vector in the local reference frame instead or a force in the global reference frame."
+        ),
+    ):
+        model.external_force_set.add(
+            segment_name=segment.name,
+            force=[0, 0, 9.81 * segment.mass],
+            reference_frame=brbd.ReferenceFrame.LOCAL,
+            point_of_application=[0, 0, 0],
+        )
+    with pytest.raises(
+        ValueError,
+        match="The point of application must be provided when adding a spatial vector in the local reference frame",
+    ):
+        model.external_force_set.add(
+            segment_name=segment.name,
+            force=[0, 0, 0, 0, 0, 9.81 * segment.mass],
+            reference_frame=brbd.ReferenceFrame.LOCAL,
+        )
+
+    # Test adding one external force to the model
+    model.external_force_set.add(
+        segment_name=segment.name, force=[0, 0, 9.81 * segment.mass], point_of_application=[0, 0, 0]
+    )
+
+    # Compute the forward dynamics
+    qddot = model.forward_dynamics(q, qdot, tau)
+    np.testing.assert_array_almost_equal(
+        qddot,
+        [
+            0.697101,
+            -7.923693,
+            2.846458,
+            2.374355,
+            -3.754325,
+            -2.374355,
+            -3.754325,
+            -7.568292,
+            6.753389,
+            -18.305875,
+            -7.568292,
+            6.753389,
+            -18.305875,
+        ],
+    )
+
+    # Add an extra external force to the model that pushes upward even more
+    model.external_force_set.add(segment_name=segment.name, force=[0, 0, 1], point_of_application=[0, 0, 0])
+    qddot = model.forward_dynamics(q, qdot, tau)
+    np.testing.assert_array_almost_equal(
+        qddot,
+        [
+            0.704966,
+            -7.902412,
+            2.878572,
+            2.401142,
+            -3.796682,
+            -2.401142,
+            -3.796682,
+            -7.653678,
+            6.829581,
+            -18.512403,
+            -7.653678,
+            6.829581,
+            -18.512403,
+        ],
+    )
+
+    # Remove all external forces
+    model.external_force_set.reset()
+    qddot = model.forward_dynamics(q, qdot, tau)
+    np.testing.assert_array_almost_equal(qddot, ref_qddot)
