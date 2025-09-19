@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING
+from collections import UserList
+from typing import TYPE_CHECKING, Iterator
 
 from .misc import BiorbdArray, to_biorbd_array_output, to_biorbd_array_input
 from ..biorbd import NodeSegment as BiorbdMarker, GeneralizedCoordinates
@@ -193,3 +194,32 @@ class Marker:
         The internal marker. It can be used to access any resources that are not yet wrapped in Python binder.
         """
         return self._model.internal.marker(self._index)
+
+
+class MarkersList(UserList):
+    data: list[Marker]
+
+    def __init__(self, markers: list[Marker], model: "Biorbd"):
+        super().__init__(markers)
+        self._model = model
+
+    def __getitem__(self, item: str | int) -> Marker:
+        if isinstance(item, str):
+            for marker in self.data:
+                if marker.name == item:
+                    return marker
+            raise KeyError(f"Marker {item} not found")
+
+        return self.data[item]
+
+    def __iter__(self) -> Iterator[Marker]:
+        return super().__iter__()
+
+    def __call__(self, q: BiorbdArray) -> "MarkersList":
+        """
+        Perform of forward kinematics to get the position of the markers at a given pose.
+        """
+        q = to_biorbd_array_input(q)
+        # Update the internal model and return self for convenience
+        self._model.internal.markers(q)
+        return self

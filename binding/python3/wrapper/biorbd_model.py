@@ -1,11 +1,8 @@
-from collections import UserList
-from typing import Iterator
-
 from .external_force_set import ExternalForceSet
-from .markers import Marker
+from .markers import Marker, MarkersList
 from .misc import BiorbdArray, to_biorbd_array_input, to_biorbd_array_output
-from .muscle import Muscle
-from .segment import Segment
+from .muscle import Muscle, MusclesList
+from .segment import Segment, SegmentsList
 from ..biorbd import Model
 
 
@@ -124,7 +121,28 @@ class Biorbd:
         -------
         A list of muscles
         """
-        return MusclesList([Muscle(muscle) for muscle in self._model.muscles()])
+        return MusclesList([Muscle(self, index) for index in range(self._model.nbMuscles())], model=self)
+
+    def update_kinematics(
+        self, q: BiorbdArray | None = None, qdot: BiorbdArray | None = None, qddot: BiorbdArray | None = None
+    ):
+        """
+        Force the update the model to a new pose, velocity and acceleration.
+
+        Parameters
+        ----------
+        q: BiorbdArray
+            Generalized coordinates
+        qdot: BiorbdArray
+            Generalized velocities
+        qddot: BiorbdArray
+            Generalized accelerations
+        """
+        q = to_biorbd_array_input(q)
+        qdot = to_biorbd_array_input(qdot)
+        qddot = to_biorbd_array_input(qddot)
+
+        self._model.UpdateKinematicsCustom(q, qdot, qddot)
 
     def forward_dynamics(
         self,
@@ -213,58 +231,3 @@ class Biorbd:
             input_parameters.append(self.external_force_set._external_force_set)
 
         return to_biorbd_array_output(self._model.InverseDynamics(*input_parameters))
-
-
-class SegmentsList(UserList):
-    data: list[Segment]
-
-    def __getitem__(self, item: str | int) -> Segment:
-        if isinstance(item, str):
-            for seg in self.data:
-                if seg.name == item:
-                    return seg
-            raise KeyError(f"Segment {item} not found")
-
-        return self.data[item]
-
-
-class MarkersList(UserList):
-    data: list[Marker]
-
-    def __init__(self, markers: list[Marker], model: Biorbd):
-        super().__init__(markers)
-        self._model = model
-
-    def __getitem__(self, item: str | int) -> Marker:
-        if isinstance(item, str):
-            for marker in self.data:
-                if marker.name == item:
-                    return marker
-            raise KeyError(f"Marker {item} not found")
-
-        return self.data[item]
-
-    def __iter__(self) -> Iterator[Marker]:
-        return super().__iter__()
-
-    def __call__(self, q: BiorbdArray) -> "MarkersList":
-        """
-        Perform of forward kinematics to get the position of the markers at a given pose.
-        """
-        q = to_biorbd_array_input(q)
-        # Update the internal model and return self for convenience
-        self._model.internal.markers(q)
-        return self
-
-
-class MusclesList(UserList):
-    data: list[Muscle]
-
-    def __getitem__(self, item: str | int) -> Muscle:
-        if isinstance(item, str):
-            for muscle in self.data:
-                if muscle.name == item:
-                    return muscle
-            raise KeyError(f"Muscle {item} not found")
-
-        return self.data[item]

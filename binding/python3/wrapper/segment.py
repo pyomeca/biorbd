@@ -1,3 +1,4 @@
+from collections import UserList
 from typing import TYPE_CHECKING
 
 from .misc import BiorbdArray, to_biorbd_array_input, to_biorbd_array_output
@@ -128,3 +129,16 @@ class Segment:
     @property
     def _characteristics(self) -> BiorbdSegmentCharacteristics:
         return self.internal.characteristics()
+
+
+class SegmentsList(UserList):
+    data: list[Segment]
+
+    def __getitem__(self, item: str | int) -> Segment:
+        if isinstance(item, str):
+            for seg in self.data:
+                if seg.name == item:
+                    return seg
+            raise KeyError(f"Segment {item} not found")
+
+        return self.data[item]

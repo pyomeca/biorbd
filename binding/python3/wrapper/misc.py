@@ -28,6 +28,9 @@ def to_biorbd_array_output(x: Any) -> BiorbdArray:
 
 
 def to_biorbd_array_input(x: BiorbdArray) -> Any:
+    if x is None:
+        return None
+
     if isinstance(x, Vector):
         return x
 

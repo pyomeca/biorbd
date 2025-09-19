@@ -303,7 +303,8 @@ def test_wrapper_external_forces(brbd):
     np.testing.assert_array_almost_equal(forward_dynamics(q, qdot, tau, ignore_contacts=True), ref_qddot)
 
 
-def test_wrapper_kalman_filter():
+@pytest.mark.parametrize("brbd", brbd_to_test)
+def test_wrapper_kalman_filter(brbd):
     # Load a predefined model
     model = brbd.Biorbd("../../models/pyomecaman.bioMod")
     n_frames = 20
@@ -325,7 +326,51 @@ def test_wrapper_kalman_filter():
     np.testing.assert_almost_equal(q_recons[:, -1], target_q[:, -1], decimal=6)
 
 
-def test_static_optimization():
+@pytest.mark.parametrize("brbd", brbd_to_test)
+def test_muscles(brbd):
+    # Load a predefined model
+    model = brbd.Biorbd("../../models/arm26.bioMod")
+    muscles = model.muscles
+    nmus = len(muscles)
+
+    assert nmus == len(model.internal.muscles())
+
+    # Choose a state (position/velocity) to compute dynamics from
+    activations = [0.5] * nmus
+    q = [0.1] * model.nb_q
+    qdot = [0.1] * model.nb_qdot
+
+    # 1. Using the "low-level" way
+    muscles.activations = activations
+    muscles.update_geometry(q=q, qdot=qdot)
+    tau = muscles.joint_torque()
+    np.testing.assert_almost_equal(tau, [-8.99327207, -11.62806138])
+
+    # 2. The "high-level" way, where the kinematics is updated internally (using a different q so we are not accidentally up to date)
+    tau = muscles.joint_torque(activations=activations, q=np.array(q) * 2, qdot=qdot)
+    np.testing.assert_almost_equal(tau, [-10.11532606, -10.13974674])
+
+    # Test the muscle forces for internal and explicit kinematics update
+    np.testing.assert_almost_equal(
+        model.muscles.forces(), [387.5044054, 341.33870227, 214.34077935, 234.72062482, 201.20226989, 494.34498081]
+    )
+    np.testing.assert_almost_equal(
+        model.muscles.forces(q=np.array(q) * 2, qdot=qdot),
+        [403.47878369, 341.14054494, 214.28139395, 239.38801482, 201.51684182, 493.98451373],
+    )
+
+    # Test activation dot
+    initial_activations = [0.5] * nmus
+    excitations = np.arange(1, nmus + 1) / nmus  # Varying excitations from 0.1 to 1.0
+    activations_dot = muscles.activations_dot(excitations=excitations, activations=initial_activations)
+    np.testing.assert_almost_equal(
+        activations_dot,
+        [-10.416666666666668, -5.208333333333334, 0.0, 13.33333333333333, 26.666666666666668, 40.0],
+    )
+
+
+@pytest.mark.parametrize("brbd", brbd_to_test)
+def test_static_optimization(brbd):
     # Load a predefined model
     model = brbd.Biorbd("../../models/arm26.bioMod")
     n_frames = 3
@@ -367,5 +412,6 @@ if __name__ == "__main__":
         test_wrapper_markers(brbd)
         test_wrapper_dynamics(brbd)
         test_wrapper_external_forces(brbd)
-        test_wrapper_kalman_filter()  # This test is long
-        # test_static_optimization()
+        test_muscles(brbd)
+        test_wrapper_kalman_filter(brbd)  # This test is long
+        # test_static_optimization(brbd)
