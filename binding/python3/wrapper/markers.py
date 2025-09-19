@@ -54,7 +54,7 @@ class Marker:
         ----------
         value: The new position of the marker.
         """
-        self.internal.setPosition(to_biorbd_array_input(value))
+        self.internal.setValues(BiorbdMarker(to_biorbd_array_input(value)))
 
     @property
     def position(self) -> BiorbdArray:

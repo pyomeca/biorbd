@@ -77,9 +77,9 @@ def test_wrapper_markers(brbd):
     assert marker.name == "pelv1"
 
     # Position
-    np.testing.assert_almost_equal(marker.position, [-0.1038, 0.0821, 0.0])
-    marker.position = [1, 2, 3]
-    np.testing.assert_almost_equal(marker.position, [1, 2, 3])
+    np.testing.assert_almost_equal(marker.local, [-0.1038, 0.0821, 0.0])
+    marker.local = [1, 2, 3]
+    np.testing.assert_almost_equal(marker.local, [1, 2, 3])
 
     # X, Y, Z
     assert marker.x == 1
@@ -101,16 +101,16 @@ def test_wrapper_markers(brbd):
     # Perform FK to get global position
     q = [0.1] * model.nb_q
     # First try without updating kinematics
-    markers = model.markers(q, update_kinematics=False)
-    np.testing.assert_almost_equal(markers[0].position, [-0.1038, 0.0821, 0.0])
+    markers = model.markers
+    np.testing.assert_almost_equal(markers[0].position, [4, 5, 6])
 
     # Then with updating kinematics
-    markers = model.markers(q, update_kinematics=True)
-    np.testing.assert_almost_equal(markers[0].position, [-0.1038, 0.18168984, 0.10819632])
+    markers = markers(q)
+    np.testing.assert_almost_equal(markers[0].position, [4.0, 4.47602033, 6.56919207])
 
     # Then test that the update_kinematics is still applied
-    markers = model.markers(q, update_kinematics=False)
-    np.testing.assert_almost_equal(markers[0].position, [-0.1038, 0.18168984, 0.10819632])
+    markers = model.markers
+    np.testing.assert_almost_equal(markers[0].position, [4.0, 4.47602033, 6.56919207])
 
 
 @pytest.mark.parametrize("brbd", brbd_to_test)
@@ -367,5 +367,5 @@ if __name__ == "__main__":
         test_wrapper_markers(brbd)
         test_wrapper_dynamics(brbd)
         test_wrapper_external_forces(brbd)
-        # test_wrapper_kalman_filter()  # This test is long
-        test_static_optimization()
+        test_wrapper_kalman_filter()  # This test is long
+        # test_static_optimization()
