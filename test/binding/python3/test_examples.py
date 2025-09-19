@@ -16,6 +16,9 @@ try:
 except ImportError:
     pass
 
+if not brbd_to_test:
+    raise ImportError("No biorbd version could be imported")
+
 
 def load_example_file(file_name: str):
     # Import the file as a module from the path

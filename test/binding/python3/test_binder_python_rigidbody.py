@@ -1,6 +1,7 @@
 """
 Test for file IO
 """
+
 import pytest
 import numpy as np
 
@@ -17,6 +18,9 @@ try:
     brbd_to_test.append(biorbd_casadi)
 except:
     pass
+
+if not brbd_to_test:
+    raise ImportError("No biorbd version could be imported")
 
 
 @pytest.mark.parametrize("brbd", brbd_to_test)
@@ -146,7 +150,7 @@ def test_forward_dynamics_with_external_forces(brbd):
     else:
         jointDampings = [0, 0, 0]
     m.segment(0).setJointDampings(jointDampings)
-    
+
     q = np.array([i * 1.1 for i in range(m.nbQ())])
     qdot = np.array([i * 1.1 for i in range(m.nbQ())])
     tau = np.array([i * 1.1 for i in range(m.nbQ())])
@@ -329,7 +333,7 @@ def test_forward_dynamics_constraints_direct(brbd):
     else:
         jointDampings = [0, 0, 0]
     m.segment(0).setJointDampings(jointDampings)
-    
+
     q = np.array([1.0 for _ in range(m.nbQ())])
     qdot = np.array([1.0 for _ in range(m.nbQ())])
     tau = np.array([1.0 for _ in range(m.nbQ())])

@@ -1,6 +1,7 @@
 """
 Test for file IO
 """
+
 import pytest
 import numpy as np
 
@@ -17,6 +18,10 @@ try:
     brbd_to_test.append(biorbd_casadi)
 except ModuleNotFoundError:
     biorbd_casadi = None
+
+
+if not brbd_to_test:
+    raise ImportError("No biorbd version could be imported")
 
 
 @pytest.mark.parametrize("brbd", brbd_to_test)

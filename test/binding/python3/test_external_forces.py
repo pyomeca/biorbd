@@ -15,6 +15,9 @@ try:
 except:
     pass
 
+if not brbd_to_test:
+    raise ImportError("No biorbd version could be imported")
+
 
 @pytest.mark.parametrize("brbd", brbd_to_test)
 def test_external_forces(brbd):
@@ -52,7 +55,9 @@ def test_external_forces(brbd):
 
         brbd.to_casadi_func("ForwardDynamics", m.ForwardDynamics, q_sym, qdot_sym, tau_sym, force_set)
         # Call it twice because there is a chance they interact with each other
-        forward_dynamics = brbd.to_casadi_func("ForwardDynamics", m.ForwardDynamics, q_sym, qdot_sym, tau_sym, force_set)
+        forward_dynamics = brbd.to_casadi_func(
+            "ForwardDynamics", m.ForwardDynamics, q_sym, qdot_sym, tau_sym, force_set
+        )
 
         qddot = forward_dynamics(q, qdot, tau)
         qddot = np.array(qddot)[:, 0]
@@ -80,7 +85,7 @@ def test_external_forces(brbd):
             18884.241415786601,
             -331.24622725851572,
             1364.7620674666462,
-            3948.4748602722384
+            3948.4748602722384,
         ]
     )
     np.testing.assert_almost_equal(qddot, qddot_expected)
@@ -96,7 +101,7 @@ def test_external_forces_with_point_of_application(brbd):
     else:
         jointDampings = [0, 0, 0]
     m.segment(0).setJointDampings(jointDampings)
-    
+
     force_set = m.externalForceSet()
     force_set.add(
         "PiedD",
@@ -124,7 +129,9 @@ def test_external_forces_with_point_of_application(brbd):
 
         brbd.to_casadi_func("ForwardDynamics", m.ForwardDynamics, q_sym, qdot_sym, tau_sym, force_set)
         # Call it twice because there is a chance they interact with each other
-        forward_dynamics = brbd.to_casadi_func("ForwardDynamics", m.ForwardDynamics, q_sym, qdot_sym, tau_sym, force_set)
+        forward_dynamics = brbd.to_casadi_func(
+            "ForwardDynamics", m.ForwardDynamics, q_sym, qdot_sym, tau_sym, force_set
+        )
 
         qddot = forward_dynamics(q, qdot, tau)
         qddot = np.array(qddot)[:, 0]

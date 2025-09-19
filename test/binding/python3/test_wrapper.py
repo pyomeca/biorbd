@@ -14,9 +14,11 @@ try:
     brbd_to_test.append(biorbd_casadi)
 except:
     pass
-
 import numpy as np
 import pytest
+
+if not brbd_to_test:
+    raise ImportError("No biorbd version could be imported")
 
 
 @pytest.mark.parametrize("brbd", brbd_to_test)
@@ -301,9 +303,69 @@ def test_wrapper_external_forces(brbd):
     np.testing.assert_array_almost_equal(forward_dynamics(q, qdot, tau, ignore_contacts=True), ref_qddot)
 
 
+def test_wrapper_kalman_filter():
+    # Load a predefined model
+    model = brbd.Biorbd("../../models/pyomecaman.bioMod")
+    n_frames = 20
+
+    # Generate clapping gesture data
+    qinit = [0, 0, -0.3, 0.35, 1.15, -0.35, 1.15, 0, 0, 0, 0, 0, 0]
+    qmid = [0, 0, -0.3, 0.5, 1.15, -0.5, 1.15, 0, 0, 0, 0, 0, 0]
+    qfinal = [0, 0, -0.3, 0.35, 1.15, -0.35, 1.15, 0, 0, 0, 0, 0, 0]
+    target_q = np.concatenate((np.linspace(qinit, qmid, n_frames).T, np.linspace(qmid, qfinal, n_frames).T), axis=1)
+    markers = []
+    for q in target_q.T:
+        markers.append(np.array([mark.position for mark in model.markers(q)]).T)
+
+    # Perform the kalman filter for each frame (remember, due to initialization, first frame is much longer than the rest)
+    kalman = biorbd.ExtendedKalmanFilterMarkers(model, frequency=100)
+    q_recons = np.ndarray(target_q.shape)
+    for i, (q_i, _, _) in enumerate(kalman.reconstruct_frames(markers)):
+        q_recons[:, i] = q_i
+    np.testing.assert_almost_equal(q_recons[:, -1], target_q[:, -1], decimal=6)
+
+
+def test_static_optimization():
+    # Load a predefined model
+    model = brbd.Biorbd("../../models/arm26.bioMod")
+    n_frames = 3
+
+    q = []
+    qdot = []
+    qddot = []
+    tau = []
+    for i in range(n_frames):
+        # The q would typically come from an inverse kinematics analysis
+        q.append([0] * model.nb_q)
+        # The qdot and qddot would typically come from a numerical differentiation of the kinematics
+        qdot.append([0] * model.nb_qdot)
+        qddot.append([0] * model.nb_qddot)
+
+        # The tau would typically come from an inverse dynamics analysis as follow
+        tau.append(model.inverse_dynamics(q[i], qdot[i], qddot[i]))
+
+    # Proceed with the static optimization. When perform is called, all the frames are processed at once, even though
+    # it is a loop. That is so the initial guess is dependent of the previous frame. So the first "frame" of the loop is
+    # very long (as it computes everythin). Then, the following frames are very fast (as it only returns the precomputed
+    # results)
+    optim = biorbd.StaticOptimization(model)
+    muscle_activations = []
+    for value in optim.perform_frames(q, qdot, tau):
+        muscle_activations.append(value)
+    assert len(muscle_activations) == n_frames
+    np.testing.assert_almost_equal(
+        muscle_activations[0], [0.00012686, 0.00012018, 0.00089968, 0.00010025, 0.00010027, 0.00010081]
+    )
+    np.testing.assert_almost_equal(
+        muscle_activations[-1], [0.00012686, 0.00012018, 0.00089968, 0.00010025, 0.00010027, 0.00010081]
+    )
+
+
 if __name__ == "__main__":
     for brbd in brbd_to_test:
         test_wrapper_segments(brbd)
         test_wrapper_markers(brbd)
         test_wrapper_dynamics(brbd)
         test_wrapper_external_forces(brbd)
+        # test_wrapper_kalman_filter()  # This test is long
+        test_static_optimization()
