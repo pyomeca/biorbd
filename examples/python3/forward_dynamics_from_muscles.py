@@ -16,14 +16,12 @@ import biorbd
 #
 
 
-# ACTIVATION-DRIVEN DYNAMICS
-
-
 def main():
     # Load a predefined model
     current_file_dir = Path(__file__).parent
     model = biorbd.Biorbd(f"{current_file_dir}/../arm26.bioMod")
-    nmus = len(model.muscles)
+    muscles = model.muscles
+    nmus = len(muscles)
 
     # Choose a state (position/velocity) to compute dynamics from
     activations = [0.5] * nmus
@@ -34,7 +32,6 @@ def main():
     # # if the kinematics was manually updated, but is a bug otherwise
     # tau_uninitialized_pose = model.muscles.joint_torque(activations=activations)
 
-    muscles = model.muscles
     # # Compute the same activations but at the chosen pose and velocity. There are two ways of doing so depending on the
     # # level of control you want on the internal updating scheme of the model
     # # 1. The "low-level" way, where you manually update the kinematics

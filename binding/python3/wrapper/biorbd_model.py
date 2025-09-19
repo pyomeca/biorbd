@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from .external_force_set import ExternalForceSet
 from .markers import Marker, MarkersList
 from .misc import BiorbdArray, to_biorbd_array_input, to_biorbd_array_output
@@ -12,15 +14,49 @@ class Biorbd:
         self._external_force_set = None
 
     @property
-    def internal(self) -> Model:
+    def name(self) -> str:
         """
-        Get the internal model of the Biorbd instance.
+        Get the name of the model.
 
         Returns
         -------
-        The internal model. It can be used to access any resources that are not yet wrapped in Python binder.
+        The name of the model
         """
-        return self._model
+        return self.internal.path().filename().to_string()
+
+    @property
+    def path(self) -> Path:
+        """
+        Get the path of the model.
+
+        Returns
+        -------
+        The path of the model
+        """
+        return self._model.path().relativePath().to_string()
+
+    @property
+    def gravity(self) -> BiorbdArray:
+        """
+        Get the gravity vector of the model.
+
+        Returns
+        -------
+        The gravity vector of the model
+        """
+        return to_biorbd_array_output(self._model.getGravity())
+
+    @gravity.setter
+    def gravity(self, new_gravity: BiorbdArray):
+        """
+        Set the gravity vector of the model.
+
+        Parameters
+        ----------
+        new_gravity: BiorbdArray
+            The new gravity vector of the model
+        """
+        self._model.setGravity(to_biorbd_array_input(new_gravity))
 
     @property
     def segments(self) -> "SegmentsList":
@@ -122,6 +158,17 @@ class Biorbd:
         A list of muscles
         """
         return MusclesList([Muscle(self, index) for index in range(self._model.nbMuscles())], model=self)
+
+    @property
+    def internal(self) -> Model:
+        """
+        Get the internal model of the Biorbd instance.
+
+        Returns
+        -------
+        The internal model. It can be used to access any resources that are not yet wrapped in Python binder.
+        """
+        return self._model
 
     def update_kinematics(
         self, q: BiorbdArray | None = None, qdot: BiorbdArray | None = None, qddot: BiorbdArray | None = None

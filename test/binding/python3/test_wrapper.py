@@ -22,16 +22,29 @@ if not brbd_to_test:
 
 
 @pytest.mark.parametrize("brbd", brbd_to_test)
+def test_wrapper_model(brbd):
+    model = brbd.Biorbd("../../models/pyomecaman.bioMod")
+
+    # Generic properties
+    assert model.name == "pyomecaman"
+    assert model.path == "../../models/pyomecaman.bioMod"
+
+    # Gravity
+    np.testing.assert_almost_equal(model.gravity, [0, 0, -9.81])
+    model.gravity = [1, 2, 3]
+    np.testing.assert_almost_equal(model.gravity, [1, 2, 3])
+
+
+@pytest.mark.parametrize("brbd", brbd_to_test)
 def test_wrapper_segments(brbd):
     model = brbd.Biorbd("../../models/pyomecaman.bioMod")
 
-    assert len(model.segments) == len(model.internal.segments())
-
     # Test accessors
+    assert len(model.segments) == len(model.internal.segments())
     assert model.segments[0].name == "Pelvis"
     assert model.segments["Pelvis"].name == "Pelvis"
 
-    # Test a specific segment
+    # Test specific segment
     segment = model.segments[0]
 
     # Name
@@ -111,6 +124,26 @@ def test_wrapper_markers(brbd):
     # Then test that the update_kinematics is still applied
     markers = model.markers
     np.testing.assert_almost_equal(markers[0].position, [4.0, 4.47602033, 6.56919207])
+
+    # Test the jacobian of first marker at previous set q a set q
+    jacobian_at_q = [
+        [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        [1.0, 0.0, -6.46919207, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        [0.0, 1.0, 4.37602033, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    ]
+    jacobian_at_2q = [
+        [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        [1.0, 0.0, -6.87374612, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        [0.0, 1.0, 3.7083169, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    ]
+    np.testing.assert_almost_equal(marker.jacobian(), jacobian_at_q)
+    np.testing.assert_almost_equal(marker.jacobian(q=np.array(q) * 2), jacobian_at_2q)
+
+    # Test the all markers jacobian
+    jacobian = markers.jacobian()
+    assert len(jacobian) == len(model.markers)
+    np.testing.assert_almost_equal(jacobian[0], jacobian_at_2q)
+    np.testing.assert_almost_equal(markers.jacobian(q=q)[0], jacobian_at_q)
 
 
 @pytest.mark.parametrize("brbd", brbd_to_test)
@@ -408,6 +441,7 @@ def test_static_optimization(brbd):
 
 if __name__ == "__main__":
     for brbd in brbd_to_test:
+        test_wrapper_model(brbd)
         test_wrapper_segments(brbd)
         test_wrapper_markers(brbd)
         test_wrapper_dynamics(brbd)
