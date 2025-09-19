@@ -2,8 +2,9 @@ from collections import UserList
 from typing import Iterator
 
 from .external_force_set import ExternalForceSet
-from .markers import Marker, GlobalMarker
+from .markers import Marker
 from .misc import BiorbdArray, to_biorbd_array_input, to_biorbd_array_output
+from .muscle import Muscle
 from .segment import Segment
 from ..biorbd import Model
 
@@ -33,7 +34,7 @@ class Biorbd:
         -------
         A list of segments
         """
-        return SegmentsList([Segment(seg) for seg in self._model.segments()])
+        return SegmentsList([Segment(self, index) for index in range(self._model.nbSegment())])
 
     @property
     def markers(self) -> "MarkersList":
@@ -44,7 +45,7 @@ class Biorbd:
         -------
         A list of markers
         """
-        return MarkersList([Marker(marker) for marker in self._model.markers()], model=self)
+        return MarkersList([Marker(self, index) for index in range(self._model.nbMarkers())], model=self)
 
     @property
     def dof_names(self) -> list[str]:
@@ -113,6 +114,17 @@ class Biorbd:
         if self._external_force_set is None:
             self._external_force_set = ExternalForceSet(external_force_set=self._model.externalForceSet())
         return self._external_force_set
+
+    @property
+    def muscles(self) -> "MusclesList":
+        """
+        Get the muscles in the model.
+
+        Returns
+        -------
+        A list of muscles
+        """
+        return MusclesList([Muscle(muscle) for muscle in self._model.muscles()])
 
     def forward_dynamics(
         self,
@@ -235,11 +247,24 @@ class MarkersList(UserList):
     def __iter__(self) -> Iterator[Marker]:
         return super().__iter__()
 
-    def __call__(self, q: BiorbdArray, update_kinematics: bool = True) -> "MarkersList":
+    def __call__(self, q: BiorbdArray) -> "MarkersList":
         """
         Perform of forward kinematics to get the position of the markers at a given pose.
         """
         q = to_biorbd_array_input(q)
-        return MarkersList(
-            [GlobalMarker(marker) for marker in self._model.internal.markers(q, update_kinematics)], model=None
-        )
+        # Update the internal model and return self for convenience
+        self._model.internal.markers(q)
+        return self
+
+
+class MusclesList(UserList):
+    data: list[Muscle]
+
+    def __getitem__(self, item: str | int) -> Muscle:
+        if isinstance(item, str):
+            for muscle in self.data:
+                if muscle.name == item:
+                    return muscle
+            raise KeyError(f"Muscle {item} not found")
+
+        return self.data[item]

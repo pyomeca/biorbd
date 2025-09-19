@@ -1,10 +1,16 @@
+from typing import TYPE_CHECKING
+
 from .misc import BiorbdArray, to_biorbd_array_output, to_biorbd_array_input
-from ..biorbd import NodeSegment as BiorbdMarker
+from ..biorbd import NodeSegment as BiorbdMarker, GeneralizedCoordinates
+
+if TYPE_CHECKING:
+    from .biorbd_model import Biorbd
 
 
 class Marker:
-    def __init__(self, marker: BiorbdMarker):
-        self._marker = marker
+    def __init__(self, model: "Biorbd", index: int):
+        self._model = model
+        self._index = index
 
     @property
     def parent_name(self) -> str:
@@ -15,7 +21,7 @@ class Marker:
         -------
         The name of the segment to which the marker is attached.
         """
-        return self._marker.parent().to_string()
+        return self.internal.parent().to_string()
 
     @property
     def name(self) -> str:
@@ -26,10 +32,10 @@ class Marker:
         -------
         The name of the marker.
         """
-        return self._marker.name().to_string()
+        return self.internal.name().to_string()
 
     @property
-    def position(self) -> BiorbdArray:
+    def local(self) -> BiorbdArray:
         """
         Get the position of the marker in the local reference frame of the segment to which it is attached.
 
@@ -37,18 +43,30 @@ class Marker:
         -------
         The position of the marker.
         """
-        return to_biorbd_array_output(self._marker)
+        return to_biorbd_array_output(self.internal)
 
-    @position.setter
-    def position(self, new_position: BiorbdArray):
+    @local.setter
+    def local(self, value: BiorbdArray):
         """
         Set the position of the marker in the local reference frame of the segment to which it is attached.
 
         Parameters
         ----------
-        new_position: The new position of the marker.
+        value: The new position of the marker.
         """
-        self._marker.setPosition(to_biorbd_array_input(new_position))
+        self.internal.setPosition(to_biorbd_array_input(value))
+
+    @property
+    def position(self) -> BiorbdArray:
+        """
+        Get the position of the marker in the global reference frame, assuming that the model is already in the desired position.
+
+        Returns
+        -------
+        The position of the marker in the global reference frame.
+        """
+        dummy_q = GeneralizedCoordinates(self._model.nb_q)
+        return self.forward_kinematics(q=dummy_q, update_kinematics=False)
 
     @property
     def x(self) -> float:
@@ -59,7 +77,7 @@ class Marker:
         -------
         The x coordinate of the marker.
         """
-        return self.position[0]
+        return self.local[0]
 
     @x.setter
     def x(self, value: float):
@@ -71,9 +89,9 @@ class Marker:
         value: float
             The x coordinate of the marker.
         """
-        pos = self.position
+        pos = self.local
         pos[0] = value
-        self.position = pos
+        self.local = pos
 
     @property
     def y(self) -> float:
@@ -84,7 +102,7 @@ class Marker:
         -------
         The y coordinate of the marker.
         """
-        return self.position[1]
+        return self.local[1]
 
     @y.setter
     def y(self, value: float):
@@ -96,9 +114,9 @@ class Marker:
         value: float
             The y coordinate of the marker.
         """
-        pos = self.position
+        pos = self.local
         pos[1] = value
-        self.position = pos
+        self.local = pos
 
     @property
     def z(self) -> float:
@@ -109,7 +127,7 @@ class Marker:
         -------
         The z coordinate of the marker.
         """
-        return self.position[2]
+        return self.local[2]
 
     @z.setter
     def z(self, value: float):
@@ -121,9 +139,9 @@ class Marker:
         value: float
             The z coordinate of the marker.
         """
-        pos = self.position
+        pos = self.local
         pos[2] = value
-        self.position = pos
+        self.local = pos
 
     @property
     def is_anatomical(self) -> bool:
@@ -134,7 +152,7 @@ class Marker:
         -------
         True if the marker is anatomical, False if it is technical.
         """
-        return self._marker.isAnatomical()
+        return self.internal.isAnatomical()
 
     @property
     def is_technical(self) -> bool:
@@ -145,7 +163,25 @@ class Marker:
         -------
         True if the marker is technical, False if it is anatomical.
         """
-        return not self._marker.isTechnical()
+        return not self.internal.isTechnical()
+
+    def forward_kinematics(self, q: BiorbdArray, update_kinematics: bool = True) -> BiorbdArray:
+        """
+        Get the position of the marker in the global reference frame.
+
+        Parameters
+        ----------
+        q: BiorbdArray
+            The generalized coordinates of the model.
+        update_kinematics: bool
+            If True, the model's kinematics will be updated to reflect the new generalized coordinates.
+
+        Returns
+        -------
+        The position of the marker in the global reference frame.
+        """
+        q = to_biorbd_array_input(q)
+        return to_biorbd_array_output(self._model.internal.marker(q, self._index, update_kinematics))
 
     @property
     def internal(self) -> BiorbdMarker:
@@ -156,37 +192,4 @@ class Marker:
         -------
         The internal marker. It can be used to access any resources that are not yet wrapped in Python binder.
         """
-        return self._marker
-
-
-class GlobalMarker(Marker):
-    @property
-    def position(self) -> BiorbdArray:
-        return super().position
-
-    @position.setter
-    def position(self, new_position: BiorbdArray):
-        raise RuntimeError("You cannot set the position of a global marker.")
-
-    @property
-    def x(self) -> float:
-        return super().x
-
-    @x.setter
-    def x(self, value: float):
-        raise RuntimeError("You cannot set the x coordinate of a global marker.")
-
-    @property
-    def y(self) -> float:
-        return super().y
-
-    @y.setter
-    def y(self, value: float):
-        raise RuntimeError("You cannot set the y coordinate of a global marker.")
-
-    @property
-    def z(self) -> float:
-        return super().z
-
-    def z(self, value: float):
-        raise RuntimeError("You cannot set the z coordinate of a global marker.")
+        return self._model.internal.marker(self._index)

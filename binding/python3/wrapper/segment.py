@@ -1,10 +1,16 @@
+from typing import TYPE_CHECKING
+
 from .misc import BiorbdArray, to_biorbd_array_input, to_biorbd_array_output
 from ..biorbd import Segment as BiorbdSegment, Characteristics as BiorbdSegmentCharacteristics
 
+if TYPE_CHECKING:
+    from .biorbd_model import Biorbd
+
 
 class Segment:
-    def __init__(self, segment: BiorbdSegment):
-        self._segment = segment
+    def __init__(self, model: "Biorbd", index: int):
+        self._model = model
+        self._index = index
 
     @property
     def translations(self) -> str:
@@ -15,7 +21,7 @@ class Segment:
         -------
         The translations of the segment.
         """
-        return self._segment.seqT().to_string()
+        return self.internal.seqT().to_string()
 
     @property
     def rotations(self) -> str:
@@ -26,7 +32,7 @@ class Segment:
         -------
         The rotations of the segment.
         """
-        return self._segment.seqR().to_string()
+        return self.internal.seqR().to_string()
 
     @property
     def name(self) -> str:
@@ -37,7 +43,7 @@ class Segment:
         -------
         The name of the segment.
         """
-        return self._segment.name().to_string()
+        return self.internal.name().to_string()
 
     @property
     def mass(self) -> float:
@@ -117,8 +123,8 @@ class Segment:
         -------
         The internal segment. It can be used to access any resources that are not yet wrapped in Python binder.
         """
-        return self._segment
+        return self._model.internal.segment(self._index)
 
     @property
     def _characteristics(self) -> BiorbdSegmentCharacteristics:
-        return self._segment.characteristics()
+        return self.internal.characteristics()

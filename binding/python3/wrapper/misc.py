@@ -2,7 +2,7 @@ from typing import Any
 
 import numpy as np
 
-from ..biorbd import CASADI as BIORBD_CASADI, EIGEN3 as BIORBD_EIGEN3, currentLinearAlgebraBackend
+from ..biorbd import CASADI as BIORBD_CASADI, EIGEN3 as BIORBD_EIGEN3, currentLinearAlgebraBackend, Vector
 
 # Additional imports for casadi backend
 if currentLinearAlgebraBackend() == BIORBD_CASADI:
@@ -28,6 +28,9 @@ def to_biorbd_array_output(x: Any) -> BiorbdArray:
 
 
 def to_biorbd_array_input(x: BiorbdArray) -> Any:
+    if isinstance(x, Vector):
+        return x
+
     if currentLinearAlgebraBackend() == BIORBD_EIGEN3:
         if isinstance(x, np.ndarray):
             return x

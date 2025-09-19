@@ -18,19 +18,21 @@ import biorbd
 
 # ACTIVATION-DRIVEN DYNAMICS
 
+
 def main():
     # Load a predefined model
     current_file_dir = Path(__file__).parent
-    model = biorbd.Model(f"{current_file_dir}/../arm26.bioMod")
-    nq = model.nbQ()
-    nqdot = model.nbQdot()
-    nmus = model.nbMuscles()
+    model = biorbd.Biorbd(f"{current_file_dir}/../arm26.bioMod")
+    nq = model.nb_q
+    nqdot = model.nb_qdot
+    nmus = len(model.muscles)
 
     # Choose a state (position/velocity) to compute dynamics from
     q = np.zeros((nq,))
     qdot = np.zeros((nqdot,))
 
     # Set an arbitrary control to all muscles (half of their maximal activation)
+    muscles = model.muscles
     muscles = model.stateSet()
     for muscle in muscles:
         muscle.setActivation(0.5)  # Set muscles activations
