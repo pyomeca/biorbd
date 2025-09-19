@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Generator
 
 if TYPE_CHECKING:
     from .biorbd_model import Biorbd
@@ -39,6 +39,8 @@ class ExtendedKalmanFilterMarkers:
         qddot = to_biorbd_array_output(self._qddot)
         return q, qdot, qddot
 
-    def reconstruct_frames(self, all_markers: list[BiorbdArray]):
+    def reconstruct_frames(
+        self, all_markers: list[BiorbdArray]
+    ) -> Generator[tuple[BiorbdArray, BiorbdArray, BiorbdArray]]:
         for markers in all_markers:
             yield self.reconstruct_frame(markers)
