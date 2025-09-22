@@ -1,7 +1,8 @@
 from .biorbd_model import Biorbd
 from .extended_kalman_filter import ExtendedKalmanFilterMarkers
-from .external_force_set import ExternalForceSet, ReferenceFrame
+from .external_force_set import ExternalForceSet
 from .muscle import Muscle
+from .reference_frame import ReferenceFrame
 from .segment import Segment
 from .static_optimization import StaticOptimization
 

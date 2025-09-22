@@ -17,6 +17,7 @@ except ModuleNotFoundError:
 #     2. Position the model at a chosen position (Q)
 #     3. Compute the position of the skin markers at that position (Forward kinematics)
 #     4. Print them to the console
+#     5. Compute the reference frames of each segment at that position
 #
 # Please note that this example will work only with the Eigen backend
 #
@@ -42,6 +43,10 @@ def main(show: bool = True):
 
     # Print the first frame in the console
     print(markers[:, :, 0])
+
+    # Compute the reference frames of each segment at that position
+    for seg in model.segments:
+        print(f"Reference frame of segment {seg.name}:\n{seg.global_transform(q[:, 0])}\n")
 
     # Animate the markers
     if show and biorbd_viz_found:

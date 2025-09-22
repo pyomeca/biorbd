@@ -1,7 +1,6 @@
 from pathlib import Path
 
 import biorbd
-import numpy as np
 
 
 #
@@ -35,6 +34,7 @@ def main():
         segment_name=segment.name,  # Name of the segment where the force is applied
         force=[0, 0, 9.81 * segment.mass],  # Force vector in Newtons
         point_of_application=[0, 0, 0],  # Point of application in the local frame of the segment
+        reference_frame=biorbd.ExternalForceSet.ReferenceFrame.GLOBAL,  # Reference frame of the force vector
     )
 
     # Compute the forward dynamics

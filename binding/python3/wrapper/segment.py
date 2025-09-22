@@ -2,6 +2,7 @@ from collections import UserList
 from typing import TYPE_CHECKING
 
 from .misc import BiorbdArray, to_biorbd_array_input, to_biorbd_array_output
+from .markers import MarkersList
 from ..biorbd import Segment as BiorbdSegment, Characteristics as BiorbdSegmentCharacteristics
 
 if TYPE_CHECKING:
@@ -114,6 +115,19 @@ class Segment:
             The inertia of the segment.
         """
         self._characteristics.setInertia(to_biorbd_array_input(value))
+
+    @property
+    def markers(self) -> "MarkersList":
+        """
+        Get the markers attached to the segment.
+
+        Returns
+        -------
+        The markers attached to the segment.
+        """
+        return MarkersList(
+            [marker for marker in self._model.markers if marker.parent_name == self.name], model=self._model
+        )
 
     @property
     def internal(self) -> BiorbdSegment:

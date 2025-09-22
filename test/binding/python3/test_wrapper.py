@@ -69,6 +69,9 @@ def test_wrapper_segments(brbd):
     segment.inertia = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
     np.testing.assert_almost_equal(segment.inertia, [[1, 0, 0], [0, 1, 0], [0, 0, 1]])
 
+    # Get the markers of the segment
+    assert len(segment.markers) == 6
+
 
 @pytest.mark.parametrize("brbd", brbd_to_test)
 def test_wrapper_markers(brbd):
@@ -219,7 +222,7 @@ def test_wrapper_external_forces(brbd):
         model.external_force_set.add(
             segment_name=segment.name,
             force=[0, 0, 9.81 * segment.mass],
-            reference_frame=brbd.ReferenceFrame.LOCAL,
+            reference_frame=brbd.ExternalForceSet.ReferenceFrame.LOCAL,
             point_of_application=[0, 0, 0],
         )
     with pytest.raises(
@@ -229,7 +232,7 @@ def test_wrapper_external_forces(brbd):
         model.external_force_set.add(
             segment_name=segment.name,
             force=[0, 0, 0, 0, 0, 9.81 * segment.mass],
-            reference_frame=brbd.ReferenceFrame.LOCAL,
+            reference_frame=brbd.ExternalForceSet.ReferenceFrame.LOCAL,
         )
 
     if brbd.currentLinearAlgebraBackend() == 1:
