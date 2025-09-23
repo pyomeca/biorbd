@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Generator
 
 if TYPE_CHECKING:
     from .biorbd_model import Biorbd
-from .misc import BiorbdArray, to_biorbd_array_input, to_biorbd_array_output
+from .misc import BiorbdArray, BiorbdScalar, to_biorbd_array_input, to_biorbd_array_output
 from ..biorbd import (
     KalmanParam,
     KalmanReconsMarkers,
@@ -14,7 +14,9 @@ from ..biorbd import (
 
 
 class ExtendedKalmanFilterMarkers:
-    def __init__(self, model: "Biorbd", frequency: int, noise_factor: float = None, error_factor: float = None):
+    def __init__(
+        self, model: "Biorbd", frequency: int, noise_factor: BiorbdScalar = None, error_factor: BiorbdScalar = None
+    ):
 
         input_param_parameters = {"frequency": frequency}
         if noise_factor is not None:

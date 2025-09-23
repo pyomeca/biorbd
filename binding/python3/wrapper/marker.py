@@ -1,7 +1,7 @@
 from collections import UserList
 from typing import TYPE_CHECKING, Iterator
 
-from .misc import BiorbdArray, to_biorbd_array_output, to_biorbd_array_input
+from .misc import BiorbdArray, BiorbdScalar, to_biorbd_array_output, to_biorbd_array_input
 from ..biorbd import NodeSegment as BiorbdMarker, GeneralizedCoordinates
 
 if TYPE_CHECKING:
@@ -70,7 +70,7 @@ class Marker:
         return self.forward_kinematics()
 
     @property
-    def x(self) -> float:
+    def x(self) -> BiorbdScalar:
         """
         Get the x coordinate of the marker in the local reference frame of the segment to which it is attached.
 
@@ -81,13 +81,13 @@ class Marker:
         return self.local[0]
 
     @x.setter
-    def x(self, value: float):
+    def x(self, value: BiorbdScalar):
         """
         Set the x coordinate of the marker in the local reference frame of the segment to which it is attached.
 
         Parameters
         ----------
-        value: float
+        value: BiorbdScalar
             The x coordinate of the marker.
         """
         pos = self.local
@@ -95,7 +95,7 @@ class Marker:
         self.local = pos
 
     @property
-    def y(self) -> float:
+    def y(self) -> BiorbdScalar:
         """
         Get the y coordinate of the marker in the local reference frame of the segment to which it is attached.
 
@@ -106,13 +106,13 @@ class Marker:
         return self.local[1]
 
     @y.setter
-    def y(self, value: float):
+    def y(self, value: BiorbdScalar):
         """
         Set the y coordinate of the marker in the local reference frame of the segment to which it is attached.
 
         Parameters
         ----------
-        value: float
+        value: BiorbdScalar
             The y coordinate of the marker.
         """
         pos = self.local
@@ -120,7 +120,7 @@ class Marker:
         self.local = pos
 
     @property
-    def z(self) -> float:
+    def z(self) -> BiorbdScalar:
         """
         Get the z coordinate of the marker in the local reference frame of the segment to which it is attached.
 
@@ -131,13 +131,13 @@ class Marker:
         return self.local[2]
 
     @z.setter
-    def z(self, value: float):
+    def z(self, value: BiorbdScalar):
         """
         Set the z coordinate of the marker in the local reference frame of the segment to which it is attached.
 
         Parameters
         ----------
-        value: float
+        value: BiorbdScalar
             The z coordinate of the marker.
         """
         pos = self.local

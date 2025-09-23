@@ -2,7 +2,7 @@ from pathlib import Path
 
 from .external_force_set import ExternalForceSet
 from .marker import Marker, MarkersList
-from .misc import BiorbdArray, to_biorbd_array_input, to_biorbd_array_output
+from .misc import BiorbdArray, BiorbdScalar, to_biorbd_array_input, to_biorbd_array_output
 from .muscle import Muscle, MusclesList
 from .segment import Segment, SegmentsList
 from .segment_frame import SegmentFrame, SegmentFramesList
@@ -58,6 +58,58 @@ class Biorbd:
             The new gravity vector of the model
         """
         self._model.setGravity(to_biorbd_array_input(new_gravity))
+
+    @property
+    def mass(self) -> BiorbdScalar:
+        """
+        Get the mass of the model.
+
+        Returns
+        -------
+        The mass of the model
+        """
+        return self._model.mass()
+
+    def mass_matrix(self, q: BiorbdArray | None = None, inverse: bool = False) -> BiorbdArray:
+        """
+        Get the mass matrix of the model at a given pose (or the pose already set in the model if q is None).
+
+        Parameters
+        ----------
+        q: BiorbdArray
+            Generalized coordinates
+        inverse: bool
+            If true, the inverse of the mass matrix is returned. Default is False.
+
+        Returns
+        -------
+        The mass matrix of the model
+        """
+        self.update_kinematics(q)
+        dummy_q = GeneralizedCoordinates(self.nb_q) if q is None else to_biorbd_array_input(q)
+        update_kinematics = False
+        if inverse:
+            return to_biorbd_array_output(self._model.massMatrixInverse(dummy_q, update_kinematics))
+        else:
+            return to_biorbd_array_output(self._model.massMatrix(dummy_q, update_kinematics))
+
+    def center_of_mass(self, q: BiorbdArray | None = None) -> BiorbdArray:
+        """
+        Get the center of mass of the model at a given pose (or the pose already set in the model if q is None).
+
+        Parameters
+        ----------
+        q: BiorbdArray
+            Generalized coordinates
+
+        Returns
+        -------
+        The center of mass of the model
+        """
+        self.update_kinematics(q)
+        dummy_q = GeneralizedCoordinates(self.nb_q) if q is None else to_biorbd_array_input(q)
+        update_kinematics = False
+        return to_biorbd_array_output(self._model.CoM(dummy_q, update_kinematics))
 
     @property
     def segments(self) -> SegmentsList:
