@@ -3,8 +3,21 @@ from typing import TYPE_CHECKING, Iterator
 
 if TYPE_CHECKING:
     from .biorbd_model import Biorbd
-from .misc import BiorbdArray, to_biorbd_array_input, to_biorbd_array_output
-from ..biorbd import Muscle as MuscleBiorbd, State, GeneralizedCoordinates, GeneralizedVelocity
+from .misc import BiorbdArray, BiorbdScalar, to_biorbd_array_input, to_biorbd_array_output
+from ..biorbd import (
+    Muscle as MuscleBiorbd,
+    State,
+    GeneralizedCoordinates,
+    GeneralizedVelocity,
+    currentLinearAlgebraBackend,
+    CASADI,
+    EIGEN3,
+)
+
+if currentLinearAlgebraBackend() == CASADI:
+    from casadi import vertcat
+elif currentLinearAlgebraBackend() == EIGEN3:
+    from numpy import concatenate as vertcat
 
 
 class Muscle:
@@ -24,7 +37,190 @@ class Muscle:
         return self.internal.name().to_string()
 
     @property
-    def activation(self) -> float:
+    def optimal_length(self) -> BiorbdScalar:
+        """
+        Get the optimal length of the muscle.
+
+        Returns
+        -------
+        The optimal length of the muscle.
+        """
+        return self.internal.characteristics().optimalLength()
+
+    @optimal_length.setter
+    def optimal_length(self, value: BiorbdScalar):
+        """
+        Set the optimal length of the muscle.
+
+        Parameters
+        ----------
+        value: The new optimal length of the muscle.
+        """
+        self.internal.characteristics().setOptimalLength(value)
+
+    @property
+    def maximal_isometric_force(self) -> BiorbdScalar:
+        """
+        Get the maximal isometric force of the muscle.
+
+        Returns
+        -------
+        The maximal isometric force of the muscle.
+        """
+        return self.internal.characteristics().forceIsoMax()
+
+    @maximal_isometric_force.setter
+    def maximal_isometric_force(self, value: BiorbdScalar):
+        """
+        Set the maximal isometric force of the muscle.
+
+        Parameters
+        ----------
+        value: The new maximal isometric force of the muscle.
+        """
+        self.internal.characteristics().setForceIsoMax(value)
+
+    @property
+    def pcsa(self) -> BiorbdScalar:
+        """
+        Get the physiological cross-sectional area of the muscle.
+
+        Returns
+        -------
+        The physiological cross-sectional area of the muscle.
+        """
+        return self.internal.characteristics().PCSA()
+
+    @pcsa.setter
+    def pcsa(self, value: BiorbdScalar):
+        """
+        Set the physiological cross-sectional area of the muscle.
+
+        Parameters
+        ----------
+        value: The new physiological cross-sectional area of the muscle.
+        """
+        self.internal.characteristics().setPCSA(value)
+
+    @property
+    def tendon_slack_length(self) -> BiorbdScalar:
+        """
+        Get the tendon slack length of the muscle.
+
+        Returns
+        -------
+        The tendon slack length of the muscle.
+        """
+        return self.internal.characteristics().tendonSlackLength()
+
+    @tendon_slack_length.setter
+    def tendon_slack_length(self, value: BiorbdScalar):
+        """
+        Set the tendon slack length of the muscle.
+
+        Parameters
+        ----------
+        value: The new tendon slack length of the muscle.
+        """
+        self.internal.characteristics().setTendonSlackLength(value)
+
+    @property
+    def pennation_angle(self) -> BiorbdScalar:
+        """
+        Get the pennation angle of the muscle.
+
+        Returns
+        -------
+        The pennation angle of the muscle.
+        """
+        return self.internal.characteristics().pennationAngle()
+
+    @pennation_angle.setter
+    def pennation_angle(self, value: BiorbdScalar):
+        """
+        Set the pennation angle of the muscle.
+
+        Parameters
+        ----------
+        value: The new pennation angle of the muscle.
+        """
+        self.internal.characteristics().setPennationAngle(value)
+
+    @property
+    def maximal_contraction_velocity(self) -> BiorbdScalar:
+        """
+        Get the maximal contraction velocity of the muscle.
+
+        Returns
+        -------
+        The maximal contraction velocity of the muscle.
+        """
+        return self.internal.characteristics().maxShorteningSpeed()
+
+    @maximal_contraction_velocity.setter
+    def maximal_contraction_velocity(self, value: BiorbdScalar):
+        """
+        Set the maximal contraction velocity of the muscle.
+
+        Parameters
+        ----------
+        value: The new maximal contraction velocity of the muscle.
+        """
+        self.internal.characteristics().setMaxShorteningSpeed(value)
+
+    @property
+    def length(self) -> BiorbdScalar:
+        """
+        Get the current pre-updated muscle length of the muscle (update_geometry must therefore be called prior to this method).
+
+        Returns
+        -------
+        The current length of the muscle.
+        """
+        dummy_q = GeneralizedCoordinates(self._model.nb_q)
+        update_kinematics = False
+        return self.internal.length(self._model.internal, dummy_q, update_kinematics)
+
+    @property
+    def muscle_tendon_length(self) -> BiorbdScalar:
+        """
+        Get the current pre-updated muscle-tendon length of the muscle (update_geometry must therefore be called prior to this method).
+
+        Returns
+        -------
+        The current muscle-tendon length of the muscle.
+        """
+        dummy_q = GeneralizedCoordinates(self._model.nb_q)
+        update_kinematics = False
+        return self.internal.musculoTendonLength(self._model.internal, dummy_q, update_kinematics)
+
+    @property
+    def velocity(self) -> BiorbdScalar:
+        """
+        Get the current pre-updated lengthening velocity of the muscle (update_geometry must therefore be called prior to this method).
+
+        Returns
+        -------
+        The current lengthening velocity of the muscle.
+        """
+        dummy_q = GeneralizedCoordinates(self._model.nb_q)
+        dummy_qdot = GeneralizedVelocity(self._model.nb_qdot)
+        update_kinematics = False
+        return self.internal.velocity(self._model.internal, dummy_q, dummy_qdot, update_kinematics)
+
+    @property
+    def length_jacobian(self) -> BiorbdArray:
+        """
+        Get the current pre-updated jacobian of the muscle (update_geometry must therefore be called prior to this method).
+
+        Returns
+        -------
+        The current jacobian of the muscle.
+        """
+        return to_biorbd_array_output(self.internal.position().jacobianLength())
+
+    @property
+    def activation(self) -> BiorbdScalar:
         """
         Get the current activation of the muscle.
 
@@ -36,7 +232,7 @@ class Muscle:
         return self._state.activation()
 
     @activation.setter
-    def activation(self, value: float):
+    def activation(self, value: BiorbdScalar):
         """
         Set the current activation of the muscle.
 
@@ -47,7 +243,7 @@ class Muscle:
         self._state.setActivation(value)
 
     @property
-    def excitation(self) -> float:
+    def excitation(self) -> BiorbdScalar:
         """
         Get the current excitation of the muscle.
 
@@ -58,7 +254,7 @@ class Muscle:
         return self._state.excitation()
 
     @excitation.setter
-    def excitation(self, value: float):
+    def excitation(self, value: BiorbdScalar):
         """
         Set the current excitation of the muscle.
 
@@ -68,15 +264,15 @@ class Muscle:
         """
         self._state.setExcitation(value)
 
-    def activation_dot(self, excitation: float | None, activation: float | None) -> float:
+    def activation_dot(self, excitation: BiorbdScalar | None, activation: BiorbdScalar | None) -> BiorbdScalar:
         """
         Compute the time derivative of the muscle activation.
 
         Parameters
         ----------
-        excitation: float | None
+        excitation: BiorbdScalar | None
             The current excitation of the muscle. If None is provided, the previously set excitation is used.
-        activation: float | None
+        activation: BiorbdScalar | None
             The current activation of the muscle. If None is provided, the previously set activation is used.
 
         Returns
@@ -90,6 +286,17 @@ class Muscle:
             self.activation = activation
 
         return self.internal.activationDot(self._state, excitation_is_normalized)
+
+    @property
+    def force(self) -> BiorbdScalar:
+        """
+        Get the current force of the muscle (update_geometry must therefore be called prior to this method).
+
+        Returns
+        -------
+        The current force of the muscle.
+        """
+        return self.internal.force(self._state)
 
     @property
     def _state(self) -> State:
@@ -253,22 +460,12 @@ class MusclesList(UserList):
         -------
         The muscle forces.
         """
-        self.update_geometry(q, qdot)
 
-        update_level = 0
+        self.update_geometry(q, qdot)
         if activations is not None:
             self.activations = activations
-            update_level = 1
-
-        state_set = self._model.internal.stateSet()
-        q = GeneralizedCoordinates(self._model.nb_q) if q is None else to_biorbd_array_input(q)
-        qdot = GeneralizedVelocity(self._model.nb_qdot) if qdot is None else to_biorbd_array_input(qdot)
-
-        return to_biorbd_array_output(
-            self._model.internal.muscleForces(
-                state_set, GeneralizedCoordinates(q), GeneralizedVelocity(qdot), update_level
-            )
-        )
+        emg = self._model.internal.stateSet()
+        return to_biorbd_array_output(self._model.internal.muscleForces(emg))
 
     def joint_torque(
         self, activations: BiorbdArray | None = None, q: BiorbdArray | None = None, qdot: BiorbdArray | None = None
@@ -298,3 +495,17 @@ class MusclesList(UserList):
 
         state_set = self._model.internal.stateSet()
         return to_biorbd_array_output(self._model.internal.muscularJointTorque(state_set))
+
+    def length_jacobian(
+        self,
+        q: BiorbdArray | None = None,
+    ) -> BiorbdArray:
+        """
+        Get the current length jacobian of all muscles at q (if provided, otherwise at the current pose).
+
+        Returns
+        -------
+        The current length jacobian of all muscles.
+        """
+        self.update_geometry(q)
+        return vertcat([muscle.length_jacobian for muscle in self.data])

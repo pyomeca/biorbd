@@ -6,23 +6,13 @@ from ..biorbd import NodeSegment as BiorbdMarker, GeneralizedCoordinates
 
 if TYPE_CHECKING:
     from .biorbd_model import Biorbd
+    from .segment import Segment
 
 
 class Marker:
     def __init__(self, model: "Biorbd", index: int):
         self._model = model
         self._index = index
-
-    @property
-    def parent_name(self) -> str:
-        """
-        Get the name of the segment to which the marker is attached.
-
-        Returns
-        -------
-        The name of the segment to which the marker is attached.
-        """
-        return self.internal.parent().to_string()
 
     @property
     def name(self) -> str:
@@ -34,6 +24,17 @@ class Marker:
         The name of the marker.
         """
         return self.internal.name().to_string()
+
+    @property
+    def segment(self) -> "Segment":
+        """
+        Get the segment to which the marker is attached.
+
+        Returns
+        -------
+        The segment to which the marker is attached.
+        """
+        return self._model.segments[self.internal.parent().to_string()]
 
     @property
     def local(self) -> BiorbdArray:
@@ -58,13 +59,13 @@ class Marker:
         self.internal.setValues(BiorbdMarker(to_biorbd_array_input(value)))
 
     @property
-    def position(self) -> BiorbdArray:
+    def world(self) -> BiorbdArray:
         """
-        Get the position of the marker in the global reference frame, assuming that the model is already in the desired position.
+        Get the position of the marker in the world reference frame, assuming that the model is already in the desired position.
 
         Returns
         -------
-        The position of the marker in the global reference frame.
+        The position of the marker in the world reference frame.
         """
         return self.forward_kinematics()
 
@@ -167,7 +168,7 @@ class Marker:
 
     def forward_kinematics(self, q: BiorbdArray | None = None) -> BiorbdArray:
         """
-        Get the position of the marker in the global reference frame.
+        Get the position of the marker in the world reference frame.
 
         Parameters
         ----------
@@ -178,12 +179,13 @@ class Marker:
 
         Returns
         -------
-        The position of the marker in the global reference frame.
+        The position of the marker in the world reference frame.
         """
 
-        update_kinematics = q is not None
-        q = GeneralizedCoordinates(self._model.nb_q) if q is None else to_biorbd_array_input(q)
-        return to_biorbd_array_output(self._model.internal.marker(q, self._index, update_kinematics))
+        self._model.update_kinematics(q)
+        update_kinematics = False
+        dummy_q = GeneralizedCoordinates(self._model.nb_q)
+        return to_biorbd_array_output(self._model.internal.marker(dummy_q, self._index, update_kinematics))
 
     def jacobian(self, q: BiorbdArray | None = None) -> BiorbdArray:
         """
@@ -200,9 +202,10 @@ class Marker:
         -------
         The Jacobian of the marker.
         """
-        update_kinematics = q is not None
-        q = GeneralizedCoordinates(self._model.nb_q) if q is None else to_biorbd_array_input(q)
-        return to_biorbd_array_output(self._model.internal.markersJacobian(q, update_kinematics)[self._index])
+        self._model.update_kinematics(q)
+        update_kinematics = False
+        dummy_q = GeneralizedCoordinates(self._model.nb_q)
+        return to_biorbd_array_output(self._model.internal.markersJacobian(dummy_q, update_kinematics)[self._index])
 
     @property
     def internal(self) -> BiorbdMarker:
@@ -235,19 +238,22 @@ class MarkersList(UserList):
     def __iter__(self) -> Iterator[Marker]:
         return super().__iter__()
 
-    def __call__(self, q: BiorbdArray) -> "MarkersList":
+    def __call__(self, q: BiorbdArray | None = None) -> "MarkersList":
         """
         Perform of forward kinematics to get the position of the markers at a given pose.
         """
-        q = to_biorbd_array_input(q)
         # Update the internal model and return self for convenience
-        self._model.internal.markers(q)
+        q = self._model.update_kinematics(q)
+        # TODO TEST?
         return self
 
     def jacobian(self, q: BiorbdArray | None = None) -> list["BiorbdArray"]:
         """
         Perform of forward kinematics to get the position of the markers at a given pose.
         """
-        update_kinematics = q is not None
-        q = GeneralizedCoordinates(self._model.nb_q) if q is None else to_biorbd_array_input(q)
-        return [to_biorbd_array_output(value) for value in self._model.internal.markersJacobian(q, update_kinematics)]
+        self._model.update_kinematics(q)
+        update_kinematics = False
+        dummy_q = GeneralizedCoordinates(self._model.nb_q)
+        return [
+            to_biorbd_array_output(value) for value in self._model.internal.markersJacobian(dummy_q, update_kinematics)
+        ]

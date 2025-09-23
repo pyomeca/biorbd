@@ -1,4 +1,5 @@
 import re
+from xml.parsers.expat import model
 
 brbd_to_test = []
 try:
@@ -86,11 +87,11 @@ def test_wrapper_markers(brbd):
     # Test a specific marker
     marker = model.markers[0]
 
-    # Parent
-    assert marker.parent_name == "Pelvis"
-
     # Name
     assert marker.name == "pelv1"
+
+    # Parent segment
+    assert marker.segment.name == "Pelvis"
 
     # Position
     np.testing.assert_almost_equal(marker.local, [-0.1038, 0.0821, 0.0])
@@ -114,19 +115,19 @@ def test_wrapper_markers(brbd):
     assert marker.is_anatomical is False
     assert marker.is_technical is False
 
-    # Perform FK to get global position
+    # Perform FK to get world position
     q = [0.1] * model.nb_q
     # First try without updating kinematics
     markers = model.markers
-    np.testing.assert_almost_equal(markers[0].position, [4, 5, 6])
+    np.testing.assert_almost_equal(markers[0].world, [4, 5, 6])
 
     # Then with updating kinematics
     markers = markers(q)
-    np.testing.assert_almost_equal(markers[0].position, [4.0, 4.47602033, 6.56919207])
+    np.testing.assert_almost_equal(markers[0].world, [4.0, 4.47602033, 6.56919207])
 
     # Then test that the update_kinematics is still applied
     markers = model.markers
-    np.testing.assert_almost_equal(markers[0].position, [4.0, 4.47602033, 6.56919207])
+    np.testing.assert_almost_equal(markers[0].world, [4.0, 4.47602033, 6.56919207])
 
     # Test the jacobian of first marker at previous set q a set q
     jacobian_at_q = [
@@ -147,6 +148,67 @@ def test_wrapper_markers(brbd):
     assert len(jacobian) == len(model.markers)
     np.testing.assert_almost_equal(jacobian[0], jacobian_at_2q)
     np.testing.assert_almost_equal(markers.jacobian(q=q)[0], jacobian_at_q)
+
+
+@pytest.mark.parametrize("brbd", brbd_to_test)
+def test_wrapper_frames(brbd):
+    model = brbd.Biorbd("../../models/arm26.bioMod")
+
+    # Test accessors
+    assert len(model.segment_frames) == len(model.segments)
+    assert model.segment_frames[2].name == model.segment_frames["r_humerus_rotation1"].name
+    frame = model.segments[2].frame
+
+    q = [0.1, 0.1]
+
+    # Compute the reference frames of each segment at that position
+    # For clarity sake, just print the first segment, in normal use, one would probably want to use all segments
+    np.testing.assert_almost_equal(
+        frame.local,
+        [
+            [0.99750108, 0.03902081, -0.05889802, 0.0],
+            [-0.03895296, 0.9992384, 0.0023, 0.0],
+            [0.05894291, 0.0, 0.99826136, 0.0],
+            [0.0, 0.0, 0.0, 1.0],
+        ],
+    )
+    np.testing.assert_almost_equal(frame.world, [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]])
+    np.testing.assert_almost_equal(
+        frame(q),
+        [
+            [0.99641331, -0.06075807, -0.05889802, -0.017545],
+            [0.06099902, 0.99813518, 0.0023, -0.007],
+            [0.05864844, -0.00588447, 0.99826136, 0.17],
+            [0.0, 0.0, 0.0, 1.0],
+        ],
+    )
+    np.testing.assert_almost_equal(
+        frame.world,
+        [
+            [0.99641331, -0.06075807, -0.05889802, -0.017545],
+            [0.06099902, 0.99813518, 0.0023, -0.007],
+            [0.05864844, -0.00588447, 0.99826136, 0.17],
+            [0.0, 0.0, 0.0, 1.0],
+        ],
+    )
+
+    # We can extract some useful information from the frame
+    np.testing.assert_almost_equal(
+        frame.local_rotation,
+        [[0.99750108, 0.03902081, -0.05889802], [-0.03895296, 0.9992384, 0.0023], [0.05894291, 0.0, 0.99826136]],
+    )
+    np.testing.assert_almost_equal(frame.local_rotation_as_euler("xyz"), [-0.002304, -0.05893213, -0.03909863])
+    np.testing.assert_almost_equal(frame.local_translation, [0.0, 0.0, 0.0])
+    np.testing.assert_almost_equal(
+        frame.world_rotation,
+        [
+            [0.99641331, -0.06075807, -0.05889802],
+            [0.06099902, 0.99813518, 0.0023],
+            [0.05864844, -0.00588447, 0.99826136],
+        ],
+    )
+    np.testing.assert_almost_equal(frame.world_rotation_as_euler("xyz"), [-0.002304, -0.05893213, 0.06090137])
+    np.testing.assert_almost_equal(frame.world_translation, [-0.017545, -0.007, 0.17])
 
 
 @pytest.mark.parametrize("brbd", brbd_to_test)
@@ -209,30 +271,30 @@ def test_wrapper_external_forces(brbd):
         model.external_force_set.add(segment_name=segment.name, force=[0, 0, 0, 0], point_of_application=[0, 0, 0])
     with pytest.raises(
         ValueError,
-        match="The point of application must be provided when adding a force in the global reference frame",
+        match="The point of application must be provided when adding a force in the world frame",
     ):
         model.external_force_set.add(segment_name=segment.name, force=[0, 0, 9.81 * segment.mass])
     with pytest.raises(
         ValueError,
         match=re.escape(
-            "Adding a force in local reference frame is not implemented (and probably not what you want). "
-            "You probably want to add a spatial vector in the local reference frame instead or a force in the global reference frame."
+            "Adding a force in local frame is not implemented (and probably not what you want). "
+            "You probably want to add a spatial vector in the local frame instead or a force in the world frame."
         ),
     ):
         model.external_force_set.add(
             segment_name=segment.name,
             force=[0, 0, 9.81 * segment.mass],
-            reference_frame=brbd.ExternalForceSet.ReferenceFrame.LOCAL,
+            frame_of_reference=brbd.ExternalForceSet.Frame.LOCAL,
             point_of_application=[0, 0, 0],
         )
     with pytest.raises(
         ValueError,
-        match="The point of application must be provided when adding a spatial vector in the local reference frame",
+        match="The point of application must be provided when adding a spatial vector in the local frame",
     ):
         model.external_force_set.add(
             segment_name=segment.name,
             force=[0, 0, 0, 0, 0, 9.81 * segment.mass],
-            reference_frame=brbd.ExternalForceSet.ReferenceFrame.LOCAL,
+            frame_of_reference=brbd.ExternalForceSet.Frame.LOCAL,
         )
 
     if brbd.currentLinearAlgebraBackend() == 1:
@@ -352,7 +414,7 @@ def test_wrapper_kalman_filter(brbd):
     target_q = np.concatenate((np.linspace(qinit, qmid, n_frames).T, np.linspace(qmid, qfinal, n_frames).T), axis=1)
     markers = []
     for q in target_q.T:
-        markers.append(np.array([mark.position for mark in model.markers(q)]).T)
+        markers.append(np.array([mark.world for mark in model.markers(q)]).T)
 
     # Perform the kalman filter for each frame (remember, due to initialization, first frame is much longer than the rest)
     kalman = biorbd.ExtendedKalmanFilterMarkers(model, frequency=100)
@@ -386,13 +448,22 @@ def test_muscles(brbd):
     tau = muscles.joint_torque(activations=activations, q=np.array(q) * 2, qdot=qdot)
     np.testing.assert_almost_equal(tau, [-10.11532606, -10.13974674])
 
+    # Validate forces and length jacobian
+    forces = muscles.forces()
+    jacobian = muscles.length_jacobian()
+    np.testing.assert_almost_equal(-jacobian.T @ forces, [-10.11532606, -10.13974674])
+
     # Test the muscle forces for internal and explicit kinematics update
     np.testing.assert_almost_equal(
-        model.muscles.forces(), [387.5044054, 341.33870227, 214.34077935, 234.72062482, 201.20226989, 494.34498081]
+        muscles.forces(), [403.47878369, 341.14054494, 214.28139395, 239.38801482, 201.51684182, 493.98451373]
     )
     np.testing.assert_almost_equal(
-        model.muscles.forces(q=np.array(q) * 2, qdot=qdot),
+        muscles.forces(q=np.array(q) * 2, qdot=qdot),
         [403.47878369, 341.14054494, 214.28139395, 239.38801482, 201.51684182, 493.98451373],
+    )
+    np.testing.assert_almost_equal(
+        muscles.forces(activations=[0.3] * nmus),
+        [245.63266637, 225.70738926, 132.04335764, 143.63280889, 117.39623324, 296.81063517],
     )
 
     # Test activation dot
@@ -402,6 +473,45 @@ def test_muscles(brbd):
     np.testing.assert_almost_equal(
         activations_dot,
         [-10.416666666666668, -5.208333333333334, 0.0, 13.33333333333333, 26.666666666666668, 40.0],
+    )
+
+    # Get an change the properties of a specific muscle
+    muscle = muscles[0]
+    assert muscle.name == "TRIlong"
+
+    assert muscle.optimal_length == 0.134
+    muscle.optimal_length = 0.2
+    assert muscle.optimal_length == 0.2
+
+    assert muscle.maximal_isometric_force == 798.52
+    muscle.maximal_isometric_force = 1000.0
+    assert muscle.maximal_isometric_force == 1000.0
+
+    assert muscle.pcsa == 0.0
+    muscle.pcsa = 0.02
+    assert muscle.pcsa == 0.02
+
+    assert muscle.tendon_slack_length == 0.143
+    muscle.tendon_slack_length = 0.3
+    assert muscle.tendon_slack_length == 0.3
+
+    assert muscle.pennation_angle == 0.20943951
+    muscle.pennation_angle = 0.1
+    assert muscle.pennation_angle == 0.1
+
+    assert muscle.maximal_contraction_velocity == 10.0
+    muscle.maximal_contraction_velocity = 15.0
+    assert muscle.maximal_contraction_velocity == 15.0
+
+    # The non-updated value is not suppose to reflect the changes properly
+    assert muscle.force == muscles.forces()[0]
+    np.testing.assert_almost_equal(
+        muscles.forces(), [441.00852545, 341.14054494, 214.28139395, 239.38801482, 201.51684182, 493.98451373]
+    )
+    muscles.update_geometry(q=q, qdot=qdot)
+    assert muscle.force == muscles.forces()[0]
+    np.testing.assert_almost_equal(
+        muscles.forces(), [37.43286925, 349.67505477, 212.67611275, 231.48743683, 194.03986176, 494.72543227]
     )
 
 
@@ -447,8 +557,9 @@ if __name__ == "__main__":
         test_wrapper_model(brbd)
         test_wrapper_segments(brbd)
         test_wrapper_markers(brbd)
+        test_wrapper_frames(brbd)
         test_wrapper_dynamics(brbd)
         test_wrapper_external_forces(brbd)
         test_muscles(brbd)
-        test_wrapper_kalman_filter(brbd)  # This test is long
+        # test_wrapper_kalman_filter(brbd)  # This test is long
         # test_static_optimization(brbd)

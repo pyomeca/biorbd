@@ -2,7 +2,7 @@ from .biorbd_model import Biorbd
 from .extended_kalman_filter import ExtendedKalmanFilterMarkers
 from .external_force_set import ExternalForceSet
 from .muscle import Muscle
-from .reference_frame import ReferenceFrame
+from .segment_frame import SegmentFrame
 from .segment import Segment
 from .static_optimization import StaticOptimization
 
@@ -11,7 +11,7 @@ __all__ = [
     ExtendedKalmanFilterMarkers.__name__,
     ExternalForceSet.__name__,
     Muscle.__name__,
-    ReferenceFrame.__name__,
+    SegmentFrame.__name__,
     Segment.__name__,
     StaticOptimization.__name__,
 ]

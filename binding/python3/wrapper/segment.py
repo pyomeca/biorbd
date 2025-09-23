@@ -1,8 +1,9 @@
 from collections import UserList
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Iterator
 
 from .misc import BiorbdArray, to_biorbd_array_input, to_biorbd_array_output
 from .markers import MarkersList
+from .segment_frame import SegmentFrame
 from ..biorbd import Segment as BiorbdSegment, Characteristics as BiorbdSegmentCharacteristics
 
 if TYPE_CHECKING:
@@ -117,7 +118,7 @@ class Segment:
         self._characteristics.setInertia(to_biorbd_array_input(value))
 
     @property
-    def markers(self) -> "MarkersList":
+    def markers(self) -> MarkersList:
         """
         Get the markers attached to the segment.
 
@@ -126,8 +127,19 @@ class Segment:
         The markers attached to the segment.
         """
         return MarkersList(
-            [marker for marker in self._model.markers if marker.parent_name == self.name], model=self._model
+            [marker for marker in self._model.markers if marker.segment.name == self.name], model=self._model
         )
+
+    @property
+    def frame(self) -> SegmentFrame:
+        """
+        Get the segment frame.
+
+        Returns
+        -------
+        The segment frame.
+        """
+        return SegmentFrame(self._model, self._index)
 
     @property
     def internal(self) -> BiorbdSegment:
@@ -156,3 +168,6 @@ class SegmentsList(UserList):
             raise KeyError(f"Segment {item} not found")
 
         return self.data[item]
+
+    def __iter__(self) -> Iterator[Segment]:
+        return super().__iter__()

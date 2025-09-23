@@ -37,7 +37,7 @@ def main(show: bool = True):
     target_q = np.concatenate((np.linspace(qinit, qmid, n_frames).T, np.linspace(qmid, qfinal, n_frames).T), axis=1)
     markers = []
     for q in target_q.T:
-        markers.append(np.array([mark.position for mark in model.markers(q)]).T)
+        markers.append(np.array([mark.world for mark in model.markers(q)]).T)
 
     # If ones was using c3d data opened using ezc3d (instead of generated data as above)
     # import ezc3d

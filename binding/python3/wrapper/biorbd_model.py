@@ -5,7 +5,8 @@ from .markers import Marker, MarkersList
 from .misc import BiorbdArray, to_biorbd_array_input, to_biorbd_array_output
 from .muscle import Muscle, MusclesList
 from .segment import Segment, SegmentsList
-from ..biorbd import Model
+from .segment_frame import SegmentFrame, SegmentFramesList
+from ..biorbd import Model, GeneralizedCoordinates, GeneralizedVelocity, GeneralizedAcceleration
 
 
 class Biorbd:
@@ -59,7 +60,7 @@ class Biorbd:
         self._model.setGravity(to_biorbd_array_input(new_gravity))
 
     @property
-    def segments(self) -> "SegmentsList":
+    def segments(self) -> SegmentsList:
         """
         Get the segments in the model.
 
@@ -70,7 +71,7 @@ class Biorbd:
         return SegmentsList([Segment(self, index) for index in range(self._model.nbSegment())])
 
     @property
-    def markers(self) -> "MarkersList":
+    def markers(self) -> MarkersList:
         """
         Get the markers attached to the model.
 
@@ -79,6 +80,17 @@ class Biorbd:
         A list of markers
         """
         return MarkersList([Marker(self, index) for index in range(self._model.nbMarkers())], model=self)
+
+    @property
+    def segment_frames(self) -> SegmentFramesList:
+        """
+        Get the segment frames in the model.
+
+        Returns
+        -------
+        A list of segment frames
+        """
+        return SegmentFramesList([SegmentFrame(self, index) for index in range(self._model.nbSegment())], model=self)
 
     @property
     def dof_names(self) -> list[str]:
@@ -185,9 +197,13 @@ class Biorbd:
         qddot: BiorbdArray
             Generalized accelerations
         """
-        q = to_biorbd_array_input(q)
-        qdot = to_biorbd_array_input(qdot)
-        qddot = to_biorbd_array_input(qddot)
+        if q is None and qdot is None and qddot is None:
+            # Nothing to update
+            return
+
+        q = GeneralizedCoordinates(self.nb_q) if q is None else to_biorbd_array_input(q)
+        qdot = GeneralizedVelocity(self.nb_qdot) if qdot is None else to_biorbd_array_input(qdot)
+        qddot = GeneralizedAcceleration(self.nb_qddot) if qddot is None else to_biorbd_array_input(qddot)
 
         self._model.UpdateKinematicsCustom(q, qdot, qddot)
 

@@ -5,9 +5,9 @@ from ..biorbd import ExternalForceSet as BiorbdExternalForceSet, SpatialVector a
 
 
 class ExternalForceSet:
-    class ReferenceFrame(Enum):
+    class Frame(Enum):
         LOCAL = auto()
-        GLOBAL = auto()
+        WORLD = auto()
 
     class _Type(Enum):
         FORCE = auto()
@@ -27,7 +27,7 @@ class ExternalForceSet:
         segment_name: str,
         force: BiorbdArray,
         point_of_application: BiorbdArray | None = None,
-        reference_frame: ReferenceFrame = ReferenceFrame.GLOBAL,
+        frame_of_reference: Frame = Frame.WORLD,
     ) -> None:
         """
         Add an external force to the external force set. From now on, this force will be apply when calling other methods
@@ -44,17 +44,17 @@ class ExternalForceSet:
             The force vector to be applied to the segment.
             This must be a  3D vector (for translational forces, that is [fx, fy, fz]) or a
                             6D vector (for spatial forces, that is [mx, my, mz, fx, fy, fz]).
-            The force is expressed in the reference frame specified by the reference_frame parameter.
+            The force is expressed in the frame specified by the frame_of_reference parameter.
         point_of_application: BiorbdArray, optional
             The point of application of the force in the local frame of the segment.
             This must be a 3D vector ([px, py, pz]).
-            This parameter is required when adding a force in the local reference frame (see reference_frame parameter).
-            It is optional when adding a force in the global reference frame:
+            This parameter is required when adding a force in the local frame (see frame_of_reference parameter).
+            It is optional when adding a force in the world frame:
                 - If a 3D force is added, this parameter is required.
                 - If a 6D spatial vector is added, this parameter is ignored and can be set to None.
             Default is None.
-        reference_frame: ReferenceFrame, optional
-            The reference frame in which the force is expressed.
+        frame_of_reference: Frame, optional
+            The frame in which the force is expressed.
         """
 
         # Prepare the force vector properly
@@ -72,35 +72,31 @@ class ExternalForceSet:
             raise ValueError("The input vector must be of size 3 (force) or 6 (spatial vector)")
 
         # Add the actual force vector to the correct force set
-        if vector_type == ExternalForceSet._Type.FORCE and reference_frame == ExternalForceSet.ReferenceFrame.GLOBAL:
+        if vector_type == ExternalForceSet._Type.FORCE and frame_of_reference == ExternalForceSet.Frame.WORLD:
             if point_of_application is None:
-                raise ValueError(
-                    "The point of application must be provided when adding a force in the global reference frame"
-                )
+                raise ValueError("The point of application must be provided when adding a force in the world frame")
             self._external_force_set.addTranslationalForce(force, segment_name, point_of_application)
 
-        elif vector_type == ExternalForceSet._Type.FORCE and reference_frame == ExternalForceSet.ReferenceFrame.LOCAL:
+        elif vector_type == ExternalForceSet._Type.FORCE and frame_of_reference == ExternalForceSet.Frame.LOCAL:
             raise ValueError(
-                "Adding a force in local reference frame is not implemented (and probably not what you want). "
-                "You probably want to add a spatial vector in the local reference frame instead or a force in the global reference frame."
+                "Adding a force in local frame is not implemented (and probably not what you want). "
+                "You probably want to add a spatial vector in the local frame instead or a force in the world frame."
             )
 
         elif (
-            vector_type == ExternalForceSet._Type.SPATIAL_VECTOR
-            and reference_frame == ExternalForceSet.ReferenceFrame.GLOBAL
+            vector_type == ExternalForceSet._Type.SPATIAL_VECTOR and frame_of_reference == ExternalForceSet.Frame.WORLD
         ):
-            # It is correct to pass None as point of application, it is assumed to be applied at the origin of the global reference frame
+            # It is correct to pass None as point of application, it is assumed to be applied at the origin of the world frame
             self._external_force_set.add(segment_name, force, point_of_application)
 
         elif (
-            vector_type == ExternalForceSet._Type.SPATIAL_VECTOR
-            and reference_frame == ExternalForceSet.ReferenceFrame.LOCAL
+            vector_type == ExternalForceSet._Type.SPATIAL_VECTOR and frame_of_reference == ExternalForceSet.Frame.LOCAL
         ):
             if point_of_application is None:
                 raise ValueError(
-                    "The point of application must be provided when adding a spatial vector in the local reference frame"
+                    "The point of application must be provided when adding a spatial vector in the local frame"
                 )
             self._external_force_set.addInSegmentReferenceFrame(segment_name, force, point_of_application)
 
         else:
-            raise NotImplementedError("The combination of vector type and reference frame is not implemented yet")
+            raise NotImplementedError("The combination of vector type and frame is not implemented yet")

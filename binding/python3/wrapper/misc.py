@@ -13,8 +13,10 @@ if currentLinearAlgebraBackend() == BIORBD_CASADI:
 # So declare an "Array" typedef that will be np.array or MX depending on the backend
 if currentLinearAlgebraBackend() == BIORBD_CASADI:
     type BiorbdArray = MX
+    type BiorbdScalar = MX
 else:
     type BiorbdArray = np.ndarray
+    type BiorbdScalar = float
 
 
 # Declare a method that converts output to BiorbdArray
@@ -37,7 +39,7 @@ def to_biorbd_array_input(x: BiorbdArray) -> Any:
     if currentLinearAlgebraBackend() == BIORBD_EIGEN3:
         if isinstance(x, np.ndarray):
             return x
-        return np.array(x)
+        return np.array(x, dtype=float)
 
     elif currentLinearAlgebraBackend() == BIORBD_CASADI:
         if isinstance(x, (MX, SX, DM)):
