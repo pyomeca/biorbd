@@ -1,5 +1,5 @@
 from .biorbd_model import Biorbd
-from .extended_kalman_filter import ExtendedKalmanFilterMarkers
+from .extended_kalman_filter import ExtendedKalmanFilterMarkers, has_extended_kalman_filter
 from .external_force_set import ExternalForceSet
 from .marker import Marker
 from .muscle import Muscle

@@ -3,20 +3,30 @@ from typing import TYPE_CHECKING, Generator
 if TYPE_CHECKING:
     from .biorbd_model import Biorbd
 from .misc import BiorbdArray, BiorbdScalar, to_biorbd_array_input, to_biorbd_array_output
-from ..biorbd import (
-    KalmanParam,
-    KalmanReconsMarkers,
-    GeneralizedCoordinates,
-    GeneralizedVelocity,
-    GeneralizedAcceleration,
-    NodeSegment,
-)
+
+try:
+    from ..biorbd import (
+        KalmanParam,
+        KalmanReconsMarkers,
+        GeneralizedCoordinates,
+        GeneralizedVelocity,
+        GeneralizedAcceleration,
+        NodeSegment,
+    )
+
+    has_extended_kalman_filter = True
+except ImportError:
+    has_extended_kalman_filter = False
 
 
 class ExtendedKalmanFilterMarkers:
     def __init__(
         self, model: "Biorbd", frequency: int, noise_factor: BiorbdScalar = None, error_factor: BiorbdScalar = None
     ):
+        if not has_extended_kalman_filter:
+            raise RuntimeError(
+                "In order to use ExtendedKalmanFilterMarkers, biorbd must be compiled with MODULE_KALMAN=ON"
+            )
 
         input_param_parameters = {"frequency": frequency}
         if noise_factor is not None:

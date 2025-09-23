@@ -68,7 +68,7 @@ class Biorbd:
         -------
         The mass of the model
         """
-        return self._model.mass()
+        return to_biorbd_array_output(self._model.mass())
 
     def mass_matrix(self, q: BiorbdArray | None = None, inverse: bool = False) -> BiorbdArray:
         """
@@ -85,13 +85,13 @@ class Biorbd:
         -------
         The mass matrix of the model
         """
-        self.update_kinematics(q)
+        updated_model = self.update_kinematics(q)
         dummy_q = GeneralizedCoordinates(self.nb_q) if q is None else to_biorbd_array_input(q)
         update_kinematics = False
         if inverse:
-            return to_biorbd_array_output(self._model.massMatrixInverse(dummy_q, update_kinematics))
+            return to_biorbd_array_output(updated_model.massMatrixInverse(dummy_q, update_kinematics))
         else:
-            return to_biorbd_array_output(self._model.massMatrix(dummy_q, update_kinematics))
+            return to_biorbd_array_output(updated_model.massMatrix(dummy_q, update_kinematics))
 
     def center_of_mass(self, q: BiorbdArray | None = None) -> BiorbdArray:
         """
@@ -106,10 +106,11 @@ class Biorbd:
         -------
         The center of mass of the model
         """
-        self.update_kinematics(q)
+
+        updated_model = self.update_kinematics(q)
         dummy_q = GeneralizedCoordinates(self.nb_q) if q is None else to_biorbd_array_input(q)
         update_kinematics = False
-        return to_biorbd_array_output(self._model.CoM(dummy_q, update_kinematics))
+        return to_biorbd_array_output(updated_model.CoM(dummy_q, update_kinematics))
 
     @property
     def segments(self) -> SegmentsList:
@@ -236,7 +237,7 @@ class Biorbd:
 
     def update_kinematics(
         self, q: BiorbdArray | None = None, qdot: BiorbdArray | None = None, qddot: BiorbdArray | None = None
-    ):
+    ) -> Model:
         """
         Force the update the model to a new pose, velocity and acceleration.
 
@@ -248,16 +249,16 @@ class Biorbd:
             Generalized velocities
         qddot: BiorbdArray
             Generalized accelerations
+
+        Returns
+        -------
+        The q, qdot and qddot used to update the model (None if not used)
         """
-        if q is None and qdot is None and qddot is None:
-            # Nothing to update
-            return
+        q = None if q is None else to_biorbd_array_input(q)
+        qdot = None if qdot is None else to_biorbd_array_input(qdot)
+        qddot = None if qddot is None else to_biorbd_array_input(qddot)
 
-        q = GeneralizedCoordinates(self.nb_q) if q is None else to_biorbd_array_input(q)
-        qdot = GeneralizedVelocity(self.nb_qdot) if qdot is None else to_biorbd_array_input(qdot)
-        qddot = GeneralizedAcceleration(self.nb_qddot) if qddot is None else to_biorbd_array_input(qddot)
-
-        self._model.UpdateKinematicsCustom(q, qdot, qddot)
+        return self._model.UpdateKinematicsCustom(q, qdot, qddot)
 
     def forward_dynamics(
         self,

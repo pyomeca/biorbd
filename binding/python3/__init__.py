@@ -8,8 +8,10 @@ from .wrapper import *
 from .wrapper import has_static_optimization
 
 
-if biorbd.currentLinearAlgebraBackend() == 1:
+if biorbd.currentLinearAlgebraBackend() == biorbd.CASADI:
     from casadi import MX, SX, Function, horzcat
+
+    backend = biorbd.CASADI
 
     def to_casadi_func(name, func, *all_param, expand=True):
         cx_param = []
@@ -27,3 +29,12 @@ if biorbd.currentLinearAlgebraBackend() == 1:
                 func_evaluated = func_evaluated.to_mx()
         func = Function(name, cx_param, [func_evaluated])
         return func.expand() if expand else func
+
+elif biorbd.currentLinearAlgebraBackend() == biorbd.EIGEN3:
+    backend = biorbd.EIGEN3
+
+    def to_casadi_func(name, func, *all_param, expand=True):
+        raise RuntimeError("to_casadi_func is only available with the CASADI backend")
+
+else:
+    raise RuntimeError("Unknown backend")

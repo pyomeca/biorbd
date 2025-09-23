@@ -22,6 +22,8 @@ else:
 # Declare a method that converts output to BiorbdArray
 def to_biorbd_array_output(x: Any) -> BiorbdArray:
     if currentLinearAlgebraBackend() == BIORBD_EIGEN3:
+        if isinstance(x, (int, float, np.ndarray)):
+            return x
         return x.to_array()
     elif currentLinearAlgebraBackend() == BIORBD_CASADI:
         return x.to_mx()
@@ -44,6 +46,6 @@ def to_biorbd_array_input(x: BiorbdArray) -> Any:
     elif currentLinearAlgebraBackend() == BIORBD_CASADI:
         if isinstance(x, (MX, SX, DM)):
             return x
-        return DM(x)
+        return MX(x)
     else:
         raise NotImplementedError("Unknown backend")
