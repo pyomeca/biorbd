@@ -68,7 +68,13 @@ def test_wrapper_model(brbd):
     # Center of mass
     q = [0.1] * model.nb_q
     np.testing.assert_almost_equal(_evaluate(brbd, model.center_of_mass, q=q), [-0.0007778, 0.12675668, 0.0568666])
-    if brbd.backend == brbd.EIGEN3:
+    if brbd.backend == brbd.CASADI:
+        with pytest.raises(
+            RuntimeError,
+            match="The 'center_of_mass' method without setting q cannot be called when using the CasADi backend",
+        ):
+            model.center_of_mass()
+    else:
         np.testing.assert_almost_equal(model.center_of_mass(), [-0.0007778, 0.12675668, 0.0568666])
 
     # Mass matrix
@@ -270,7 +276,13 @@ def test_wrapper_model(brbd):
         ],
     ]
     np.testing.assert_almost_equal(_evaluate(brbd, model.mass_matrix, q=q), mass_matrix_reference)
-    if brbd.backend == brbd.EIGEN3:
+    if brbd.backend == brbd.CASADI:
+        with pytest.raises(
+            RuntimeError,
+            match="The 'mass_matrix' method without setting q cannot be called when using the CasADi backend",
+        ):
+            model.mass_matrix()
+    else:
         np.testing.assert_almost_equal(model.mass_matrix(), mass_matrix_reference)
 
     inverse_matrix_reference = [
@@ -473,7 +485,13 @@ def test_wrapper_model(brbd):
     np.testing.assert_almost_equal(
         _evaluate(brbd, model.mass_matrix, q=q, inverse=True), inverse_matrix_reference, decimal=6
     )
-    if brbd.backend == brbd.EIGEN3:
+    if brbd.backend == brbd.CASADI:
+        with pytest.raises(
+            RuntimeError,
+            match="The 'mass_matrix' method without setting q cannot be called when using the CasADi backend",
+        ):
+            model.mass_matrix(inverse=True)
+    else:
         np.testing.assert_almost_equal(model.mass_matrix(inverse=True), inverse_matrix_reference, decimal=6)
 
 
@@ -502,14 +520,16 @@ def test_wrapper_segments(brbd):
     assert segment.mass == 100
 
     # Center of mass
-    np.testing.assert_almost_equal(segment.center_of_mass, [0, 0, 0.0885])
+    np.testing.assert_almost_equal(_evaluate(brbd, segment.center_of_mass), [0, 0, 0.0885])
     segment.center_of_mass = [1, 2, 3]
-    np.testing.assert_almost_equal(segment.center_of_mass, [1, 2, 3])
+    np.testing.assert_almost_equal(_evaluate(brbd, segment.center_of_mass), [1, 2, 3])
 
     # Inertia
-    np.testing.assert_almost_equal(segment.inertia, [[0.04664, 0.0, 0.0], [0.0, 0.07178, 0.0], [0.0, 0.0, 0.06989]])
+    np.testing.assert_almost_equal(
+        _evaluate(brbd, segment.inertia), [[0.04664, 0.0, 0.0], [0.0, 0.07178, 0.0], [0.0, 0.0, 0.06989]]
+    )
     segment.inertia = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
-    np.testing.assert_almost_equal(segment.inertia, [[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+    np.testing.assert_almost_equal(_evaluate(brbd, segment.inertia), [[1, 0, 0], [0, 1, 0], [0, 0, 1]])
 
     # Get the markers of the segment
     assert len(segment.markers) == 6
@@ -535,22 +555,22 @@ def test_wrapper_markers(brbd):
     assert marker.segment.name == "Pelvis"
 
     # Position
-    np.testing.assert_almost_equal(marker.local, [-0.1038, 0.0821, 0.0])
+    np.testing.assert_almost_equal(_evaluate(brbd, marker.local), [-0.1038, 0.0821, 0.0])
     marker.local = [1, 2, 3]
-    np.testing.assert_almost_equal(marker.local, [1, 2, 3])
+    np.testing.assert_almost_equal(_evaluate(brbd, marker.local), [1, 2, 3])
 
     # X, Y, Z
-    assert marker.x == 1
+    assert _evaluate(brbd, marker.x) == 1
     marker.x = 4
-    assert marker.x == 4
+    assert _evaluate(brbd, marker.x) == 4
 
-    assert marker.y == 2
+    assert _evaluate(brbd, marker.y) == 2
     marker.y = 5
-    assert marker.y == 5
+    assert _evaluate(brbd, marker.y) == 5
 
-    assert marker.z == 3
+    assert _evaluate(brbd, marker.z) == 3
     marker.z = 6
-    assert marker.z == 6
+    assert _evaluate(brbd, marker.z) == 6
 
     # Is technical or anatomical
     assert marker.is_anatomical is False
@@ -560,15 +580,35 @@ def test_wrapper_markers(brbd):
     q = [0.1] * model.nb_q
     # First try without updating kinematics
     markers = model.markers
-    np.testing.assert_almost_equal(markers[0].world, [4, 5, 6])
+    if brbd.backend == brbd.CASADI:
+        with pytest.raises(RuntimeError, match="The 'world' method cannot be called when using the CasADi backend"):
+            markers[0].world
+    else:
+        np.testing.assert_almost_equal(markers[0].world, [4, 5, 6])
 
     # Then with updating kinematics
-    markers = markers(q)
-    np.testing.assert_almost_equal(markers[0].world, [4.0, 4.47602033, 6.56919207])
+    if brbd.backend == brbd.CASADI:
+        with pytest.raises(
+            RuntimeError, match=re.escape("The '()' accessor cannot be called when using the CasADi backend")
+        ):
+            markers(q)
+    else:
+        markers = markers(q)
+        np.testing.assert_almost_equal(markers[0].world, [4.0, 4.47602033, 6.56919207])
 
-    # Then test that the update_kinematics is still applied
-    markers = model.markers
-    np.testing.assert_almost_equal(markers[0].world, [4.0, 4.47602033, 6.56919207])
+        # Then test that the update_kinematics is still applied
+        markers = model.markers
+        np.testing.assert_almost_equal(_evaluate(brbd, markers[0].world), [4.0, 4.47602033, 6.56919207])
+
+    np.testing.assert_almost_equal(_evaluate(brbd, marker.forward_kinematics, q=q), [4.0, 4.47602033, 6.56919207])
+    if brbd.backend == brbd.CASADI:
+        with pytest.raises(
+            RuntimeError,
+            match="The 'forward_kinematics' method without setting q cannot be called when using the CasADi backend",
+        ):
+            marker.forward_kinematics()
+    else:
+        np.testing.assert_almost_equal(marker.forward_kinematics(), [4.0, 4.47602033, 6.56919207])
 
     # Test the jacobian of first marker at previous set q a set q
     jacobian_at_q = [
@@ -581,14 +621,32 @@ def test_wrapper_markers(brbd):
         [1.0, 0.0, -6.87374612, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
         [0.0, 1.0, 3.7083169, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
     ]
-    np.testing.assert_almost_equal(marker.jacobian(), jacobian_at_q)
-    np.testing.assert_almost_equal(marker.jacobian(q=np.array(q) * 2), jacobian_at_2q)
+    if brbd.backend == brbd.CASADI:
+        with pytest.raises(
+            RuntimeError,
+            match="The 'jacobian' method without setting q cannot be called when using the CasADi backend",
+        ):
+            marker.jacobian()
+    else:
+        np.testing.assert_almost_equal(marker.jacobian(), jacobian_at_q)
+    np.testing.assert_almost_equal(_evaluate(brbd, marker.jacobian, q=np.array(q) * 2), jacobian_at_2q)
 
     # Test the all markers jacobian
-    jacobian = markers.jacobian()
-    assert len(jacobian) == len(model.markers)
-    np.testing.assert_almost_equal(jacobian[0], jacobian_at_2q)
-    np.testing.assert_almost_equal(markers.jacobian(q=q)[0], jacobian_at_q)
+    if brbd.backend == brbd.CASADI:
+        with pytest.raises(
+            RuntimeError,
+            match="The 'jacobian' method without setting q cannot be called when using the CasADi backend",
+        ):
+            markers.jacobian()
+    else:
+        jacobian = markers.jacobian()
+        assert len(jacobian) == len(model.markers)
+        np.testing.assert_almost_equal(jacobian[0], jacobian_at_2q)
+    if brbd.backend == brbd.CASADI:
+        # The _evaluate function flattens the output, so we need to take the first 3 rows and nb_q columns as the other one does
+        np.testing.assert_almost_equal(_evaluate(brbd, markers.jacobian, q=q)[:, : model.nb_q], jacobian_at_q)
+    else:
+        np.testing.assert_almost_equal(_evaluate(brbd, markers.jacobian, q=q)[0], jacobian_at_q)
 
 
 @pytest.mark.parametrize("brbd", brbd_to_test)
@@ -998,12 +1056,12 @@ def test_static_optimization(brbd):
 if __name__ == "__main__":
     for brbd in brbd_to_test:
         test_wrapper_model(brbd)
-        # test_wrapper_segments(brbd)
-        # test_wrapper_markers(brbd)
-        # test_wrapper_frames(brbd)
-        # test_wrapper_dynamics(brbd)
-        # test_wrapper_external_forces(brbd)
-        # test_muscles(brbd)
-        # test_wrapper_kalman_filter(brbd)  # This test is long
-        # if brbd.has_static_optimization:
-        #     test_static_optimization(brbd)
+        test_wrapper_segments(brbd)
+        test_wrapper_markers(brbd)
+        test_wrapper_frames(brbd)
+        test_wrapper_dynamics(brbd)
+        test_wrapper_external_forces(brbd)
+        test_muscles(brbd)
+        test_wrapper_kalman_filter(brbd)  # This test is long
+        if brbd.has_static_optimization:
+            test_static_optimization(brbd)

@@ -6,7 +6,7 @@ from .misc import BiorbdArray, BiorbdScalar, to_biorbd_array_input, to_biorbd_ar
 from .muscle import Muscle, MusclesList
 from .segment import Segment, SegmentsList
 from .segment_frame import SegmentFrame, SegmentFramesList
-from ..biorbd import Model, GeneralizedCoordinates, GeneralizedVelocity, GeneralizedAcceleration
+from ..biorbd import Model, GeneralizedCoordinates, currentLinearAlgebraBackend, CASADI
 
 
 class Biorbd:
@@ -85,6 +85,11 @@ class Biorbd:
         -------
         The mass matrix of the model
         """
+        if q is None and currentLinearAlgebraBackend() == CASADI:
+            raise RuntimeError(
+                "The 'mass_matrix' method without setting q cannot be called when using the CasADi backend"
+            )
+
         updated_model = self.update_kinematics(q)
         dummy_q = GeneralizedCoordinates(self.nb_q) if q is None else to_biorbd_array_input(q)
         update_kinematics = False
@@ -106,6 +111,10 @@ class Biorbd:
         -------
         The center of mass of the model
         """
+        if q is None and currentLinearAlgebraBackend() == CASADI:
+            raise RuntimeError(
+                "The 'center_of_mass' method without setting q cannot be called when using the CasADi backend"
+            )
 
         updated_model = self.update_kinematics(q)
         dummy_q = GeneralizedCoordinates(self.nb_q) if q is None else to_biorbd_array_input(q)

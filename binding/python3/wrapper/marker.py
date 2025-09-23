@@ -2,7 +2,7 @@ from collections import UserList
 from typing import TYPE_CHECKING, Iterator
 
 from .misc import BiorbdArray, BiorbdScalar, to_biorbd_array_output, to_biorbd_array_input
-from ..biorbd import NodeSegment as BiorbdMarker, GeneralizedCoordinates
+from ..biorbd import NodeSegment as BiorbdMarker, GeneralizedCoordinates, currentLinearAlgebraBackend, CASADI
 
 if TYPE_CHECKING:
     from .biorbd_model import Biorbd
@@ -67,6 +67,9 @@ class Marker:
         -------
         The position of the marker in the world reference frame.
         """
+        if currentLinearAlgebraBackend() == CASADI:
+            raise RuntimeError("The 'world' method cannot be called when using the CasADi backend")
+
         return self.forward_kinematics()
 
     @property
@@ -181,11 +184,17 @@ class Marker:
         -------
         The position of the marker in the world reference frame.
         """
+        if q is None and currentLinearAlgebraBackend() == CASADI:
+            raise RuntimeError(
+                "The 'forward_kinematics' method without setting q cannot be called when using the CasADi backend"
+            )
 
-        self._model.update_kinematics(q)
+        updated_model = self._model.update_kinematics(q)
         update_kinematics = False
         dummy_q = GeneralizedCoordinates(self._model.nb_q)
-        return to_biorbd_array_output(self._model.internal.marker(dummy_q, self._index, update_kinematics))
+        return to_biorbd_array_output(
+            self._model.internal.marker(updated_model, dummy_q, self._index, update_kinematics)
+        )
 
     def jacobian(self, q: BiorbdArray | None = None) -> BiorbdArray:
         """
@@ -202,10 +211,15 @@ class Marker:
         -------
         The Jacobian of the marker.
         """
-        self._model.update_kinematics(q)
+        if q is None and currentLinearAlgebraBackend() == CASADI:
+            raise RuntimeError("The 'jacobian' method without setting q cannot be called when using the CasADi backend")
+
+        updated_model = self._model.update_kinematics(q)
         update_kinematics = False
         dummy_q = GeneralizedCoordinates(self._model.nb_q)
-        return to_biorbd_array_output(self._model.internal.markersJacobian(dummy_q, update_kinematics)[self._index])
+        return to_biorbd_array_output(
+            self._model.internal.markersJacobian(updated_model, dummy_q, update_kinematics)[self._index]
+        )
 
     @property
     def internal(self) -> BiorbdMarker:
@@ -242,18 +256,24 @@ class MarkersList(UserList):
         """
         Perform of forward kinematics to get the position of the markers at a given pose.
         """
+        if currentLinearAlgebraBackend() == CASADI:
+            raise RuntimeError("The '()' accessor cannot be called when using the CasADi backend")
+
         # Update the internal model and return self for convenience
-        q = self._model.update_kinematics(q)
-        # TODO TEST?
+        self._model.update_kinematics(q)
         return self
 
     def jacobian(self, q: BiorbdArray | None = None) -> list["BiorbdArray"]:
         """
         Perform of forward kinematics to get the position of the markers at a given pose.
         """
-        self._model.update_kinematics(q)
+        if q is None and currentLinearAlgebraBackend() == CASADI:
+            raise RuntimeError("The 'jacobian' method without setting q cannot be called when using the CasADi backend")
+
+        updated_model = self._model.update_kinematics(q)
         update_kinematics = False
         dummy_q = GeneralizedCoordinates(self._model.nb_q)
         return [
-            to_biorbd_array_output(value) for value in self._model.internal.markersJacobian(dummy_q, update_kinematics)
+            to_biorbd_array_output(value)
+            for value in self._model.internal.markersJacobian(updated_model, dummy_q, update_kinematics)
         ]

@@ -46,6 +46,11 @@ def to_biorbd_array_input(x: BiorbdArray) -> Any:
     elif currentLinearAlgebraBackend() == BIORBD_CASADI:
         if isinstance(x, (MX, SX, DM)):
             return x
-        return MX(x)
+        try:
+            return MX(x)
+        except NotImplementedError:
+            # This happens when we try to convert a list of lists. When sending DM, it should be available to the user
+            tp = np.array(x)
+            return MX(tp)
     else:
         raise NotImplementedError("Unknown backend")

@@ -57,7 +57,7 @@ class Segment:
         -------
         The mass of the segment.
         """
-        return self._characteristics.mass()
+        return to_biorbd_array_output(self._characteristics.mass())
 
     @mass.setter
     def mass(self, value: BiorbdScalar):
