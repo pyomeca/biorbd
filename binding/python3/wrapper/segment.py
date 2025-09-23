@@ -2,7 +2,7 @@ from collections import UserList
 from typing import TYPE_CHECKING, Iterator
 
 from .misc import BiorbdArray, to_biorbd_array_input, to_biorbd_array_output
-from .markers import MarkersList
+from .marker import MarkersList
 from .segment_frame import SegmentFrame
 from ..biorbd import Segment as BiorbdSegment, Characteristics as BiorbdSegmentCharacteristics
 

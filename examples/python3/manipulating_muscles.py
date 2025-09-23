@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import biorbd
+import numpy as np
 
 #
 # This examples shows how to get and manipulate muscles using the biorbd Python bindings.
@@ -31,7 +32,7 @@ def main():
     print(f"Muscle forces: {forces}")
 
     # We can also compute the muscle length jacobian
-    jacobian = muscles.length_jacobian()
+    jacobian = np.concatenate(muscles.length_jacobian())
     print(f"Muscle length jacobian: {jacobian}")
 
     # The joint torques is computed as -J^T * F

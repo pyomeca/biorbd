@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from .external_force_set import ExternalForceSet
-from .markers import Marker, MarkersList
+from .marker import Marker, MarkersList
 from .misc import BiorbdArray, to_biorbd_array_input, to_biorbd_array_output
 from .muscle import Muscle, MusclesList
 from .segment import Segment, SegmentsList

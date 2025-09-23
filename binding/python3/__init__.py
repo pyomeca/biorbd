@@ -5,6 +5,7 @@ from .surface_max_torque_actuator import *
 from .rigid_body import *
 from .utils import *
 from .wrapper import *
+from .wrapper import has_static_optimization
 
 
 if biorbd.currentLinearAlgebraBackend() == 1:

@@ -1,5 +1,4 @@
 import re
-from xml.parsers.expat import model
 
 brbd_to_test = []
 try:
@@ -417,7 +416,7 @@ def test_wrapper_kalman_filter(brbd):
         markers.append(np.array([mark.world for mark in model.markers(q)]).T)
 
     # Perform the kalman filter for each frame (remember, due to initialization, first frame is much longer than the rest)
-    kalman = biorbd.ExtendedKalmanFilterMarkers(model, frequency=100)
+    kalman = brbd.ExtendedKalmanFilterMarkers(model, frequency=100)
     q_recons = np.ndarray(target_q.shape)
     for i, (q_i, _, _) in enumerate(kalman.reconstruct_frames(markers)):
         q_recons[:, i] = q_i
@@ -450,7 +449,7 @@ def test_muscles(brbd):
 
     # Validate forces and length jacobian
     forces = muscles.forces()
-    jacobian = muscles.length_jacobian()
+    jacobian = np.concatenate(muscles.length_jacobian())
     np.testing.assert_almost_equal(-jacobian.T @ forces, [-10.11532606, -10.13974674])
 
     # Test the muscle forces for internal and explicit kinematics update
@@ -517,6 +516,8 @@ def test_muscles(brbd):
 
 @pytest.mark.parametrize("brbd", brbd_to_test)
 def test_static_optimization(brbd):
+    assert brbd.has_static_optimization is True
+
     # Load a predefined model
     model = brbd.Biorbd("../../models/arm26.bioMod")
     n_frames = 3
@@ -539,7 +540,7 @@ def test_static_optimization(brbd):
     # it is a loop. That is so the initial guess is dependent of the previous frame. So the first "frame" of the loop is
     # very long (as it computes everythin). Then, the following frames are very fast (as it only returns the precomputed
     # results)
-    optim = biorbd.StaticOptimization(model)
+    optim = brbd.StaticOptimization(model)
     muscle_activations = []
     for value in optim.perform_frames(q, qdot, tau):
         muscle_activations.append(value)
@@ -561,5 +562,6 @@ if __name__ == "__main__":
         test_wrapper_dynamics(brbd)
         test_wrapper_external_forces(brbd)
         test_muscles(brbd)
-        # test_wrapper_kalman_filter(brbd)  # This test is long
-        # test_static_optimization(brbd)
+        test_wrapper_kalman_filter(brbd)  # This test is long
+        if brbd.has_static_optimization:
+            test_static_optimization(brbd)

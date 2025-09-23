@@ -4,20 +4,7 @@ from typing import TYPE_CHECKING, Iterator
 if TYPE_CHECKING:
     from .biorbd_model import Biorbd
 from .misc import BiorbdArray, BiorbdScalar, to_biorbd_array_input, to_biorbd_array_output
-from ..biorbd import (
-    Muscle as MuscleBiorbd,
-    State,
-    GeneralizedCoordinates,
-    GeneralizedVelocity,
-    currentLinearAlgebraBackend,
-    CASADI,
-    EIGEN3,
-)
-
-if currentLinearAlgebraBackend() == CASADI:
-    from casadi import vertcat
-elif currentLinearAlgebraBackend() == EIGEN3:
-    from numpy import concatenate as vertcat
+from ..biorbd import Muscle as MuscleBiorbd, State, GeneralizedCoordinates, GeneralizedVelocity
 
 
 class Muscle:
@@ -493,13 +480,13 @@ class MusclesList(UserList):
         if activations is not None:
             self.activations = activations
 
-        state_set = self._model.internal.stateSet()
-        return to_biorbd_array_output(self._model.internal.muscularJointTorque(state_set))
+        emg = self._model.internal.stateSet()
+        return to_biorbd_array_output(self._model.internal.muscularJointTorque(emg))
 
     def length_jacobian(
         self,
         q: BiorbdArray | None = None,
-    ) -> BiorbdArray:
+    ) -> list[BiorbdArray]:
         """
         Get the current length jacobian of all muscles at q (if provided, otherwise at the current pose).
 
@@ -508,4 +495,4 @@ class MusclesList(UserList):
         The current length jacobian of all muscles.
         """
         self.update_geometry(q)
-        return vertcat([muscle.length_jacobian for muscle in self.data])
+        return [muscle.length_jacobian for muscle in self.data]
