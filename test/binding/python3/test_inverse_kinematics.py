@@ -12,12 +12,6 @@ try:
     brbd_to_test.append(biorbd)
 except ModuleNotFoundError:
     pass
-try:
-    import biorbd_casadi
-
-    brbd_to_test.append(biorbd_casadi)
-except ImportError:
-    pass
 
 if not brbd_to_test:
     raise ImportError("No biorbd version could be imported")
@@ -29,11 +23,8 @@ def test_solve(brbd, method):
     biorbd_model = brbd.Model("../../models/pyomecaman.bioMod")
 
     # Remove the dampings in this test
-    if brbd.backend == brbd.CASADI:
-        jointDampings = [brbd.Scalar(0), brbd.Scalar(0), brbd.Scalar(0)]
-    else:
-        jointDampings = [0, 0, 0]
-    biorbd_model.segment(0).setJointDampings(jointDampings)
+    joint_dampings = [0, 0, 0]
+    biorbd_model.segment(0).setJointDampings(joint_dampings)
 
     qinit = np.array([0.1, 0.1, -0.3, 0.35, 1.15, -0.35, 1.15, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1])
 
@@ -50,3 +41,9 @@ def test_solve(brbd, method):
         )
     elif method == "trf" or method == "lm":
         np.testing.assert_almost_equal(np.squeeze(np.round(ik_q, 1).T), qinit, decimal=1)
+
+
+if __name__ == "__main__":
+    for brbd in brbd_to_test:
+        for method in ["only_lm", "lm", "trf"]:
+            test_solve(brbd, method)

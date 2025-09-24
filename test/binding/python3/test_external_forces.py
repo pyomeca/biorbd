@@ -163,3 +163,9 @@ def test_external_forces_with_point_of_application(brbd):
         ],
     )
     np.testing.assert_almost_equal(qddot, qddot_expected)
+
+
+if __name__ == "__main__":
+    for brbd in brbd_to_test:
+        test_external_forces(brbd)
+        test_external_forces_with_point_of_application(brbd)

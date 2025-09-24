@@ -53,7 +53,7 @@ def test_imu_to_array(brbd):
 
         q_sym = MX.sym("q", m.nbQ(), 1)
         imu_func = brbd.to_casadi_func("imu", m.IMU, q_sym)
-        imu = imu_func(q)[:, :4]
+        imu = imu_func(q)[0]
 
     else:
         imu = m.IMU(q)[0].to_array()
@@ -84,3 +84,10 @@ def test_vector3d(brbd):
 
         vec = MX.ones(3, 1)
         biorbd_model.setGravity(vec)
+
+
+if __name__ == "__main__":
+    for brbd in brbd_to_test:
+        test_np_mx_to_generalized(brbd)
+        test_imu_to_array(brbd)
+        test_vector3d(brbd)

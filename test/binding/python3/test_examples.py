@@ -84,3 +84,13 @@ def test_example_static_optimization():
 
     static_optimization = load_example_file("static_optimization.py")
     static_optimization.main()
+
+
+if __name__ == "__main__":
+    for brbd in brbd_to_test:
+        test_example_forward_dynamics()
+        test_example_forward_dynamics_from_muscles()
+        test_example_forward_kinematics()
+        test_example_inverse_dynamics()
+        test_example_inverse_kinematics_kalman()
+        test_example_static_optimization()

@@ -308,8 +308,8 @@ def test_markers(brbd):
         markers_func = brbd.to_casadi_func("Compute_Markers", m.markers, q_sym)
         markers_velocity_func = brbd.to_casadi_func("Compute_MarkersVelocity", m.markersVelocity, q_sym, q_dot_sym)
 
-        markers = np.array(markers_func(q))
-        markers_dot = np.array(markers_velocity_func(q, q_dot))
+        markers = np.array(markers_func(q))[:, :, 0].T
+        markers_dot = np.array(markers_velocity_func(q, q_dot))[:, :, 0].T
 
     elif brbd.backend == brbd.EIGEN3:
         # If Eigen backend is used
@@ -415,3 +415,17 @@ def test_name_to_index(brbd):
     np.testing.assert_equal(brbd.marker_index(m, "piedg6"), 96)
     with pytest.raises(ValueError, match="dummy is not in the biorbd model"):
         brbd.marker_index(m, "dummy")
+
+
+if __name__ == "__main__":
+    for brbd in brbd_to_test:
+        test_load_model(brbd)
+        test_dof_ranges(brbd)
+        test_forward_dynamics(brbd)
+        test_forward_dynamics_with_external_forces(brbd)
+        test_com(brbd)
+        test_set_vector3d(brbd)
+        test_set_scalar(brbd)
+        test_markers(brbd)
+        test_forward_dynamics_constraints_direct(brbd)
+        test_name_to_index(brbd)

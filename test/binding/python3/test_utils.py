@@ -131,3 +131,9 @@ def test_multiply(brbd):
             ]
         ),
     )
+
+
+if __name__ == "__main__":
+    for brbd in brbd_to_test:
+        test_get_range_q(brbd)
+        test_multiply(brbd)
