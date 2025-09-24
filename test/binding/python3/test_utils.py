@@ -75,8 +75,8 @@ def test_get_range_q(brbd):
 
 @pytest.mark.parametrize("brbd", brbd_to_test)
 def test_multiply(brbd):
-    if brbd == biorbd_casadi:
-        return
+    if brbd.backend == brbd.CASADI:
+        pytest.skip("Skip multiply test for biorbd_casadi")
 
     np.random.seed(42)
     b1 = np.random.rand(3, 3)
