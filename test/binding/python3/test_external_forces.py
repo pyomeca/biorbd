@@ -24,7 +24,7 @@ def test_external_forces(brbd):
     m = brbd.Model("../../models/pyomecaman.bioMod")
 
     # Remove the dampings in this test
-    if brbd.currentLinearAlgebraBackend() == 1:
+    if brbd.backend == brbd.CASADI:
         jointDampings = [brbd.Scalar(0), brbd.Scalar(0), brbd.Scalar(0)]
     else:
         jointDampings = [0, 0, 0]
@@ -45,7 +45,7 @@ def test_external_forces(brbd):
     qdot = np.array([i * 1.1 for i in range(m.nbQ())])
     tau = np.array([i * 1.1 for i in range(m.nbQ())])
 
-    if brbd.currentLinearAlgebraBackend() == 1:
+    if brbd.backend == brbd.CASADI:
         # If CasADi backend is used
         from casadi import MX
 
@@ -62,7 +62,7 @@ def test_external_forces(brbd):
         qddot = forward_dynamics(q, qdot, tau)
         qddot = np.array(qddot)[:, 0]
 
-    elif brbd.currentLinearAlgebraBackend() == 0:
+    elif brbd.backend == brbd.EIGEN3:
         # if Eigen backend is used
         m.ForwardDynamics(q, qdot, tau, force_set).to_array()
         # Call it twice because there is a chance they interact with each other
@@ -96,7 +96,7 @@ def test_external_forces_with_point_of_application(brbd):
     m = brbd.Model("../../models/pyomecaman.bioMod")
 
     # Remove the dampings in this test
-    if brbd.currentLinearAlgebraBackend() == 1:
+    if brbd.backend == brbd.CASADI:
         jointDampings = [brbd.Scalar(0), brbd.Scalar(0), brbd.Scalar(0)]
     else:
         jointDampings = [0, 0, 0]
@@ -119,7 +119,7 @@ def test_external_forces_with_point_of_application(brbd):
     qdot = np.array([i * 1.1 for i in range(m.nbQ())])
     tau = np.array([i * 1.1 for i in range(m.nbQ())])
 
-    if brbd.currentLinearAlgebraBackend() == 1:
+    if brbd.backend == brbd.CASADI:
         # If CasADi backend is used
         from casadi import MX
 
@@ -136,7 +136,7 @@ def test_external_forces_with_point_of_application(brbd):
         qddot = forward_dynamics(q, qdot, tau)
         qddot = np.array(qddot)[:, 0]
 
-    elif brbd.currentLinearAlgebraBackend() == 0:
+    elif brbd.backend == brbd.EIGEN3:
         # if Eigen backend is used
         m.ForwardDynamics(q, qdot, tau, force_set).to_array()
         # Call it twice because there is a chance they interact with each other

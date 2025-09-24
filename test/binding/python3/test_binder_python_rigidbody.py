@@ -92,7 +92,7 @@ def test_forward_dynamics(brbd):
     m = brbd.Model("../../models/pyomecaman_withActuators.bioMod")
 
     # Remove the dampings in this test
-    if brbd.currentLinearAlgebraBackend() == 1:
+    if brbd.backend == brbd.CASADI:
         jointDampings = [brbd.Scalar(0), brbd.Scalar(0), brbd.Scalar(0)]
     else:
         jointDampings = [0, 0, 0]
@@ -102,7 +102,7 @@ def test_forward_dynamics(brbd):
     qdot = np.array([i * 1.1 for i in range(m.nbQ())])
     tau = np.array([i * 1.1 for i in range(m.nbQ())])
 
-    if brbd.currentLinearAlgebraBackend() == 1:
+    if brbd.backend == brbd.CASADI:
         # If CasADi backend is used
         from casadi import MX
 
@@ -114,7 +114,7 @@ def test_forward_dynamics(brbd):
         qddot = forward_dynamics(q, qdot, tau)
         qddot = np.array(qddot)[:, 0]
 
-    elif brbd.currentLinearAlgebraBackend() == 0:
+    elif brbd.backend == brbd.EIGEN3:
         # if Eigen backend is used
         qddot = m.ForwardDynamics(q, qdot, tau).to_array()
     else:
@@ -145,7 +145,7 @@ def test_forward_dynamics_with_external_forces(brbd):
     m = brbd.Model("../../models/pyomecaman_withActuators.bioMod")
 
     # Remove the dampings in this test
-    if brbd.currentLinearAlgebraBackend() == 1:
+    if brbd.backend == brbd.CASADI:
         jointDampings = [brbd.Scalar(0), brbd.Scalar(0), brbd.Scalar(0)]
     else:
         jointDampings = [0, 0, 0]
@@ -160,7 +160,7 @@ def test_forward_dynamics_with_external_forces(brbd):
     external_forces.add("PiedD", np.array((11.1, 22.2, 33.3, 44.4, 55.5, 66.6)))
     external_forces.add("PiedG", np.array((11.1 * 2, 22.2 * 2, 33.3 * 2, 44.4 * 2, 55.5 * 2, 66.6 * 2)))
 
-    if brbd.currentLinearAlgebraBackend() == 1:
+    if brbd.backend == brbd.CASADI:
         from casadi import MX
 
         q_sym = MX.sym("q", m.nbQ(), 1)
@@ -173,7 +173,7 @@ def test_forward_dynamics_with_external_forces(brbd):
         qddot = forward_dynamics(q, qdot, tau)
         qddot = np.array(qddot)[:, 0]
 
-    elif brbd.currentLinearAlgebraBackend() == 0:
+    elif brbd.backend == brbd.EIGEN3:
         # if Eigen backend is used
         qddot = m.ForwardDynamics(q, qdot, tau, external_forces).to_array()
     else:
@@ -211,7 +211,7 @@ def test_com(brbd):
     expected_com_dot = np.array([-0.05018973433722229, 1.4166208451420528, 1.4301750486035787])
     expected_com_ddot = np.array([-0.7606169667295027, 11.508107073695976, 16.58853835505851])
 
-    if brbd.currentLinearAlgebraBackend() == 1:
+    if brbd.backend == brbd.CASADI:
         # If CasADi backend is used
         from casadi import MX
 
@@ -227,7 +227,7 @@ def test_com(brbd):
         com_dot = np.array(com_dot_func(q, q_dot))
         com_ddot = np.array(com_ddot_func(q, q_dot, q_ddot))
 
-    elif not brbd.currentLinearAlgebraBackend():
+    elif brbd.backend == brbd.EIGEN3:
         # If Eigen backend is used
         com = m.CoM(q).to_array()
         com_dot = m.CoMdot(q, q_dot).to_array()
@@ -244,7 +244,7 @@ def test_com(brbd):
 def test_set_vector3d(brbd):
     m = brbd.Model("../../models/pyomecaman.bioMod")
     m.setGravity(np.array((0, 0, -2)))
-    if brbd.currentLinearAlgebraBackend() == 1:
+    if brbd.backend == brbd.CASADI:
         from casadi import MX
 
         get_gravity = brbd.to_casadi_func("Compute_Markers", m.getGravity)()["o0"]
@@ -256,7 +256,7 @@ def test_set_vector3d(brbd):
 @pytest.mark.parametrize("brbd", brbd_to_test)
 def test_set_scalar(brbd):
     def check_value(target):
-        if brbd.currentLinearAlgebraBackend() == 1:
+        if brbd.backend == brbd.CASADI:
             assert m.segment(0).characteristics().mass().to_mx() == target
         else:
             assert m.segment(0).characteristics().mass() == target
@@ -281,7 +281,7 @@ def test_set_scalar(brbd):
     with pytest.raises(ValueError, match="Scalar must be a 1x1 array or a float"):
         m.segment(0).characteristics().setMass(np.array([[[14]]]))
 
-    if brbd.currentLinearAlgebraBackend() == 1:
+    if brbd.backend == brbd.CASADI:
         from casadi import MX
 
         m.segment(0).characteristics().setMass(MX(15))
@@ -298,7 +298,7 @@ def test_markers(brbd):
     expected_markers_last = np.array([-0.11369, 0.63240501, -0.56253268])
     expected_markers_last_dot = np.array([0.0, 4.16996219, 3.99459262])
 
-    if brbd.currentLinearAlgebraBackend() == 1:
+    if brbd.backend == brbd.CASADI:
         # If CasADi backend is used
         from casadi import MX
 
@@ -311,7 +311,7 @@ def test_markers(brbd):
         markers = np.array(markers_func(q))
         markers_dot = np.array(markers_velocity_func(q, q_dot))
 
-    elif not brbd.currentLinearAlgebraBackend():
+    elif brbd.backend == brbd.EIGEN3:
         # If Eigen backend is used
         markers = np.array([mark.to_array() for mark in m.markers(q)]).T
         markers_dot = np.array([mark.to_array() for mark in m.markersVelocity(q, q_dot)]).T
@@ -328,7 +328,7 @@ def test_forward_dynamics_constraints_direct(brbd):
     m = brbd.Model("../../models/pyomecaman.bioMod")
 
     # Remove the dampings in this test
-    if brbd.currentLinearAlgebraBackend() == 1:
+    if brbd.backend == brbd.CASADI:
         jointDampings = [brbd.Scalar(0), brbd.Scalar(0), brbd.Scalar(0)]
     else:
         jointDampings = [0, 0, 0]
@@ -369,7 +369,7 @@ def test_forward_dynamics_constraints_direct(brbd):
 
     np.testing.assert_almost_equal(cs.nbContacts(), contact_forces_expected.size)
 
-    if brbd.currentLinearAlgebraBackend() == 1:
+    if brbd.backend == brbd.CASADI:
         # If CasADi backend is used
         from casadi import Function, MX
 
@@ -388,7 +388,7 @@ def test_forward_dynamics_constraints_direct(brbd):
         qddot = np.array(qddot)
         cs_forces = np.array(cs_forces)
 
-    elif brbd.currentLinearAlgebraBackend() == 0:
+    elif brbd.backend == brbd.EIGEN3:
         # if Eigen backend is used
         qddot = m.ForwardDynamicsConstraintsDirect(q, qdot, tau, cs).to_array()
         cs_forces = cs.getForce().to_array()

@@ -34,7 +34,7 @@ def test_np_mx_to_generalized(brbd):
     tau = biorbd_model.InverseDynamics(q, qdot, qddot)
     biorbd_model.ForwardDynamics(q, qdot, tau)
 
-    if brbd.currentLinearAlgebraBackend() == 1:
+    if brbd.backend == brbd.CASADI:
         tau = biorbd_model.InverseDynamics(q.to_mx(), qdot.to_mx(), qddot.to_mx())
         biorbd_model.ForwardDynamics(q, qdot, tau.to_mx())
     else:
@@ -48,7 +48,7 @@ def test_imu_to_array(brbd):
     m = brbd.Model("../../models/IMUandCustomRT/pyomecaman_withIMUs.bioMod")
     q = np.zeros((m.nbQ(),))
 
-    if brbd.currentLinearAlgebraBackend() == 1:
+    if brbd.backend == brbd.CASADI:
         from casadi import MX
 
         q_sym = MX.sym("q", m.nbQ(), 1)
@@ -79,7 +79,7 @@ def test_vector3d(brbd):
     )
     biorbd_model.setGravity(vec)
 
-    if brbd.currentLinearAlgebraBackend() == 1:
+    if brbd.backend == brbd.CASADI:
         from casadi import MX
 
         vec = MX.ones(3, 1)

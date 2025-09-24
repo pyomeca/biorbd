@@ -12,6 +12,12 @@ try:
     brbd_to_test.append(biorbd)
 except ModuleNotFoundError:
     pass
+try:
+    import biorbd_casadi
+
+    brbd_to_test.append(biorbd_casadi)
+except ImportError:
+    pass
 
 if not brbd_to_test:
     raise ImportError("No biorbd version could be imported")
@@ -23,7 +29,7 @@ def test_solve(brbd, method):
     biorbd_model = brbd.Model("../../models/pyomecaman.bioMod")
 
     # Remove the dampings in this test
-    if brbd.currentLinearAlgebraBackend() == 1:
+    if brbd.backend == brbd.CASADI:
         jointDampings = [brbd.Scalar(0), brbd.Scalar(0), brbd.Scalar(0)]
     else:
         jointDampings = [0, 0, 0]

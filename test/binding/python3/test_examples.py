@@ -1,20 +1,14 @@
 import pytest
 
-available_biorbd = []
+brbd_to_test = []
 
 try:
     import biorbd
 
-    available_biorbd.append("biorbd")
+    brbd_to_test.append("biorbd")
 except ImportError:
     pass
 
-try:
-    import biorbd_casadi
-
-    available_biorbd.append("biorbd_casadi")
-except ImportError:
-    pass
 
 if not brbd_to_test:
     raise ImportError("No biorbd version could be imported")
@@ -45,7 +39,7 @@ def load_example_file(file_name: str):
 
 
 def test_example_forward_dynamics():
-    if "biorbd" not in available_biorbd:
+    if "biorbd" not in brbd_to_test:
         pytest.skip("This example is written for biorbd, but not for the biorbd_casadi")
 
     forward_dynamics = load_example_file("forward_dynamics.py")
@@ -53,7 +47,7 @@ def test_example_forward_dynamics():
 
 
 def test_example_forward_dynamics_from_muscles():
-    if "biorbd" not in available_biorbd:
+    if "biorbd" not in brbd_to_test:
         pytest.skip("This example is written for biorbd, but not for the biorbd_casadi")
 
     forward_dynamics = load_example_file("forward_dynamics_from_muscles.py")
@@ -61,7 +55,7 @@ def test_example_forward_dynamics_from_muscles():
 
 
 def test_example_forward_kinematics():
-    if "biorbd" not in available_biorbd:
+    if "biorbd" not in brbd_to_test:
         pytest.skip("This example is written for biorbd, but not for the biorbd_casadi")
 
     forward_kinematics = load_example_file("forward_kinematics.py")
@@ -69,7 +63,7 @@ def test_example_forward_kinematics():
 
 
 def test_example_inverse_dynamics():
-    if "biorbd" not in available_biorbd:
+    if "biorbd" not in brbd_to_test:
         pytest.skip("This example is written for biorbd, but not for the biorbd_casadi")
 
     inverse_dynamics = load_example_file("inverse_dynamics.py")
@@ -77,7 +71,7 @@ def test_example_inverse_dynamics():
 
 
 def test_example_inverse_kinematics_kalman():
-    if "biorbd" not in available_biorbd:
+    if "biorbd" not in brbd_to_test:
         pytest.skip("This example is written for biorbd, but not for the biorbd_casadi")
 
     inverse_dynamics_kalman = load_example_file("inverse_kinematics_kalman.py")
@@ -85,7 +79,7 @@ def test_example_inverse_kinematics_kalman():
 
 
 def test_example_static_optimization():
-    if "biorbd" not in available_biorbd:
+    if "biorbd" not in brbd_to_test:
         pytest.skip("This example is written for biorbd, but not for the biorbd_casadi")
 
     static_optimization = load_example_file("static_optimization.py")
