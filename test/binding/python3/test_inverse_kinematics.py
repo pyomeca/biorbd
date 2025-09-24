@@ -14,6 +14,14 @@ except ModuleNotFoundError as e:
     print(f"Error importing biorbd: {e}")
     pass
 
+try:
+    import biorbd_casadi
+
+    brbd_to_test.append(biorbd_casadi)
+except ModuleNotFoundError as e:
+    print(f"Error importing biorbd_casadi: {e}")
+    pass
+
 if not brbd_to_test:
     raise RuntimeError("No biorbd version could be imported")
 
@@ -21,6 +29,9 @@ if not brbd_to_test:
 @pytest.mark.parametrize("brbd", brbd_to_test)
 @pytest.mark.parametrize("method", ["only_lm", "lm", "trf"])
 def test_solve(brbd, method):
+    if brbd.backend == brbd.CASADI:
+        pytest.skip("Skip inverse kinematics for biorbd_casadi")
+
     biorbd_model = brbd.Model("../../models/pyomecaman.bioMod")
 
     # Remove the dampings in this test

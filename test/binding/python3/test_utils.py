@@ -20,7 +20,7 @@ try:
     brbd_to_test.append(biorbd_casadi)
 except ModuleNotFoundError as e:
     print(f"Error importing biorbd_casadi: {e}")
-    biorbd_casadi = None
+    pass
 
 if not brbd_to_test:
     raise RuntimeError("No biorbd version could be imported")

@@ -5,20 +5,23 @@ try:
     import biorbd
 
     brbd_to_test.append(biorbd)
-except:
+except ModuleNotFoundError as e:
+    print(f"Error importing biorbd: {e}")
     pass
+
 try:
     import biorbd_casadi
     from casadi import MX, Function
 
     brbd_to_test.append(biorbd_casadi)
-except:
+except ModuleNotFoundError as e:
     pass
-import numpy as np
-import pytest
 
 if not brbd_to_test:
-    raise ImportError("No biorbd version could be imported")
+    raise RuntimeError("No biorbd version could be imported")
+
+import numpy as np
+import pytest
 
 
 def _evaluate(brbd, func, **kwargs):

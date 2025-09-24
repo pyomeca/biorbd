@@ -5,11 +5,18 @@ brbd_to_test = []
 try:
     import biorbd
 
-    brbd_to_test.append("biorbd")
+    brbd_to_test.append(biorbd)
 except ModuleNotFoundError as e:
     print(f"Error importing biorbd: {e}")
     pass
 
+try:
+    import biorbd_casadi
+
+    brbd_to_test.append(biorbd_casadi)
+except ModuleNotFoundError as e:
+    print(f"Error importing biorbd_casadi: {e}")
+    pass
 
 if not brbd_to_test:
     raise RuntimeError("No biorbd version could be imported")
@@ -39,49 +46,55 @@ def load_example_file(file_name: str):
     return example
 
 
-def test_example_forward_dynamics():
-    if "biorbd" not in brbd_to_test:
-        pytest.skip("This example is written for biorbd, but not for the biorbd_casadi")
+@pytest.mark.parametrize("brbd", brbd_to_test)
+def test_example_forward_dynamics(brbd):
+    if brbd.backend == brbd.CASADI:
+        pytest.skip("Skip forward_dynamics example for biorbd_casadi")
 
     forward_dynamics = load_example_file("forward_dynamics.py")
     forward_dynamics.main()
 
 
-def test_example_forward_dynamics_from_muscles():
-    if "biorbd" not in brbd_to_test:
-        pytest.skip("This example is written for biorbd, but not for the biorbd_casadi")
+@pytest.mark.parametrize("brbd", brbd_to_test)
+def test_example_forward_dynamics_from_muscles(brbd):
+    if brbd.backend == brbd.CASADI:
+        pytest.skip("Skip forward_dynamics_from_muscles example for biorbd_casadi")
 
     forward_dynamics = load_example_file("forward_dynamics_from_muscles.py")
     forward_dynamics.main()
 
 
-def test_example_forward_kinematics():
-    if "biorbd" not in brbd_to_test:
-        pytest.skip("This example is written for biorbd, but not for the biorbd_casadi")
+@pytest.mark.parametrize("brbd", brbd_to_test)
+def test_example_forward_kinematics(brbd):
+    if brbd.backend == brbd.CASADI:
+        pytest.skip("Skip forward_kinematics example for biorbd_casadi")
 
     forward_kinematics = load_example_file("forward_kinematics.py")
     forward_kinematics.main(show=False)
 
 
-def test_example_inverse_dynamics():
-    if "biorbd" not in brbd_to_test:
-        pytest.skip("This example is written for biorbd, but not for the biorbd_casadi")
+@pytest.mark.parametrize("brbd", brbd_to_test)
+def test_example_inverse_dynamics(brbd):
+    if brbd.backend == brbd.CASADI:
+        pytest.skip("Skip inverse_dynamics example for biorbd_casadi")
 
     inverse_dynamics = load_example_file("inverse_dynamics.py")
     inverse_dynamics.main()
 
 
-def test_example_inverse_kinematics_kalman():
-    if "biorbd" not in brbd_to_test:
-        pytest.skip("This example is written for biorbd, but not for the biorbd_casadi")
+@pytest.mark.parametrize("brbd", brbd_to_test)
+def test_example_inverse_kinematics_kalman(brbd):
+    if brbd.backend == brbd.CASADI:
+        pytest.skip("Skip inverse_kinematics_kalman example for biorbd_casadi")
 
     inverse_dynamics_kalman = load_example_file("inverse_kinematics_kalman.py")
     inverse_dynamics_kalman.main(show=False)
 
 
-def test_example_static_optimization():
-    if "biorbd" not in brbd_to_test:
-        pytest.skip("This example is written for biorbd, but not for the biorbd_casadi")
+@pytest.mark.parametrize("brbd", brbd_to_test)
+def test_example_static_optimization(brbd):
+    if brbd.backend == brbd.CASADI:
+        pytest.skip("Skip static_optimization example for biorbd_casadi")
 
     static_optimization = load_example_file("static_optimization.py")
     static_optimization.main()
@@ -89,9 +102,9 @@ def test_example_static_optimization():
 
 if __name__ == "__main__":
     for brbd in brbd_to_test:
-        test_example_forward_dynamics()
-        test_example_forward_dynamics_from_muscles()
-        test_example_forward_kinematics()
-        test_example_inverse_dynamics()
-        test_example_inverse_kinematics_kalman()
-        test_example_static_optimization()
+        test_example_forward_dynamics(brbd)
+        test_example_forward_dynamics_from_muscles(brbd)
+        test_example_forward_kinematics(brbd)
+        test_example_inverse_dynamics(brbd)
+        test_example_inverse_kinematics_kalman(brbd)
+        # test_example_static_optimization(brbd)
