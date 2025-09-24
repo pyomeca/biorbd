@@ -10,17 +10,19 @@ try:
     import biorbd
 
     brbd_to_test.append(biorbd)
-except ModuleNotFoundError:
+except ModuleNotFoundError as e:
+    print(f"Error importing biorbd: {e}")
     pass
 try:
     import biorbd_casadi
 
     brbd_to_test.append(biorbd_casadi)
-except ModuleNotFoundError:
+except ModuleNotFoundError as e:
+    print(f"Error importing biorbd_casadi: {e}")
     pass
 
 if not brbd_to_test:
-    raise ImportError("No biorbd version could be imported")
+    raise RuntimeError("No biorbd version could be imported")
 
 
 # --- Options --- #

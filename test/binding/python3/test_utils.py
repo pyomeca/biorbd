@@ -10,18 +10,20 @@ try:
     import biorbd
 
     brbd_to_test.append(biorbd)
-except ModuleNotFoundError:
+except ModuleNotFoundError as e:
+    print(f"Error importing biorbd: {e}")
     pass
+
 try:
     import biorbd_casadi
 
     brbd_to_test.append(biorbd_casadi)
-except ModuleNotFoundError:
+except ModuleNotFoundError as e:
+    print(f"Error importing biorbd_casadi: {e}")
     biorbd_casadi = None
 
-
 if not brbd_to_test:
-    raise ImportError("No biorbd version could be imported")
+    raise RuntimeError("No biorbd version could be imported")
 
 
 @pytest.mark.parametrize("brbd", brbd_to_test)

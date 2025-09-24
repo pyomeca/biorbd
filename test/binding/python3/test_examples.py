@@ -6,12 +6,13 @@ try:
     import biorbd
 
     brbd_to_test.append("biorbd")
-except ImportError:
+except ModuleNotFoundError as e:
+    print(f"Error importing biorbd: {e}")
     pass
 
 
 if not brbd_to_test:
-    raise ImportError("No biorbd version could be imported")
+    raise RuntimeError("No biorbd version could be imported")
 
 
 def load_example_file(file_name: str):
