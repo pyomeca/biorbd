@@ -39,7 +39,7 @@ def to_biorbd_array_input(x: BiorbdArray) -> Any:
         return x
 
     if currentLinearAlgebraBackend() == BIORBD_EIGEN3:
-        if isinstance(x, np.ndarray):
+        if isinstance(x, np.ndarray) or isinstance(x, (int, float)):
             return x
         return np.array(x, dtype=float)
 

@@ -6,7 +6,7 @@ from .misc import BiorbdArray, to_biorbd_array_output, to_biorbd_array_input
 if TYPE_CHECKING:
     from .biorbd_model import Biorbd
     from .segment import Segment
-from ..biorbd import GeneralizedCoordinates, RotoTrans, Rotation
+from ..biorbd import GeneralizedCoordinates, RotoTrans, Rotation, currentLinearAlgebraBackend, CASADI
 
 
 class SegmentFrame:
@@ -122,6 +122,9 @@ class SegmentFrame:
         -------
         The position of the frame in the world frame.
         """
+        if currentLinearAlgebraBackend() == CASADI:
+            raise RuntimeError("The '()' accessor cannot be called when using the CasADi backend")
+
         return self.forward_kinematics(q)
 
     @property
@@ -133,6 +136,11 @@ class SegmentFrame:
         -------
         The position of the frame in the world reference frame.
         """
+        if currentLinearAlgebraBackend() == CASADI:
+            raise RuntimeError(
+                "The 'world' method cannot be called when using the CasADi backend. Use 'forward_kinematics' instead."
+            )
+
         return self.forward_kinematics()
 
     @property
@@ -144,6 +152,9 @@ class SegmentFrame:
         -------
         The rotation matrix of the segment frame in the world reference frame.
         """
+        if currentLinearAlgebraBackend() == CASADI:
+            raise RuntimeError("The 'world_rotation' method cannot be called when using the CasADi backend")
+
         return to_biorbd_array_output(self._forward_kinematics().rot())
 
     def world_rotation_as_euler(self, angle_sequence: str = "xyz") -> BiorbdArray:
@@ -160,6 +171,8 @@ class SegmentFrame:
         -------
         The rotation matrix of the segment frame in the world reference frame as Euler angles.
         """
+        if currentLinearAlgebraBackend() == CASADI:
+            raise RuntimeError("The 'world_rotation_as_euler' method cannot be called when using the CasADi backend")
 
         return to_biorbd_array_output(Rotation.toEulerAngles(self._forward_kinematics().rot(), angle_sequence))
 
@@ -172,6 +185,9 @@ class SegmentFrame:
         -------
         The translation vector of the segment frame in the world reference frame.
         """
+        if currentLinearAlgebraBackend() == CASADI:
+            raise RuntimeError("The 'world_translation' method cannot be called when using the CasADi backend")
+
         return to_biorbd_array_output(self._forward_kinematics().trans())
 
     def forward_kinematics(self, q: BiorbdArray | None = None) -> BiorbdArray:
@@ -207,11 +223,15 @@ class SegmentFrame:
         -------
         The position of the frame in the world frame.
         """
+        if q is None and currentLinearAlgebraBackend() == CASADI:
+            raise RuntimeError(
+                "The 'forward_kinematics' method without setting q cannot be called when using the CasADi backend"
+            )
 
-        self._model.update_kinematics(q)
+        updated_model = self._model.update_kinematics(q)
         update_kinematics = False
         dummy_q = GeneralizedCoordinates(self._model.nb_q)
-        return self._model.internal.globalJCS(dummy_q, self._index, update_kinematics)
+        return updated_model.globalJCS(dummy_q, self._index, update_kinematics)
 
     @property
     def internal(self) -> RotoTrans:

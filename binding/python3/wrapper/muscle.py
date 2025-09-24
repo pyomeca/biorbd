@@ -32,7 +32,7 @@ class Muscle:
         -------
         The optimal length of the muscle.
         """
-        return self.internal.characteristics().optimalLength()
+        return to_biorbd_array_output(self.internal.characteristics().optimalLength())
 
     @optimal_length.setter
     def optimal_length(self, value: BiorbdScalar):
@@ -43,7 +43,7 @@ class Muscle:
         ----------
         value: The new optimal length of the muscle.
         """
-        self.internal.characteristics().setOptimalLength(value)
+        self.internal.characteristics().setOptimalLength(to_biorbd_array_input(value))
 
     @property
     def maximal_isometric_force(self) -> BiorbdScalar:
@@ -54,7 +54,7 @@ class Muscle:
         -------
         The maximal isometric force of the muscle.
         """
-        return self.internal.characteristics().forceIsoMax()
+        return to_biorbd_array_output(self.internal.characteristics().forceIsoMax())
 
     @maximal_isometric_force.setter
     def maximal_isometric_force(self, value: BiorbdScalar):
@@ -65,7 +65,7 @@ class Muscle:
         ----------
         value: The new maximal isometric force of the muscle.
         """
-        self.internal.characteristics().setForceIsoMax(value)
+        self.internal.characteristics().setForceIsoMax(to_biorbd_array_input(value))
 
     @property
     def pcsa(self) -> BiorbdScalar:
@@ -76,7 +76,7 @@ class Muscle:
         -------
         The physiological cross-sectional area of the muscle.
         """
-        return self.internal.characteristics().PCSA()
+        return to_biorbd_array_output(self.internal.characteristics().PCSA())
 
     @pcsa.setter
     def pcsa(self, value: BiorbdScalar):
@@ -87,7 +87,7 @@ class Muscle:
         ----------
         value: The new physiological cross-sectional area of the muscle.
         """
-        self.internal.characteristics().setPCSA(value)
+        self.internal.characteristics().setPCSA(to_biorbd_array_input(value))
 
     @property
     def tendon_slack_length(self) -> BiorbdScalar:
@@ -98,7 +98,7 @@ class Muscle:
         -------
         The tendon slack length of the muscle.
         """
-        return self.internal.characteristics().tendonSlackLength()
+        return to_biorbd_array_output(self.internal.characteristics().tendonSlackLength())
 
     @tendon_slack_length.setter
     def tendon_slack_length(self, value: BiorbdScalar):
@@ -109,7 +109,7 @@ class Muscle:
         ----------
         value: The new tendon slack length of the muscle.
         """
-        self.internal.characteristics().setTendonSlackLength(value)
+        self.internal.characteristics().setTendonSlackLength(to_biorbd_array_input(value))
 
     @property
     def pennation_angle(self) -> BiorbdScalar:
@@ -120,7 +120,7 @@ class Muscle:
         -------
         The pennation angle of the muscle.
         """
-        return self.internal.characteristics().pennationAngle()
+        return to_biorbd_array_output(self.internal.characteristics().pennationAngle())
 
     @pennation_angle.setter
     def pennation_angle(self, value: BiorbdScalar):
@@ -131,7 +131,7 @@ class Muscle:
         ----------
         value: The new pennation angle of the muscle.
         """
-        self.internal.characteristics().setPennationAngle(value)
+        self.internal.characteristics().setPennationAngle(to_biorbd_array_input(value))
 
     @property
     def maximal_contraction_velocity(self) -> BiorbdScalar:
@@ -142,7 +142,7 @@ class Muscle:
         -------
         The maximal contraction velocity of the muscle.
         """
-        return self.internal.characteristics().maxShorteningSpeed()
+        return to_biorbd_array_output(self.internal.characteristics().maxShorteningSpeed())
 
     @maximal_contraction_velocity.setter
     def maximal_contraction_velocity(self, value: BiorbdScalar):
@@ -153,7 +153,7 @@ class Muscle:
         ----------
         value: The new maximal contraction velocity of the muscle.
         """
-        self.internal.characteristics().setMaxShorteningSpeed(value)
+        self.internal.characteristics().setMaxShorteningSpeed(to_biorbd_array_input(value))
 
     @property
     def length(self) -> BiorbdScalar:
@@ -283,7 +283,8 @@ class Muscle:
         -------
         The current force of the muscle.
         """
-        return self.internal.force(self._state)
+
+        return to_biorbd_array_output(self.internal.force(self._state))
 
     @property
     def _state(self) -> State:
@@ -404,7 +405,7 @@ class MusclesList(UserList):
             for muscle, excitation, activation in zip(self.data, excitations, activations)
         ]
 
-    def update_geometry(self, q: BiorbdArray | None = None, qdot: BiorbdArray | None = None):
+    def update_geometry(self, q: BiorbdArray | None = None, qdot: BiorbdArray | None = None) -> None:
         """
         Force the update of the muscle geometry to a new pose and velocity.
 
@@ -476,6 +477,7 @@ class MusclesList(UserList):
         -------
         The joint torque generated by the muscles.
         """
+
         self.update_geometry(q, qdot)
         if activations is not None:
             self.activations = activations

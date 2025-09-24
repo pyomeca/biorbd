@@ -47,9 +47,9 @@ def main():
 
     # As an extra, let's print the individual muscle forces (note that we don't update activations, q or qdot here,
     # as they were already sent to compute tau, but we could if needed)
-    print(f"Muscle forces at q={q}: {model.muscles.forces()}")
+    print(f"Muscle forces at q and qdot: {model.muscles.forces()}")
     # By comparison, this updates the kinematics to q = [0, 0]
-    print(f"Muscle forces at q=[0.0, 0.0]: {model.muscles.forces(q=[0, 0])}")
+    print(f"Muscle forces at zero: {model.muscles.forces(q=[0, 0], qdot=[0, 0])}")
 
     # qddot needs to be integrated twice to compute the new state (q, qdot).
     # Choosing a new control (muscle activation), this small exercise should be repeated to move forward in time.
