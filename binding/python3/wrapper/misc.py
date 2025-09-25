@@ -1,4 +1,5 @@
 from typing import Any
+import sys
 
 import numpy as np
 
@@ -11,12 +12,22 @@ if currentLinearAlgebraBackend() == BIORBD_CASADI:
 
 # If we are using the Eigen backend, returns are np.arrays, if we are using CasADi backend, returns are MX
 # So declare an "Array" typedef that will be np.array or MX depending on the backend
-if currentLinearAlgebraBackend() == BIORBD_CASADI:
-    type BiorbdArray = MX
-    type BiorbdScalar = MX
+if sys.version_info >= (3, 12):
+    if currentLinearAlgebraBackend() == BIORBD_CASADI:
+        type BiorbdArray = MX
+        type BiorbdScalar = MX
+    else:
+        type BiorbdArray = np.ndarray
+        type BiorbdScalar = float
 else:
-    type BiorbdArray = np.ndarray
-    type BiorbdScalar = float
+    from typing import TypeAlias
+
+    if currentLinearAlgebraBackend() == BIORBD_CASADI:
+        BiorbdArray: TypeAlias = MX
+        BiorbdScalar: TypeAlias = MX
+    else:
+        BiorbdArray: TypeAlias = np.ndarray
+        BiorbdScalar: TypeAlias = float
 
 
 # Declare a method that converts output to BiorbdArray
