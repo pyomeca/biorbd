@@ -20,7 +20,9 @@ class StaticOptimization:
 
         self._model = model
 
-    def perform_frames(self, all_q: BiorbdArray, all_qdot: BiorbdArray, all_tau: BiorbdArray) -> Generator[BiorbdArray]:
+    def perform_frames(
+        self, all_q: BiorbdArray, all_qdot: BiorbdArray, all_tau: BiorbdArray
+    ) -> Generator[BiorbdArray, None, None]:
         q = [GeneralizedCoordinates(to_biorbd_array_input(q)) for q in all_q]
         qdot = [GeneralizedVelocity(to_biorbd_array_input(q)) for q in all_qdot]
         tau = [GeneralizedTorque(to_biorbd_array_input(t)) for t in all_tau]

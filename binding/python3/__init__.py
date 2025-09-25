@@ -1,11 +1,15 @@
+import sys
+
 from . import biorbd  # This is created while installing using CMake
 from .biorbd import *
 from ._version import __version__
 from .surface_max_torque_actuator import *
 from .rigid_body import *
 from .utils import *
-from .wrapper import *
-from .wrapper import has_static_optimization, has_extended_kalman_filter
+
+if sys.version_info >= (3, 12):
+    from .wrapper import *
+    from .wrapper import has_static_optimization, has_extended_kalman_filter
 
 
 if biorbd.currentLinearAlgebraBackend() == biorbd.CASADI:
