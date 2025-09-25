@@ -38,6 +38,12 @@ function(FindOrBuildRBDL MATH_BACKEND)
             find_package(RBDLCasadi QUIET
                 PATHS ${CUSTOM_RBDL_PATH} ${INSTALL_DEPENDENCIES_PREFIX} ${CMAKE_INSTALL_PREFIX}
             )
+            # Sometimes it finds one include folder short, so check if "rbdl-casadi" subdirectory exists
+            if(EXISTS "${RBDLCasadi_INCLUDE_DIR}/rbdl-casadi")
+                # If it exists, override the include dir to point to it
+                set(RBDLCasadi_INCLUDE_DIR "${RBDLCasadi_INCLUDE_DIR}/rbdl-casadi")
+            endif()
+            message(${RBDLCasadi_INCLUDE_DIR})
             set(CUSTOM_RBDL_PATH ${CUSTOM_RBDL_PATH_COPY})
         endif()
     endif()
