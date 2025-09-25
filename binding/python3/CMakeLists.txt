@@ -14,12 +14,12 @@ if(MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMPILE_FLAGS}")
 endif()
 
-# We need to trick MSVC into keeping the rbdl-casadi as the first import. If we
+# We need to trick MSVC (and why not all of them) into keeping the rbdl-casadi as the first import. If we
 # just add it, it is pushed at the end because BIORBD will also includes it but
 # as an external:import. Added the /../ tricks the parser into not recognizing
 # that it is in fact the same directory
 set(FORCED_FIRST_INCLUDE_DIRS "")
-if(MSVC AND ${MATH_LIBRARY_BACKEND} STREQUAL "Casadi")
+if(${MATH_LIBRARY_BACKEND} STREQUAL "Casadi")
     set(FORCED_FIRST_INCLUDE_DIRS
         "${RBDLCasadi_INCLUDE_DIR}/../rbdl-casadi"
     )
