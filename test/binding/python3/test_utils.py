@@ -1,6 +1,7 @@
 """
 Test for file IO
 """
+
 import pytest
 import numpy as np
 
@@ -9,14 +10,20 @@ try:
     import biorbd
 
     brbd_to_test.append(biorbd)
-except ModuleNotFoundError:
+except ModuleNotFoundError as e:
+    print(f"Error importing biorbd: {e}")
     pass
+
 try:
     import biorbd_casadi
 
     brbd_to_test.append(biorbd_casadi)
-except ModuleNotFoundError:
-    biorbd_casadi = None
+except ModuleNotFoundError as e:
+    print(f"Error importing biorbd_casadi: {e}")
+    pass
+
+if not brbd_to_test:
+    raise RuntimeError("No biorbd version could be imported")
 
 
 @pytest.mark.parametrize("brbd", brbd_to_test)
@@ -68,8 +75,8 @@ def test_get_range_q(brbd):
 
 @pytest.mark.parametrize("brbd", brbd_to_test)
 def test_multiply(brbd):
-    if brbd == biorbd_casadi:
-        return
+    if brbd.backend == brbd.CASADI:
+        pytest.skip("Skip multiply test for biorbd_casadi")
 
     np.random.seed(42)
     b1 = np.random.rand(3, 3)
@@ -126,3 +133,9 @@ def test_multiply(brbd):
             ]
         ),
     )
+
+
+if __name__ == "__main__":
+    for brbd in brbd_to_test:
+        test_get_range_q(brbd)
+        test_multiply(brbd)

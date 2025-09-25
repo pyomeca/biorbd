@@ -1,7 +1,7 @@
 from pathlib import Path
 
 import numpy as np
-import biorbd
+from biorbd import Biorbd
 
 try:
     from bioviz.biorbd_vtk import VtkModel, VtkWindow
@@ -22,25 +22,23 @@ except ModuleNotFoundError:
 #
 
 
-
 def main(show: bool = True):
     # Load a predefined model
     current_file_dir = Path(__file__).parent
-    model = biorbd.Model(f"{current_file_dir}/../pyomecaman.bioMod")
-    nq = model.nbQ()
-    n_mark = model.nbMarkers()
+    model = Biorbd(f"{current_file_dir}/../pyomecaman.bioMod")
+    n_markers = len(model.markers)
     n_frames = 20
 
     # Generate clapping gesture data
-    qinit = np.array([0, 0, -0.3, 0.35, 1.15, -0.35, 1.15, 0, 0, 0, 0, 0, 0])
-    qmid = np.array([0, 0, -0.3, 0.5, 1.15, -0.5, 1.15, 0, 0, 0, 0, 0, 0])
-    qfinal = np.array([0, 0, -0.3, 0.35, 1.15, -0.35, 1.15, 0, 0, 0, 0, 0, 0])
+    qinit = [0, 0, -0.3, 0.35, 1.15, -0.35, 1.15, 0, 0, 0, 0, 0, 0]
+    qmid = [0, 0, -0.3, 0.5, 1.15, -0.5, 1.15, 0, 0, 0, 0, 0, 0]
+    qfinal = [0, 0, -0.3, 0.35, 1.15, -0.35, 1.15, 0, 0, 0, 0, 0, 0]
     q = np.concatenate((np.linspace(qinit, qmid, n_frames).T, np.linspace(qmid, qfinal, n_frames).T), axis=1)
 
     # Proceed with the forward kinematics
-    markers = np.ndarray((3, model.nbMarkers(), 2 * n_frames))
+    markers = np.ndarray((3, n_markers, 2 * n_frames))
     for i, q in enumerate(q.T):
-        markers[:, :, i] = np.array([mark.to_array() for mark in model.markers(q)]).T
+        markers[:, :, i] = np.array([mark.world for mark in model.markers(q)]).T
 
     # Print the first frame in the console
     print(markers[:, :, 0])

@@ -1,0 +1,14 @@
+version   4
+
+// Informations about Pelvis segment
+    // Segment
+    segment    cube
+        translations z
+        mass    10
+        inertia
+            1    0    0
+            0    1    0
+            0    0    1
+        com     0         0    0
+    endsegment
+    

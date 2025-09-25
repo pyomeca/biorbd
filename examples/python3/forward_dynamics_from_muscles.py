@@ -16,41 +16,40 @@ import biorbd
 #
 
 
-# ACTIVATION-DRIVEN DYNAMICS
-
 def main():
     # Load a predefined model
     current_file_dir = Path(__file__).parent
-    model = biorbd.Model(f"{current_file_dir}/../arm26.bioMod")
-    nq = model.nbQ()
-    nqdot = model.nbQdot()
-    nmus = model.nbMuscles()
+    model = biorbd.Biorbd(f"{current_file_dir}/../arm26.bioMod")
+    muscles = model.muscles
+    nmus = len(muscles)
 
     # Choose a state (position/velocity) to compute dynamics from
-    q = np.zeros((nq,))
-    qdot = np.zeros((nqdot,))
+    activations = [0.5] * nmus
+    q = [0.1] * model.nb_q
+    qdot = [0.1] * model.nb_qdot
 
-    # Set an arbitrary control to all muscles (half of their maximal activation)
-    muscles = model.stateSet()
-    for muscle in muscles:
-        muscle.setActivation(0.5)  # Set muscles activations
+    # # Warning, failing to provide the "q" and "qdot" will compute the joint torques at previous pose, which can be useful
+    # # if the kinematics was manually updated, but is a bug otherwise
+    # tau_uninitialized_pose = model.muscles.joint_torque(activations=activations)
 
-    # Now one can compute the muscle forces
-    muscle_forces = model.muscleForces(muscles, q, qdot)
+    # # Compute the same activations but at the chosen pose and velocity. There are two ways of doing so depending on the
+    # # level of control you want on the internal updating scheme of the model
+    # # 1. The "low-level" way, where you manually update the kinematics
+    # muscles.activations = activations
+    # muscles.update_geometry(q=q, qdot=qdot)
+    # tau = muscles.joint_torque()  # No need to send activations, q or qdot as they were already sent
+    # 2. The "high-level" way, where the kinematics is updated internally
+    tau = muscles.joint_torque(activations=activations, q=q, qdot=qdot)
 
-    # Proceed with the computation of joint torque from the muscles
-    tau = model.muscularJointTorque(muscles, q, qdot)
+    # To get generalized accelerations, we simply need to inject the joint torque in the forward dynamics
+    qddot = model.forward_dynamics(q, qdot, tau)
+    print(f"Generalized accelerations (qddot) are: {qddot}")
 
-    # Compute the generalized accelerations using the tau from muscles.
-    # Please note that in forward dynamics setting, it is usually advised to add
-    # additional residual torques. You would add them here to tau.
-    qddot = model.ForwardDynamics(q, qdot, tau)
-
-    # Print them to the console
-    print(qddot.to_array())
-
-    # As an extra, let's print the individual muscle forces
-    print(muscle_forces.to_array())
+    # As an extra, let's print the individual muscle forces (note that we don't update activations, q or qdot here,
+    # as they were already sent to compute tau, but we could if needed)
+    print(f"Muscle forces at q and qdot: {model.muscles.forces()}")
+    # By comparison, this updates the kinematics to q = [0, 0]
+    print(f"Muscle forces at zero: {model.muscles.forces(q=[0, 0], qdot=[0, 0])}")
 
     # qddot needs to be integrated twice to compute the new state (q, qdot).
     # Choosing a new control (muscle activation), this small exercise should be repeated to move forward in time.
@@ -58,31 +57,22 @@ def main():
     # EXCITATION-DRIVEN DYNAMICS
 
     # Choose a state (position/velocity/activation) to compute dynamics from
-    q = np.zeros((nq,))
-    qdot = np.zeros((nqdot,))
-    act = np.zeros((nmus,))
+    q = [0.1] * model.nb_q
+    qdot = [0.1] * model.nb_qdot
+    initial_activations = [0.5] * nmus
+    excitations = np.arange(1, nmus + 1) / nmus  # Varying excitations from 0.1 to 1.0
 
-    # Set all muscles to their current activation and to an arbitrary excitation of 0.5
-    muscles = model.stateSet()
-    for k, muscle in enumerate(muscles):
-        muscle.setActivation(act[k])  # Set muscles activations
-        muscle.setExcitation(0.5)  # Set muscles activations
+    # Set all muscles to their current activations and excitations
 
     # Compute the derivatives of muscle activations, which should be used in
     # a forward integration to compute the time evolution of the muscle activation
-    actdot = model.activationDot(muscles)
+    # If this the next two lines are manually done, they can be omitted from the next function call
+    # muscles.activations = initial_activations
+    # muscles.excitations = excitations
+    activations_dot = muscles.activations_dot(excitations=excitations, activations=initial_activations)
 
     # Print them to the console
-    print(actdot.to_array())
-
-    # Proceed with the computation of joint torque from the muscles
-    tau = model.muscularJointTorque(muscles, q, qdot)
-
-    # Compute the generalized accelerations using the tau from muscles.
-    qddot = model.ForwardDynamics(q, qdot, tau)
-
-    # qddot needs to be integrated twice and actdot integrated once to compute the new state (q, qdot, act).
-    # Choosing a new control (muscle excitations), this small exercise should be repeated to move forward in time.
+    print(f"Derivative of activations: {activations_dot}")
 
 
 if __name__ == "__main__":

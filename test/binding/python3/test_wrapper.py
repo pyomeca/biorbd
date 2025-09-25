@@ -1,0 +1,1153 @@
+import re
+
+brbd_to_test = []
+try:
+    import biorbd
+
+    brbd_to_test.append(biorbd)
+except ModuleNotFoundError as e:
+    print(f"Error importing biorbd: {e}")
+    pass
+
+try:
+    import biorbd_casadi
+    from casadi import MX, Function
+
+    brbd_to_test.append(biorbd_casadi)
+except ModuleNotFoundError as e:
+    pass
+
+if not brbd_to_test:
+    raise RuntimeError("No biorbd version could be imported")
+
+import numpy as np
+import pytest
+
+
+def _evaluate(brbd, func, **kwargs):
+    if brbd.backend == brbd.EIGEN3:
+        if not kwargs:
+            return func
+        else:
+            return func(**kwargs)
+    elif brbd.backend == brbd.CASADI:
+        symbolic_keys = ["q", "qdot", "qddot", "tau"]
+        symbolics = {
+            key: MX.sym(
+                key, np.array(value).shape[0], np.array(value).shape[1] if len(np.array(value).shape) > 1 else 1
+            )
+            for key, value in kwargs.items()
+            if key in symbolic_keys
+        }
+        non_symbolics = {key: value for key, value in kwargs.items() if key not in symbolic_keys}
+        used_kwargs = {key: value for key, value in kwargs.items() if key in symbolic_keys}
+        value = brbd.to_casadi_func("temp", func, **symbolics, **non_symbolics)(*used_kwargs.values())
+        if isinstance(value, dict):
+            value_tp = []
+            for v in value.values():
+                v = np.array(v)
+                if v.shape[0] == 1 and v.shape[1] == 1:
+                    value_tp.append(v[0, 0])
+                elif v.shape[1] == 1:
+                    value_tp.append(v[:, 0])
+                elif v.shape[0] == 1:
+                    value_tp.append(v[0, :])
+                else:
+                    value_tp.append(v)
+            return value_tp[0] if len(value_tp) == 1 else value_tp
+        else:
+            value = np.array(value)
+            if value.shape[0] == 1 and value.shape[1] == 1:
+                value = value[0, 0]
+            elif value.shape[1] == 1:
+                value = value[:, 0]
+            elif value.shape[0] == 1:
+                value = value[0, :]
+            return value
+    else:
+        raise RuntimeError("Unknown backend")
+
+
+@pytest.mark.parametrize("brbd", brbd_to_test)
+def test_wrapper_model(brbd):
+    model = brbd.Biorbd("../../models/pyomecaman.bioMod")
+
+    # Generic properties
+    assert model.name == "pyomecaman"
+    assert model.path == "../../models/pyomecaman.bioMod"
+
+    # Gravity
+    np.testing.assert_almost_equal(_evaluate(brbd, model.gravity), [0, 0, -9.81])
+    model.gravity = [1, 2, 3]
+    np.testing.assert_almost_equal(_evaluate(brbd, model.gravity), [1, 2, 3])
+
+    # Mass
+    assert _evaluate(brbd, model.mass) == 52.41212
+
+    # Center of mass
+    q = [0.1] * model.nb_q
+    np.testing.assert_almost_equal(_evaluate(brbd, model.center_of_mass, q=q), [-0.0007778, 0.12675668, 0.0568666])
+    if brbd.backend == brbd.CASADI:
+        with pytest.raises(
+            RuntimeError,
+            match="The 'center_of_mass' method without setting q cannot be called when using the CasADi backend",
+        ):
+            model.center_of_mass()
+    else:
+        np.testing.assert_almost_equal(model.center_of_mass(), [-0.0007778, 0.12675668, 0.0568666])
+
+    # Mass matrix
+    mass_matrix_reference = [
+        [
+            5.24121200e01,
+            0.00000000e00,
+            2.26071317e00,
+            6.61861232e-02,
+            5.14976862e-01,
+            -1.06748438e-01,
+            5.14976862e-01,
+            3.15903463e00,
+            7.35528935e-01,
+            -1.86325616e-02,
+            3.15903463e00,
+            7.35528935e-01,
+            -1.86325616e-02,
+        ],
+        [
+            0.00000000e00,
+            5.24121200e01,
+            1.40237437e00,
+            6.64076297e-03,
+            2.56865141e-01,
+            -1.07105695e-02,
+            2.56865141e-01,
+            1.46647191e00,
+            4.77016896e-01,
+            5.07605942e-02,
+            1.46647191e00,
+            4.77016896e-01,
+            5.07605942e-02,
+        ],
+        [
+            2.26071317e00,
+            1.40237437e00,
+            7.58496132e00,
+            -5.89988646e-03,
+            2.23878926e-02,
+            7.77413697e-03,
+            2.08987116e-02,
+            2.12586831e00,
+            6.71356845e-01,
+            8.88006475e-03,
+            2.12586831e00,
+            6.71356845e-01,
+            8.88006475e-03,
+        ],
+        [
+            6.61861232e-02,
+            6.64076297e-03,
+            -5.89988646e-03,
+            2.28756926e-02,
+            1.97535734e-02,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+        ],
+        [
+            5.14976862e-01,
+            2.56865141e-01,
+            2.23878926e-02,
+            1.97535734e-02,
+            2.08469103e-01,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+        ],
+        [
+            -1.06748438e-01,
+            -1.07105695e-02,
+            7.77413697e-03,
+            0.00000000e00,
+            0.00000000e00,
+            2.28756926e-02,
+            -1.97535734e-02,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+        ],
+        [
+            5.14976862e-01,
+            2.56865141e-01,
+            2.08987116e-02,
+            0.00000000e00,
+            0.00000000e00,
+            -1.97535734e-02,
+            2.08469103e-01,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+        ],
+        [
+            3.15903463e00,
+            1.46647191e00,
+            2.12586831e00,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+            1.78500753e00,
+            5.88843487e-01,
+            9.51033936e-03,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+        ],
+        [
+            7.35528935e-01,
+            4.77016896e-01,
+            6.71356845e-01,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+            5.88843487e-01,
+            2.53054659e-01,
+            8.75591123e-03,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+        ],
+        [
+            -1.86325616e-02,
+            5.07605942e-02,
+            8.88006475e-03,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+            9.51033936e-03,
+            8.75591123e-03,
+            5.72188133e-03,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+        ],
+        [
+            3.15903463e00,
+            1.46647191e00,
+            2.12586831e00,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+            1.78500753e00,
+            5.88843487e-01,
+            9.51033936e-03,
+        ],
+        [
+            7.35528935e-01,
+            4.77016896e-01,
+            6.71356845e-01,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+            5.88843487e-01,
+            2.53054659e-01,
+            8.75591123e-03,
+        ],
+        [
+            -1.86325616e-02,
+            5.07605942e-02,
+            8.88006475e-03,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+            0.00000000e00,
+            9.51033936e-03,
+            8.75591123e-03,
+            5.72188133e-03,
+        ],
+    ]
+    np.testing.assert_almost_equal(_evaluate(brbd, model.mass_matrix, q=q), mass_matrix_reference)
+    if brbd.backend == brbd.CASADI:
+        with pytest.raises(
+            RuntimeError,
+            match="The 'mass_matrix' method without setting q cannot be called when using the CasADi backend",
+        ):
+            model.mass_matrix()
+    else:
+        np.testing.assert_almost_equal(model.mass_matrix(), mass_matrix_reference)
+
+    inverse_matrix_reference = [
+        [
+            5.07984184e-02,
+            1.23127703e-02,
+            1.26540632e-01,
+            1.66438320e-02,
+            -1.55823978e-01,
+            7.34011557e-02,
+            -1.46387797e-01,
+            -3.61205434e-01,
+            3.35786798e-01,
+            -5.36748334e-02,
+            -3.61205434e-01,
+            3.35786798e-01,
+            -5.36748334e-02,
+        ],
+        [
+            1.23127703e-02,
+            2.43964964e-02,
+            4.94251630e-02,
+            2.92385966e-02,
+            -6.85544915e-02,
+            -4.81161991e-03,
+            -6.58868391e-02,
+            -1.36236771e-01,
+            1.10905595e-01,
+            -1.96313485e-01,
+            -1.36236771e-01,
+            1.10905595e-01,
+            -1.96313485e-01,
+        ],
+        [
+            1.26540632e-01,
+            4.94251630e-02,
+            7.35080382e-01,
+            2.17605705e-01,
+            -4.73050868e-01,
+            -2.43117965e-02,
+            -4.49484243e-01,
+            -1.49148407e00,
+            1.07075433e00,
+            -3.26736274e-01,
+            -1.49148407e00,
+            1.07075433e00,
+            -3.26736274e-01,
+        ],
+        [
+            1.66438320e-02,
+            2.92385966e-02,
+            2.17605705e-01,
+            4.77040868e01,
+            -4.62073021e00,
+            -7.41081955e-02,
+            -1.05978032e-01,
+            -3.85341014e-01,
+            2.24366555e-01,
+            -2.45760756e-01,
+            -3.85341014e-01,
+            2.24366555e-01,
+            -2.45760756e-01,
+        ],
+        [
+            -1.55823978e-01,
+            -6.85544915e-02,
+            -4.73050868e-01,
+            -4.62073021e00,
+            5.75491300e00,
+            -1.65759661e-01,
+            5.01114117e-01,
+            1.25682877e00,
+            -1.10238968e00,
+            4.32855406e-01,
+            1.25682877e00,
+            -1.10238968e00,
+            4.32855406e-01,
+        ],
+        [
+            7.34011557e-02,
+            -4.81161991e-03,
+            -2.43117965e-02,
+            -7.41081955e-02,
+            -1.65759661e-01,
+            4.78270593e01,
+            4.35891671e00,
+            -2.15538356e-01,
+            3.57233234e-01,
+            1.31027358e-01,
+            -2.15538356e-01,
+            3.57233234e-01,
+            1.31027358e-01,
+        ],
+        [
+            -1.46387797e-01,
+            -6.58868391e-02,
+            -4.49484243e-01,
+            -1.05978032e-01,
+            5.01114117e-01,
+            4.35891671e00,
+            5.69776609e00,
+            1.18923791e00,
+            -1.03963112e00,
+            4.19649784e-01,
+            1.18923791e00,
+            -1.03963112e00,
+            4.19649784e-01,
+        ],
+        [
+            -3.61205434e-01,
+            -1.36236771e-01,
+            -1.49148407e00,
+            -3.85341014e-01,
+            1.25682877e00,
+            -2.15538356e-01,
+            1.18923791e00,
+            5.97072758e00,
+            -8.83558139e00,
+            5.94379207e00,
+            3.42633990e00,
+            -2.73843547e00,
+            8.42658986e-01,
+        ],
+        [
+            3.35786798e-01,
+            1.10905595e-01,
+            1.07075433e00,
+            2.24366555e-01,
+            -1.10238968e00,
+            3.57233234e-01,
+            -1.03963112e00,
+            -8.83558139e00,
+            2.11513087e01,
+            -1.92333659e01,
+            -2.73843547e00,
+            2.36799784e00,
+            -6.24263517e-01,
+        ],
+        [
+            -5.36748334e-02,
+            -1.96313485e-01,
+            -3.26736274e-01,
+            -2.45760756e-01,
+            4.32855406e-01,
+            1.31027358e-01,
+            4.19649784e-01,
+            5.94379207e00,
+            -1.92333659e01,
+            1.96394233e02,
+            8.42658986e-01,
+            -6.24263517e-01,
+            1.62854685e00,
+        ],
+        [
+            -3.61205434e-01,
+            -1.36236771e-01,
+            -1.49148407e00,
+            -3.85341014e-01,
+            1.25682877e00,
+            -2.15538356e-01,
+            1.18923791e00,
+            3.42633990e00,
+            -2.73843547e00,
+            8.42658986e-01,
+            5.97072758e00,
+            -8.83558139e00,
+            5.94379207e00,
+        ],
+        [
+            3.35786798e-01,
+            1.10905595e-01,
+            1.07075433e00,
+            2.24366555e-01,
+            -1.10238968e00,
+            3.57233234e-01,
+            -1.03963112e00,
+            -2.73843547e00,
+            2.36799784e00,
+            -6.24263517e-01,
+            -8.83558139e00,
+            2.11513087e01,
+            -1.92333659e01,
+        ],
+        [
+            -5.36748334e-02,
+            -1.96313485e-01,
+            -3.26736274e-01,
+            -2.45760756e-01,
+            4.32855406e-01,
+            1.31027358e-01,
+            4.19649784e-01,
+            8.42658986e-01,
+            -6.24263517e-01,
+            1.62854685e00,
+            5.94379207e00,
+            -1.92333659e01,
+            1.96394233e02,
+        ],
+    ]
+    np.testing.assert_almost_equal(
+        _evaluate(brbd, model.mass_matrix, q=q, inverse=True), inverse_matrix_reference, decimal=6
+    )
+    if brbd.backend == brbd.CASADI:
+        with pytest.raises(
+            RuntimeError,
+            match="The 'mass_matrix' method without setting q cannot be called when using the CasADi backend",
+        ):
+            model.mass_matrix(inverse=True)
+    else:
+        np.testing.assert_almost_equal(model.mass_matrix(inverse=True), inverse_matrix_reference, decimal=6)
+
+
+@pytest.mark.parametrize("brbd", brbd_to_test)
+def test_wrapper_segments(brbd):
+    model = brbd.Biorbd("../../models/pyomecaman.bioMod")
+
+    # Test accessors
+    assert len(model.segments) == len(model.internal.segments())
+    assert model.segments[0].name == "Pelvis"
+    assert model.segments["Pelvis"].name == "Pelvis"
+
+    # Test specific segment
+    segment = model.segments[0]
+
+    # Name
+    assert segment.name == "Pelvis"
+
+    # Translation and rotation sequences
+    assert segment.translations == "yz"
+    assert segment.rotations == "x"
+
+    # Mass
+    assert segment.mass == 9.03529
+    segment.mass = 100
+    assert segment.mass == 100
+
+    # Center of mass
+    np.testing.assert_almost_equal(_evaluate(brbd, segment.center_of_mass), [0, 0, 0.0885])
+    segment.center_of_mass = [1, 2, 3]
+    np.testing.assert_almost_equal(_evaluate(brbd, segment.center_of_mass), [1, 2, 3])
+
+    # Inertia
+    np.testing.assert_almost_equal(
+        _evaluate(brbd, segment.inertia), [[0.04664, 0.0, 0.0], [0.0, 0.07178, 0.0], [0.0, 0.0, 0.06989]]
+    )
+    segment.inertia = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+    np.testing.assert_almost_equal(_evaluate(brbd, segment.inertia), [[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+
+    # Get the markers of the segment
+    assert len(segment.markers) == 6
+
+
+@pytest.mark.parametrize("brbd", brbd_to_test)
+def test_wrapper_markers(brbd):
+    model = brbd.Biorbd("../../models/pyomecaman.bioMod")
+
+    assert len(model.markers) == len(model.internal.markers())
+
+    # Test accessors
+    assert model.markers[0].name == "pelv1"
+    assert model.markers["pelv1"].name == "pelv1"
+
+    # Test a specific marker
+    marker = model.markers[0]
+
+    # Name
+    assert marker.name == "pelv1"
+
+    # Parent segment
+    assert marker.segment.name == "Pelvis"
+
+    # Position
+    np.testing.assert_almost_equal(_evaluate(brbd, marker.local), [-0.1038, 0.0821, 0.0])
+    marker.local = [1, 2, 3]
+    np.testing.assert_almost_equal(_evaluate(brbd, marker.local), [1, 2, 3])
+
+    # X, Y, Z
+    assert _evaluate(brbd, marker.x) == 1
+    marker.x = 4
+    assert _evaluate(brbd, marker.x) == 4
+
+    assert _evaluate(brbd, marker.y) == 2
+    marker.y = 5
+    assert _evaluate(brbd, marker.y) == 5
+
+    assert _evaluate(brbd, marker.z) == 3
+    marker.z = 6
+    assert _evaluate(brbd, marker.z) == 6
+
+    # Is technical or anatomical
+    assert marker.is_anatomical is False
+    assert marker.is_technical is False
+
+    # Perform FK to get world position
+    q = [0.1] * model.nb_q
+    # First try without updating kinematics
+    markers = model.markers
+    if brbd.backend == brbd.CASADI:
+        with pytest.raises(RuntimeError, match="The 'world' method cannot be called when using the CasADi backend"):
+            markers[0].world
+    else:
+        np.testing.assert_almost_equal(markers[0].world, [4, 5, 6])
+
+    # Then with updating kinematics
+    if brbd.backend == brbd.CASADI:
+        with pytest.raises(
+            RuntimeError, match=re.escape("The '()' accessor cannot be called when using the CasADi backend")
+        ):
+            markers(q)
+    else:
+        markers = markers(q)
+        np.testing.assert_almost_equal(markers[0].world, [4.0, 4.47602033, 6.56919207])
+
+        # Then test that the update_kinematics is still applied
+        markers = model.markers
+        np.testing.assert_almost_equal(_evaluate(brbd, markers[0].world), [4.0, 4.47602033, 6.56919207])
+
+    np.testing.assert_almost_equal(_evaluate(brbd, marker.forward_kinematics, q=q), [4.0, 4.47602033, 6.56919207])
+    if brbd.backend == brbd.CASADI:
+        with pytest.raises(
+            RuntimeError,
+            match="The 'forward_kinematics' method without setting q cannot be called when using the CasADi backend",
+        ):
+            marker.forward_kinematics()
+    else:
+        np.testing.assert_almost_equal(marker.forward_kinematics(), [4.0, 4.47602033, 6.56919207])
+
+    # Test the jacobian of first marker at previous set q a set q
+    jacobian_at_q = [
+        [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        [1.0, 0.0, -6.46919207, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        [0.0, 1.0, 4.37602033, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    ]
+    jacobian_at_2q = [
+        [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        [1.0, 0.0, -6.87374612, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        [0.0, 1.0, 3.7083169, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    ]
+    if brbd.backend == brbd.CASADI:
+        with pytest.raises(
+            RuntimeError,
+            match="The 'jacobian' method without setting q cannot be called when using the CasADi backend",
+        ):
+            marker.jacobian()
+    else:
+        np.testing.assert_almost_equal(marker.jacobian(), jacobian_at_q)
+    np.testing.assert_almost_equal(_evaluate(brbd, marker.jacobian, q=np.array(q) * 2), jacobian_at_2q)
+
+    # Test the all markers jacobian
+    if brbd.backend == brbd.CASADI:
+        with pytest.raises(
+            RuntimeError,
+            match="The 'jacobian' method without setting q cannot be called when using the CasADi backend",
+        ):
+            markers.jacobian()
+    else:
+        jacobian = markers.jacobian()
+        assert len(jacobian) == len(model.markers)
+        np.testing.assert_almost_equal(jacobian[0], jacobian_at_2q)
+    if brbd.backend == brbd.CASADI:
+        # The _evaluate function flattens the output, so we need to take the first 3 columns and nb_q of last dimension as the other one does
+        np.testing.assert_almost_equal(_evaluate(brbd, markers.jacobian, q=q)[0, : model.nb_q], jacobian_at_q)
+    else:
+        np.testing.assert_almost_equal(_evaluate(brbd, markers.jacobian, q=q)[0], jacobian_at_q)
+
+
+@pytest.mark.parametrize("brbd", brbd_to_test)
+def test_wrapper_frames(brbd):
+    model = brbd.Biorbd("../../models/arm26.bioMod")
+
+    # Test accessors
+    assert len(model.segment_frames) == len(model.segments)
+    assert model.segment_frames[2].name == model.segment_frames["r_humerus_rotation1"].name
+    frame = model.segments[2].frame
+
+    q = [0.1, 0.1]
+
+    # Compute the reference frames of each segment at that position
+    # For clarity sake, just print the first segment, in normal use, one would probably want to use all segments
+    np.testing.assert_almost_equal(
+        _evaluate(brbd, frame.local),
+        [
+            [0.99750108, 0.03902081, -0.05889802, 0.0],
+            [-0.03895296, 0.9992384, 0.0023, 0.0],
+            [0.05894291, 0.0, 0.99826136, 0.0],
+            [0.0, 0.0, 0.0, 1.0],
+        ],
+    )
+    frame_at_q = [
+        [0.99641331, -0.06075807, -0.05889802, -0.017545],
+        [0.06099902, 0.99813518, 0.0023, -0.007],
+        [0.05864844, -0.00588447, 0.99826136, 0.17],
+        [0.0, 0.0, 0.0, 1.0],
+    ]
+    if brbd.backend == brbd.CASADI:
+        with pytest.raises(
+            RuntimeError,
+            match=re.escape(
+                "The 'world' method cannot be called when using the CasADi backend. Use 'forward_kinematics' instead."
+            ),
+        ):
+            frame.world
+        with pytest.raises(
+            RuntimeError, match=re.escape("The '()' accessor cannot be called when using the CasADi backend")
+        ):
+            frame(q)
+        with pytest.raises(
+            RuntimeError,
+            match="The 'forward_kinematics' method without setting q cannot be called when using the CasADi backend",
+        ):
+            frame.forward_kinematics()
+    else:
+        np.testing.assert_almost_equal(frame.world, [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]])
+        np.testing.assert_almost_equal(frame(q), frame_at_q)
+        np.testing.assert_almost_equal(frame.world, frame_at_q)
+    np.testing.assert_almost_equal(_evaluate(brbd, frame.forward_kinematics, q=q), frame_at_q)
+
+    # We can extract some useful information from the frame
+    np.testing.assert_almost_equal(
+        _evaluate(brbd, frame.local_rotation),
+        [[0.99750108, 0.03902081, -0.05889802], [-0.03895296, 0.9992384, 0.0023], [0.05894291, 0.0, 0.99826136]],
+    )
+    np.testing.assert_almost_equal(
+        _evaluate(brbd, frame.local_rotation_as_euler, angle_sequence="xyz"), [-0.002304, -0.05893213, -0.03909863]
+    )
+    np.testing.assert_almost_equal(_evaluate(brbd, frame.local_translation), [0.0, 0.0, 0.0])
+    if brbd.backend == brbd.CASADI:
+        with pytest.raises(
+            RuntimeError, match="The 'world_rotation' method cannot be called when using the CasADi backend"
+        ):
+            frame.world_rotation
+        with pytest.raises(
+            RuntimeError,
+            match="The 'world_rotation_as_euler' method cannot be called when using the CasADi backend",
+        ):
+            frame.world_rotation_as_euler("xyz")
+        with pytest.raises(
+            RuntimeError, match="The 'world_translation' method cannot be called when using the CasADi backend"
+        ):
+            frame.world_translation
+    else:
+        np.testing.assert_almost_equal(
+            frame.world_rotation,
+            [
+                [0.99641331, -0.06075807, -0.05889802],
+                [0.06099902, 0.99813518, 0.0023],
+                [0.05864844, -0.00588447, 0.99826136],
+            ],
+        )
+        np.testing.assert_almost_equal(frame.world_rotation_as_euler("xyz"), [-0.002304, -0.05893213, 0.06090137])
+        np.testing.assert_almost_equal(frame.world_translation, [-0.017545, -0.007, 0.17])
+
+
+@pytest.mark.parametrize("brbd", brbd_to_test)
+def test_wrapper_dynamics(brbd):
+    model = brbd.Biorbd("../../models/pyomecaman.bioMod")
+
+    assert model.nb_q == model.internal.nbQ()
+    assert model.nb_qdot == model.internal.nbQdot()
+    assert model.nb_qddot == model.internal.nbQddot()
+    assert model.nb_tau == model.internal.nbGeneralizedTorque()
+    assert model.dof_names == [dof.to_string() for dof in model.internal.nameDof()]
+
+    q = np.arange(model.nb_q)
+    qdot = np.arange(model.nb_qdot)
+    qddot = np.arange(model.nb_qdot)
+    tau = np.arange(model.nb_tau)
+
+    np.testing.assert_almost_equal(
+        _evaluate(brbd, model.forward_dynamics, q=q, qdot=qdot, tau=tau, ignore_contacts=True),
+        [
+            5.00389894,
+            -16.15292551,
+            -24.67896538,
+            2.82389307,
+            -2.85335065,
+            815.30020415,
+            115.55406325,
+            100.4214427,
+            -136.06994688,
+            2240.33773397,
+            -260.67363249,
+            448.93542995,
+            1385.1708001,
+        ],
+    )
+    np.testing.assert_almost_equal(
+        _evaluate(brbd, model.inverse_dynamics, q=q, qdot=qdot, qddot=qddot),
+        [
+            7.94962580e02,
+            5.18076639e02,
+            2.85421296e-01,
+            2.75129173e00,
+            5.05735287e00,
+            -1.91440054e00,
+            3.46650123e00,
+            -4.79279330e01,
+            2.62285696e01,
+            -4.49880204e00,
+            1.34722842e02,
+            -6.19256156e01,
+            4.67175456e00,
+        ],
+        decimal=6,
+    )
+
+
+@pytest.mark.parametrize("brbd", brbd_to_test)
+def test_wrapper_external_forces(brbd):
+    # Load a predefined model
+    model = brbd.Biorbd("../../models/pyomecaman.bioMod")
+
+    # Segment on which the external force will be applied
+    segment = model.segments[0]
+
+    # Testing failing cases
+    with pytest.raises(ValueError, match=re.escape("The input vector must be of size 3 (force) or 6 (spatial vector)")):
+        model.external_force_set.add(segment_name=segment.name, force=[0, 0], point_of_application=[0, 0, 0])
+    with pytest.raises(ValueError, match=re.escape("The input vector must be of size 3 (force) or 6 (spatial vector)")):
+        model.external_force_set.add(segment_name=segment.name, force=[0, 0, 0, 0], point_of_application=[0, 0, 0])
+    with pytest.raises(
+        ValueError,
+        match="The point of application must be provided when adding a force in the world frame",
+    ):
+        model.external_force_set.add(segment_name=segment.name, force=[0, 0, 9.81 * float(segment.mass)])
+    with pytest.raises(
+        ValueError,
+        match=re.escape(
+            "Adding a force in local frame is not implemented (and probably not what you want). "
+            "You probably want to add a spatial vector in the local frame instead or a force in the world frame."
+        ),
+    ):
+        model.external_force_set.add(
+            segment_name=segment.name,
+            force=[0, 0, 9.81 * float(segment.mass)],
+            frame_of_reference=brbd.ExternalForceSet.Frame.LOCAL,
+            point_of_application=[0, 0, 0],
+        )
+    with pytest.raises(
+        ValueError,
+        match="The point of application must be provided when adding a spatial vector in the local frame",
+    ):
+        model.external_force_set.add(
+            segment_name=segment.name,
+            force=[0, 0, 0, 0, 0, 9.81 * float(segment.mass)],
+            frame_of_reference=brbd.ExternalForceSet.Frame.LOCAL,
+        )
+
+    # Computing forward dynamics as reference
+    q = [0] * model.nb_q
+    qdot = [0] * model.nb_qdot
+    tau = [0] * model.nb_tau
+    ref_qddot = _evaluate(
+        brbd, model.forward_dynamics, q=q, qdot=qdot, tau=tau, ignore_contacts=True, ignore_external_forces=True
+    )
+    np.testing.assert_array_almost_equal(
+        ref_qddot,
+        [0, -9.81, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    )
+
+    # Test adding one external force to the model
+    model.external_force_set.add(
+        segment_name=segment.name, force=[0, 0, 9.81 * float(segment.mass)], point_of_application=[0, 0, 0]
+    )
+    np.testing.assert_array_almost_equal(
+        _evaluate(brbd, model.forward_dynamics, q=q, qdot=qdot, tau=tau, ignore_contacts=False),
+        [
+            -0.195144,
+            -0.141795,
+            5.03609,
+            15.715842,
+            -8.472491,
+            -15.715842,
+            -8.472491,
+            -18.12955,
+            27.010416,
+            -13.916956,
+            -18.12955,
+            27.010416,
+            -13.916956,
+        ],
+    )
+    np.testing.assert_array_almost_equal(
+        _evaluate(brbd, model.forward_dynamics, q=q, qdot=qdot, tau=tau, ignore_contacts=True),
+        [
+            0.697101,
+            -7.923693,
+            2.846458,
+            2.374355,
+            -3.754325,
+            -2.374355,
+            -3.754325,
+            -7.568292,
+            6.753389,
+            -18.305875,
+            -7.568292,
+            6.753389,
+            -18.305875,
+        ],
+    )
+
+    # Add an extra external force to the model that pushes upward even more
+    model.external_force_set.add(segment_name=segment.name, force=[0, 0, 1], point_of_application=[0, 0, 0])
+    np.testing.assert_array_almost_equal(
+        _evaluate(brbd, model.forward_dynamics, q=q, qdot=qdot, tau=tau, ignore_contacts=False),
+        [
+            -0.185022,
+            -0.139734,
+            5.062955,
+            15.709644,
+            -8.503352,
+            -15.709644,
+            -8.503352,
+            -18.190191,
+            27.044657,
+            -13.917421,
+            -18.190191,
+            27.044657,
+            -13.917421,
+        ],
+    )
+    np.testing.assert_array_almost_equal(
+        _evaluate(brbd, model.forward_dynamics, q=q, qdot=qdot, tau=tau, ignore_contacts=True),
+        [
+            0.704966,
+            -7.902412,
+            2.878572,
+            2.401142,
+            -3.796682,
+            -2.401142,
+            -3.796682,
+            -7.653678,
+            6.829581,
+            -18.512403,
+            -7.653678,
+            6.829581,
+            -18.512403,
+        ],
+    )
+
+    # Remove all external forces
+    model.external_force_set.reset()
+    np.testing.assert_array_almost_equal(
+        _evaluate(brbd, model.forward_dynamics, q=q, qdot=qdot, tau=tau, ignore_contacts=True), ref_qddot
+    )
+
+
+@pytest.mark.parametrize("brbd", brbd_to_test)
+def test_wrapper_kalman_filter(brbd):
+    if brbd.backend == brbd.CASADI:
+        assert brbd.has_extended_kalman_filter is False
+        return
+    assert brbd.has_extended_kalman_filter is True
+
+    # Load a predefined model
+    model = brbd.Biorbd("../../models/pyomecaman.bioMod")
+    n_frames = 20
+
+    # Generate clapping gesture data
+    qinit = [0, 0, -0.3, 0.35, 1.15, -0.35, 1.15, 0, 0, 0, 0, 0, 0]
+    qmid = [0, 0, -0.3, 0.5, 1.15, -0.5, 1.15, 0, 0, 0, 0, 0, 0]
+    qfinal = [0, 0, -0.3, 0.35, 1.15, -0.35, 1.15, 0, 0, 0, 0, 0, 0]
+    target_q = np.concatenate((np.linspace(qinit, qmid, n_frames).T, np.linspace(qmid, qfinal, n_frames).T), axis=1)
+    markers = []
+    for q in target_q.T:
+        markers.append(np.array([mark.world for mark in model.markers(q)]).T)
+
+    # Perform the kalman filter for each frame (remember, due to initialization, first frame is much longer than the rest)
+    kalman = brbd.ExtendedKalmanFilterMarkers(model, frequency=100)
+    q_recons = np.ndarray(target_q.shape)
+    for i, (q_i, _, _) in enumerate(kalman.reconstruct_frames(markers)):
+        q_recons[:, i] = q_i
+    np.testing.assert_almost_equal(q_recons[:, -1], target_q[:, -1], decimal=6)
+
+
+@pytest.mark.parametrize("brbd", brbd_to_test)
+def test_muscles(brbd):
+    # Load a predefined model
+    model = brbd.Biorbd("../../models/arm26.bioMod")
+    muscles = model.muscles
+    nmus = len(muscles)
+
+    assert nmus == len(model.internal.muscles())
+
+    # Choose a state (position/velocity) to compute dynamics from
+    activations = [0.5] * nmus
+    q = [0.1] * model.nb_q
+    qdot = [0.1] * model.nb_qdot
+
+    # 1. Using the "low-level" way
+    muscles.activations = activations
+    muscles.update_geometry(q=q, qdot=qdot)
+    tau_ref = [-8.99327207, -11.62806138]
+    if brbd.backend == brbd.CASADI:
+        q_sym = MX.sym("q", model.nb_q, 1)
+        qdot_sym = MX.sym("qdot", model.nb_qdot, 1)
+        muscles.update_geometry(q=q_sym, qdot=qdot_sym)
+        joint_torque = Function("joint_torque", [q_sym, qdot_sym], [muscles.joint_torque()])
+        np.testing.assert_almost_equal(np.array(joint_torque(q, qdot))[:, 0], tau_ref)
+    else:
+        np.testing.assert_almost_equal(muscles.joint_torque(), tau_ref)
+    np.testing.assert_almost_equal(_evaluate(brbd, muscles.joint_torque, q=q, qdot=qdot), tau_ref)
+
+    # 2. The "high-level" way, where the kinematics is updated internally (using a different q so we are not accidentally up to date)
+    tau = _evaluate(brbd, muscles.joint_torque, activations=activations, q=np.array(q) * 2, qdot=qdot)
+    np.testing.assert_almost_equal(tau, [-10.11532606, -10.13974674])
+
+    # # # # # Validate forces and length jacobian
+    # # # # forces = _evaluate(brbd, muscles.forces, q=q, qdot=qdot)
+    # # # # jacobian = _evaluate(brbd, muscles.length_jacobian, q=q)
+    # # # # np.testing.assert_almost_equal(-jacobian.T @ forces, [-10.11532606, -10.13974674])
+
+    # Test the muscle forces for internal and explicit kinematics update
+    forces_ref = [403.47878369, 341.14054494, 214.28139395, 239.38801482, 201.51684182, 493.98451373]
+    if brbd.backend == brbd.CASADI:
+        q_sym = MX.sym("q", model.nb_q, 1)
+        qdot_sym = MX.sym("qdot", model.nb_qdot, 1)
+        muscles.update_geometry(q=q_sym, qdot=qdot_sym)
+        forces = Function("forces", [q_sym, qdot_sym], [muscles.forces()])
+        np.testing.assert_almost_equal(np.array(forces(np.array(q) * 2, qdot))[:, 0], forces_ref)
+    else:
+        np.testing.assert_almost_equal(muscles.forces(), forces_ref)
+    np.testing.assert_almost_equal(_evaluate(brbd, muscles.forces, q=np.array(q) * 2, qdot=qdot), forces_ref)
+
+    forces_ref = [245.63266637, 225.70738926, 132.04335764, 143.63280889, 117.39623324, 296.81063517]
+    if brbd.backend == brbd.CASADI:
+        q_sym = MX.sym("q", model.nb_q, 1)
+        qdot_sym = MX.sym("qdot", model.nb_qdot, 1)
+        muscles.update_geometry(q=q_sym, qdot=qdot_sym)
+        joint_torque = Function("joint_torque", [q_sym, qdot_sym], [muscles.forces(activations=[0.3] * nmus)])
+        np.testing.assert_almost_equal(np.array(joint_torque(np.array(q) * 2, qdot))[:, 0], forces_ref)
+    else:
+        np.testing.assert_almost_equal(muscles.forces(activations=[0.3] * nmus), forces_ref)
+    np.testing.assert_almost_equal(
+        _evaluate(brbd, muscles.forces, activations=[0.3] * nmus, q=np.array(q) * 2, qdot=qdot), forces_ref
+    )
+
+    # Test activation dot
+    initial_activations = [0.5] * nmus
+    excitations = np.arange(1, nmus + 1) / nmus  # Varying excitations from 0.1 to 1.0
+    activations_dot = _evaluate(brbd, muscles.activations_dot, excitations=excitations, activations=initial_activations)
+    np.testing.assert_almost_equal(
+        activations_dot,
+        [-10.416666666666668, -5.208333333333334, 0.0, 13.33333333333333, 26.666666666666668, 40.0],
+    )
+
+    # Get an change the properties of a specific muscle
+    muscle = muscles[0]
+    assert muscle.name == "TRIlong"
+
+    assert muscle.optimal_length == 0.134
+    muscle.optimal_length = 0.2
+    assert muscle.optimal_length == 0.2
+
+    assert muscle.maximal_isometric_force == 798.52
+    muscle.maximal_isometric_force = 1000.0
+    assert muscle.maximal_isometric_force == 1000.0
+
+    assert muscle.pcsa == 0.0
+    muscle.pcsa = 0.02
+    assert muscle.pcsa == 0.02
+
+    assert muscle.tendon_slack_length == 0.143
+    muscle.tendon_slack_length = 0.3
+    assert muscle.tendon_slack_length == 0.3
+
+    assert muscle.pennation_angle == 0.20943951
+    muscle.pennation_angle = 0.1
+    assert muscle.pennation_angle == 0.1
+
+    assert muscle.maximal_contraction_velocity == 10.0
+    muscle.maximal_contraction_velocity = 15.0
+    assert muscle.maximal_contraction_velocity == 15.0
+
+    if brbd.backend == brbd.CASADI:
+        q_sym = MX.sym("q", model.nb_q, 1)
+        qdot_sym = MX.sym("qdot", model.nb_qdot, 1)
+        muscles.update_geometry(q=q_sym, qdot=qdot_sym)
+        force = Function("force", [q_sym, qdot_sym], [muscle.force])
+        forces = Function("forces", [q_sym, qdot_sym], [muscles.forces()])
+        np.testing.assert_almost_equal(force(q, qdot), forces(q, qdot)[0])
+    else:
+        # The non-updated value is not suppose to reflect the changes properly
+        assert muscle.force == muscles.forces()[0]
+        np.testing.assert_almost_equal(
+            muscles.forces(), [441.00852545, 341.14054494, 214.28139395, 239.38801482, 201.51684182, 493.98451373]
+        )
+        muscles.update_geometry(q=q, qdot=qdot)
+        assert muscle.force == muscles.forces()[0]
+
+    np.testing.assert_almost_equal(
+        _evaluate(brbd, muscles.forces, q=q, qdot=qdot),
+        [37.43286925, 349.67505477, 212.67611275, 231.48743683, 194.03986176, 494.72543227],
+    )
+
+
+@pytest.mark.parametrize("brbd", brbd_to_test)
+def test_static_optimization(brbd):
+    if brbd.backend == brbd.CASADI:
+        assert brbd.has_static_optimization is False
+        return
+    assert brbd.has_static_optimization is True
+
+    # Load a predefined model
+    model = brbd.Biorbd("../../models/arm26.bioMod")
+    n_frames = 3
+
+    q = []
+    qdot = []
+    qddot = []
+    tau = []
+    for i in range(n_frames):
+        # The q would typically come from an inverse kinematics analysis
+        q.append([0] * model.nb_q)
+        # The qdot and qddot would typically come from a numerical differentiation of the kinematics
+        qdot.append([0] * model.nb_qdot)
+        qddot.append([0] * model.nb_qddot)
+
+        # The tau would typically come from an inverse dynamics analysis as follow
+        tau.append(model.inverse_dynamics(q[i], qdot[i], qddot[i]))
+
+    # Proceed with the static optimization. When perform is called, all the frames are processed at once, even though
+    # it is a loop. That is so the initial guess is dependent of the previous frame. So the first "frame" of the loop is
+    # very long (as it computes everythin). Then, the following frames are very fast (as it only returns the precomputed
+    # results)
+    optim = brbd.StaticOptimization(model)
+    muscle_activations = []
+    for value in optim.perform_frames(q, qdot, tau):
+        muscle_activations.append(value)
+    assert len(muscle_activations) == n_frames
+    np.testing.assert_almost_equal(
+        muscle_activations[0], [0.00012686, 0.00012018, 0.00089968, 0.00010025, 0.00010027, 0.00010081], decimal=5
+    )
+    np.testing.assert_almost_equal(
+        muscle_activations[-1], [0.00012686, 0.00012018, 0.00089968, 0.00010025, 0.00010027, 0.00010081], decimal=5
+    )
+
+
+if __name__ == "__main__":
+    for brbd in brbd_to_test:
+        test_wrapper_model(brbd)
+        test_wrapper_segments(brbd)
+        test_wrapper_markers(brbd)
+        test_wrapper_frames(brbd)
+        test_wrapper_dynamics(brbd)
+        test_wrapper_external_forces(brbd)
+        test_muscles(brbd)
+        test_wrapper_kalman_filter(brbd)  # This test is long
+        test_static_optimization(brbd)

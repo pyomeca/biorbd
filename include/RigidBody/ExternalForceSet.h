@@ -147,7 +147,7 @@ class BIORBD_API ExternalForceSet {
       const rigidbody::NodeSegment& pointOfApplication);
 
   ///
-  /// \brief Initailize and zero out all the spatial vectors of the Set. Note
+  /// \brief Initialize and zero out all the spatial vectors of the Set. Note
   /// this should always be called before reusing an ExternalForceSet unless one
   /// is absolutely sure that all the spatial vectors of the Set is in an
   /// expected state (that is, all the vectors were either set or zeroed)

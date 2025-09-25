@@ -6,14 +6,20 @@ try:
     import biorbd
 
     brbd_to_test.append(biorbd)
-except:
+except ModuleNotFoundError as e:
+    print(f"Error importing biorbd: {e}")
     pass
+
 try:
     import biorbd_casadi
 
     brbd_to_test.append(biorbd_casadi)
-except:
+except ModuleNotFoundError as e:
+    print(f"Error importing biorbd_casadi: {e}")
     pass
+
+if not brbd_to_test:
+    raise RuntimeError("No biorbd version could be imported")
 
 
 @pytest.mark.parametrize("brbd", brbd_to_test)
@@ -21,7 +27,7 @@ def test_external_forces(brbd):
     m = brbd.Model("../../models/pyomecaman.bioMod")
 
     # Remove the dampings in this test
-    if brbd.currentLinearAlgebraBackend() == 1:
+    if brbd.backend == brbd.CASADI:
         jointDampings = [brbd.Scalar(0), brbd.Scalar(0), brbd.Scalar(0)]
     else:
         jointDampings = [0, 0, 0]
@@ -42,7 +48,7 @@ def test_external_forces(brbd):
     qdot = np.array([i * 1.1 for i in range(m.nbQ())])
     tau = np.array([i * 1.1 for i in range(m.nbQ())])
 
-    if brbd.currentLinearAlgebraBackend() == 1:
+    if brbd.backend == brbd.CASADI:
         # If CasADi backend is used
         from casadi import MX
 
@@ -52,12 +58,14 @@ def test_external_forces(brbd):
 
         brbd.to_casadi_func("ForwardDynamics", m.ForwardDynamics, q_sym, qdot_sym, tau_sym, force_set)
         # Call it twice because there is a chance they interact with each other
-        forward_dynamics = brbd.to_casadi_func("ForwardDynamics", m.ForwardDynamics, q_sym, qdot_sym, tau_sym, force_set)
+        forward_dynamics = brbd.to_casadi_func(
+            "ForwardDynamics", m.ForwardDynamics, q_sym, qdot_sym, tau_sym, force_set
+        )
 
         qddot = forward_dynamics(q, qdot, tau)
         qddot = np.array(qddot)[:, 0]
 
-    elif brbd.currentLinearAlgebraBackend() == 0:
+    elif brbd.backend == brbd.EIGEN3:
         # if Eigen backend is used
         m.ForwardDynamics(q, qdot, tau, force_set).to_array()
         # Call it twice because there is a chance they interact with each other
@@ -80,7 +88,7 @@ def test_external_forces(brbd):
             18884.241415786601,
             -331.24622725851572,
             1364.7620674666462,
-            3948.4748602722384
+            3948.4748602722384,
         ]
     )
     np.testing.assert_almost_equal(qddot, qddot_expected)
@@ -91,12 +99,12 @@ def test_external_forces_with_point_of_application(brbd):
     m = brbd.Model("../../models/pyomecaman.bioMod")
 
     # Remove the dampings in this test
-    if brbd.currentLinearAlgebraBackend() == 1:
+    if brbd.backend == brbd.CASADI:
         jointDampings = [brbd.Scalar(0), brbd.Scalar(0), brbd.Scalar(0)]
     else:
         jointDampings = [0, 0, 0]
     m.segment(0).setJointDampings(jointDampings)
-    
+
     force_set = m.externalForceSet()
     force_set.add(
         "PiedD",
@@ -114,7 +122,7 @@ def test_external_forces_with_point_of_application(brbd):
     qdot = np.array([i * 1.1 for i in range(m.nbQ())])
     tau = np.array([i * 1.1 for i in range(m.nbQ())])
 
-    if brbd.currentLinearAlgebraBackend() == 1:
+    if brbd.backend == brbd.CASADI:
         # If CasADi backend is used
         from casadi import MX
 
@@ -124,12 +132,14 @@ def test_external_forces_with_point_of_application(brbd):
 
         brbd.to_casadi_func("ForwardDynamics", m.ForwardDynamics, q_sym, qdot_sym, tau_sym, force_set)
         # Call it twice because there is a chance they interact with each other
-        forward_dynamics = brbd.to_casadi_func("ForwardDynamics", m.ForwardDynamics, q_sym, qdot_sym, tau_sym, force_set)
+        forward_dynamics = brbd.to_casadi_func(
+            "ForwardDynamics", m.ForwardDynamics, q_sym, qdot_sym, tau_sym, force_set
+        )
 
         qddot = forward_dynamics(q, qdot, tau)
         qddot = np.array(qddot)[:, 0]
 
-    elif brbd.currentLinearAlgebraBackend() == 0:
+    elif brbd.backend == brbd.EIGEN3:
         # if Eigen backend is used
         m.ForwardDynamics(q, qdot, tau, force_set).to_array()
         # Call it twice because there is a chance they interact with each other
@@ -156,3 +166,9 @@ def test_external_forces_with_point_of_application(brbd):
         ],
     )
     np.testing.assert_almost_equal(qddot, qddot_expected)
+
+
+if __name__ == "__main__":
+    for brbd in brbd_to_test:
+        test_external_forces(brbd)
+        test_external_forces_with_point_of_application(brbd)
