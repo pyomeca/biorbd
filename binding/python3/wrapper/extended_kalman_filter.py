@@ -53,6 +53,6 @@ class ExtendedKalmanFilterMarkers:
 
     def reconstruct_frames(
         self, all_markers: list[BiorbdArray]
-    ) -> Generator[tuple[BiorbdArray, BiorbdArray, BiorbdArray]]:
+    ) -> Generator[tuple[BiorbdArray, BiorbdArray, BiorbdArray], None, None]:
         for markers in all_markers:
             yield self.reconstruct_frame(markers)
