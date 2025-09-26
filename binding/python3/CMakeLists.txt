@@ -14,6 +14,13 @@ if(MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMPILE_FLAGS}")
 endif()
 
+# Sometimes find_package finds one include folder short, so check if "rbdl-casadi" subdirectory exists
+set(RBDLCasadi_INCLUDE_DIR_PYTHON ${RBDLCasadi_INCLUDE_DIR})
+if(EXISTS "${RBDLCasadi_INCLUDE_DIR_PYTHON}/rbdl-casadi")
+    # If it exists, override the include dir to point to it
+    set(RBDLCasadi_INCLUDE_DIR_PYTHON "${RBDLCasadi_INCLUDE_DIR_PYTHON}/rbdl-casadi")
+endif()
+
 # We need to trick MSVC (and why not all of them) into keeping the rbdl-casadi as the first import. If we
 # just add it, it is pushed at the end because BIORBD will also includes it but
 # as an external:import. Added the /../ tricks the parser into not recognizing
@@ -21,7 +28,7 @@ endif()
 set(FORCED_FIRST_INCLUDE_DIRS "")
 if(${MATH_LIBRARY_BACKEND} STREQUAL "Casadi")
     set(FORCED_FIRST_INCLUDE_DIRS
-        "${RBDLCasadi_INCLUDE_DIR}/../rbdl-casadi"
+        "${RBDLCasadi_INCLUDE_DIR_PYTHON}/../rbdl-casadi"
     )
 endif()
 
