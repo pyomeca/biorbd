@@ -498,3 +498,31 @@ class MusclesList(UserList):
         """
         self.update_geometry(q)
         return [muscle.length_jacobian for muscle in self.data]
+
+    def length(
+        self,
+        q: BiorbdArray | None = None,
+    ) -> list[BiorbdScalar]:
+        """
+        Get the current length of all muscles at q (if provided, otherwise at the current pose).
+
+        Returns
+        -------
+        The current length of all muscles.
+        """
+        self.update_geometry(q)
+        return [muscle.length for muscle in self.data]
+    
+    def muscle_tendon_length(
+        self,
+        q: BiorbdArray | None = None,
+    ) -> list[BiorbdScalar]:
+        """
+        Get the current muscle-tendon unit length of all muscles at q (if provided, otherwise at the current pose).
+
+        Returns
+        -------
+        The current length of all muscles.
+        """
+        self.update_geometry(q)
+        return [muscle.muscle_tendon_length for muscle in self.data]
