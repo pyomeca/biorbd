@@ -3,7 +3,7 @@ import re
 import numpy as np
 import pytest
 
-from .utils import evaluate, brbd_to_test
+from wrapper_tests_utils import evaluate, brbd_to_test
 
 
 @pytest.mark.parametrize("brbd", brbd_to_test)
@@ -91,3 +91,8 @@ def test_wrapper_frames(brbd):
         )
         np.testing.assert_almost_equal(frame.world_rotation_as_euler("xyz"), [-0.002304, -0.05893213, 0.06090137])
         np.testing.assert_almost_equal(frame.world_translation, [-0.017545, -0.007, 0.17])
+
+
+if __name__ == "__main__":
+    for brbd in brbd_to_test:
+        test_wrapper_frames(brbd)

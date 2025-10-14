@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from .utils import evaluate, brbd_to_test
+from wrapper_tests_utils import evaluate, brbd_to_test
 
 
 @pytest.mark.parametrize("brbd", brbd_to_test)
@@ -42,3 +42,8 @@ def test_wrapper_segments(brbd):
 
     # Get the markers of the segment
     assert len(segment.markers) == 6
+
+
+if __name__ == "__main__":
+    for brbd in brbd_to_test:
+        test_wrapper_segments(brbd)
