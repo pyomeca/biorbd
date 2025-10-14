@@ -485,7 +485,7 @@ class MusclesList(UserList):
         emg = self._model.internal.stateSet()
         return to_biorbd_array_output(self._model.internal.muscularJointTorque(emg))
 
-    def length_jacobian(
+    def lengths_jacobian(
         self,
         q: BiorbdArray | None = None,
     ) -> list[BiorbdArray]:
@@ -498,3 +498,31 @@ class MusclesList(UserList):
         """
         self.update_geometry(q)
         return [muscle.length_jacobian for muscle in self.data]
+
+    def lengths(
+        self,
+        q: BiorbdArray | None = None,
+    ) -> list[BiorbdScalar]:
+        """
+        Get the current length of all muscles at q (if provided, otherwise at the current pose).
+
+        Returns
+        -------
+        The current length of all muscles.
+        """
+        self.update_geometry(q)
+        return [muscle.length for muscle in self.data]
+    
+    def muscle_tendon_lengths(
+        self,
+        q: BiorbdArray | None = None,
+    ) -> list[BiorbdScalar]:
+        """
+        Get the current muscle-tendon unit length of all muscles at q (if provided, otherwise at the current pose).
+
+        Returns
+        -------
+        The current length of all muscles.
+        """
+        self.update_geometry(q)
+        return [muscle.muscle_tendon_length for muscle in self.data]
