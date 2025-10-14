@@ -3,7 +3,7 @@ import re
 import numpy as np
 import pytest
 
-from .utils import evaluate, brbd_to_test
+from wrapper_tests_utils import evaluate, brbd_to_test
 
 
 @pytest.mark.parametrize("brbd", brbd_to_test)
@@ -118,3 +118,8 @@ def test_wrapper_markers(brbd):
         np.testing.assert_almost_equal(evaluate(brbd, markers.jacobian, q=q)[0, : model.nb_q], jacobian_at_q)
     else:
         np.testing.assert_almost_equal(evaluate(brbd, markers.jacobian, q=q)[0], jacobian_at_q)
+
+
+if __name__ == "__main__":
+    for brbd in brbd_to_test:
+        test_wrapper_markers(brbd)

@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from .utils import brbd_to_test
+from wrapper_tests_utils import brbd_to_test
 
 
 @pytest.mark.parametrize("brbd", brbd_to_test)
@@ -30,3 +30,8 @@ def test_wrapper_kalman_filter(brbd):
     for i, (q_i, _, _) in enumerate(kalman.reconstruct_frames(markers)):
         q_recons[:, i] = q_i
     np.testing.assert_almost_equal(q_recons[:, -1], target_q[:, -1], decimal=6)
+
+
+if __name__ == "__main__":
+    for brbd in brbd_to_test:
+        test_wrapper_kalman_filter(brbd)  # This test is long

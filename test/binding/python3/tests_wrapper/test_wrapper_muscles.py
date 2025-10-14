@@ -6,7 +6,7 @@ except ModuleNotFoundError as e:
 import numpy as np
 import pytest
 
-from .utils import evaluate, brbd_to_test
+from wrapper_tests_utils import evaluate, brbd_to_test
 
 
 @pytest.mark.parametrize("brbd", brbd_to_test)
@@ -41,10 +41,10 @@ def test_muscles(brbd):
     tau = evaluate(brbd, muscles.joint_torque, activations=activations, q=np.array(q) * 2, qdot=qdot)
     np.testing.assert_almost_equal(tau, [-10.11532606, -10.13974674])
 
-    # # # # # Validate forces and length jacobian
-    # # # # forces = _evaluate(brbd, muscles.forces, q=q, qdot=qdot)
-    # # # # jacobian = _evaluate(brbd, muscles.length_jacobian, q=q)
-    # # # # np.testing.assert_almost_equal(-jacobian.T @ forces, [-10.11532606, -10.13974674])
+    # Validate forces and length jacobian
+    jacobian = np.array(evaluate(brbd, muscles.lengths_jacobian, q=np.array(q) * 2)).squeeze()
+    forces = evaluate(brbd, muscles.forces, q=np.array(q) * 2, qdot=qdot)
+    np.testing.assert_almost_equal(-jacobian.T @ forces, [-10.11532606, -10.13974674])
 
     # Test the muscle forces for internal and explicit kinematics update
     forces_ref = [403.47878369, 341.14054494, 214.28139395, 239.38801482, 201.51684182, 493.98451373]
@@ -170,3 +170,9 @@ def test_static_optimization(brbd):
     np.testing.assert_almost_equal(
         muscle_activations[-1], [0.00012686, 0.00012018, 0.00089968, 0.00010025, 0.00010027, 0.00010081], decimal=5
     )
+
+
+if __name__ == "__main__":
+    for brbd in brbd_to_test:
+        test_muscles(brbd)
+        test_static_optimization(brbd)
