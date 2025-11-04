@@ -98,6 +98,31 @@ class Biorbd:
         else:
             return to_biorbd_array_output(updated_model.massMatrix(dummy_q, update_kinematics))
 
+    def non_linear_effect(self, q: BiorbdArray | None = None, qdot: BiorbdArray | None = None) -> BiorbdArray:
+        """
+        Get the non-linear effect of the model at a given pose and velocity (or the pose and velocity already set in
+        the model if q and/or qdot is/are None).
+
+        Parameters
+        ----------
+        q: BiorbdArray
+            Generalized coordinates
+        qdot: BiorbdArray
+            Generalized velocities
+
+        Returns
+        -------
+        The non-linear effect of the model
+        """
+        if q is None or qdot is None:
+            raise NotImplementedError(
+                "The 'non_linear_effect' method without setting q and/or qdot is not yet implemented"
+            )
+
+        dummy_q = GeneralizedCoordinates(self.nb_q) if q is None else to_biorbd_array_input(q)
+        dummy_qdot = GeneralizedCoordinates(self.nb_qdot) if qdot is None else to_biorbd_array_input(qdot)
+        return to_biorbd_array_output(self.internal.NonLinearEffect(dummy_q, dummy_qdot))
+
     def center_of_mass(self, q: BiorbdArray | None = None) -> BiorbdArray:
         """
         Get the center of mass of the model at a given pose (or the pose already set in the model if q is None).

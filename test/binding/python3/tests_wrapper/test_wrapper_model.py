@@ -449,6 +449,43 @@ def test_wrapper_model(brbd):
     else:
         np.testing.assert_almost_equal(model.mass_matrix(inverse=True), inverse_matrix_reference, decimal=6)
 
+    # Test the non-linear effect
+    qdot = [0.2] * model.nb_qdot
+    np.testing.assert_almost_equal(
+        evaluate(brbd, model.non_linear_effect, q=q, qdot=qdot),
+        [
+            -1.05537549e02,
+            -1.55985898e02,
+            -8.80598016e00,
+            6.31118937e-02,
+            -1.74848871e00,
+            4.45224414e-01,
+            -1.74951910e00,
+            -1.07385596e01,
+            -2.89590876e00,
+            -1.04774770e-01,
+            -1.07385596e01,
+            -2.89590876e00,
+            -1.04774770e-01,
+        ],
+        decimal=6,
+    )
+    with pytest.raises(
+        NotImplementedError,
+        match="The 'non_linear_effect' method without setting q and/or qdot is not yet implemented",
+    ):
+        evaluate(brbd, model.non_linear_effect)()
+    with pytest.raises(
+        NotImplementedError,
+        match="The 'non_linear_effect' method without setting q and/or qdot is not yet implemented",
+    ):
+        evaluate(brbd, model.non_linear_effect, q=q)
+    with pytest.raises(
+        NotImplementedError,
+        match="The 'non_linear_effect' method without setting q and/or qdot is not yet implemented",
+    ):
+        evaluate(brbd, model.non_linear_effect, qdot=qdot)
+
 
 if __name__ == "__main__":
     for brbd in brbd_to_test:
