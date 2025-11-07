@@ -43,7 +43,7 @@ class ExtendedKalmanFilterMarkers:
         self._qddot = GeneralizedAcceleration(self._model.internal)
 
     def reconstruct_frame(self, markers: BiorbdArray):
-        markers_kalman = [NodeSegment(m) for m in to_biorbd_array_input(markers).T]
+        markers_kalman = [NodeSegment(m) for m in to_biorbd_array_input(markers, enforce_iterable=True).T]
         self._kalman.reconstructFrame(self._model.internal, markers_kalman, self._q, self._qdot, self._qddot)
 
         q = to_biorbd_array_output(self._q)

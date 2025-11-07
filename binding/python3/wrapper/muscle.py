@@ -342,6 +342,7 @@ class MusclesList(UserList):
         ----------
         values: The new activations of all muscles.
         """
+        values = to_biorbd_array_input(values, enforce_iterable=True)
         if len(values) != len(self.data):
             raise ValueError(
                 f"Length of values ({len(values)}) must be equal to the number of muscles ({len(self.data)})"
@@ -369,6 +370,7 @@ class MusclesList(UserList):
         ----------
         values: The new excitations of all muscles.
         """
+        values = to_biorbd_array_input(values, enforce_iterable=True)
         if len(values) != len(self.data):
             raise ValueError(
                 f"Length of values ({len(values)}) must be equal to the number of muscles ({len(self.data)})"
@@ -391,10 +393,12 @@ class MusclesList(UserList):
         -------
         The time derivative of the muscle activations.
         """
+        excitations = to_biorbd_array_input(excitations, enforce_iterable=True)
         if len(excitations) != len(self.data):
             raise ValueError(
                 f"Length of excitations ({len(excitations)}) must be equal to the number of muscles ({len(self.data)})"
             )
+        activations = to_biorbd_array_input(activations, enforce_iterable=True)
         if len(activations) != len(self.data):
             raise ValueError(
                 f"Length of activations ({len(activations)}) must be equal to the number of muscles ({len(self.data)})"
@@ -512,7 +516,7 @@ class MusclesList(UserList):
         """
         self.update_geometry(q)
         return [muscle.length for muscle in self.data]
-    
+
     def muscle_tendon_lengths(
         self,
         q: BiorbdArray | None = None,

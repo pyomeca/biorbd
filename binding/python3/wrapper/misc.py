@@ -6,7 +6,7 @@ from ..biorbd import CASADI as BIORBD_CASADI, EIGEN3 as BIORBD_EIGEN3, currentLi
 
 # Additional imports for casadi backend
 if currentLinearAlgebraBackend() == BIORBD_CASADI:
-    from casadi import MX, SX, DM
+    from casadi import MX, SX, DM, vertsplit
 
 
 # If we are using the Eigen backend, returns are np.arrays, if we are using CasADi backend, returns are MX
@@ -31,7 +31,7 @@ def to_biorbd_array_output(x: Any) -> BiorbdArray:
         raise NotImplementedError("Unknown backend")
 
 
-def to_biorbd_array_input(x: BiorbdArray) -> Any:
+def to_biorbd_array_input(x: BiorbdArray, enforce_iterable: bool = False) -> Any:
     if x is None:
         return None
 
@@ -45,12 +45,12 @@ def to_biorbd_array_input(x: BiorbdArray) -> Any:
 
     elif currentLinearAlgebraBackend() == BIORBD_CASADI:
         if isinstance(x, (MX, SX, DM)):
-            return x
+            out = x
         try:
-            return MX(x)
+            out = MX(x)
         except NotImplementedError:
             # This happens when we try to convert a list of lists. When sending DM, it should be available to the user
-            tp = np.array(x)
-            return MX(tp)
+            out = MX(np.array(x))
+        return vertsplit(out) if enforce_iterable else out
     else:
         raise NotImplementedError("Unknown backend")
