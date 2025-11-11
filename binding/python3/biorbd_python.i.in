@@ -30,43 +30,55 @@
 #define STR_HELPER(x) #x
 #define STR(x) STR_HELPER(x)
 
-static swig_type_info* swigTypeString = SWIG_TypeQuery(
-    STR(BIORBD_NAMESPACE) "::utils::String *");
-static swig_type_info* swigTypePath = SWIG_TypeQuery(
-    STR(BIORBD_NAMESPACE) "::utils::Path *");
+static swig_type_info* swigTypeString = nullptr;
+static swig_type_info* swigTypePath = nullptr;
 
-static swig_type_info* swigTypeMatrix3d = SWIG_TypeQuery(
-    STR(BIORBD_NAMESPACE) "::utils::Matrix3d *");
-static swig_type_info* swigTypeVector = SWIG_TypeQuery(
-    STR(BIORBD_NAMESPACE) "::utils::Vector *");
-static swig_type_info* swigTypeVector3d = SWIG_TypeQuery(
-    STR(BIORBD_NAMESPACE) "::utils::Vector3d *");
-static swig_type_info* swigTypeNode = SWIG_TypeQuery(
-    STR(BIORBD_NAMESPACE) "::utils::Node *");
-static swig_type_info* swigTypeSpatialVector = SWIG_TypeQuery(
-    STR(BIORBD_NAMESPACE) "::utils::SpatialVector *");
+static swig_type_info* swigTypeMatrix3d = nullptr;
+static swig_type_info* swigTypeVector = nullptr;
+static swig_type_info* swigTypeVector3d = nullptr;
+static swig_type_info* swigTypeNode = nullptr;
+static swig_type_info* swigTypeSpatialVector = nullptr;
 
-static swig_type_info* swigTypeJoints = SWIG_TypeQuery(
-    STR(BIORBD_NAMESPACE) "::rigidbody::Joints *");
-static swig_type_info* swigTypeMarkers = SWIG_TypeQuery(
-    STR(BIORBD_NAMESPACE) "::rigidbody::Markers *");
+static swig_type_info* swigTypeJoints = nullptr;
+static swig_type_info* swigTypeMarkers = nullptr;
 
-static swig_type_info* swigTypeGeneralizedCoordinates = SWIG_TypeQuery(
-    STR(BIORBD_NAMESPACE) "::rigidbody::GeneralizedCoordinates *");
-static swig_type_info* swigTypeGeneralizedVelocity = SWIG_TypeQuery(
-    STR(BIORBD_NAMESPACE) "::rigidbody::GeneralizedVelocity *");
-static swig_type_info* swigTypeGeneralizedAcceleration = SWIG_TypeQuery(
-    STR(BIORBD_NAMESPACE) "::rigidbody::GeneralizedAcceleration *");
-static swig_type_info* swigTypeGeneralizedTorque =
-    SWIG_TypeQuery(STR(BIORBD_NAMESPACE) "::rigidbody::GeneralizedTorque *");
+static swig_type_info* swigTypeGeneralizedCoordinates = nullptr;
+static swig_type_info* swigTypeGeneralizedVelocity = nullptr;
+static swig_type_info* swigTypeGeneralizedAcceleration = nullptr;
+static swig_type_info* swigTypeGeneralizedTorque = nullptr;
 
 #if defined(BIORBD_USE_CASADI_MATH)
 namespace casadi { class MX; }
-static swig_type_info* swigTypeMX = SWIG_TypeQuery("casadi::MX *");
+static swig_type_info* swigTypeMX = nullptr;
 #endif
 %}
 
 %init %{
+    std::cout << "COUCOU" << std::endl;
+
+swigTypeString = SWIG_TypeQuery(STR(BIORBD_NAMESPACE) "::utils::String *");
+swigTypePath = SWIG_TypeQuery(STR(BIORBD_NAMESPACE) "::utils::Path *");
+
+swigTypeMatrix3d = SWIG_TypeQuery(STR(BIORBD_NAMESPACE) "::utils::Matrix3d *");
+swigTypeVector = SWIG_TypeQuery(STR(BIORBD_NAMESPACE) "::utils::Vector *");
+swigTypeVector3d = SWIG_TypeQuery(STR(BIORBD_NAMESPACE) "::utils::Vector3d *");
+swigTypeNode = SWIG_TypeQuery(STR(BIORBD_NAMESPACE) "::utils::Node *");
+swigTypeSpatialVector = SWIG_TypeQuery(STR(BIORBD_NAMESPACE) "::utils::SpatialVector *");
+
+swigTypeJoints = SWIG_TypeQuery(STR(BIORBD_NAMESPACE) "::rigidbody::Joints *");
+swigTypeMarkers = SWIG_TypeQuery(STR(BIORBD_NAMESPACE) "::rigidbody::Markers *");
+
+swigTypeGeneralizedCoordinates = SWIG_TypeQuery(STR(BIORBD_NAMESPACE) "::rigidbody::GeneralizedCoordinates *");
+swigTypeGeneralizedVelocity = SWIG_TypeQuery(STR(BIORBD_NAMESPACE) "::rigidbody::GeneralizedVelocity *");
+swigTypeGeneralizedAcceleration = SWIG_TypeQuery(STR(BIORBD_NAMESPACE) "::rigidbody::GeneralizedAcceleration *");
+swigTypeGeneralizedTorque =SWIG_TypeQuery(STR(BIORBD_NAMESPACE) "::rigidbody::GeneralizedTorque *");
+
+#if defined(BIORBD_USE_CASADI_MATH)
+swigTypeMX = SWIG_TypeQuery("casadi::MX *");
+#endif
+
+    std::cout << "COUCOU2" << std::endl;
+
 if (
     !swigTypeString
     || !swigTypePath
