@@ -15,8 +15,8 @@ jobs:
         include:
           - os: ubuntu-latest
             label: linux-64
-          - os: macos-latest
-            label: osx-64
+          # - os: macos-latest
+          #   label: osx-64
           - os: windows-latest
             label: win-64
     name: ${{ matrix.label }}
@@ -41,7 +41,7 @@ jobs:
         
       - name: Install build packages
         run: | 
-          conda install pip swig eigen -cconda-forge
+          conda install pip "swig<4.4.0" eigen -cconda-forge
           conda list
           pip install build cibuildwheel==2.21.3
 

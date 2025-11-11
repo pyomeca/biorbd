@@ -6,7 +6,7 @@ requires = [
     "scikit-build",
     "cmake",
     "ninja",
-    "swig",
+    "swig<4.4.0",
     "numpy",
     "scipy",
 ]
