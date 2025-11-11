@@ -15,10 +15,8 @@ jobs:
         include:
           - os: ubuntu-latest
             label: linux-64
-          # - os: macos-latest
-          #   label: osx-64
-          - os: macos-13
-            label: osx-32
+          - os: macos-latest
+            label: osx-64
           - os: windows-latest
             label: win-64
     name: ${{ matrix.label }}
