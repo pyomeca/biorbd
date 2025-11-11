@@ -6,6 +6,10 @@ endif()
 if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "4.1.1")
     cmake_policy(SET CMP0177 OLD)
 endif()
+# Check SWIG version
+if(SWIG_VERSION VERSION_GREATER_EQUAL "4.4.0")
+    message(FATAL_ERROR "SWIG ${SWIG_VERSION} is not supported — please use 4.3.1.")
+endif()
 
 # Windows needs a bigobj option
 if(MSVC)
