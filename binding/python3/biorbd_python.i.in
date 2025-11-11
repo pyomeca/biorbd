@@ -26,44 +26,74 @@
 
 %include "@CMAKE_BINARY_DIR@/include/biorbdConfig.h"
 
+%{
+#define STR_HELPER(x) #x
+#define STR(x) STR_HELPER(x)
+
+static swig_type_info* swigTypeString = SWIG_TypeQuery(
+    STR(BIORBD_NAMESPACE) "::utils::String *");
+static swig_type_info* swigTypePath = SWIG_TypeQuery(
+    STR(BIORBD_NAMESPACE) "::utils::Path *");
+
+static swig_type_info* swigTypeMatrix3d = SWIG_TypeQuery(
+    STR(BIORBD_NAMESPACE) "::utils::Matrix3d *");
+static swig_type_info* swigTypeVector = SWIG_TypeQuery(
+    STR(BIORBD_NAMESPACE) "::utils::Vector *");
+static swig_type_info* swigTypeVector3d = SWIG_TypeQuery(
+    STR(BIORBD_NAMESPACE) "::utils::Vector3d *");
+static swig_type_info* swigTypeNode = SWIG_TypeQuery(
+    STR(BIORBD_NAMESPACE) "::utils::Node *");
+static swig_type_info* swigTypeSpatialVector = SWIG_TypeQuery(
+    STR(BIORBD_NAMESPACE) "::utils::SpatialVector *");
+
+static swig_type_info* swigTypeJoints = SWIG_TypeQuery(
+    STR(BIORBD_NAMESPACE) "::rigidbody::Joints *");
+static swig_type_info* swigTypeMarkers = SWIG_TypeQuery(
+    STR(BIORBD_NAMESPACE) "::rigidbody::Markers *");
+
+static swig_type_info* swigTypeGeneralizedCoordinates = SWIG_TypeQuery(
+    STR(BIORBD_NAMESPACE) "::rigidbody::GeneralizedCoordinates *");
+static swig_type_info* swigTypeGeneralizedVelocity = SWIG_TypeQuery(
+    STR(BIORBD_NAMESPACE) "::rigidbody::GeneralizedVelocity *");
+static swig_type_info* swigTypeGeneralizedAcceleration = SWIG_TypeQuery(
+    STR(BIORBD_NAMESPACE) "::rigidbody::GeneralizedAcceleration *");
+static swig_type_info* swigTypeGeneralizedTorque =
+    SWIG_TypeQuery(STR(BIORBD_NAMESPACE) "::rigidbody::GeneralizedTorque *");
 
 #if defined(BIORBD_USE_CASADI_MATH)
-#define SWIG_UTILS_STRING SWIGTYPE_p_BiorbdCasadi__utils__String
-#define SWIG_UTILS_PATH SWIGTYPE_p_BiorbdCasadi__utils__Path
-#define SWIG_UTILS_MATRIX3D SWIGTYPE_p_BiorbdCasadi__utils__Matrix3d
-#define SWIG_UTILS_VECTOR SWIGTYPE_p_BiorbdCasadi__utils__Vector
-#define SWIG_UTILS_NODE SWIGTYPE_p_BiorbdCasadi__utils__Node
-#define SWIG_UTILS_VECTOR3D SWIGTYPE_p_BiorbdCasadi__utils__Vector3d
-#define SWIG_UTILS_SPATIAL_VECTOR SWIGTYPE_p_BiorbdCasadi__utils__SpatialVector
-
-#define SWIG_RIGIDBODY_JOINTS SWIGTYPE_p_BiorbdCasadi__rigidbody__Joints
-#define SWIG_RIGIDBODY_GEN_COORD SWIGTYPE_p_BiorbdCasadi__rigidbody__GeneralizedCoordinates
-#define SWIG_RIGIDBODY_GEN_VEL SWIGTYPE_p_BiorbdCasadi__rigidbody__GeneralizedVelocity
-#define SWIG_RIGIDBODY_GEN_ACC SWIGTYPE_p_BiorbdCasadi__rigidbody__GeneralizedAcceleration
-#define SWIG_RIGIDBODY_GEN_TORQUE SWIGTYPE_p_BiorbdCasadi__rigidbody__GeneralizedTorque
-#define SWIG_RIGIDBODY_MARKERS SWIGTYPE_p_BiorbdCasadi__rigidbody__Markers
-
-#elif defined(BIORBD_USE_EIGEN3_MATH)
-#define SWIG_UTILS_STRING SWIGTYPE_p_BiorbdEigen3__utils__String
-#define SWIG_UTILS_PATH SWIGTYPE_p_BiorbdEigen3__utils__Path
-#define SWIG_UTILS_MATRIX3D SWIGTYPE_p_BiorbdEigen3__utils__Matrix3d
-#define SWIG_UTILS_VECTOR SWIGTYPE_p_BiorbdEigen3__utils__Vector
-#define SWIG_UTILS_NODE SWIGTYPE_p_BiorbdEigen3__utils__Node
-#define SWIG_UTILS_VECTOR3D SWIGTYPE_p_BiorbdEigen3__utils__Vector3d
-#define SWIG_UTILS_SPATIAL_VECTOR SWIGTYPE_p_BiorbdEigen3__utils__SpatialVector
-
-#define SWIG_RIGIDBODY_JOINTS SWIGTYPE_p_BiorbdEigen3__rigidbody__Joints
-#define SWIG_RIGIDBODY_GEN_COORD SWIGTYPE_p_BiorbdEigen3__rigidbody__GeneralizedCoordinates
-#define SWIG_RIGIDBODY_GEN_VEL SWIGTYPE_p_BiorbdEigen3__rigidbody__GeneralizedVelocity
-#define SWIG_RIGIDBODY_GEN_ACC SWIGTYPE_p_BiorbdEigen3__rigidbody__GeneralizedAcceleration
-#define SWIG_RIGIDBODY_GEN_TORQUE SWIGTYPE_p_BiorbdEigen3__rigidbody__GeneralizedTorque
-#define SWIG_RIGIDBODY_MARKERS SWIGTYPE_p_BiorbdEigen3__rigidbody__Markers
+namespace casadi { class MX; }
+static swig_type_info* swigTypeMX = SWIG_TypeQuery("casadi::MX *");
 #endif
+%}
+
+%init %{
+if (
+    !swigTypeString
+    || !swigTypePath
+    || !swigTypeMatrix3d
+    || !swigTypeVector
+    || !swigTypeVector3d
+    || !swigTypeNode
+    || !swigTypeSpatialVector
+    || !swigTypeJoints
+    || !swigTypeMarkers
+    || !swigTypeGeneralizedCoordinates
+    || !swigTypeGeneralizedVelocity
+    || !swigTypeGeneralizedAcceleration
+    || !swigTypeGeneralizedTorque 
+#if defined(BIORBD_USE_CASADI_MATH)
+    || !swigTypeMX
+#endif 
+    ) {
+    PyErr_SetString(PyExc_RuntimeError, "SWIG type lookup failed");
+}
+%}
+
 
 // -- STRING --//
 %typemap(typecheck, precedence=2300) BIORBD_NAMESPACE::utils::String &{
     void *argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_UTILS_STRING,  0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeString,  0  | 0)) && argp1) {
         // Test if it is a pointer to String already exists
         $1 = true;
     } else if( PyUnicode_Check($input) ) {
@@ -75,7 +105,7 @@
 };
 %typemap(in) BIORBD_NAMESPACE::utils::String &{
     void * argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_UTILS_STRING,  0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeString,  0  | 0)) && argp1) {
         // Recast the pointer
         $1 = reinterpret_cast< BIORBD_NAMESPACE::utils::String * >(argp1);
     } else if( PyUnicode_Check($input) ) {
@@ -90,7 +120,7 @@
 // --- Path --- //
 %typemap(typecheck, precedence=2310) BIORBD_NAMESPACE::utils::Path &{
     void *argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_UTILS_PATH,  0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypePath,  0  | 0)) && argp1) {
         // Test if it is a pointer to Path already exists
         $1 = true;
     } else if( PyUnicode_Check($input) ) {
@@ -102,7 +132,7 @@
 };
 %typemap(in) BIORBD_NAMESPACE::utils::Path &{
     void * argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_UTILS_PATH,  0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypePath,  0  | 0)) && argp1) {
         // Recast the pointer
         $1 = reinterpret_cast< BIORBD_NAMESPACE::utils::Path * >(argp1);
     } else if( PyUnicode_Check($input) ) {
@@ -117,8 +147,7 @@
 // --- Joints --- //
 %typemap(typecheck, precedence=2000) BIORBD_NAMESPACE::rigidbody::Joints &{
     void *argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_RIGIDBODY_JOINTS,  0  | 0)) && argp1) {
-        // Test if it is a pointer to SWIG_RIGIDBODY_JOINTS already exists
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeJoints,  0  | 0)) && argp1) {
         $1 = true;
     } else {
         $1 = false;
@@ -126,7 +155,7 @@
 }
 %typemap(in) BIORBD_NAMESPACE::rigidbody::Joints &{
     void * argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_RIGIDBODY_JOINTS,  0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeJoints,  0  | 0)) && argp1) {
         // Recast the pointer
         $1 = reinterpret_cast< BIORBD_NAMESPACE::rigidbody::Joints * >(argp1);
     } else {
@@ -140,7 +169,7 @@
 %typemap(typecheck, precedence=2400) BIORBD_NAMESPACE::utils::Scalar& {
     void *argp1 = 0;
 #ifdef BIORBD_USE_CASADI_MATH
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeMX,  0  | 0)) && argp1) {
         // Test if it is a pointer an MX
         casadi::MX *mx = reinterpret_cast<casadi::MX*>(argp1);
         if (mx->rows() == 1 && mx->columns() == 1){
@@ -168,7 +197,7 @@
 %typemap(in) BIORBD_NAMESPACE::utils::Scalar& {
     void * argp1 = 0;
 #ifdef BIORBD_USE_CASADI_MATH
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeMX,  0  | 0)) && argp1) {
         // Recast the pointer
         try{
             $1 = new BIORBD_NAMESPACE::utils::Scalar(*reinterpret_cast<casadi::MX*>(argp1));
@@ -302,9 +331,9 @@
 
 %typemap(typecheck, precedence=2155) Eigen::Matrix3d & {
 #ifdef BIORBD_USE_CASADI_MATH
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeMX,  0  | 0)) && argp1) {
 #else
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_UTILS_MATRIX3D,  0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeMatrix3d,  0  | 0)) && argp1) {
 #endif
     // Test if it is a pointer an MX or Vector
         $1 = true;
@@ -320,10 +349,10 @@
 %typemap(in) BIORBD_NAMESPACE::utils::Matrix3d & {
     void * argp1 = 0;
 #ifdef BIORBD_USE_CASADI_MATH
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeMX,  0  | 0)) && argp1) {
         $1 = new BIORBD_NAMESPACE::utils::Matrix3d(*reinterpret_cast<casadi::MX*>(argp1));
 #else
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_UTILS_MATRIX3D,  0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeMatrix3d,  0  | 0)) && argp1) {
         // Recast the pointer
         $1 = reinterpret_cast< BIORBD_NAMESPACE::utils::Matrix3d * >(argp1);
 #endif
@@ -461,9 +490,9 @@
 %typemap(typecheck, precedence=2150) BIORBD_NAMESPACE::utils::Vector & {
     void *argp1 = 0;
 #ifdef BIORBD_USE_CASADI_MATH
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeMX,  0  | 0)) && argp1) {
 #else
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_UTILS_VECTOR,  0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeVector,  0  | 0)) && argp1) {
 #endif
     // Test if it is a pointer an MX or Vector
         $1 = true;
@@ -479,13 +508,10 @@
 %typemap(in) BIORBD_NAMESPACE::utils::Vector & {
     void * argp1 = 0;
 #ifdef BIORBD_USE_CASADI_MATH
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeMX,  0  | 0)) && argp1) {
         $1 = new BIORBD_NAMESPACE::utils::Vector(*reinterpret_cast<casadi::MX*>(argp1));
 #else
-    if (SWIG_IsOK(
-                SWIG_ConvertPtr($input, &argp1,
-                                SWIG_UTILS_VECTOR,  0  | 0))
-            && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeVector,  0  | 0)) && argp1) {
         // Recast the pointer
         $1 = reinterpret_cast< BIORBD_NAMESPACE::utils::Vector * >(argp1);
 #endif
@@ -520,13 +546,11 @@
 %typemap(typecheck, precedence=2100)
 BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates & {
     void *argp1 = 0;
-    if(SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_RIGIDBODY_GEN_COORD,  0  | 0)) && argp1){
+    if(SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeGeneralizedCoordinates,  0  | 0)) && argp1){
             $1 = true;
         }
 #ifdef BIORBD_USE_CASADI_MATH
-    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
-        // Test if it is a pointer to
-        // SWIG_RIGIDBODY_GEN_COORD already exists
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeMX,  0  | 0)) && argp1) {
         $1 = true;
     }
 #endif
@@ -540,11 +564,11 @@ BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates & {
 }
 %typemap(in) BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates & {
     void * argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1,SWIG_RIGIDBODY_GEN_COORD, 0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1,swigTypeGeneralizedCoordinates, 0  | 0)) && argp1) {
         $1 = reinterpret_cast< BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates * >(argp1);
     }
 #ifdef BIORBD_USE_CASADI_MATH
-    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeMX,  0  | 0)) && argp1) {
         $1 = new BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates(*reinterpret_cast<casadi::MX*>(argp1));
     }
 #endif
@@ -573,11 +597,11 @@ BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates & {
 };
 %typemap(typecheck, precedence=2101) BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates * {
     void *argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1,SWIG_RIGIDBODY_GEN_COORD, 0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1,swigTypeGeneralizedCoordinates, 0  | 0)) && argp1) {
         $1 = true;
     }
 #ifdef BIORBD_USE_CASADI_MATH
-    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeMX,  0  | 0)) && argp1) {
             $1 = true;
     }
 #endif
@@ -595,11 +619,11 @@ BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates & {
 %typemap(in) BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates * {
     void * argp1 = 0;
 
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1,SWIG_RIGIDBODY_GEN_COORD, 0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1,swigTypeGeneralizedCoordinates, 0  | 0)) && argp1) {
         $1 = reinterpret_cast< BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates * >(argp1);
     }
 #ifdef BIORBD_USE_CASADI_MATH
-    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeMX,  0  | 0)) && argp1) {
         $1 = new BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates(*reinterpret_cast<casadi::MX*>(argp1));
     }
 #endif
@@ -634,15 +658,15 @@ BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates & {
 %typemap(typecheck, precedence=2102)
 BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity & {
     void *argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_RIGIDBODY_GEN_VEL, 0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeGeneralizedVelocity, 0  | 0)) && argp1) {
         $1 = true;
     }
 #ifdef BIORBD_USE_CASADI_MATH
-    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeMX,  0  | 0)) && argp1) {
         $1 = true;
     }
 #endif
-    else if(SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_RIGIDBODY_GEN_VEL,  0  | 0)) && argp1){
+    else if(SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeGeneralizedVelocity,  0  | 0)) && argp1){
         $1 = true;
     }
     else if( PyArray_Check($input) ) {
@@ -656,11 +680,11 @@ BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity & {
 %typemap(in) BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity & {
     void * argp1 = 0;
 
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_RIGIDBODY_GEN_VEL, 0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeGeneralizedVelocity, 0  | 0)) && argp1) {
         $1 = reinterpret_cast< BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity * >(argp1);
     }
 #ifdef BIORBD_USE_CASADI_MATH
-    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeMX,  0  | 0)) && argp1) {
         $1 = new BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity(*reinterpret_cast<casadi::MX*>(argp1));
     }
 #endif
@@ -691,11 +715,11 @@ BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity & {
 %typemap(typecheck, precedence=2103)
 BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity * {
     void *argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1,SWIG_RIGIDBODY_GEN_VEL, 0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1,swigTypeGeneralizedVelocity, 0  | 0)) && argp1) {
         $1 = true;
     }
 #ifdef BIORBD_USE_CASADI_MATH
-    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeMX,  0  | 0)) && argp1) {
         $1 = true;
     }
 #endif
@@ -712,11 +736,11 @@ BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity * {
 }
 %typemap(in) BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity * {
     void * argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_RIGIDBODY_GEN_VEL, 0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeGeneralizedVelocity, 0  | 0)) && argp1) {
         $1 = reinterpret_cast< BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity * >(argp1);
     }
 #ifdef BIORBD_USE_CASADI_MATH
-    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeMX,  0  | 0)) && argp1) {
         $1 = new BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity(*reinterpret_cast<casadi::MX*>(argp1));
     }
 #endif
@@ -751,11 +775,11 @@ BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity * {
 %typemap(typecheck, precedence=2106)
 BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration & {
     void *argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_RIGIDBODY_GEN_ACC, 0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeGeneralizedAcceleration, 0  | 0)) && argp1) {
         $1 = true;
     }
 #ifdef BIORBD_USE_CASADI_MATH
-    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeMX,  0  | 0)) && argp1) {
         $1 = true;
     }
 #endif
@@ -769,11 +793,11 @@ BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration & {
 }
 %typemap(in) BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration & {
     void * argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_RIGIDBODY_GEN_ACC, 0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeGeneralizedAcceleration, 0  | 0)) && argp1) {
         $1 = reinterpret_cast< BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration * >(argp1);
     }
 #ifdef BIORBD_USE_CASADI_MATH
-    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeMX,  0  | 0)) && argp1) {
         $1 = new BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration(*reinterpret_cast<casadi::MX*>(argp1));
     }
 #endif
@@ -804,11 +828,11 @@ BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration & {
 %typemap(typecheck, precedence=2105)
 BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration * {
     void *argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_RIGIDBODY_GEN_ACC, 0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeGeneralizedAcceleration, 0  | 0)) && argp1) {
         $1 = true;
     }
 #ifdef BIORBD_USE_CASADI_MATH
-    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeMX,  0  | 0)) && argp1) {
         $1 = true;
     }
 #endif
@@ -825,11 +849,11 @@ BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration * {
 }
 %typemap(in) BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration * {
     void * argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_RIGIDBODY_GEN_ACC, 0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeGeneralizedAcceleration, 0  | 0)) && argp1) {
         $1 = reinterpret_cast< BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration * >(argp1);
     }
 #ifdef BIORBD_USE_CASADI_MATH
-    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeMX,  0  | 0)) && argp1) {
         $1 = new BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration(*reinterpret_cast<casadi::MX*>(argp1));
     }
 #endif
@@ -863,11 +887,11 @@ BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration * {
 // --- GeneralizedTorque --- //
 %typemap(typecheck, precedence=2110) BIORBD_NAMESPACE::rigidbody::GeneralizedTorque &{
     void *argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_RIGIDBODY_GEN_TORQUE,  0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeGeneralizedTorque,  0  | 0)) && argp1) {
         $1 = true;
     }
 #ifdef BIORBD_USE_CASADI_MATH
-    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeMX,  0  | 0)) && argp1) {
         $1 = true;
     }
 #endif
@@ -881,11 +905,11 @@ BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration * {
 }
 %typemap(in) BIORBD_NAMESPACE::rigidbody::GeneralizedTorque &{
     void * argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_RIGIDBODY_GEN_TORQUE,  0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeGeneralizedTorque,  0  | 0)) && argp1) {
         $1 = reinterpret_cast< BIORBD_NAMESPACE::rigidbody::GeneralizedTorque * >(argp1);
     }
 #ifdef BIORBD_USE_CASADI_MATH
-    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeMX,  0  | 0)) && argp1) {
         $1 = new BIORBD_NAMESPACE::rigidbody::GeneralizedTorque(*reinterpret_cast<casadi::MX*>(argp1));
     }
 #endif
@@ -924,8 +948,7 @@ BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration * {
 // --- BIORBD_NAMESPACE::rigidbody::Markers --- //
 %typemap(typecheck, precedence=2200) BIORBD_NAMESPACE::rigidbody::Markers &{
     void *argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_RIGIDBODY_MARKERS,  0  | 0)) && argp1) {
-        // Test if it is a pointer to SWIG_RIGIDBODY_MARKERS already exists
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeMarkers,  0  | 0)) && argp1) {
         $1 = true;
     } else {
         $1 = false;
@@ -933,7 +956,7 @@ BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration * {
 }
 %typemap(in) BIORBD_NAMESPACE::rigidbody::Markers &{
     void * argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_RIGIDBODY_MARKERS,  0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeMarkers,  0  | 0)) && argp1) {
         // Recast the pointer
         $1 = reinterpret_cast< BIORBD_NAMESPACE::rigidbody::Markers * >(argp1);
     } else {
@@ -949,16 +972,12 @@ BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration * {
 %typemap(typecheck, precedence=2130)
 BIORBD_NAMESPACE::utils::Vector3d &{
     void *argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_UTILS_NODE,  0  | 0))
-            || SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_UTILS_VECTOR3D,  0  | 0))
-            && argp1) {
-        // Test if it is a pointer to SWIG_UTILS_NODE already exists
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeNode,  0  | 0)) 
+    || SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeVector3d,  0  | 0)) && argp1) {
         $1 = true;
      }
 #ifdef BIORBD_USE_CASADI_MATH
-    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
-        // Test if it is a pointer to
-        // SWIG_UTILS_VECTOR3d already exists
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeMX,  0  | 0)) && argp1) {
         $1 = true;
     }
 #endif
@@ -972,14 +991,14 @@ BIORBD_NAMESPACE::utils::Vector3d &{
 }
 %typemap(in) BIORBD_NAMESPACE::utils::Vector3d &{
     void * argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_UTILS_NODE,  0  | 0))
-            || SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_UTILS_VECTOR3D,  0  | 0))
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeNode,  0  | 0))
+            || SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeVector3d,  0  | 0))
             && argp1) {
         // Recast the pointer
         $1 = reinterpret_cast< BIORBD_NAMESPACE::utils::Vector3d * >(argp1);
      }
 #ifdef BIORBD_USE_CASADI_MATH
-    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeMX,  0  | 0)) && argp1) {
         $1 = new BIORBD_NAMESPACE::utils::Vector3d(BIORBD_NAMESPACE::utils::Vector(*reinterpret_cast<casadi::MX*>(argp1)));
     }
 #endif
@@ -1055,11 +1074,11 @@ BIORBD_NAMESPACE::utils::Vector3d &{
 };
 %typemap(typecheck, precedence=2010) BIORBD_NAMESPACE::utils::SpatialVector &{
     void *argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_UTILS_SPATIAL_VECTOR,  0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeSpatialVector,  0  | 0)) && argp1) {
         $1 = true;
     }
 #ifdef BIORBD_USE_CASADI_MATH
-    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeMX,  0  | 0)) && argp1) {
         $1 = true;
     }
 #endif
@@ -1073,11 +1092,11 @@ BIORBD_NAMESPACE::utils::Vector3d &{
 }
 %typemap(in) BIORBD_NAMESPACE::utils::SpatialVector &{
     void * argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_UTILS_SPATIAL_VECTOR,  0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeSpatialVector,  0  | 0)) && argp1) {
         $1 = reinterpret_cast< BIORBD_NAMESPACE::utils::SpatialVector * >(argp1);
     }
 #ifdef BIORBD_USE_CASADI_MATH
-    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, swigTypeMX,  0  | 0)) && argp1) {
         $1 = new BIORBD_NAMESPACE::utils::SpatialVector(*reinterpret_cast<casadi::MX*>(argp1));
     }
 #endif
