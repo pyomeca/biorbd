@@ -54,8 +54,6 @@ static swig_type_info* swigTypeMX = nullptr;
 %}
 
 %init %{
-    std::cout << "COUCOU" << std::endl;
-
 swigTypeString = SWIG_TypeQuery(STR(BIORBD_NAMESPACE) "::utils::String *");
 swigTypePath = SWIG_TypeQuery(STR(BIORBD_NAMESPACE) "::utils::Path *");
 
@@ -76,8 +74,6 @@ swigTypeGeneralizedTorque =SWIG_TypeQuery(STR(BIORBD_NAMESPACE) "::rigidbody::Ge
 #if defined(BIORBD_USE_CASADI_MATH)
 swigTypeMX = SWIG_TypeQuery("casadi::MX *");
 #endif
-
-    std::cout << "COUCOU2" << std::endl;
 
 if (
     !swigTypeString
