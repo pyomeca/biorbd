@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.17)
 
-project(biorbd VERSION 1.12.0)
+project(biorbd VERSION 1.12.1)
 set(BIORBD_ROOT_FOLDER ${PROJECT_SOURCE_DIR})
 set (BIORBD_NAME_NO_SUFFIX ${PROJECT_NAME})
 set (CMAKE_CXX_STANDARD 11)
