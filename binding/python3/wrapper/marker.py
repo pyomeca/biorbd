@@ -167,7 +167,7 @@ class Marker:
         -------
         True if the marker is technical, False if it is anatomical.
         """
-        return not self.internal.isTechnical()
+        return self.internal.isTechnical()
 
     def forward_kinematics(self, q: BiorbdArray | None = None) -> BiorbdArray:
         """

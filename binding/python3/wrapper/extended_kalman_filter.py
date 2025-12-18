@@ -21,7 +21,14 @@ except ImportError:
 
 class ExtendedKalmanFilterMarkers:
     def __init__(
-        self, model: "Biorbd", frequency: int, noise_factor: BiorbdScalar = None, error_factor: BiorbdScalar = None
+        self,
+        model: "Biorbd",
+        frequency: int,
+        noise_factor: BiorbdScalar = None,
+        error_factor: BiorbdScalar = None,
+        q_init: BiorbdArray = None,
+        qdot_init: BiorbdArray = None,
+        qddot_init: BiorbdArray = None,
     ):
         if not has_extended_kalman_filter:
             raise RuntimeError(
@@ -37,6 +44,9 @@ class ExtendedKalmanFilterMarkers:
         self._param = KalmanParam(**input_param_parameters)
         self._model = model
         self._kalman = KalmanReconsMarkers(self._model.internal, self._param)
+        self._kalman.setInitState(
+            to_biorbd_array_input(q_init), to_biorbd_array_input(qdot_init), to_biorbd_array_input(qddot_init)
+        )
 
         self._q = GeneralizedCoordinates(self._model.internal)
         self._qdot = GeneralizedVelocity(self._model.internal)
@@ -44,6 +54,12 @@ class ExtendedKalmanFilterMarkers:
 
     def reconstruct_frame(self, markers: BiorbdArray):
         markers_kalman = [NodeSegment(m) for m in to_biorbd_array_input(markers, enforce_iterable=True).T]
+        if len(markers_kalman) != self._model.internal.nbTechnicalMarkers():
+            raise RuntimeError(
+                f"Number of markers provided ({len(markers_kalman)}) does not match the number of technical markers in "
+                f"the model ({self._model.internal.nbTechnicalMarkers()})."
+            )
+
         self._kalman.reconstructFrame(self._model.internal, markers_kalman, self._q, self._qdot, self._qddot)
 
         q = to_biorbd_array_output(self._q)
