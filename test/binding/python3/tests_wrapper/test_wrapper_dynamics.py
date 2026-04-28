@@ -56,6 +56,18 @@ def test_wrapper_dynamics(brbd):
         ],
         decimal=6,
     )
+    np.testing.assert_almost_equal(
+        evaluate(
+            brbd,
+            model.zero_moment_point,
+            q=q,
+            qdot=qdot,
+            qddot=qddot,
+            normal=np.array([0, 0, 1]),
+            point=np.array([0, 0, 0.1]),
+        )[2],
+        0.1,
+    )
 
 
 if __name__ == "__main__":

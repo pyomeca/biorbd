@@ -6,6 +6,7 @@
 
 #include <rbdl/Dynamics.h>
 #include <rbdl/rbdl_math.h>
+#include <rbdl/rbdl_utils.h>
 
 #include "BiorbdModel.h"
 #include "RigidBody/ExternalForceSet.h"
@@ -1463,6 +1464,34 @@ TEST(CoM, kinematics) {
     EXPECT_NEAR(
         static_cast<double>(comDdot(i, 0)),
         expectedComDdot[i],
+        requiredPrecision);
+  }
+}
+
+TEST(CoM, zeroMomentPoint) {
+  Model model(modelPathForGeneralTesting);
+  Model expectedModel(modelPathForGeneralTesting);
+  rigidbody::GeneralizedCoordinates Q(model);
+  rigidbody::GeneralizedVelocity Qdot(model);
+  rigidbody::GeneralizedAcceleration Qddot(model);
+  for (size_t i = 0; i < model.nbQ(); ++i) {
+    Q(i, 0) = QtestPyomecaman[i];
+    Qdot(i, 0) = QtestPyomecaman[i] * 10;
+    Qddot(i, 0) = QtestPyomecaman[i] * 100;
+  }
+
+  utils::Vector3d normal(0, 0, 1);
+  utils::Vector3d point(0, 0, 0);
+  utils::Vector3d zeroMomentPoint(
+      model.CalcZeroMomentPoint(Q, Qdot, Qddot, normal, point));
+  utils::Vector3d expectedZeroMomentPoint;
+  RigidBodyDynamics::Utils::CalcZeroMomentPoint(
+      expectedModel, Q, Qdot, Qddot, &expectedZeroMomentPoint, normal, point);
+
+  for (size_t i = 0; i < 3; ++i) {
+    EXPECT_NEAR(
+        static_cast<double>(zeroMomentPoint(i, 0)),
+        static_cast<double>(expectedZeroMomentPoint(i, 0)),
         requiredPrecision);
   }
 }

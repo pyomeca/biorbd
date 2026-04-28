@@ -1035,6 +1035,44 @@ void rigidbody::Joints::CalcCenterOfMass(
       false);
 }
 
+utils::Vector3d rigidbody::Joints::CalcZeroMomentPoint(
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &Qdot,
+    const rigidbody::GeneralizedAcceleration &Qddot,
+    bool updateKin) {
+  return CalcZeroMomentPoint(
+      Q,
+      Qdot,
+      Qddot,
+      utils::Vector3d(0., 0., 1.),
+      utils::Vector3d(0., 0., 0.),
+      updateKin);
+}
+
+utils::Vector3d rigidbody::Joints::CalcZeroMomentPoint(
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &Qdot,
+    const rigidbody::GeneralizedAcceleration &Qddot,
+    const utils::Vector3d &normal,
+    const utils::Vector3d &point,
+    bool updateKin) {
+#ifdef BIORBD_USE_CASADI_MATH
+  rigidbody::Joints
+#else
+  rigidbody::Joints &
+#endif
+      updatedModel = this->UpdateKinematicsCustom(
+          updateKin ? &Q : nullptr,
+          updateKin ? &Qdot : nullptr,
+          updateKin ? &Qddot : nullptr);
+
+  utils::Vector3d zmp;
+  RigidBodyDynamics::Utils::CalcZeroMomentPoint(
+      updatedModel, Q, Qdot, Qddot, &zmp, normal, point, false);
+
+  return zmp;
+}
+
 std::vector<rigidbody::NodeSegment> rigidbody::Joints::CoMbySegment(
     const rigidbody::GeneralizedCoordinates &Q,
     bool updateKin) {

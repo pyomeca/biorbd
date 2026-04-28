@@ -244,6 +244,42 @@ def test_com(brbd):
 
 
 @pytest.mark.parametrize("brbd", brbd_to_test)
+def test_zero_moment_point(brbd):
+    m = brbd.Model("../../models/pyomecaman.bioMod")
+
+    q = np.array([0.1, 0.1, 0.1, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3])
+    q_dot = np.array([1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3])
+    q_ddot = np.array([10, 10, 10, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30])
+    normal = np.array([0, 0, 1])
+    point = np.array([0, 0, 0.1])
+
+    if brbd.backend == brbd.CASADI:
+        from casadi import MX
+
+        q_sym = MX.sym("q", m.nbQ(), 1)
+        q_dot_sym = MX.sym("q_dot", m.nbQdot(), 1)
+        q_ddot_sym = MX.sym("q_ddot", m.nbQddot(), 1)
+
+        zero_moment_point_func = brbd.to_casadi_func(
+            "Compute_Zero_Moment_Point",
+            m.CalcZeroMomentPoint,
+            q_sym,
+            q_dot_sym,
+            q_ddot_sym,
+            normal,
+            point,
+        )
+        zero_moment_point = np.array(zero_moment_point_func(q, q_dot, q_ddot))
+
+    elif brbd.backend == brbd.EIGEN3:
+        zero_moment_point = m.CalcZeroMomentPoint(q, q_dot, q_ddot, normal, point).to_array()
+    else:
+        raise NotImplementedError("Backend not implemented in test")
+
+    np.testing.assert_almost_equal(zero_moment_point.squeeze()[2], point[2])
+
+
+@pytest.mark.parametrize("brbd", brbd_to_test)
 def test_set_vector3d(brbd):
     m = brbd.Model("../../models/pyomecaman.bioMod")
     m.setGravity(np.array((0, 0, -2)))
