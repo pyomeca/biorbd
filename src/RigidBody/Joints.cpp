@@ -1070,6 +1070,8 @@ utils::Vector3d rigidbody::Joints::CalcZeroMomentPoint(
   RigidBodyDynamics::Utils::CalcZeroMomentPoint(
       updatedModel, Q, Qdot, Qddot, &zmp, normal, point, false);
 
+  zmp += normal * ((point - zmp).dot(normal) / normal.dot(normal));
+
   return zmp;
 }
 

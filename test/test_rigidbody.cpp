@@ -1494,6 +1494,34 @@ TEST(CoM, zeroMomentPoint) {
         static_cast<double>(expectedZeroMomentPoint(i, 0)),
         requiredPrecision);
   }
+
+  utils::Vector3d shiftedPoint(0, 0, 0.1);
+  utils::Vector3d shiftedZeroMomentPoint(
+      model.CalcZeroMomentPoint(Q, Qdot, Qddot, normal, shiftedPoint));
+
+  EXPECT_NEAR(
+      static_cast<double>((shiftedZeroMomentPoint - shiftedPoint).dot(normal)),
+      0.,
+      requiredPrecision);
+  EXPECT_NEAR(
+      static_cast<double>(shiftedZeroMomentPoint(0, 0)),
+      static_cast<double>(zeroMomentPoint(0, 0)),
+      requiredPrecision);
+  EXPECT_NEAR(
+      static_cast<double>(shiftedZeroMomentPoint(1, 0)),
+      static_cast<double>(zeroMomentPoint(1, 0)),
+      requiredPrecision);
+
+  utils::Vector3d sagittalNormal(0, 1, 0);
+  utils::Vector3d sagittalPoint(0, 0.2, 0);
+  utils::Vector3d sagittalZeroMomentPoint(model.CalcZeroMomentPoint(
+      Q, Qdot, Qddot, sagittalNormal, sagittalPoint));
+
+  EXPECT_NEAR(
+      static_cast<double>(
+          (sagittalZeroMomentPoint - sagittalPoint).dot(sagittalNormal)),
+      0.,
+      requiredPrecision);
 }
 
 TEST(Segment, copy) {
