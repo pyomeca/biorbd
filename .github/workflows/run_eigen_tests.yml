@@ -10,7 +10,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest, windows-2022]
         include:
           - os: ubuntu-latest
             label: linux-64
@@ -20,7 +20,7 @@ jobs:
             label: osx-arm64
             prefix: /Users/runner/miniconda3/envs/biorbd
             use_matlab: ON
-          - os: windows-latest
+          - os: windows-2022
             label: win-64
             prefix: C:\Miniconda3\envs\biorbd
             use_matlab: ON
