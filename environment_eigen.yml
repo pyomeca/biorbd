@@ -5,7 +5,7 @@ channels:
 - default
 dependencies:
 - python >=3.10
-- eigen
+- eigen <4.0.0
 - rbdl >=3.3.0
 - scipy
 - ezc3d
