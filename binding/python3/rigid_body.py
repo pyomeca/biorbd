@@ -1,8 +1,28 @@
+from dataclasses import dataclass
+
 from scipy import optimize
 import numpy as np
 
 from . import biorbd
 from .utils import get_range_q
+
+try:
+    import proxsuite
+
+    has_proxsuite = True
+except ImportError:
+    proxsuite = None
+    has_proxsuite = False
+
+
+@dataclass
+class DifferentialInverseKinematicsResult:
+    fun: np.ndarray
+    nfev: int
+    njev: int
+    message: str
+    status: int
+    success: bool
 
 
 def marker_index(model, marker_name: str) -> int:
@@ -439,3 +459,187 @@ class InverseKinematics:
         )
 
         return self.output
+
+
+class DifferentialInverseKinematics(InverseKinematics):
+    """
+    Differential inverse kinematics solver using ProxQP.
+
+    This class solves a sequence of linearized marker-tracking QPs. It currently
+    handles marker tracking and generalized-coordinate bounds, but no holonomic
+    loop constraints.
+    """
+
+    def _initial_guess(self, initial_q: np.ndarray | None):
+        if initial_q is not None:
+            q = np.asarray(initial_q, dtype=float)
+            if q.shape != (self.nb_q,):
+                raise ValueError(f"initial_q should have shape ({self.nb_q},)")
+            return q.copy()
+
+        q_min, q_max = self.bounds
+        q = np.zeros(self.nb_q)
+        finite_bounds = np.isfinite(q_min) & np.isfinite(q_max)
+        q[finite_bounds] = (q_min[finite_bounds] + q_max[finite_bounds]) / 2
+        lower_only = np.isfinite(q_min) & ~np.isfinite(q_max)
+        q[lower_only] = q_min[lower_only]
+        upper_only = ~np.isfinite(q_min) & np.isfinite(q_max)
+        q[upper_only] = q_max[upper_only]
+        return q
+
+    @staticmethod
+    def _proxqp_bounds(bounds: tuple[np.ndarray, np.ndarray], q: np.ndarray):
+        lower, upper = bounds
+        lower = lower - q
+        upper = upper - q
+        lower = np.where(np.isfinite(lower), lower, -1e20)
+        upper = np.where(np.isfinite(upper), upper, 1e20)
+        return lower, upper
+
+    def _solve_qp(
+        self,
+        hessian: np.ndarray,
+        gradient: np.ndarray,
+        lower_bounds: np.ndarray,
+        upper_bounds: np.ndarray,
+        tolerance: float,
+    ):
+        qp = proxsuite.proxqp.dense.QP(self.nb_q, 0, self.nb_q)
+        qp.settings.eps_abs = tolerance
+        qp.settings.eps_rel = tolerance
+        qp.settings.verbose = False
+        qp.init(
+            hessian,
+            gradient,
+            np.empty((0, self.nb_q)),
+            np.empty((0,)),
+            np.eye(self.nb_q),
+            lower_bounds,
+            upper_bounds,
+        )
+        qp.solve()
+        return np.array(qp.results.x).reshape(self.nb_q)
+
+    def solve(
+        self,
+        initial_q: np.ndarray | None = None,
+        marker_weights: np.ndarray | None = None,
+        max_iterations: int = 10,
+        tolerance: float = 1e-8,
+        regularization: float = 1e-8,
+        verbose: bool = True,
+    ):
+        """
+        Solve inverse kinematics by repeated differential QPs.
+
+        Parameters
+        ----------
+        initial_q: np.ndarray | None
+            Initial generalized coordinates for the first frame. If None, the
+            midpoint of finite model bounds is used when possible.
+        marker_weights: np.ndarray | None
+            One scalar weight per model marker. Missing markers are ignored.
+        max_iterations: int
+            Maximum number of QP linearization steps per frame.
+        tolerance: float
+            Stopping tolerance on marker residual norm and ProxQP accuracy.
+        regularization: float
+            Positive diagonal regularization added to the QP Hessian.
+        verbose: bool
+            If True, prints frame progress every 100 frames.
+
+        Returns
+        -------
+        q : np.ndarray
+            Generalized coordinates with shape (nb_q, nb_frames).
+        """
+        if not has_proxsuite:
+            raise RuntimeError(
+                "DifferentialInverseKinematics requires the optional dependency 'proxsuite'."
+            )
+        if max_iterations < 1:
+            raise ValueError("max_iterations must be at least 1")
+        if regularization < 0:
+            raise ValueError("regularization must be non-negative")
+
+        if marker_weights is None:
+            marker_weights = np.ones(self.nb_markers)
+        marker_weights = np.asarray(marker_weights, dtype=float)
+        if marker_weights.shape != (self.nb_markers,):
+            raise ValueError(f"marker_weights should have shape ({self.nb_markers},)")
+
+        bounds = self.bounds
+        q = self._initial_guess(initial_q)
+
+        for f in range(self.nb_frames):
+            if verbose and f % 100 == 0:
+                print(f"Frame {f}/{self.nb_frames}")
+
+            if f != 0:
+                q = self.q[:, f - 1].copy()
+
+            residual = np.array([])
+            success = False
+            iterations = 0
+            for iterations in range(1, max_iterations + 1):
+                indices_to_keep = self.indices_to_keep[f]
+                if not indices_to_keep:
+                    break
+
+                markers_real = self.xp_markers[:, :, f][:, indices_to_keep]
+                residual = self._marker_diff(
+                    np.array(self.biorbd_model.technicalMarkers(q))[indices_to_keep],
+                    markers_real,
+                )
+                if np.linalg.norm(residual) <= tolerance:
+                    success = True
+                    break
+
+                jacobian = self._marker_jacobian(
+                    np.array(self.biorbd_model.technicalMarkersJacobian(q))[
+                        indices_to_keep
+                    ]
+                )
+                weights = np.repeat(marker_weights[indices_to_keep], 3)
+                weighted_jacobian = jacobian * weights[:, np.newaxis]
+                hessian = jacobian.T @ weighted_jacobian
+                hessian += np.eye(self.nb_q) * regularization
+                gradient = jacobian.T @ (weights * residual)
+
+                lower_bounds, upper_bounds = self._proxqp_bounds(bounds, q)
+                dq = self._solve_qp(
+                    hessian, gradient, lower_bounds, upper_bounds, tolerance
+                )
+                q = q + dq
+
+                if np.linalg.norm(dq) <= tolerance:
+                    residual = self._marker_diff(
+                        np.array(self.biorbd_model.technicalMarkers(q))[
+                            indices_to_keep
+                        ],
+                        markers_real,
+                    )
+                    success = np.linalg.norm(residual) <= tolerance
+                    break
+
+            self.q[:, f] = q
+            message = (
+                "Converged"
+                if success
+                else "Maximum number of QP linearizations reached"
+            )
+            self.list_sol.append(
+                DifferentialInverseKinematicsResult(
+                    fun=residual,
+                    nfev=iterations,
+                    njev=iterations,
+                    message=message,
+                    status=1 if success else 0,
+                    success=success,
+                )
+            )
+
+        return self.q
+
+
+InverseKinematicsProxQP = DifferentialInverseKinematics
