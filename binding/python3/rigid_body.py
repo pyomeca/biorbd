@@ -622,6 +622,16 @@ class DifferentialInverseKinematics(InverseKinematics):
                     success = np.linalg.norm(residual) <= tolerance
                     break
 
+            if self.indices_to_keep[f]:
+                markers_real = self.xp_markers[:, :, f][:, self.indices_to_keep[f]]
+                residual = self._marker_diff(
+                    np.array(self.biorbd_model.technicalMarkers(q))[
+                        self.indices_to_keep[f]
+                    ],
+                    markers_real,
+                )
+                success = success or np.linalg.norm(residual) <= tolerance
+
             self.q[:, f] = q
             message = (
                 "Converged"
