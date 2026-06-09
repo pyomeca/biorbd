@@ -36,6 +36,7 @@ static std::string modelPathWithObj("models/violin.bioMod");
 static std::string modelPathWithVtp("models/thoraxWithVtp.bioMod");
 #endif
 static std::string modelPathWithStl("models/pendulum.bioMod");
+static std::string modelPathWithPly("models/simpleWithPlyMeshFile.bioMod");
 
 TEST(FileIO, OpenModel) {
   EXPECT_NO_THROW(Model model(modelPathForGeneralTesting));
@@ -103,6 +104,13 @@ TEST(GenericTests, mass) {
 TEST(MeshFile, FileIO) {
   EXPECT_NO_THROW(Model model(modelPathWithMeshFile));
   Model model(modelPathWithMeshFile);
+}
+
+TEST(MeshFile, FileIoPly) {
+  EXPECT_NO_THROW(Model model(modelPathWithPly));
+  Model model(modelPathWithPly);
+  EXPECT_EQ(model.mesh(0).nbVertex(), 8);
+  EXPECT_EQ(model.mesh(0).faces().size(), 12);
 }
 
 #ifndef SKIP_LONG_TESTS
