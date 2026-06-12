@@ -4,6 +4,7 @@ from . import biorbd  # This is created while installing using CMake
 from .biorbd import *
 from ._version import __version__
 from .surface_max_torque_actuator import *
+from .inverse_kinematics import *
 from .rigid_body import *
 from .utils import *
 
