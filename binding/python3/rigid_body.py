@@ -6,6 +6,7 @@ from .inverse_kinematics import (
     DifferentialInverseKinematicsResult,
     InverseKinematics,
     InverseKinematicsProxQP,
+    MarkerLoopClosureConstraint,
     has_proxsuite,
 )
 

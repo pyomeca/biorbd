@@ -44,6 +44,54 @@ class DifferentialInverseKinematicsResult:
         return self.jacobian_evaluations
 
 
+@dataclass
+class MarkerLoopClosureConstraint:
+    """
+    Linearized loop-closure constraint between two technical markers.
+
+    The constraint enforces that both markers occupy the same global position.
+    At each differential IK linearization, it contributes:
+
+    ``(J_predecessor - J_successor) dq = -(p_predecessor - p_successor)``.
+    """
+
+    predecessor_marker: str | int
+    successor_marker: str | int
+    axes: tuple[int, ...] = (0, 1, 2)
+
+    @staticmethod
+    def _marker_index(marker_names: list[str], marker: str | int):
+        if isinstance(marker, int):
+            return marker
+        try:
+            return marker_names.index(marker)
+        except ValueError:
+            raise ValueError(f"{marker} is not in the biorbd model") from None
+
+    def residual_and_jacobian(self, inverse_kinematics, q: np.ndarray):
+        predecessor_index = self._marker_index(
+            inverse_kinematics.marker_names, self.predecessor_marker
+        )
+        successor_index = self._marker_index(
+            inverse_kinematics.marker_names, self.successor_marker
+        )
+        axes = np.asarray(self.axes, dtype=int)
+
+        markers = np.array(inverse_kinematics.biorbd_model.technicalMarkers(q))
+        jacobians = np.array(
+            inverse_kinematics.biorbd_model.technicalMarkersJacobian(q)
+        )
+
+        residual = (
+            markers[predecessor_index].to_array() - markers[successor_index].to_array()
+        )[axes]
+        jacobian = (
+            jacobians[predecessor_index].to_array()
+            - jacobians[successor_index].to_array()
+        )[axes, :]
+        return residual, jacobian
+
+
 class InverseKinematics:
     """
     The class for generate inverse kinematics from c3d files
@@ -370,12 +418,12 @@ class DifferentialInverseKinematics(InverseKinematics):
     Differential inverse kinematics solver using ProxQP.
 
     This class solves a sequence of linearized marker-tracking QPs. It handles
-    marker tracking and generalized-coordinate bounds, but no holonomic loop
-    constraints.
+    marker tracking, generalized-coordinate bounds, and optional linearized
+    marker loop-closure constraints.
 
     Compared to the scipy least-squares backend, this solver exposes a QP step
-    at each linearization. That makes it easier to add linear constraints later
-    and can be efficient on warm-started frame sequences. The tradeoff is that
+    at each linearization. That makes it easier to add linear constraints and
+    can be efficient on warm-started frame sequences. The tradeoff is that
     it is a local differential method: difficult frames may require several
     linearizations, and the result depends on the initial guess more directly
     than a full nonlinear least-squares solve.
@@ -418,22 +466,44 @@ class DifferentialInverseKinematics(InverseKinematics):
         lower_bounds: np.ndarray,
         upper_bounds: np.ndarray,
         tolerance: float,
+        equality_matrix: np.ndarray | None = None,
+        equality_vector: np.ndarray | None = None,
     ):
-        qp = proxsuite.proxqp.dense.QP(self.nb_q, 0, self.nb_q)
+        nb_equalities = 0 if equality_matrix is None else equality_matrix.shape[0]
+        qp = proxsuite.proxqp.dense.QP(self.nb_q, nb_equalities, self.nb_q)
         qp.settings.eps_abs = tolerance
         qp.settings.eps_rel = tolerance
         qp.settings.verbose = False
+        equality_matrix = (
+            np.empty((0, self.nb_q)) if equality_matrix is None else equality_matrix
+        )
+        equality_vector = np.empty((0,)) if equality_vector is None else equality_vector
         qp.init(
             hessian,
             gradient,
-            np.empty((0, self.nb_q)),
-            np.empty((0,)),
+            equality_matrix,
+            equality_vector,
             np.eye(self.nb_q),
             lower_bounds,
             upper_bounds,
         )
         qp.solve()
         return np.array(qp.results.x).reshape(self.nb_q)
+
+    def _constraints_residual_and_jacobian(
+        self, q: np.ndarray, constraints: list[MarkerLoopClosureConstraint]
+    ):
+        if not constraints:
+            return np.empty((0,)), np.empty((0, self.nb_q))
+
+        residuals = []
+        jacobians = []
+        for constraint in constraints:
+            residual, jacobian = constraint.residual_and_jacobian(self, q)
+            residuals.append(residual)
+            jacobians.append(jacobian)
+
+        return np.concatenate(residuals), np.vstack(jacobians)
 
     def solve(
         self,
@@ -442,6 +512,8 @@ class DifferentialInverseKinematics(InverseKinematics):
         max_iterations: int = 10,
         tolerance: float = 1e-8,
         regularization: float = 1e-8,
+        constraints: list[MarkerLoopClosureConstraint] | None = None,
+        constraint_tolerance: float | None = None,
         verbose: bool = True,
     ):
         """
@@ -460,6 +532,11 @@ class DifferentialInverseKinematics(InverseKinematics):
             Stopping tolerance on marker residual norm and ProxQP accuracy.
         regularization: float
             Positive diagonal regularization added to the QP Hessian.
+        constraints: list[MarkerLoopClosureConstraint] | None
+            Linearized equality constraints to enforce at each QP step.
+        constraint_tolerance: float | None
+            Stopping tolerance on the nonlinear constraint residual norm. If
+            None, the marker tolerance is used.
         verbose: bool
             If True, prints frame progress every 100 frames.
 
@@ -476,6 +553,9 @@ class DifferentialInverseKinematics(InverseKinematics):
             raise ValueError("max_iterations must be at least 1")
         if regularization < 0:
             raise ValueError("regularization must be non-negative")
+        if constraint_tolerance is None:
+            constraint_tolerance = tolerance
+        constraints = [] if constraints is None else constraints
 
         if marker_weights is None:
             marker_weights = np.ones(self.nb_markers)
@@ -507,8 +587,12 @@ class DifferentialInverseKinematics(InverseKinematics):
                     markers_real,
                 )
                 if np.linalg.norm(residual) <= tolerance:
-                    success = True
-                    break
+                    constraint_residual, _ = self._constraints_residual_and_jacobian(
+                        q, constraints
+                    )
+                    if np.linalg.norm(constraint_residual) <= constraint_tolerance:
+                        success = True
+                        break
 
                 jacobian = self._marker_jacobian(
                     np.array(self.biorbd_model.technicalMarkersJacobian(q))[
@@ -522,8 +606,18 @@ class DifferentialInverseKinematics(InverseKinematics):
                 gradient = jacobian.T @ (weights * residual)
 
                 lower_bounds, upper_bounds = self._proxqp_bounds(bounds, q)
+                (
+                    constraint_residual,
+                    constraint_jacobian,
+                ) = self._constraints_residual_and_jacobian(q, constraints)
                 dq = self._solve_qp(
-                    hessian, gradient, lower_bounds, upper_bounds, tolerance
+                    hessian,
+                    gradient,
+                    lower_bounds,
+                    upper_bounds,
+                    tolerance,
+                    constraint_jacobian,
+                    -constraint_residual,
                 )
                 q = q + dq
 
@@ -534,7 +628,13 @@ class DifferentialInverseKinematics(InverseKinematics):
                         ],
                         markers_real,
                     )
-                    success = np.linalg.norm(residual) <= tolerance
+                    constraint_residual, _ = self._constraints_residual_and_jacobian(
+                        q, constraints
+                    )
+                    success = (
+                        np.linalg.norm(residual) <= tolerance
+                        and np.linalg.norm(constraint_residual) <= constraint_tolerance
+                    )
                     break
 
             if self.indices_to_keep[f]:
@@ -545,7 +645,13 @@ class DifferentialInverseKinematics(InverseKinematics):
                     ],
                     markers_real,
                 )
-                success = success or np.linalg.norm(residual) <= tolerance
+                constraint_residual, _ = self._constraints_residual_and_jacobian(
+                    q, constraints
+                )
+                success = success or (
+                    np.linalg.norm(residual) <= tolerance
+                    and np.linalg.norm(constraint_residual) <= constraint_tolerance
+                )
 
             self.q[:, f] = q
             message = (
