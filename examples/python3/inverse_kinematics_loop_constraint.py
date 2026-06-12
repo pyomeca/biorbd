@@ -117,7 +117,10 @@ def _generate_closed_loop_data(model, n_frames):
 
 def _summarize(model, name, q, ik, elapsed):
     sol = ik.sol()
-    marker_residuals = sol["residuals"]
+    return _summarize_q(model, name, q, elapsed, sol["residuals"], sol["nfev"])
+
+
+def _summarize_q(model, name, q, elapsed, marker_residuals, iterations):
     loop_gaps = np.array(
         [np.linalg.norm(_loop_gap(model, q[:, f])) for f in range(q.shape[1])]
     )
@@ -127,7 +130,7 @@ def _summarize(model, name, q, ik, elapsed):
         "mean_marker_residual_m": np.nanmean(marker_residuals),
         "mean_loop_gap_m": loop_gaps.mean(),
         "max_loop_gap_m": loop_gaps.max(),
-        "mean_iterations": np.mean(sol["nfev"]),
+        "mean_iterations": np.mean(iterations),
     }
 
 
@@ -137,6 +140,58 @@ def _run_inverse_kinematics(model, markers, method):
     with contextlib.redirect_stdout(io.StringIO()):
         q = ik.solve(method=method)
     return q, ik, time.perf_counter() - tic
+
+
+def _visible_marker_residuals(model, q, markers_real, indices_to_keep):
+    markers_model = _markers_to_array(model, q)
+    residuals = markers_model[:, indices_to_keep] - markers_real[:, indices_to_keep]
+    return residuals.T.reshape(-1)
+
+
+def _run_trf_loop(model, markers, initial_q, loop_weight=100):
+    q_out = np.ndarray((model.nbQ(), markers.shape[2]))
+    marker_residuals = np.ndarray((model.nbMarkers(), markers.shape[2])) * np.nan
+    iterations = []
+    q = initial_q.copy()
+    tic = time.perf_counter()
+
+    for frame in range(markers.shape[2]):
+        indices_to_keep = list(
+            np.unique(np.isfinite(markers[:, :, frame]).nonzero()[1])
+        )
+
+        def residual(q_tp):
+            return np.concatenate(
+                (
+                    _visible_marker_residuals(
+                        model, q_tp, markers[:, :, frame], indices_to_keep
+                    ),
+                    loop_weight * _loop_gap(model, q_tp),
+                )
+            )
+
+        sol = optimize.least_squares(
+            residual,
+            q,
+            method="trf",
+            xtol=1e-10,
+            ftol=1e-10,
+            gtol=1e-10,
+            max_nfev=200,
+        )
+        q = sol.x
+        q_out[:, frame] = q
+        iterations.append(sol.nfev)
+
+        marker_residual_vector = _visible_marker_residuals(
+            model, q, markers[:, :, frame], indices_to_keep
+        )
+        marker_residuals[indices_to_keep, frame] = np.linalg.norm(
+            marker_residual_vector.reshape(-1, 3), axis=1
+        )
+
+    elapsed = time.perf_counter() - tic
+    return q_out, marker_residuals, iterations, elapsed
 
 
 def _run_differential_inverse_kinematics(model, markers, initial_q, constraints):
@@ -162,6 +217,13 @@ def main(n_frames=20):
     for method in ("only_lm", "lm", "trf"):
         q, ik, elapsed = _run_inverse_kinematics(model, markers, method)
         rows.append(_summarize(model, method, q, ik, elapsed))
+
+    q, marker_residuals, iterations, elapsed = _run_trf_loop(
+        model, markers, initial_q=q_ref[:, 0]
+    )
+    rows.append(
+        _summarize_q(model, "trf_loop", q, elapsed, marker_residuals, iterations)
+    )
 
     q, ik, elapsed = _run_differential_inverse_kinematics(
         model, markers, initial_q=q_ref[:, 0], constraints=None
