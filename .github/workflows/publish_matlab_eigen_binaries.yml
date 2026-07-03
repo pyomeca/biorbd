@@ -93,7 +93,7 @@ jobs:
           mkdir -p $BUILD_FOLDER
           cd $BUILD_FOLDER
           cmake .. \
-                -G"Visual Studio 17 2022" \
+                -G"Visual Studio 18 2026" \
                 -Ax64 \
                 -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH \
                 -DMATH_LIBRARY_BACKEND="Eigen3" \
