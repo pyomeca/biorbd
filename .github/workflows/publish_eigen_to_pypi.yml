@@ -41,7 +41,7 @@ jobs:
         
       - name: Install build packages
         run: | 
-          conda install pip "swig<4.4.0" eigen -cconda-forge
+          conda install pip "swig<4.4.0" "eigen<4.0.0" -c conda-forge
           conda list
           pip install build cibuildwheel==2.21.3
 
