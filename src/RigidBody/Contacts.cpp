@@ -18,6 +18,7 @@
 #include "Utils/SpatialVector.h"
 #include "Utils/String.h"
 #include "Utils/Vector3d.h"
+#include "Utils/Matrix.h"
 
 using namespace BIORBD_NAMESPACE;
 
@@ -269,6 +270,18 @@ utils::String rigidbody::Contacts::contactName(size_t i) {
   return RigidBodyDynamics::ConstraintSet::name[i];
 }
 
+size_t BIORBD_NAMESPACE::rigidbody::Contacts::contactId(
+    const utils::String& name) 
+{
+    for (size_t i = 0; i < nbContacts(); ++i) {
+        if (contactName(i) == name) {
+            return i;
+        }
+    }
+
+    throw std::runtime_error("Contact '" + name + "' not found.");
+}
+
 std::vector<utils::Vector3d> rigidbody::Contacts::constraintsInGlobal(
     const rigidbody::GeneralizedCoordinates &Q,
     bool updateKin) {
@@ -385,6 +398,109 @@ std::vector<utils::Vector3d> rigidbody::Contacts::rigidContactsAcceleration(
   return tp;
 }
 
+utils::Matrix BiorbdEigen3::rigidbody::Contacts::projectContactJacobian(
+    const utils::Matrix& J,
+    const NodeSegment& contact)
+{
+    const auto axes = contact.axes();
+
+    size_t nbActive = 0;
+    for (bool a : axes)
+        if (a) nbActive++;
+
+    utils::Matrix Jout(nbActive, J.cols());
+
+    size_t r = 0;
+    for (size_t i = 0; i < 3; ++i) {
+        if (axes[i]) {
+            Jout.row(r++) = J.row(i);
+        }
+    }
+
+    return Jout;
+}
+
+utils::Matrix rigidbody::Contacts::rigidContactJacobian(
+    rigidbody::Joints& updatedModel,
+    const rigidbody::GeneralizedCoordinates& Q,
+    size_t idx)
+{
+    const auto& contact = rigidContact(idx);
+
+    utils::Matrix J = updatedModel.CalcPointJacobian(
+        Q,
+        contact.parent(),
+        contact,
+        false);
+
+    return projectContactJacobian(J, contact);
+}
+
+utils::Matrix rigidbody::Contacts::rigidContactJacobian(
+    const rigidbody::GeneralizedCoordinates& Q,
+    size_t idx,
+    bool updateKin)
+{
+    const auto& contact = rigidContact(idx);
+
+#ifdef BIORBD_USE_CASADI_MATH
+    rigidbody::Joints
+#else
+    rigidbody::Joints&
+#endif
+    updatedModel =
+        dynamic_cast<rigidbody::Joints&>(*this).UpdateKinematicsCustom(
+            updateKin ? &Q : nullptr);
+
+    utils::Matrix J = updatedModel.CalcPointJacobian(
+        Q,
+        contact.parent(),
+        contact,
+        false);
+
+    return projectContactJacobian(J, contact);
+}
+
+std::vector<utils::Matrix> rigidbody::Contacts::rigidContactsJacobian(
+    const rigidbody::GeneralizedCoordinates& Q,
+    bool updateKin)
+{
+#ifdef BIORBD_USE_CASADI_MATH
+    rigidbody::Joints
+#else
+    rigidbody::Joints&
+#endif
+    updatedModel =
+        dynamic_cast<rigidbody::Joints&>(*this).UpdateKinematicsCustom(
+            updateKin ? &Q : nullptr);
+
+    return rigidContactsJacobian(updatedModel, Q);
+}
+
+// Get the Jacobian of the technical markers
+std::vector<utils::Matrix> rigidbody::Contacts::rigidContactsJacobian(
+    rigidbody::Joints& updatedModel,
+    const rigidbody::GeneralizedCoordinates& Q)
+{
+    std::vector<utils::Matrix> G;
+    G.reserve(nbRigidContacts());
+
+    for (size_t idx = 0; idx < nbRigidContacts(); ++idx) {
+
+        const auto& contact = rigidContact(idx);
+
+        utils::Matrix J = updatedModel.CalcPointJacobian(
+            Q,
+            contact.parent(),
+            contact,
+            false);
+
+        G.push_back(projectContactJacobian(J, contact));
+    }
+
+    return G;
+}
+
 utils::Vector rigidbody::Contacts::getForce() const {
   return static_cast<utils::Vector>(this->force);
 }
@@ -396,7 +512,8 @@ const std::vector<rigidbody::NodeSegment> &rigidbody::Contacts::rigidContacts()
 
 const rigidbody::NodeSegment &rigidbody::Contacts::rigidContact(
     size_t idx) const {
-  return (*m_rigidContacts)[idx];
+  // return (*m_rigidContacts)[idx];
+  return m_rigidContacts->at(idx);
 }
 
 int rigidbody::Contacts::nbRigidContacts() const {
