@@ -1,6 +1,6 @@
 ply
 format ascii 1.0
-comment cube with quad faces to validate PLY triangulation
+comment cube with quad faces and scalar face properties
 element vertex 8
 property float x
 property float y
@@ -10,6 +10,7 @@ property uchar green
 property uchar blue
 element face 6
 property list uchar int vertex_indices
+property uchar material
 end_header
 -1 -1 -1 255 255 255
 -1 -1 1 255 255 255
@@ -19,9 +20,9 @@ end_header
 1 -1 1 255 255 255
 1 1 1 255 255 255
 1 1 -1 255 255 255
-4 0 1 2 3
-4 0 4 5 1
-4 1 5 6 2
-4 2 6 7 3
-4 3 7 4 0
-4 4 7 6 5
+4 0 1 2 3 0
+4 0 4 5 1 1
+4 1 5 6 2 2
+4 2 6 7 3 3
+4 3 7 4 0 4
+4 4 7 6 5 5
