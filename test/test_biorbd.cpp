@@ -13,6 +13,7 @@
 #include "RigidBody/IMU.h"
 #include "RigidBody/Joints.h"
 #include "RigidBody/Mesh.h"
+#include "RigidBody/MeshFace.h"
 #include "RigidBody/NodeSegment.h"
 #include "RigidBody/Segment.h"
 #include "Utils/RotoTrans.h"
