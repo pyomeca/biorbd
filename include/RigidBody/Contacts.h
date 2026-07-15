@@ -15,6 +15,7 @@ class Vector3d;
 class Vector;
 class String;
 class SpatialVector;
+class Matrix;
 }  // namespace utils
 
 namespace rigidbody {
@@ -24,6 +25,7 @@ class GeneralizedVelocity;
 class GeneralizedAcceleration;
 class GeneralizedTorque;
 class NodeSegment;
+class Joints;
 
 ///
 /// \brief Class Contacts
@@ -190,6 +192,14 @@ class BIORBD_API Contacts : public RigidBodyDynamics::ConstraintSet
   utils::String contactName(size_t i);
 
   ///
+  /// \brief Return the index of the contact corresponding to the given name
+  /// \param name The name of the contact
+  /// \return The index of the contact
+  /// \throw std::runtime_error if the contact does not exist
+  ///
+  size_t contactId(const utils::String& name) ;
+
+  ///
   /// \brief Return the constraints position in the global reference
   /// \param Q The generalized coordinates of the joints
   /// \param updateKin Whether the kinematics of the model should be updated
@@ -316,6 +326,60 @@ class BIORBD_API Contacts : public RigidBodyDynamics::ConstraintSet
       const rigidbody::GeneralizedVelocity &Qdot,
       const rigidbody::GeneralizedAcceleration &dQdot,
       bool updateKin = true);
+
+  ///
+  /// \brief Project a 3D point Jacobian onto active contact axes
+  /// \param J The full 3xN Jacobian of the contact point
+  /// \param contact The rigid contact definition (provides active axes)
+  /// \return The reduced Jacobian containing only active axes
+  ///
+  static utils::Matrix projectContactJacobian(
+      const utils::Matrix& J,
+      const rigidbody::NodeSegment& contact);
+     
+  ///
+  /// \brief Compute the Jacobian of a single rigid contact
+  /// \param updatedModel The kinematic model with updated state
+  /// \param Q The generalized coordinates
+  /// \param idx Index of the rigid contact
+  /// \return The Jacobian of the selected contact (projected onto active axes)
+  ///
+  utils::Matrix rigidContactJacobian(
+      rigidbody::Joints& updatedModel,
+      const rigidbody::GeneralizedCoordinates& Q,
+      size_t idx);
+  
+  ///
+  /// \brief Compute the Jacobian of a single rigid contact
+  /// \param Q The generalized coordinates
+  /// \param idx Index of the rigid contact
+  /// \param updateKin If true, update kinematics before computation
+  /// \return The Jacobian of the selected contact (projected onto active axes)
+  ///
+  utils::Matrix rigidContactJacobian(
+      const rigidbody::GeneralizedCoordinates &Q,
+      size_t idx,
+      bool updateKin = true);
+  
+  ///
+  /// \brief Compute the Jacobians of all rigid contacts
+  /// \param Q The generalized coordinates
+  /// \param updateKin If true, update kinematics before computation
+  /// \return Vector of Jacobians for all rigid contacts (projected onto active axes)
+  ///
+  std::vector<utils::Matrix> rigidContactsJacobian(
+      const rigidbody::GeneralizedCoordinates& Q,
+      bool updateKin = true);
+  
+  ///
+  /// \brief Compute the Jacobians of all rigid contacts
+  /// \param updatedModel The kinematic model with updated state
+  /// \param Q The generalized coordinates
+  /// \return Vector of Jacobians for all rigid contacts (projected onto active axes)
+  ///
+  std::vector<utils::Matrix> rigidContactsJacobian(
+      rigidbody::Joints& updatedModel,
+      const rigidbody::GeneralizedCoordinates& Q);
 
  protected:
   ///
