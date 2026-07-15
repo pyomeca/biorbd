@@ -38,7 +38,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          conda install -cconda-forge "swig<4.4.0" pip eigen
+          conda install -cconda-forge "swig<4.4.0" pip "eigen<4.0.0"
           conda list
 
       - name: Setup Linux dependencies
