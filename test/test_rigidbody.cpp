@@ -6,6 +6,7 @@
 
 #include <rbdl/Dynamics.h>
 #include <rbdl/rbdl_math.h>
+#include <rbdl/rbdl_utils.h>
 
 #include "BiorbdModel.h"
 #include "RigidBody/ExternalForceSet.h"
@@ -1465,6 +1466,62 @@ TEST(CoM, kinematics) {
         expectedComDdot[i],
         requiredPrecision);
   }
+}
+
+TEST(CoM, zeroMomentPoint) {
+  Model model(modelPathForGeneralTesting);
+  Model expectedModel(modelPathForGeneralTesting);
+  rigidbody::GeneralizedCoordinates Q(model);
+  rigidbody::GeneralizedVelocity Qdot(model);
+  rigidbody::GeneralizedAcceleration Qddot(model);
+  for (size_t i = 0; i < model.nbQ(); ++i) {
+    Q(i, 0) = QtestPyomecaman[i];
+    Qdot(i, 0) = QtestPyomecaman[i] * 10;
+    Qddot(i, 0) = QtestPyomecaman[i] * 100;
+  }
+
+  utils::Vector3d normal(0, 0, 1);
+  utils::Vector3d point(0, 0, 0);
+  utils::Vector3d zeroMomentPoint(
+      model.CalcZeroMomentPoint(Q, Qdot, Qddot, normal, point));
+  utils::Vector3d expectedZeroMomentPoint;
+  RigidBodyDynamics::Utils::CalcZeroMomentPoint(
+      expectedModel, Q, Qdot, Qddot, &expectedZeroMomentPoint, normal, point);
+
+  for (size_t i = 0; i < 3; ++i) {
+    EXPECT_NEAR(
+        static_cast<double>(zeroMomentPoint(i, 0)),
+        static_cast<double>(expectedZeroMomentPoint(i, 0)),
+        requiredPrecision);
+  }
+
+  utils::Vector3d shiftedPoint(0, 0, 0.1);
+  utils::Vector3d shiftedZeroMomentPoint(
+      model.CalcZeroMomentPoint(Q, Qdot, Qddot, normal, shiftedPoint));
+
+  EXPECT_NEAR(
+      static_cast<double>((shiftedZeroMomentPoint - shiftedPoint).dot(normal)),
+      0.,
+      requiredPrecision);
+  EXPECT_NEAR(
+      static_cast<double>(shiftedZeroMomentPoint(0, 0)),
+      static_cast<double>(zeroMomentPoint(0, 0)),
+      requiredPrecision);
+  EXPECT_NEAR(
+      static_cast<double>(shiftedZeroMomentPoint(1, 0)),
+      static_cast<double>(zeroMomentPoint(1, 0)),
+      requiredPrecision);
+
+  utils::Vector3d sagittalNormal(0, 1, 0);
+  utils::Vector3d sagittalPoint(0, 0.2, 0);
+  utils::Vector3d sagittalZeroMomentPoint(model.CalcZeroMomentPoint(
+      Q, Qdot, Qddot, sagittalNormal, sagittalPoint));
+
+  EXPECT_NEAR(
+      static_cast<double>(
+          (sagittalZeroMomentPoint - sagittalPoint).dot(sagittalNormal)),
+      0.,
+      requiredPrecision);
 }
 
 TEST(Segment, copy) {
