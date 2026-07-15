@@ -103,8 +103,10 @@ void internal_forces::muscles::HillDeGrooteType::computeFvCE() {
   utils::Scalar d2 = -8.149;
   utils::Scalar d3 = -0.374;
   utils::Scalar d4 = 0.886;
-  utils::Scalar norm_v =
-      m_position->velocity() / this->characteristics().maxShorteningSpeed();
+  utils::Scalar v = m_position->velocity();
+
+  utils::Scalar norm_v = v / (characteristics().optimalLength() *
+                              this->characteristics().maxShorteningSpeed());
 
   *m_FvCE = d1 * std::log(
                      (d2 * norm_v + d3) +

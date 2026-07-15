@@ -276,3 +276,39 @@ utils::Vector internal_forces::muscles::StaticOptimization::finalSolution(
   }
   return res;
 }
+
+std::vector<utils::Vector>
+internal_forces::muscles::StaticOptimization::finalResidual() {
+    std::vector<utils::Vector> res;
+    if (!m_alreadyRun) {
+        utils::Error::raise(
+            "Problem has not been run through the optimization process "
+            "yet, you should optimize it first to get "
+            "the residual solution");
+    } else {
+        for (unsigned int i = 0; i < m_allQ.size(); ++i) {
+            res.push_back(
+                static_cast<internal_forces::muscles::StaticOptimizationIpopt*>(
+                    Ipopt::GetRawPtr(m_staticOptimProblem[i]))
+                    ->finalResidual());
+        }
+    }
+    return res;
+}
+
+utils::Vector
+internal_forces::muscles::StaticOptimization::finalResidual(unsigned int index) {
+    utils::Vector res;
+    if (!m_alreadyRun) {
+        utils::Error::raise(
+            "Problem has not been run through the optimization process "
+            "yet, you should optimize it first to get "
+            "the residual solution");
+    } else {
+        res = static_cast<internal_forces::muscles::StaticOptimizationIpopt*>(
+                  Ipopt::GetRawPtr(m_staticOptimProblem[index]))
+                  ->finalResidual();
+    }
+    return res;
+}
+

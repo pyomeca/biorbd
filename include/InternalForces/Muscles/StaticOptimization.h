@@ -186,6 +186,19 @@ class BIORBD_API StaticOptimization {
   ///
   utils::Vector finalSolution(unsigned int index);
 
+    ///
+  /// \brief Return the final residuals
+  /// \return The final residuals
+  ///
+  std::vector<utils::Vector> finalResidual();
+
+  ///
+  /// \brief Return the final residuals at a specific index
+  /// \return The final residuals at a specific index
+  ///
+  utils::Vector finalResidual(unsigned int index);
+
+
  protected:
   Model& m_model;            ///< A reference to the model
   bool m_useResidualTorque;  ///< To use residual torque
