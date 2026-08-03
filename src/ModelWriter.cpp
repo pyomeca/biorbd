@@ -12,6 +12,7 @@
 #include "RigidBody/SegmentCharacteristics.h"
 #include "Utils/Matrix3d.h"
 #include "Utils/Path.h"
+#include "Utils/Range.h"
 #include "Utils/String.h"
 #include "Utils/Vector.h"
 
@@ -63,6 +64,32 @@ void Writer::writeModel(Model& model, const utils::Path& pathToWrite) {
     if (model.segment(i).nbDofRot() > 0) {
       biorbdModelFile << sep << sep << "rotations" << sep
                       << model.segment(i).seqR() << std::endl;
+    }
+    const std::vector<utils::Range>& qRanges = model.segment(i).QRanges();
+    if (qRanges.size() > 0) {
+      biorbdModelFile << sep << sep << "rangesQ" << std::endl;
+      for (size_t j = 0; j < qRanges.size(); ++j) {
+        biorbdModelFile << sep << sep << sep << qRanges[j].min() << sep
+                        << qRanges[j].max() << std::endl;
+      }
+    }
+    const std::vector<utils::Range>& qdotRanges =
+        model.segment(i).QdotRanges();
+    if (qdotRanges.size() > 0) {
+      biorbdModelFile << sep << sep << "rangesQdot" << std::endl;
+      for (size_t j = 0; j < qdotRanges.size(); ++j) {
+        biorbdModelFile << sep << sep << sep << qdotRanges[j].min() << sep
+                        << qdotRanges[j].max() << std::endl;
+      }
+    }
+    const std::vector<utils::Range>& qddotRanges =
+        model.segment(i).QddotRanges();
+    if (qddotRanges.size() > 0) {
+      biorbdModelFile << sep << sep << "rangesQddot" << std::endl;
+      for (size_t j = 0; j < qddotRanges.size(); ++j) {
+        biorbdModelFile << sep << sep << sep << qddotRanges[j].min() << sep
+                        << qddotRanges[j].max() << std::endl;
+      }
     }
     biorbdModelFile << sep << sep << "jointDampings" << sep;
     for (auto damping : model.segment(i).jointDampings()) {
