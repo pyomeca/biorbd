@@ -717,6 +717,38 @@ class BIORBD_API Joints : public RigidBodyDynamics::Model
       bool updateKin = true);
 
   ///
+  /// \brief Compute the zero moment point on a contact surface.
+  /// \param Q The current joint positions
+  /// \param Qdot The current joint velocities
+  /// \param Qddot The current joint accelerations
+  /// \param updateKin If the kinematics of the model should be computed
+  /// \return The Zero Moment Point projected on the horizontal surface
+  ///
+  utils::Vector3d CalcZeroMomentPoint(
+      const rigidbody::GeneralizedCoordinates& Q,
+      const rigidbody::GeneralizedVelocity& Qdot,
+      const rigidbody::GeneralizedAcceleration& Qddot,
+      bool updateKin = true);
+
+  ///
+  /// \brief Compute the zero moment point on a contact surface.
+  /// \param Q The current joint positions
+  /// \param Qdot The current joint velocities
+  /// \param Qddot The current joint accelerations
+  /// \param normal The normal of the contact surface
+  /// \param point A point on the contact surface
+  /// \param updateKin If the kinematics of the model should be computed
+  /// \return The Zero Moment Point projected on the contact surface
+  ///
+  utils::Vector3d CalcZeroMomentPoint(
+      const rigidbody::GeneralizedCoordinates& Q,
+      const rigidbody::GeneralizedVelocity& Qdot,
+      const rigidbody::GeneralizedAcceleration& Qddot,
+      const utils::Vector3d& normal,
+      const utils::Vector3d& point,
+      bool updateKin = true);
+
+  ///
   /// \brief Return the position of the center of mass of each segment
   /// \param Q The generalized coordinates
   /// \param updateKin If the kinematics of the model should be computed

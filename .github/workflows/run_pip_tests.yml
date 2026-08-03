@@ -10,7 +10,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-2022]
         include:
           - os: ubuntu-latest
             label: linux-64
@@ -18,7 +18,7 @@ jobs:
           # - os: macos-latest
           #   label: osx-arm64
           #   prefix: /Users/runner/miniconda3/envs/biorbd
-          - os: windows-latest
+          - os: windows-2022
             label: win-64
             prefix: C:\Miniconda3\envs\biorbd
     name: ${{ matrix.label }}

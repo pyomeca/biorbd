@@ -244,6 +244,57 @@ def test_com(brbd):
 
 
 @pytest.mark.parametrize("brbd", brbd_to_test)
+def test_zero_moment_point(brbd):
+    m = brbd.Model("../../models/pyomecaman.bioMod")
+
+    q = np.array([0.1, 0.1, 0.1, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3])
+    q_dot = np.array([1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3])
+    q_ddot = np.array([10, 10, 10, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30])
+    def compute_zero_moment_point(normal, point):
+        if brbd.backend == brbd.CASADI:
+            from casadi import MX
+
+            q_sym = MX.sym("q", m.nbQ(), 1)
+            q_dot_sym = MX.sym("q_dot", m.nbQdot(), 1)
+            q_ddot_sym = MX.sym("q_ddot", m.nbQddot(), 1)
+
+            zero_moment_point_func = brbd.to_casadi_func(
+                "Compute_Zero_Moment_Point",
+                m.CalcZeroMomentPoint,
+                q_sym,
+                q_dot_sym,
+                q_ddot_sym,
+                normal,
+                point,
+            )
+            zero_moment_point = np.array(zero_moment_point_func(q, q_dot, q_ddot))
+
+        elif brbd.backend == brbd.EIGEN3:
+            zero_moment_point = m.CalcZeroMomentPoint(q, q_dot, q_ddot, normal, point).to_array()
+        else:
+            raise NotImplementedError("Backend not implemented in test")
+
+        return zero_moment_point.squeeze()
+
+    normal = np.array([0, 0, 1])
+    origin_point = np.array([0, 0, 0])
+    shifted_point = np.array([0, 0, 0.1])
+    zero_moment_point = compute_zero_moment_point(normal, shifted_point)
+
+    np.testing.assert_almost_equal(np.dot(zero_moment_point - shifted_point, normal), 0)
+
+    origin_zero_moment_point = compute_zero_moment_point(normal, origin_point)
+    np.testing.assert_almost_equal(zero_moment_point[:2], origin_zero_moment_point[:2])
+
+    sagittal_normal = np.array([0, 1, 0])
+    sagittal_point = np.array([0, 0.2, 0])
+    sagittal_zero_moment_point = compute_zero_moment_point(sagittal_normal, sagittal_point)
+    np.testing.assert_almost_equal(
+        np.dot(sagittal_zero_moment_point - sagittal_point, sagittal_normal), 0
+    )
+
+
+@pytest.mark.parametrize("brbd", brbd_to_test)
 def test_set_vector3d(brbd):
     m = brbd.Model("../../models/pyomecaman.bioMod")
     m.setGravity(np.array((0, 0, -2)))
