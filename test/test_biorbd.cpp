@@ -16,6 +16,7 @@
 #include "RigidBody/MeshFace.h"
 #include "RigidBody/NodeSegment.h"
 #include "RigidBody/Segment.h"
+#include "Utils/Range.h"
 #include "Utils/RotoTrans.h"
 #include "Utils/RotoTransNode.h"
 #include "Utils/String.h"
@@ -59,6 +60,37 @@ TEST(FileIO, WriteModel) {
   EXPECT_FLOAT_EQ(model.segment(0).jointDampings()[1], 2.0);
   EXPECT_FLOAT_EQ(model.segment(0).jointDampings()[2], 3.0);
   EXPECT_FLOAT_EQ(model.segment(1).jointDampings()[0], 0.0);
+
+  for (size_t k = 0; k < model.nbSegment(); ++k) {
+    const std::vector<utils::Range>& QRanges = model.segment(k).QRanges();
+    const std::vector<utils::Range>& QRangesCopy =
+        modelCopy.segment(k).QRanges();
+    ASSERT_EQ(QRangesCopy.size(), QRanges.size());
+    for (size_t i = 0; i < QRanges.size(); ++i) {
+      EXPECT_FLOAT_EQ(QRangesCopy[i].min(), QRanges[i].min());
+      EXPECT_FLOAT_EQ(QRangesCopy[i].max(), QRanges[i].max());
+    }
+
+    const std::vector<utils::Range>& QdotRanges =
+        model.segment(k).QdotRanges();
+    const std::vector<utils::Range>& QdotRangesCopy =
+        modelCopy.segment(k).QdotRanges();
+    ASSERT_EQ(QdotRangesCopy.size(), QdotRanges.size());
+    for (size_t i = 0; i < QdotRanges.size(); ++i) {
+      EXPECT_FLOAT_EQ(QdotRangesCopy[i].min(), QdotRanges[i].min());
+      EXPECT_FLOAT_EQ(QdotRangesCopy[i].max(), QdotRanges[i].max());
+    }
+
+    const std::vector<utils::Range>& QddotRanges =
+        model.segment(k).QddotRanges();
+    const std::vector<utils::Range>& QddotRangesCopy =
+        modelCopy.segment(k).QddotRanges();
+    ASSERT_EQ(QddotRangesCopy.size(), QddotRanges.size());
+    for (size_t i = 0; i < QddotRanges.size(); ++i) {
+      EXPECT_FLOAT_EQ(QddotRangesCopy[i].min(), QddotRanges[i].min());
+      EXPECT_FLOAT_EQ(QddotRangesCopy[i].max(), QddotRanges[i].max());
+    }
+  }
 
   for (size_t k = 0; k < model.nbSegment(); ++k) {
     for (size_t i = 0; i < 4; ++i) {
