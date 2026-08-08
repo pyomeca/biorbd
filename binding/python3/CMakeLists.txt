@@ -149,9 +149,9 @@ set_target_properties(${PYTHON_PROJECT_NAME} PROPERTIES
     INSTALL_RPATH_USE_LINK_PATH TRUE
 )
 
-# Define the python install 
-set(PYTHON_INSTALL_PREFIX "${Python3_SITELIB}/${EZC3D_NAME}" CACHE PATH
-    "Path where to install the python binder, default is $Python_LIB/site-package/ezc3d"
+# Define the python install
+set(PYTHON_INSTALL_PREFIX "${Python3_SITELIB_INSTALL}" CACHE PATH
+    "Path where to install the python binder, default is lib/pythonX/site-packages"
 )
 
 # Install to the proper directories (defaut eigen
@@ -177,11 +177,7 @@ INSTALL(FILES ${PYTHON_FILES}
 # SWIG 4.5+ generates relative imports in the wrapper ("from . import _module"),
 # so the compiled module must live inside the Python package directory.
 if(${SWIG_VERSION} MATCHES "^3(\.[0-9]*)*$")
-    if ("${PYTHON_INSTALL_PREFIX}" STREQUAL "${Python3_SITELIB}/${BIORBD_NAME}")
-        set(PYTHON_PROJECT_INSTALL_DESTINATION "${Python3_SITELIB}")
-    else()
-        set(PYTHON_PROJECT_INSTALL_DESTINATION "${PYTHON_INSTALL_PREFIX}")
-    endif()
+    set(PYTHON_PROJECT_INSTALL_DESTINATION "${PYTHON_INSTALL_PREFIX}")
 elseif(${SWIG_VERSION} MATCHES "^4(\.[0-9]*)*$")
     set(PYTHON_PROJECT_INSTALL_DESTINATION "${PYTHON_INSTALL_PREFIX}/${BIORBD_PYTHON_DIR}")
 else()
