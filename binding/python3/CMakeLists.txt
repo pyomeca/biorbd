@@ -150,8 +150,19 @@ set_target_properties(${PYTHON_PROJECT_NAME} PROPERTIES
 )
 
 # Define the python install
-set(PYTHON_INSTALL_PREFIX "${Python3_SITELIB_INSTALL}" CACHE PATH
-    "Path where to install the python binder, default is lib/pythonX/site-packages"
+# Priority:
+# 1) Python3_SITELIB_INSTALL from setup.py (relative path for scikit-build staging)
+# 2) Python3_SITELIB from CMake FindPython (native CMake installs, platform-specific)
+# 3) Generic relative fallback for environments that don't expose either variable
+if(DEFINED Python3_SITELIB_INSTALL AND NOT "${Python3_SITELIB_INSTALL}" STREQUAL "")
+    set(PYTHON_INSTALL_PREFIX "${Python3_SITELIB_INSTALL}")
+elseif(DEFINED Python3_SITELIB AND NOT "${Python3_SITELIB}" STREQUAL "")
+    set(PYTHON_INSTALL_PREFIX "${Python3_SITELIB}")
+else()
+    set(PYTHON_INSTALL_PREFIX "lib/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}/site-packages")
+endif()
+set(PYTHON_INSTALL_PREFIX "${PYTHON_INSTALL_PREFIX}" CACHE PATH
+    "Path where to install the python binder"
 )
 
 # Install to the proper directories (defaut eigen
