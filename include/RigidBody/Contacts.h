@@ -15,6 +15,7 @@ class Vector3d;
 class Vector;
 class String;
 class SpatialVector;
+class Matrix;
 }  // namespace utils
 
 namespace rigidbody {
@@ -24,6 +25,7 @@ class GeneralizedVelocity;
 class GeneralizedAcceleration;
 class GeneralizedTorque;
 class NodeSegment;
+class Joints;
 
 ///
 /// \brief Class Contacts
@@ -50,7 +52,7 @@ class BIORBD_API Contacts : public RigidBodyDynamics::ConstraintSet
   /// \brief Deep copy of contacts
   /// \param other The contacts to copy
   ///
-  void DeepCopy(const Contacts &other);
+  void DeepCopy(const Contacts& other);
 
   ///
   /// \brief Add a constraint to the constraint set
@@ -65,10 +67,10 @@ class BIORBD_API Contacts : public RigidBodyDynamics::ConstraintSet
   ///
   size_t AddConstraint(
       size_t bodyId,
-      const utils::Vector3d &bodyPoint,
-      const utils::Vector3d &worldNormal,
-      const utils::String &name,
-      const utils::String &parentName);
+      const utils::Vector3d& bodyPoint,
+      const utils::Vector3d& worldNormal,
+      const utils::String& name,
+      const utils::String& parentName);
 
   ///
   /// \brief Add a constraint to the constraint set
@@ -83,10 +85,10 @@ class BIORBD_API Contacts : public RigidBodyDynamics::ConstraintSet
 
   size_t AddConstraint(
       size_t bodyId,
-      const utils::Vector3d &bodyPoint,
-      const utils::String &axis,
-      const utils::String &name,
-      const utils::String &parentName);
+      const utils::Vector3d& bodyPoint,
+      const utils::String& axis,
+      const utils::String& name,
+      const utils::String& parentName);
 
   ///
   /// \brief Add a loop constraint to the constraint set
@@ -106,10 +108,10 @@ class BIORBD_API Contacts : public RigidBodyDynamics::ConstraintSet
   size_t AddLoopConstraint(
       size_t body_id_predecessor,
       size_t body_id_successor,
-      const utils::RotoTrans &X_predecessor,
-      const utils::RotoTrans &X_successor,
-      const utils::SpatialVector &axis,
-      const utils::String &name,
+      const utils::RotoTrans& X_predecessor,
+      const utils::RotoTrans& X_successor,
+      const utils::SpatialVector& axis,
+      const utils::String& name,
       bool enableStabilization = false,
       double stabilizationParam = 0.1);
 
@@ -122,9 +124,9 @@ class BIORBD_API Contacts : public RigidBodyDynamics::ConstraintSet
   /// global frame
   ///
   std::vector<utils::SpatialVector> calcLoopConstraintForces(
-      const rigidbody::GeneralizedCoordinates &Q,
-      const rigidbody::GeneralizedVelocity &Qdot,
-      const rigidbody::GeneralizedTorque &Tau);
+      const rigidbody::GeneralizedCoordinates& Q,
+      const rigidbody::GeneralizedVelocity& Qdot,
+      const rigidbody::GeneralizedTorque& Tau);
 
   ///
   /// \brief compute the forces generated from loop constraints
@@ -136,10 +138,10 @@ class BIORBD_API Contacts : public RigidBodyDynamics::ConstraintSet
   /// global frame
   ///
   std::vector<utils::SpatialVector> calcLoopConstraintForces(
-      const rigidbody::GeneralizedCoordinates &Q,
-      const rigidbody::GeneralizedVelocity &Qdot,
-      const rigidbody::GeneralizedTorque &Tau,
-      rigidbody::ExternalForceSet &externalForces);
+      const rigidbody::GeneralizedCoordinates& Q,
+      const rigidbody::GeneralizedVelocity& Qdot,
+      const rigidbody::GeneralizedTorque& Tau,
+      rigidbody::ExternalForceSet& externalForces);
 
   ///
   /// \brief Destroy the class properly
@@ -150,7 +152,7 @@ class BIORBD_API Contacts : public RigidBodyDynamics::ConstraintSet
   /// \brief Get constraints
   /// \return The constraints
   ///
-  Contacts &getConstraints();
+  Contacts& getConstraints();
 
   ///
   /// \brief Check if there are contacts
@@ -190,6 +192,14 @@ class BIORBD_API Contacts : public RigidBodyDynamics::ConstraintSet
   utils::String contactName(size_t i);
 
   ///
+  /// \brief Return the index of the contact corresponding to the given name
+  /// \param name The name of the contact
+  /// \return The index of the contact
+  /// \throw std::runtime_error if the contact does not exist
+  ///
+  size_t contactRbdlId(const utils::String& name);
+
+  ///
   /// \brief Return the constraints position in the global reference
   /// \param Q The generalized coordinates of the joints
   /// \param updateKin Whether the kinematics of the model should be updated
@@ -197,7 +207,7 @@ class BIORBD_API Contacts : public RigidBodyDynamics::ConstraintSet
   /// \return The constraints positions in the global reference
   ///
   std::vector<utils::Vector3d> constraintsInGlobal(
-      const GeneralizedCoordinates &Q,
+      const GeneralizedCoordinates& Q,
       bool updateKin);
 
   ///
@@ -231,14 +241,14 @@ class BIORBD_API Contacts : public RigidBodyDynamics::ConstraintSet
   /// \brief Returns all the rigid contacts as declared in the model
   /// \return All the rigid contacts as declared in the model
   ///
-  const std::vector<NodeSegment> &rigidContacts() const;
+  const std::vector<NodeSegment>& rigidContacts() const;
 
   ///
   /// \brief Returns the rigid contact idx as declared in the model
   /// \param idx The index of the contact
   /// \return All the rigid contacts as declared in the model
   ///
-  const NodeSegment &rigidContact(size_t idx) const;
+  const NodeSegment& rigidContact(size_t idx) const;
 
   ///
   /// \brief Return the rigidContact position in the global reference
@@ -249,7 +259,7 @@ class BIORBD_API Contacts : public RigidBodyDynamics::ConstraintSet
   /// \return The rigidContact position in the global reference
   ///
   utils::Vector3d
-  rigidContact(const GeneralizedCoordinates &Q, size_t idx, bool updateKin);
+  rigidContact(const GeneralizedCoordinates& Q, size_t idx, bool updateKin);
 
   ///
   /// \brief Return all the rigidContacts position in the global reference
@@ -259,7 +269,7 @@ class BIORBD_API Contacts : public RigidBodyDynamics::ConstraintSet
   /// \return All the rigidContacts positions in the global reference
   ///
   std::vector<utils::Vector3d> rigidContacts(
-      const GeneralizedCoordinates &Q,
+      const GeneralizedCoordinates& Q,
       bool updateKin);
 
   ///
@@ -271,8 +281,8 @@ class BIORBD_API Contacts : public RigidBodyDynamics::ConstraintSet
   /// \return The velocity of the chosen contact
   ///
   utils::Vector3d rigidContactVelocity(
-      const rigidbody::GeneralizedCoordinates &Q,
-      const rigidbody::GeneralizedVelocity &Qdot,
+      const rigidbody::GeneralizedCoordinates& Q,
+      const rigidbody::GeneralizedVelocity& Qdot,
       size_t idx,
       bool updateKin = true);
 
@@ -284,8 +294,8 @@ class BIORBD_API Contacts : public RigidBodyDynamics::ConstraintSet
   /// \return The velocities of all the contacts
   ///
   std::vector<utils::Vector3d> rigidContactsVelocity(
-      const rigidbody::GeneralizedCoordinates &Q,
-      const rigidbody::GeneralizedVelocity &Qdot,
+      const rigidbody::GeneralizedCoordinates& Q,
+      const rigidbody::GeneralizedVelocity& Qdot,
       bool updateKin = true);
 
   ///
@@ -298,9 +308,9 @@ class BIORBD_API Contacts : public RigidBodyDynamics::ConstraintSet
   /// \return The acceleration of the chosen contact
   ///
   utils::Vector3d rigidContactAcceleration(
-      const rigidbody::GeneralizedCoordinates &Q,
-      const rigidbody::GeneralizedVelocity &Qdot,
-      const rigidbody::GeneralizedAcceleration &dQdot,
+      const rigidbody::GeneralizedCoordinates& Q,
+      const rigidbody::GeneralizedVelocity& Qdot,
+      const rigidbody::GeneralizedAcceleration& dQdot,
       size_t idx,
       bool updateKin = true);
 
@@ -312,9 +322,55 @@ class BIORBD_API Contacts : public RigidBodyDynamics::ConstraintSet
   /// \return The acceleration of all the contacts
   ///
   std::vector<utils::Vector3d> rigidContactsAcceleration(
-      const rigidbody::GeneralizedCoordinates &Q,
-      const rigidbody::GeneralizedVelocity &Qdot,
-      const rigidbody::GeneralizedAcceleration &dQdot,
+      const rigidbody::GeneralizedCoordinates& Q,
+      const rigidbody::GeneralizedVelocity& Qdot,
+      const rigidbody::GeneralizedAcceleration& dQdot,
+      bool updateKin = true);
+
+  ///
+  /// \brief Compute the Jacobian of a single rigid contact
+  /// \param updatedModel The kinematic model with updated state
+  /// \param Q The generalized coordinates
+  /// \param idx Index of the rigid contact
+  /// \return The Jacobian of the selected contact (projected onto active axes)
+  ///
+  utils::Matrix rigidContactJacobian(
+      rigidbody::Joints& updatedModel,
+      const rigidbody::GeneralizedCoordinates& Q,
+      size_t idx);
+
+  ///
+  /// \brief Compute the Jacobian of a single rigid contact
+  /// \param Q The generalized coordinates
+  /// \param idx Index of the rigid contact
+  /// \param updateKin If true, update kinematics before computation
+  /// \return The Jacobian of the selected contact (projected onto active axes)
+  ///
+  utils::Matrix rigidContactJacobian(
+      const rigidbody::GeneralizedCoordinates& Q,
+      size_t idx,
+      bool updateKin = true);
+
+  ///
+  /// \brief Compute the Jacobians of all rigid contacts
+  /// \param updatedModel The kinematic model with updated state
+  /// \param Q The generalized coordinates
+  /// \return Vector of Jacobians for all rigid contacts (projected onto active
+  /// axes)
+  ///
+  std::vector<utils::Matrix> rigidContactsJacobian(
+      rigidbody::Joints& updatedModel,
+      const rigidbody::GeneralizedCoordinates& Q);
+
+  ///
+  /// \brief Compute the Jacobians of all rigid contacts
+  /// \param Q The generalized coordinates
+  /// \param updateKin If true, update kinematics before computation
+  /// \return Vector of Jacobians for all rigid contacts (projected onto active
+  /// axes)
+  ///
+  std::vector<utils::Matrix> rigidContactsJacobian(
+      const rigidbody::GeneralizedCoordinates& Q,
       bool updateKin = true);
 
  protected:
@@ -324,7 +380,7 @@ class BIORBD_API Contacts : public RigidBodyDynamics::ConstraintSet
   /// allowed axes set to a axes to remove set, or vice versa.
   /// \param axesToSwap a vector of up to three values (being "x", "y" or "z")
   ///
-  utils::String swapAxes(const utils::String &axesToSwap) const;
+  utils::String swapAxes(const utils::String& axesToSwap) const;
 
   std::shared_ptr<size_t> m_nbreConstraint;  ///< Number of constraints
   std::shared_ptr<bool> m_isBinded;          ///< If the model is ready
@@ -332,6 +388,16 @@ class BIORBD_API Contacts : public RigidBodyDynamics::ConstraintSet
       m_rigidContacts;  ///< The rigid contacts declared in the model (copy of
                         ///< RBDL information)
   std::shared_ptr<size_t> m_nbLoopConstraint;  ///< Number of constraints
+
+  ///
+  /// \brief Project a 3D point Jacobian onto active contact axes
+  /// \param J The full 3xN Jacobian of the contact point
+  /// \param contact The rigid contact definition (provides active axes)
+  /// \return The reduced Jacobian containing only active axes
+  ///
+  static utils::Matrix projectContactJacobian(
+      const utils::Matrix& J,
+      const rigidbody::NodeSegment& contact);
 };
 
 }  // namespace rigidbody
