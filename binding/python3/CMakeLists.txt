@@ -194,6 +194,16 @@ elseif(${SWIG_VERSION} MATCHES "^4(\.[0-9]*)*$")
 else()
     message( FATAL_ERROR "Swig must be version 3 or 4" )
 endif()
+
+# The currently built Casadi binding in conda is incompatible with SWIG 4.4.0 and later,
+# so, for saving a lot of headaches, we simply block it for now
+if(${MATH_LIBRARY_BACKEND} STREQUAL "Casadi" AND SWIG_VERSION VERSION_GREATER_EQUAL "4.4.0")
+    message(FATAL_ERROR
+        "CasADi Python bindings are currently incompatible with SWIG ${SWIG_VERSION} in biorbd. "
+        "Please use SWIG < 4.4.0 when building biorbd with MATH_LIBRARY_BACKEND=Casadi."
+    )
+endif()
+
 # Install the library
 INSTALL(TARGETS ${PYTHON_PROJECT_NAME}
     DESTINATION "${PYTHON_PROJECT_INSTALL_DESTINATION}"
