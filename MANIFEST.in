@@ -1,7 +1,7 @@
 # Include required files
 include LICENSE
-pyproject.toml
-README.md
+include pyproject.toml
+include README.md
 
 # Include shared libraries or compiled files (if needed for runtime).
 recursive-include biorbd *.so *.dll *.dylib *.pyd *.lib *.py

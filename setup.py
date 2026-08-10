@@ -50,23 +50,13 @@ def get_install_base():
 
 
 def get_install_site_packages():
-    # Get the local site packages folder for the installation that is used by "pip install ."
+    # Keep the Python package install path inside the scikit-build install prefix.
+    # On Windows, site-packages lives under Lib/site-packages (without pythonX.Y).
+    if platform.system().lower() == "windows":
+        return Path("Lib/site-packages")
+
     python_version = f"python{sys.version_info.major}.{sys.version_info.minor}"
-
-    import site
-
-    site_packages = site.getsitepackages()
-    if not site_packages:
-        raise RuntimeError("Unable to find site-packages directory")
-
-    for site_package in site_packages:
-        if "site-packages" in site_package:
-            if python_version in site_package:
-                return Path(f"{get_install_base()}/lib/{python_version}/site-packages")
-            else:
-                return Path(f"{get_install_base()}/lib/site-packages")
-
-    return Path(f"{get_install_base()}/lib/{python_version}/site-packages")
+    return Path(f"lib/{python_version}/site-packages")
 
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -95,6 +85,11 @@ Path("biorbd").mkdir(exist_ok=True)
 math_library_backend = os.environ.get("MATH_LIBRARY_BACKEND")
 if math_library_backend not in ["Casadi", "Eigen3"]:
     raise RuntimeError("MATH_LIBRARY_BACKEND environment variable must be set to either 'Casadi' or 'Eigen3'")
+
+if math_library_backend == "Casadi":
+    raise RuntimeError(
+        "Casadi backend is not supported via pip install in this workspace. Use the CMake/dev build instead."
+    )
 
 setup(
     # NOTE: Could still add stuff like homepage or author mail, but since this isn't used to redistribute, not important

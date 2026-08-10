@@ -6,7 +6,7 @@ requires = [
     "scikit-build",
     "cmake",
     "ninja",
-    "swig<4.4.0",
+    "swig",
     "numpy",
     "scipy",
 ]
@@ -25,7 +25,7 @@ authors = [
     {name = "Michaud, Benjamin"},
     {name = "Begon, Mickaël"}
 ]
-license = {text = "MIT"}
+license = "MIT"
 urls = { "Homepage" = "https://github.com/pyomeca/biorbd" }
 requires-python = ">=3.10"
 
