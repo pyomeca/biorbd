@@ -51,6 +51,10 @@ def get_install_base():
 
 def get_install_site_packages():
     # Keep the Python package install path inside the scikit-build install prefix.
+    # On Windows, site-packages lives under Lib/site-packages (without pythonX.Y).
+    if platform.system().lower() == "windows":
+        return Path("Lib/site-packages")
+
     python_version = f"python{sys.version_info.major}.{sys.version_info.minor}"
     return Path(f"lib/{python_version}/site-packages")
 
