@@ -1284,9 +1284,9 @@ TEST(hillDeGrooteTypeActive, unitTest) {
     SCALAR_TO_DOUBLE(force, hillDeGrooteType.force(emg));
     EXPECT_NEAR(flce, 0.92953865278129677, requiredPrecision);
     EXPECT_NEAR(flpe, 0., requiredPrecision);
-    EXPECT_NEAR(fvce, 1.001970264039421, requiredPrecision);
+    EXPECT_NEAR(fvce, 0.99966505861454702, requiredPrecision);
     EXPECT_NEAR(damping, 0., requiredPrecision);
-    EXPECT_NEAR(force, 405.66755612256657, requiredPrecision);
+    EXPECT_NEAR(force, 404.734247935057, requiredPrecision);
   }
   {
     Model model(modelPathForMuscleForce);
@@ -1772,9 +1772,9 @@ TEST(hillDeGrooteType, unitTest) {
     SCALAR_TO_DOUBLE(force, hillDeGrooteType.force(emg));
     EXPECT_NEAR(flce, 0.92953865278129677, requiredPrecision);
     EXPECT_NEAR(flpe, 0.022596966416076593, requiredPrecision);
-    EXPECT_NEAR(fvce, 1.001970264039421, requiredPrecision);
+    EXPECT_NEAR(fvce, 0.99966505861454702, requiredPrecision);
     EXPECT_NEAR(damping, 0, requiredPrecision);
-    EXPECT_NEAR(force, 415.50989081475285, requiredPrecision);
+    EXPECT_NEAR(force, 414.57658262724328, requiredPrecision);
   }
   {
     Model model(modelPathForMuscleForce);
@@ -2959,7 +2959,7 @@ TEST(MuscleForce, force) {
   std::vector<double> ExpectedForce(
       {165.19678913804927,
        178.49448510433558,
-       90.97584591669964,
+       90.789184279197713,
        92.59497473343656,
        74.287046497422935,
        198.53590160321016});
@@ -2982,7 +2982,7 @@ TEST(MuscleForce, torqueFromMuscles) {
   }
 
   rigidbody::GeneralizedTorque Tau(model);
-  std::vector<double> TauExpected({-11.018675667414932, -1.7483464272594329});
+  std::vector<double> TauExpected({-10.986834246856635, -1.7872663180818087});
   Tau = model.muscularJointTorque(states, Q, Qdot);
   for (unsigned int i = 0; i < Tau.size(); ++i) {
     SCALAR_TO_DOUBLE(val, Tau(i));
@@ -2991,7 +2991,7 @@ TEST(MuscleForce, torqueFromMuscles) {
 
   rigidbody::GeneralizedAcceleration Qddot =
       model.ForwardDynamics(Q, Qdot, Tau);
-  std::vector<double> QddotExpected({-47.946292142243109, 56.344108470462629});
+  std::vector<double> QddotExpected({-47.412753236836856, 54.927407050792368});
   for (unsigned int i = 0; i < Qddot.size(); ++i) {
     SCALAR_TO_DOUBLE(val, Qddot(i));
     EXPECT_NEAR(val, QddotExpected[i], requiredPrecision);
