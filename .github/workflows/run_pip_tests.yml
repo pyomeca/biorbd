@@ -38,7 +38,11 @@ jobs:
 
       - name: Install dependencies
         run: |
+<<<<<<< HEAD
           conda install -cconda-forge "swig<4.4.0" pip "eigen<4.0.0"
+=======
+          conda install -cconda-forge swig pip "eigen<4.0.0"
+>>>>>>> upstream/master
           conda list
 
       - name: Setup Linux dependencies

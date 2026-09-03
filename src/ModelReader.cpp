@@ -1,7 +1,9 @@
 #define BIORBD_API_EXPORTS
 #include "ModelReader.h"
 
+#include <fstream>
 #include <limits.h>
+#include <sstream>
 
 #include "BiorbdModel.h"
 #include "RigidBody/GeneralizedCoordinates.h"
@@ -293,20 +295,21 @@ void Reader::readModelFile(const utils::Path &path, Model *model) {
             utils::String filePathInString;
             file.read(filePathInString);
             utils::Path filePath(meshFolderPrefix + filePathInString);
-            if (!filePath.extension().compare("bioMesh")) {
+            utils::String extension(filePath.extension().tolower());
+            if (!extension.compare("biomesh")) {
               mesh = readMeshFileBiorbdSegments(
                   path.folder() + filePath.relativePath());
-            } else if (!filePath.extension().compare("ply")) {
+            } else if (!extension.compare("ply")) {
               mesh = readMeshFilePly(path.folder() + filePath.relativePath());
-            } else if (!filePath.extension().compare("obj")) {
+            } else if (!extension.compare("obj")) {
               mesh = readMeshFileObj(path.folder() + filePath.relativePath());
             }
 #ifdef MODULE_VTP_FILES_READER
-            else if (!filePath.extension().compare("vtp")) {
+            else if (!extension.compare("vtp")) {
               mesh = readMeshFileVtp(path.folder() + filePath.relativePath());
             }
 #endif
-            else if (!filePath.extension().tolower().compare("stl")) {
+            else if (!extension.compare("stl")) {
               mesh = readMeshFileStl(path.folder() + filePath.relativePath());
             } else {
               utils::Error::raise(
@@ -2183,68 +2186,169 @@ rigidbody::Mesh Reader::readMeshFileBiorbdSegments(const utils::Path &path) {
 }
 
 rigidbody::Mesh Reader::readMeshFilePly(const utils::Path &path) {
-  // Read a bone file
-
-  // Open file
-  // std::cout << "Loading marker file: " << path << std::endl;
+  // Read a polygon file format mesh file
 #ifdef _WIN32
-  utils::IfStream file(
-      utils::Path::toWindowsFormat(path.absolutePath()).c_str(), std::ios::in);
+  utils::String filepath(
+      utils::Path::toWindowsFormat(path.absolutePath()).c_str());
 #else
-  utils::IfStream file(path.absolutePath().c_str(), std::ios::in);
+  utils::String filepath(path.absolutePath().c_str());
 #endif
 
-  // Read file
-  utils::String tp;
+  std::ifstream file(filepath.c_str(), std::ios::in);
+  utils::Error::check(file.is_open(), "Failed to load file " + filepath);
 
-  // Know the number of points
-  file.reachSpecificTag("element");
-  file.readSpecificTag("vertex", tp);
-  size_t nVertex(static_cast<size_t>(atoi(tp.c_str())));
-  int nVertexProperties(file.countTagsInAConsecutiveLines("property"));
+  struct PlyProperty {
+    PlyProperty(const utils::String &name, bool isList)
+        : name(name), isList(isList) {}
+    utils::String name;
+    bool isList;
+  };
 
-  // Find the number of columns for the vertex
-  file.reachSpecificTag("element");
-  file.readSpecificTag("face", tp);
-  size_t nFaces(static_cast<size_t>(atoi(tp.c_str())));
-  int nFacesProperties(file.countTagsInAConsecutiveLines("property"));
+  struct PlyElement {
+    PlyElement(const utils::String &name, size_t count)
+        : name(name), count(count) {}
+    utils::String name;
+    size_t count;
+    std::vector<PlyProperty> properties;
+  };
 
-  // Trouver le nombre de ??
-  file.reachSpecificTag("end_header");
+  utils::String line;
+  std::getline(file, line);
+  std::stringstream firstLine(line);
+  utils::String plyTag;
+  firstLine >> plyTag;
+  utils::Error::check(
+      !plyTag.tolower().compare("ply"),
+      filepath + " is not a valid PLY file");
+
+  std::vector<PlyElement> elements;
+  bool isAscii(false);
+  int currentElement(-1);
+  while (std::getline(file, line)) {
+    std::stringstream ss(line);
+    utils::String tag;
+    ss >> tag;
+    tag = tag.tolower();
+    if (!tag.compare("comment") || tag.empty()) {
+      continue;
+    } else if (!tag.compare("format")) {
+      utils::String format;
+      ss >> format;
+      isAscii = !format.tolower().compare("ascii");
+    } else if (!tag.compare("element")) {
+      utils::String name;
+      size_t count;
+      ss >> name >> count;
+      elements.push_back(PlyElement(name.tolower(), count));
+      currentElement = static_cast<int>(elements.size()) - 1;
+    } else if (!tag.compare("property")) {
+      utils::Error::check(
+          currentElement >= 0, "PLY property found before any element");
+      utils::String propertyType;
+      ss >> propertyType;
+      if (!propertyType.tolower().compare("list")) {
+        utils::String countType, valueType, name;
+        ss >> countType >> valueType >> name;
+        elements[static_cast<size_t>(currentElement)].properties.push_back(
+            PlyProperty(name.tolower(), true));
+      } else {
+        utils::String name;
+        ss >> name;
+        elements[static_cast<size_t>(currentElement)].properties.push_back(
+            PlyProperty(name.tolower(), false));
+      }
+    } else if (!tag.compare("end_header")) {
+      break;
+    }
+  }
+
+  utils::Error::check(
+      isAscii,
+      utils::String("Only ASCII PLY files are supported for meshfile: ") +
+          filepath);
 
   rigidbody::Mesh mesh;
   mesh.setPath(path);
-  std::map<utils::Equation, double> variable =
-      std::map<utils::Equation, double>();
-  // Get all the points
-  for (size_t iPoints = 0; iPoints < nVertex; ++iPoints) {
-    utils::Vector3d nodeTp(0, 0, 0);
-    readVector3d(file, variable, nodeTp);
-    mesh.addPoint(nodeTp);
-    // Ignore the columns post XYZ
-    for (int i = 0; i < nVertexProperties - 3; ++i) {
-      double dump;
-      file.read(dump);
+
+  for (size_t iElement = 0; iElement < elements.size(); ++iElement) {
+    const PlyElement &element(elements[iElement]);
+
+    for (size_t iRecord = 0; iRecord < element.count; ++iRecord) {
+      if (!element.name.compare("vertex")) {
+        utils::Vector3d vertex(0, 0, 0);
+        for (size_t iProperty = 0; iProperty < element.properties.size();
+             ++iProperty) {
+          const PlyProperty &property(element.properties[iProperty]);
+          if (property.isList) {
+            size_t nValues;
+            double dump;
+            file >> nValues;
+            for (size_t i = 0; i < nValues; ++i) {
+              file >> dump;
+            }
+          } else {
+            double value;
+            file >> value;
+            if (!property.name.compare("x")) {
+              vertex[0] = value;
+            } else if (!property.name.compare("y")) {
+              vertex[1] = value;
+            } else if (!property.name.compare("z")) {
+              vertex[2] = value;
+            }
+          }
+        }
+        mesh.addPoint(vertex);
+      } else if (!element.name.compare("face")) {
+        std::vector<int> vertexIndices;
+        for (size_t iProperty = 0; iProperty < element.properties.size();
+             ++iProperty) {
+          const PlyProperty &property(element.properties[iProperty]);
+          if (property.isList) {
+            size_t nValues;
+            file >> nValues;
+            for (size_t i = 0; i < nValues; ++i) {
+              int value;
+              file >> value;
+              if (
+                  !property.name.compare("vertex_indices") ||
+                  !property.name.compare("vertex_index")) {
+                vertexIndices.push_back(value);
+              }
+            }
+          } else {
+            double dump;
+            file >> dump;
+          }
+        }
+
+        utils::Error::check(
+            vertexIndices.size() >= 3,
+            "PLY faces must have at least 3 vertices");
+        for (size_t i = 1; i + 1 < vertexIndices.size(); ++i) {
+          mesh.addFace(
+              {vertexIndices[0], vertexIndices[i], vertexIndices[i + 1]});
+        }
+      } else {
+        for (size_t iProperty = 0; iProperty < element.properties.size();
+             ++iProperty) {
+          const PlyProperty &property(element.properties[iProperty]);
+          if (property.isList) {
+            size_t nValues;
+            double dump;
+            file >> nValues;
+            for (size_t i = 0; i < nValues; ++i) {
+              file >> dump;
+            }
+          } else {
+            double dump;
+            file >> dump;
+          }
+        }
+      }
     }
   }
 
-  for (size_t iPoints = 0; iPoints < nFaces; ++iPoints) {
-    rigidbody::MeshFace patchTp;
-    size_t nVertices;
-    file.read(nVertices);
-    if (nVertices != 3) {
-      utils::Error::raise("Patches must be 3 vertices!");
-    }
-    for (size_t i = 0; i < nVertices; ++i) {
-      file.read(patchTp(i));
-    }
-    int dump;
-    // Remove if there are too many columns
-    for (int i = 0; i < nFacesProperties - 1; ++i) {
-      file.read(dump);
-    }
-    mesh.addFace(patchTp);
-  }
   return mesh;
 }
 

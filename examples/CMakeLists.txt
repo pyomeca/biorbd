@@ -5,6 +5,9 @@ set(EXAMPLE_FILES
     "forwardDynamicsExample.cpp"
     "inverseDynamicsExample.cpp"
 )
+if (NOT BIORBD_USE_CASADI_MATH)
+    list(APPEND EXAMPLE_FILES "writeModelExample.cpp")
+endif()
 if (MODULE_MUSCLES)
     list(APPEND EXAMPLE_FILES "forwardDynamicsFromMusclesExample.cpp")
 endif()
