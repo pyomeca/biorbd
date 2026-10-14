@@ -146,6 +146,44 @@ class Biorbd:
         update_kinematics = False
         return to_biorbd_array_output(updated_model.CoM(dummy_q, update_kinematics))
 
+    def zero_moment_point(
+        self,
+        q: BiorbdArray,
+        qdot: BiorbdArray,
+        qddot: BiorbdArray,
+        normal: BiorbdArray = (0, 0, 1),
+        point: BiorbdArray = (0, 0, 0),
+    ) -> BiorbdArray:
+        """
+        Get the zero moment point projected on a contact surface.
+
+        Parameters
+        ----------
+        q: BiorbdArray
+            Generalized coordinates
+        qdot: BiorbdArray
+            Generalized velocities
+        qddot: BiorbdArray
+            Generalized accelerations
+        normal: BiorbdArray
+            Normal of the contact surface
+        point: BiorbdArray
+            A point on the contact surface
+
+        Returns
+        -------
+        The zero moment point in the base frame
+        """
+        return to_biorbd_array_output(
+            self.internal.CalcZeroMomentPoint(
+                to_biorbd_array_input(q),
+                to_biorbd_array_input(qdot),
+                to_biorbd_array_input(qddot),
+                to_biorbd_array_input(normal),
+                to_biorbd_array_input(point),
+            )
+        )
+
     @property
     def segments(self) -> SegmentsList:
         """

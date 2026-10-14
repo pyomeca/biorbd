@@ -18,7 +18,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     defaults:
       run:
-        shell: bash -l {0}
+        shell: bash -l -eo pipefail {0}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -35,8 +35,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          conda install -cconda-forge rbdl>=3.3.1 tinyxml2 ipopt
-          conda install -cconda-forge codecov lcov
+          conda install -cconda-forge rbdl=3.3.1 tinyxml2 ipopt lcov=1.16
           conda list
 
       - name: Setup Linux dependencies
@@ -48,11 +47,12 @@ jobs:
       - name: Perform code coverage 
         run: |
           BIORBD_FOLDER=`pwd`
-          CONDA_ENV_PATH=$CONDA/envs/biorbd
+          CONDA_ENV_PATH=$CONDA_PREFIX
           mkdir -p $BIORBD_FOLDER/$BUILD_FOLDER
           cd $BIORBD_FOLDER/$BUILD_FOLDER
           cmake .. \
                 -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH \
+                -DCMAKE_PREFIX_PATH=$CONDA_ENV_PATH \
                 -DCMAKE_BUILD_TYPE=Coverage \
                 -DBUILD_TESTS=ON \
                 -DBUILD_EXAMPLE=OFF \
@@ -65,6 +65,12 @@ jobs:
           lcov --directory . --capture --output-file coverage.info
           lcov --remove coverage.info '/usr/*' --output-file coverage.info
           lcov --list coverage.info
-          export CODECOV_TOKEN=${{ secrets.CODECOV_TOKEN }}
-          bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"
           cd $BIORBD_FOLDER
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7
+        with:
+          files: ${{ env.BUILD_FOLDER }}/coverage.info
+          disable_search: true
+          fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}

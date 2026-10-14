@@ -19,6 +19,10 @@ macro(FindRBDLWithBackend MATH_BACKEND)
         )
 
         if (RBDLCasadi_FOUND)
+            # Conda may resolve the common include prefix before the CasADi headers.
+            if(EXISTS "${RBDLCasadi_INCLUDE_DIR}/rbdl-casadi/rbdl/rbdl.h")
+                set(RBDLCasadi_INCLUDE_DIR "${RBDLCasadi_INCLUDE_DIR}/rbdl-casadi")
+            endif()
             set(RBDL_FOUND TRUE)
             
             # Define include and library paths to mimic RBDL eigen which is the format expected by biorbd

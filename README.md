@@ -97,7 +97,7 @@ The building status for the current BIORBD branches is as follow
 | DOI | [![DOI](https://zenodo.org/badge/124423173.svg)](https://zenodo.org/badge/latestdoi/124423173) |
 
 ### Dependencies
-BIORBD relies on several libraries (namely eigen ([http://eigen.tuxfamily.org]) or CasADi ([https://web.casadi.org/]), rbdl-casadi (https://github.com/pyomeca/rbdl-casadi), tinyxml2(https://github.com/leethomason/tinyxml2) and Ipopt (https://github.com/coin-or/Ipopt)) that one must install prior to compiling. Fortunately, all these dependencies are also hosted on the *conda-forge* channel of Anaconda or will automatically be compiled when building BIORBD. Therefore the following command will install everything you need to compile BIORBD:
+BIORBD relies on several libraries (namely eigen ([http://eigen.tuxfamily.org] up to version 3.4.0) or CasADi ([https://web.casadi.org/]), rbdl-casadi (https://github.com/pyomeca/rbdl-casadi), tinyxml2(https://github.com/leethomason/tinyxml2) and Ipopt (https://github.com/coin-or/Ipopt)) that one must install prior to compiling. Fortunately, all these dependencies are also hosted on the *conda-forge* channel of Anaconda or will automatically be compiled when building BIORBD. Therefore the following command will install everything you need to compile BIORBD:
 ```bash
 conda install -c conda-forge rbdl [ipopt] [pkgconfig] [cmake] [scipy]
 ```
