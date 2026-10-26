@@ -19,7 +19,7 @@ internal_forces::muscles::FatigueDynamicStateXia::FatigueDynamicStateXia(
 }
 
 internal_forces::muscles::FatigueDynamicStateXia::FatigueDynamicStateXia(
-    const std::shared_ptr<internal_forces::muscles::FatigueState> other)
+    const std::shared_ptr<FatigueState> other)
     : internal_forces::muscles::FatigueDynamicState(other) {}
 
 internal_forces::muscles::FatigueDynamicStateXia

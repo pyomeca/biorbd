@@ -135,6 +135,18 @@ FUNCTION(SETUP_TARGET_FOR_COVERAGE _targetname _testrunner _outputname)
 
 	SEPARATE_ARGUMENTS(test_command UNIX_COMMAND "${_testrunner}")
 
+	# lcov 2 is much stricter than lcov 1 and fails on harmless inconsistencies in the data produced by
+	# recent gcov (e.g. the end line of gtest's TEST macros). These options do not exist in lcov 1
+	EXECUTE_PROCESS(COMMAND ${LCOV_PATH} --version OUTPUT_VARIABLE LCOV_VERSION_OUTPUT)
+	SET(LCOV_CAPTURE_EXTRA_ARGS "")
+	SET(LCOV_REMOVE_EXTRA_ARGS "")
+	IF(LCOV_VERSION_OUTPUT MATCHES "LCOV version ([0-9]+)" AND CMAKE_MATCH_1 GREATER_EQUAL 2)
+		SET(LCOV_CAPTURE_EXTRA_ARGS
+			--ignore-errors inconsistent,inconsistent,mismatch,mismatch
+			--rc geninfo_unexecuted_blocks=1)
+		SET(LCOV_REMOVE_EXTRA_ARGS --ignore-errors unused,unused)
+	ENDIF()
+
 	# Setup target
 	ADD_CUSTOM_TARGET(${_targetname}
 
@@ -149,8 +161,9 @@ FUNCTION(SETUP_TARGET_FOR_COVERAGE _targetname _testrunner _outputname)
 		COMMAND g++ --version
 		
 		# Capturing lcov counters and generating report
-		COMMAND ${LCOV_PATH} --directory . --base-directory . --capture --output-file coverage.info
-        COMMAND ${LCOV_PATH} --remove coverage.info '/usr*' '*/test/*' '*/ext/*' -o coverage.info
+		# (headers of a conda environment are removed too, e.g. when building with conda's compiler)
+		COMMAND ${LCOV_PATH} --directory . --base-directory . --capture --output-file coverage.info ${LCOV_CAPTURE_EXTRA_ARGS}
+        COMMAND ${LCOV_PATH} --remove coverage.info '/usr*' '*/envs/*' '*/test/*' '*/ext/*' -o coverage.info ${LCOV_REMOVE_EXTRA_ARGS}
 
 		#COMMAND ${LCOV_PATH} --directory . --capture --output-file ${coverage_info}
 		#COMMAND ${LCOV_PATH} --remove ${coverage_info} 'tests/*' '/usr/*' --output-file ${coverage_cleaned}

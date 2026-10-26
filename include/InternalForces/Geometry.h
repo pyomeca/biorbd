@@ -76,7 +76,6 @@ class BIORBD_API Geometry {
   ///
   /// \brief Updates the position and dynamic elements of the muscles.
   /// \param updatedModel The joint model updated to the proper kinematics level
-  /// \param characteristics The muscle characteristics
   /// \param pathModifiers The path modifiers
   /// \param Q The generalized coordinates of the joints (not needed if
   /// updateKin is less than 2)
@@ -252,7 +251,6 @@ class BIORBD_API Geometry {
 
   ///
   /// \brief Update the kinematics, compute and return the muscle length
-  /// \param characteristics The muscle characteristics
   /// \param pathModifiers The set of path modifiers
   /// \return The muscle length
   ///

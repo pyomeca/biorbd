@@ -21,10 +21,24 @@
 
 %include "@CMAKE_CURRENT_SOURCE_DIR@/numpy.i"
 %init %{
+    // SWIG 4.5+ emits an int-returning module exec function.
+    // Use import_array1(-1) there to avoid NULL-to-int conversion warnings.
+#if SWIG_VERSION >= 0x040500
+    import_array1(-1);
+#else
     import_array();
+#endif
 %}
 
 %include "@CMAKE_BINARY_DIR@/include/biorbdConfig.h"
+
+#if defined(BIORBD_USE_CASADI_MATH)
+// The casadi backend links against the casadi library shipped with the casadi python package (e.g. in a
+// wheel, where that library is not bundled). Importing casadi first loads it before this module needs it
+%pythonbegin %{
+import casadi
+%}
+#endif
 
 %{
 #define STR_HELPER(x) #x

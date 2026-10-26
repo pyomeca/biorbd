@@ -28,14 +28,14 @@ class BIORBD_API PassiveTorqueConstant : public PassiveTorque {
 
   ///
   /// \brief Construct a constant passive torque
-  /// \param Tmax The maximum torque that can be done
+  /// \param Torque The constant torque
   /// \param dofIdx Index of the DoF associated with passive torque
   ///
   PassiveTorqueConstant(const utils::Scalar& Torque, size_t dofIdx);
 
   ///
   /// \brief Construct a constant passive torque
-  /// \param Tmax The maximum torque that can be done
+  /// \param Torque The constant torque
   /// \param dofIdx Index of the DoF associated with passive torque
   /// \param jointName The name of the parent joint
   ///

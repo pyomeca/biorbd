@@ -100,6 +100,8 @@ class BIORBD_API SoftContactNode : public rigidbody::NodeSegment {
   /// underlying segment
   /// \param x The position of the contact in global reference frame
   /// \param dx The velocity of the contact in global reference frame
+  /// \param angularVelocity The angular velocity of the contact in global
+  /// reference frame
   /// \return The Spatial vector
   ///
   virtual utils::Vector3d computeForce(

@@ -146,12 +146,12 @@ void utils::Equation::replaceVar(
     }
 }
 
-double utils::Equation::evaluateEquation(std::vector<utils::Equation> wholeEq) {
+double utils::Equation::evaluateEquation(std::vector<Equation> wholeEq) {
   return evaluateEquation(wholeEq, 0);
 }
 
 double utils::Equation::evaluateEquation(
-    std::vector<utils::Equation> eq,
+    std::vector<Equation> eq,
     size_t math) {
   // If everything was done
   if (eq.size() == 1) {
@@ -238,7 +238,7 @@ double utils::Equation::evaluateEquation(
 
 double utils::Equation::evaluateEquation(
     utils::Equation wholeEq,
-    const std::map<utils::Equation, double>& variables) {
+    const std::map<Equation, double>& variables) {
   return evaluateEquation(splitIntoEquation(wholeEq, variables));
 }
 double utils::Equation::evaluateEquation(utils::Equation wholeEq) {

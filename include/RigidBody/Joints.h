@@ -619,13 +619,13 @@ class BIORBD_API Joints : public RigidBodyDynamics::Model
   /// \brief Return the jacobian matrix of the projected markers for a marker
   /// from the model
   /// \param Q The generalized coordinates
-  /// \param p A reference to a marker from the model
+  /// \param node A reference to a marker from the model
   /// \param updateKin If the kinematics of the model should be computed
   /// \return The jacobian matrix of the projected marker
   ///
   utils::Matrix projectPointJacobian(
       const GeneralizedCoordinates& Q,
-      NodeSegment p,
+      NodeSegment node,
       bool updateKin);
 
   ///
@@ -714,6 +714,38 @@ class BIORBD_API Joints : public RigidBodyDynamics::Model
       utils::Vector3d* comAcceleration = NULL,
       utils::Vector3d* angularMomentum = NULL,
       utils::Vector3d* changeOfAngularMomentum = NULL,
+      bool updateKin = true);
+
+  ///
+  /// \brief Compute the zero moment point on a contact surface.
+  /// \param Q The current joint positions
+  /// \param Qdot The current joint velocities
+  /// \param Qddot The current joint accelerations
+  /// \param updateKin If the kinematics of the model should be computed
+  /// \return The Zero Moment Point projected on the horizontal surface
+  ///
+  utils::Vector3d CalcZeroMomentPoint(
+      const rigidbody::GeneralizedCoordinates& Q,
+      const rigidbody::GeneralizedVelocity& Qdot,
+      const rigidbody::GeneralizedAcceleration& Qddot,
+      bool updateKin = true);
+
+  ///
+  /// \brief Compute the zero moment point on a contact surface.
+  /// \param Q The current joint positions
+  /// \param Qdot The current joint velocities
+  /// \param Qddot The current joint accelerations
+  /// \param normal The normal of the contact surface
+  /// \param point A point on the contact surface
+  /// \param updateKin If the kinematics of the model should be computed
+  /// \return The Zero Moment Point projected on the contact surface
+  ///
+  utils::Vector3d CalcZeroMomentPoint(
+      const rigidbody::GeneralizedCoordinates& Q,
+      const rigidbody::GeneralizedVelocity& Qdot,
+      const rigidbody::GeneralizedAcceleration& Qddot,
+      const utils::Vector3d& normal,
+      const utils::Vector3d& point,
       bool updateKin = true);
 
   ///
@@ -1062,6 +1094,7 @@ class BIORBD_API Joints : public RigidBodyDynamics::Model
   /// \brief Return the angular velocity of the segment
   /// \param Q The generalized coordinates
   /// \param Qdot The generalized velocities
+  /// \param idx The index of the segment
   /// \param updateKin If the model should be updated
   /// \return The angular velocity of the segment
   ///
@@ -1075,6 +1108,7 @@ class BIORBD_API Joints : public RigidBodyDynamics::Model
   /// \brief Interface for the Kinetic Energy of RBDL
   /// \param Q The Generalized Coordinates
   /// \param Qdot The Generalized Velocities
+  /// \param updateKin If the model should be updated
   /// \return The Kinetic Energy
   ///
   ///
@@ -1086,6 +1120,7 @@ class BIORBD_API Joints : public RigidBodyDynamics::Model
   ///
   /// \brief Interface for the Potential Energy of RBDL
   /// \param Q The Generalized Coordinates
+  /// \param updateKin If the model should be updated
   /// \return The Potential Energy
   ///
   ///
@@ -1097,6 +1132,7 @@ class BIORBD_API Joints : public RigidBodyDynamics::Model
   /// \brief Compute the Lagrangian of the system
   /// \param Q The Generalized Coordinates
   /// \param Qdot The Generalized Velocities
+  /// \param updateKin If the model should be updated
   /// \return The Lagrangian:  kinetic - potential energy
   ///
   ///
@@ -1109,6 +1145,7 @@ class BIORBD_API Joints : public RigidBodyDynamics::Model
   /// \brief Compute the Total Energy of System
   /// \param Q The Generalized Coordinates
   /// \param Qdot The Generalized Velocities
+  /// \param updateKin If the model should be updated
   /// \return The total energy: kinetic + potential energy
   ///
   ///

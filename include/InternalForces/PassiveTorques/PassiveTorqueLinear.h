@@ -73,9 +73,9 @@ class BIORBD_API PassiveTorqueLinear : public PassiveTorque {
   void DeepCopy(const PassiveTorqueLinear& other);
 
   ///
-  /// \brief Return the maximal torque at a given Q
-  /// \param Q The generalized coordinates of the passive torque
-  /// \return The maximal torque
+  /// \brief Return the passive torque (not available for this type, Q must be
+  /// provided)
+  /// \return The passive torque
   ///
   virtual utils::Scalar passiveTorque();
 

@@ -277,10 +277,14 @@ utils::Vector internal_forces::ligaments::Ligaments::ligamentForces(
 
 utils::Matrix internal_forces::ligaments::Ligaments::ligamentsLengthJacobian()
     const {
-  const rigidbody::Joints& model =
-      dynamic_cast<const rigidbody::Joints&>(*this);
-
   // Assuming that this is also a Joints type (via BiorbdModel)
+  return computeLigamentsLengthJacobian(
+      dynamic_cast<const rigidbody::Joints&>(*this));
+}
+
+utils::Matrix
+internal_forces::ligaments::Ligaments::computeLigamentsLengthJacobian(
+    const rigidbody::Joints& model) const {
   utils::Matrix tp(nbLigaments(), model.nbDof());
   for (size_t j = 0; j < nbLigaments(); ++j) {
     tp.block(
@@ -299,7 +303,7 @@ utils::Matrix internal_forces::ligaments::Ligaments::ligamentsLengthJacobian(
     bool updateLigamentKinematics) {
   // Update the ligament position
   if (updateLigamentKinematics) updateLigaments(updatedModel, Q);
-  return ligamentsLengthJacobian(updatedModel);
+  return computeLigamentsLengthJacobian(updatedModel);
 }
 
 utils::Matrix internal_forces::ligaments::Ligaments::ligamentsLengthJacobian(

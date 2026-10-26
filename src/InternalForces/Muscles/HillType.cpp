@@ -154,7 +154,7 @@ internal_forces::muscles::HillType::HillType(
 }
 
 internal_forces::muscles::HillType::HillType(
-    const std::shared_ptr<internal_forces::muscles::Muscle> other)
+    const std::shared_ptr<Muscle> other)
     : internal_forces::muscles::Muscle(other) {
   const std::shared_ptr<internal_forces::muscles::HillType> m_tp(
       std::dynamic_pointer_cast<internal_forces::muscles::HillType>(other));

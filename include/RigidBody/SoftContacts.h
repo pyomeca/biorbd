@@ -55,7 +55,6 @@ class BIORBD_API SoftContacts {
 
   ///
   /// \brief Return the names of the soft contact
-  /// \param i The index of the contact
   /// \return The names of the soft contact
   ///
   std::vector<utils::String> softContactNames();

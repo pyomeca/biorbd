@@ -108,10 +108,14 @@ function(FindOrBuildCasadi)
         GIT_TAG 3.7.0
         CMAKE_ARGS
             -DCMAKE_INSTALL_PREFIX=${Casadi_INSTALL_DIR}
+            # Some distributions (e.g. the manylinux images) default to lib64, while lib is expected below
+            -DCMAKE_INSTALL_LIBDIR=lib
             -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
             -DENABLE_SHARED=${Casadi_BUILD_SHARED_LIBS}
             -DENABLE_STATIC=${Casadi_BUILD_STATIC_LIBS}
             -DCMAKE_POSITION_INDEPENDENT_CODE=ON
+            -DCMAKE_EXPORT_PACKAGE_REGISTRY=OFF
+            -DCMAKE_EXPORT_NO_PACKAGE_REGISTRY=ON
             -DWITH_PYTHON=${BINDER_PYTHON3}
             -DWITH_PYTHON3=${BINDER_PYTHON3}
             -DPYTHON_PREFIX=${Python3_SITELIB}

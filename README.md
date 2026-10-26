@@ -97,7 +97,7 @@ The building status for the current BIORBD branches is as follow
 | DOI | [![DOI](https://zenodo.org/badge/124423173.svg)](https://zenodo.org/badge/latestdoi/124423173) |
 
 ### Dependencies
-BIORBD relies on several libraries (namely eigen ([http://eigen.tuxfamily.org]) or CasADi ([https://web.casadi.org/]), rbdl-casadi (https://github.com/pyomeca/rbdl-casadi), tinyxml2(https://github.com/leethomason/tinyxml2) and Ipopt (https://github.com/coin-or/Ipopt)) that one must install prior to compiling. Fortunately, all these dependencies are also hosted on the *conda-forge* channel of Anaconda or will automatically be compiled when building BIORBD. Therefore the following command will install everything you need to compile BIORBD:
+BIORBD relies on several libraries (namely eigen ([http://eigen.tuxfamily.org] up to version 3.4.0) or CasADi ([https://web.casadi.org/]), rbdl-casadi (https://github.com/pyomeca/rbdl-casadi), tinyxml2(https://github.com/leethomason/tinyxml2) and Ipopt (https://github.com/coin-or/Ipopt)) that one must install prior to compiling. Fortunately, all these dependencies are also hosted on the *conda-forge* channel of Anaconda or will automatically be compiled when building BIORBD. Therefore the following command will install everything you need to compile BIORBD:
 ```bash
 conda install -c conda-forge rbdl [ipopt] [pkgconfig] [cmake] [scipy]
 ```
@@ -470,7 +470,8 @@ The `inertia` tag allows to specify the matrix of inertia of the segment ( compu
 ##### foreceplate or externalforceindex <!-- omit from toc -->
 This tag is deprecated and should therefore not be used.
 
-##### meshfile or ply <!-- omit from toc -->
+<!-- omit from toc -->
+##### meshfile or ply
 The path of the meshing `.bioBone`, `.ply`, `.stl` file respectively. It can be relative to the current running folder or absolute (relative being preferred) and UNIX or Windows formatted (`/` vs `\\`, UNIX being preferred).
 
 If the folder is relative, one can pass the [`mesh_folder_prefix`](#mesh_folder_prefix) in order to prefix all the mesh path. 

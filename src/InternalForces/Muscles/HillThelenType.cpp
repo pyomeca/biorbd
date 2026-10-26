@@ -67,7 +67,7 @@ internal_forces::muscles::HillThelenType::HillThelenType(
     : internal_forces::muscles::HillType(other) {}
 
 internal_forces::muscles::HillThelenType::HillThelenType(
-    const std::shared_ptr<internal_forces::muscles::Muscle> other)
+    const std::shared_ptr<Muscle> other)
     : internal_forces::muscles::HillType(other) {}
 
 internal_forces::muscles::HillThelenType

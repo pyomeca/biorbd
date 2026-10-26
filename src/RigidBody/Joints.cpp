@@ -535,7 +535,7 @@ utils::Matrix rigidbody::Joints::CalcPointJacobian(
 
 std::vector<rigidbody::NodeSegment> rigidbody::Joints::projectPoint(
     const rigidbody::GeneralizedCoordinates &Q,
-    const std::vector<rigidbody::NodeSegment> &v,
+    const std::vector<NodeSegment> &v,
     bool updateKin) {
   // Assuming that this is also a marker type (via BiorbdModel)
   const rigidbody::Markers &marks = dynamic_cast<rigidbody::Markers &>(*this);
@@ -681,7 +681,7 @@ utils::Matrix rigidbody::Joints::projectPointJacobian(
 
 std::vector<utils::Matrix> rigidbody::Joints::projectPointJacobian(
     const rigidbody::GeneralizedCoordinates &Q,
-    const std::vector<rigidbody::NodeSegment> &v,
+    const std::vector<NodeSegment> &v,
     bool updateKin) {
 #ifdef BIORBD_USE_CASADI_MATH
   rigidbody::Joints
@@ -1033,6 +1033,46 @@ void rigidbody::Joints::CalcCenterOfMass(
       angularMomentum,
       changeOfAngularMomentum,
       false);
+}
+
+utils::Vector3d rigidbody::Joints::CalcZeroMomentPoint(
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &Qdot,
+    const rigidbody::GeneralizedAcceleration &Qddot,
+    bool updateKin) {
+  return CalcZeroMomentPoint(
+      Q,
+      Qdot,
+      Qddot,
+      utils::Vector3d(0., 0., 1.),
+      utils::Vector3d(0., 0., 0.),
+      updateKin);
+}
+
+utils::Vector3d rigidbody::Joints::CalcZeroMomentPoint(
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &Qdot,
+    const rigidbody::GeneralizedAcceleration &Qddot,
+    const utils::Vector3d &normal,
+    const utils::Vector3d &point,
+    bool updateKin) {
+#ifdef BIORBD_USE_CASADI_MATH
+  rigidbody::Joints
+#else
+  rigidbody::Joints &
+#endif
+      updatedModel = this->UpdateKinematicsCustom(
+          updateKin ? &Q : nullptr,
+          updateKin ? &Qdot : nullptr,
+          updateKin ? &Qddot : nullptr);
+
+  utils::Vector3d zmp;
+  RigidBodyDynamics::Utils::CalcZeroMomentPoint(
+      updatedModel, Q, Qdot, Qddot, &zmp, normal, point, false);
+
+  zmp += normal * ((point - zmp).dot(normal) / normal.dot(normal));
+
+  return zmp;
 }
 
 std::vector<rigidbody::NodeSegment> rigidbody::Joints::CoMbySegment(

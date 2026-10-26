@@ -54,8 +54,8 @@ class BIORBD_API Compound {
   Compound(const Compound& other);
 
   ///
-  /// \brief Construct compound from another muscle
-  /// \param other The muscle to shallow copy
+  /// \brief Construct compound from another compound
+  /// \param other The compound to shallow copy
   ///
   Compound(const std::shared_ptr<Compound> other);
 

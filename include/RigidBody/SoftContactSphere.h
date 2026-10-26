@@ -74,6 +74,9 @@ class BIORBD_API SoftContactSphere : public rigidbody::SoftContactNode {
   /// \param radius The radius of the sphere
   /// \param stiffness The stiffness of the contact sphere
   /// \param damping The damping factor of the contact sphere
+  /// \param muStatic Static friction coefficient
+  /// \param muDynamic Dynamic friction coefficient
+  /// \param muViscous Viscous friction coefficient
   /// \param name The name of the node
   /// \param parentName The name of the parent
   /// \param parentID The index of the parent contact

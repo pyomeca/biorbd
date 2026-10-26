@@ -23,7 +23,7 @@ class BIORBD_API LigamentSpringLinear : public Ligament {
 
   ///
   /// \brief Construct a linear spring like ligament
-  /// \param stifness The ligament stifness
+  /// \param stiffness The ligament stiffness
   /// \param name The ligament name
   /// \param geometry The ligament geometry
   /// \param characteristics The ligament characteristics
@@ -36,7 +36,7 @@ class BIORBD_API LigamentSpringLinear : public Ligament {
 
   ///
   /// \brief Construct a linear spring like ligament
-  /// \param stifness The ligament stifness
+  /// \param stiffness The ligament stiffness
   /// \param name The ligament name
   /// \param geometry The ligament geometry
   /// \param characteristics The ligament characteristics
