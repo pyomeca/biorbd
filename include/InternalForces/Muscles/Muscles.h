@@ -428,6 +428,13 @@ class BIORBD_API Muscles {
   size_t nbMuscles() const;
 
  protected:
+  ///
+  /// \brief Assemble the muscle length jacobian using the provided model
+  /// \param model The joint model updated to the proper kinematics level
+  /// \return The muscle length jacobian
+  ///
+  utils::Matrix computeMusclesLengthJacobian(const rigidbody::Joints& model);
+
   std::shared_ptr<std::vector<MuscleGroup>>
       m_mus;  ///< Holder for muscle groups
 };

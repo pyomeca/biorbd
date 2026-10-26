@@ -254,8 +254,11 @@ size_t internal_forces::muscles::Muscles::nbMuscleGroups() const {
 
 utils::Matrix internal_forces::muscles::Muscles::musclesLengthJacobian() {
   // Assuming that this is also a Joints type (via BiorbdModel)
-  const rigidbody::Joints& model = dynamic_cast<rigidbody::Joints&>(*this);
+  return computeMusclesLengthJacobian(dynamic_cast<rigidbody::Joints&>(*this));
+}
 
+utils::Matrix internal_forces::muscles::Muscles::computeMusclesLengthJacobian(
+    const rigidbody::Joints& model) {
   utils::Matrix tp(nbMuscleTotal(), model.nbDof());
   size_t cmpMus(0);
   for (size_t i = 0; i < nbMuscleGroups(); ++i)
@@ -277,7 +280,7 @@ utils::Matrix internal_forces::muscles::Muscles::musclesLengthJacobian(
     bool updateMuscleParameters) {
   // Update the muscular position
   if (updateMuscleParameters) updateMuscles(updatedModel, Q);
-  return musclesLengthJacobian();
+  return computeMusclesLengthJacobian(updatedModel);
 }
 
 utils::Matrix internal_forces::muscles::Muscles::musclesLengthJacobian(

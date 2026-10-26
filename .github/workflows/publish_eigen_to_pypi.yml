@@ -16,8 +16,8 @@ jobs:
         include:
           - os: ubuntu-latest
             label: linux-64
-          # - os: macos-latest
-          #   label: osx-arm64
+          - os: macos-latest
+            label: osx-arm64
           - os: windows-latest
             label: win-64
     name: Wheels ${{ matrix.label }}
