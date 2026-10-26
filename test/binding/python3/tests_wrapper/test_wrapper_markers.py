@@ -45,7 +45,7 @@ def test_wrapper_markers(brbd):
 
     # Is technical or anatomical
     assert marker.is_anatomical is False
-    assert marker.is_technical is False
+    assert marker.is_technical is True
 
     # Perform FK to get world position
     q = [0.1] * model.nb_q

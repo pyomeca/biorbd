@@ -10,6 +10,12 @@ jobs:
   build:
     strategy:
       matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        backend: [Eigen3, Casadi]
+        exclude:
+          # The casadi package on PyPI is compiled with MinGW on Windows, so its C++ API cannot be linked with MSVC
+          - os: windows-latest
+            backend: Casadi
         include:
           - os: ubuntu-latest
             label: linux-64
@@ -17,7 +23,11 @@ jobs:
             label: osx-arm64
           - os: windows-latest
             label: win-64
-    name: ${{ matrix.label }}
+          - backend: Eigen3
+            module: biorbd
+          - backend: Casadi
+            module: biorbd_casadi
+    name: ${{ matrix.label }}-${{ matrix.backend }}
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -49,12 +59,29 @@ jobs:
       - name: Build biorbd
         run: |
           rm -rf _skbuild
-          export MATH_LIBRARY_BACKEND=Eigen3
+          export MATH_LIBRARY_BACKEND=${{ matrix.backend }}
           pip install .
 
-      - name: Test installed version of biorbd
+      - name: Test installed version of ${{ matrix.module }}
         run: |
           BIORBD_FOLDER=`pwd`
           cd
-          python -c "import biorbd"
+          python -c "import ${{ matrix.module }}"
           cd $BIORBD_FOLDER
+
+      # The casadi objects must be exchanged with the casadi package installed from pip (see binding/python3/CMakeLists.txt)
+      - name: Test symbolic computation with biorbd_casadi
+        run: |
+          # Run from outside the repository so the installed biorbd_casadi is used (not the stub folder of setup.py)
+          cp test/models/pyomecaman.bioMod ~/
+          cd
+          python -c "
+          import casadi, biorbd_casadi
+          model = biorbd_casadi.Model('pyomecaman.bioMod')
+          q = casadi.MX.sym('q', model.nbQ())
+          qdot = casadi.MX.sym('qdot', model.nbQ())
+          tau = casadi.MX.sym('tau', model.nbQ())
+          func = casadi.Function('fd', [q, qdot, tau], [model.ForwardDynamics(q, qdot, tau).to_mx()])
+          print(func([0.1] * model.nbQ(), [0] * model.nbQ(), [0] * model.nbQ()))
+          "
+        if: matrix.backend == 'Casadi'
