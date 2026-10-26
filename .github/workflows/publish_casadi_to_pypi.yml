@@ -18,8 +18,8 @@ jobs:
             label: linux-64
           - os: macos-latest
             label: osx-arm64
-          - os: windows-latest
-            label: win-64
+          # Windows is not supported: the casadi package on PyPI is compiled with MinGW on Windows, so its C++ API
+          # cannot be linked with MSVC
     name: Wheels ${{ matrix.label }}
     runs-on: ${{ matrix.os }}
 
@@ -54,7 +54,6 @@ jobs:
           CIBW_TEST_COMMAND: python -c "import biorbd_casadi; print(biorbd_casadi.__file__)"
           CIBW_REPAIR_WHEEL_COMMAND_LINUX: auditwheel repair --exclude "libcasadi.so.*" -w {dest_dir} {wheel}
           CIBW_REPAIR_WHEEL_COMMAND_MACOS: delocate-wheel --require-archs {delocate_archs} --exclude libcasadi -w {dest_dir} -v {wheel}
-          CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: delvewheel repair --exclude libcasadi.dll -w {dest_dir} {wheel}
 
       - name: Store the wheels
         uses: actions/upload-artifact@v7
