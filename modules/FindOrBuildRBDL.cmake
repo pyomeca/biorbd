@@ -115,7 +115,7 @@ function(FindOrBuildRBDL MATH_BACKEND)
         set(RBDL_TARGET_STATIC ON)
     endif()
 
-    if(WIN32)
+    if(MSVC)
         set(RBDL_LIB_NAME "rbdl${RBDL_LIBRARY_SUFFIX}.lib") 
     else()
         if(${RBDL_TARGET_STATIC})

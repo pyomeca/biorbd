@@ -4,6 +4,10 @@ project(biorbd VERSION 1.12.4)
 set(BIORBD_ROOT_FOLDER ${PROJECT_SOURCE_DIR})
 set (BIORBD_NAME_NO_SUFFIX ${PROJECT_NAME})
 set (CMAKE_CXX_STANDARD 17)
+if(MINGW)
+    # The object files of the casadi backend (and of the python binder) exceed the default number of sections
+    add_compile_options(-Wa,-mbig-obj)
+endif()
 
 # Set some variables
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/modules")
