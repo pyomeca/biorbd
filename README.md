@@ -470,7 +470,8 @@ The `inertia` tag allows to specify the matrix of inertia of the segment ( compu
 ##### foreceplate or externalforceindex <!-- omit from toc -->
 This tag is deprecated and should therefore not be used.
 
-##### meshfile or ply <!-- omit from toc -->
+<!-- omit from toc -->
+##### meshfile or ply
 The path of the meshing `.bioBone`, `.ply`, `.stl` file respectively. It can be relative to the current running folder or absolute (relative being preferred) and UNIX or Windows formatted (`/` vs `\\`, UNIX being preferred).
 
 If the folder is relative, one can pass the [`mesh_folder_prefix`](#mesh_folder_prefix) in order to prefix all the mesh path. 

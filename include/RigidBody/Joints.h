@@ -625,7 +625,7 @@ class BIORBD_API Joints : public RigidBodyDynamics::Model
   ///
   utils::Matrix projectPointJacobian(
       const GeneralizedCoordinates& Q,
-      NodeSegment p,
+      NodeSegment node,
       bool updateKin);
 
   ///

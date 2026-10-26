@@ -136,7 +136,7 @@ bool utils::IfStream::read(RBDLCasadiMath::MX_Xd_SubMatrix val) {
 #endif
 bool utils::IfStream::read(
     double& result,
-    const std::map<utils::Equation, double>& variables) {
+    const std::map<Equation, double>& variables) {
   utils::Equation tp;
   bool out(read(tp));
   // Manage in case of an equation

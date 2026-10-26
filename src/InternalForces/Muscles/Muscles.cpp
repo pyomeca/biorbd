@@ -166,7 +166,7 @@ internal_forces::muscles::Muscles::muscularJointTorque(
 // From muscle activation (return muscle force)
 rigidbody::GeneralizedTorque
 internal_forces::muscles::Muscles::muscularJointTorque(
-    const std::vector<std::shared_ptr<internal_forces::muscles::State>>& emg) {
+    const std::vector<std::shared_ptr<State>>& emg) {
   return muscularJointTorque(muscleForces(emg));
 }
 
@@ -174,7 +174,7 @@ internal_forces::muscles::Muscles::muscularJointTorque(
 rigidbody::GeneralizedTorque
 internal_forces::muscles::Muscles::muscularJointTorque(
     rigidbody::Joints& updatedModel,
-    const std::vector<std::shared_ptr<internal_forces::muscles::State>>& emg,
+    const std::vector<std::shared_ptr<State>>& emg,
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& Qdot,
     bool updateMuscleParameters) {
@@ -185,7 +185,7 @@ internal_forces::muscles::Muscles::muscularJointTorque(
 // From muscle activation (do not return muscle force)
 rigidbody::GeneralizedTorque
 internal_forces::muscles::Muscles::muscularJointTorque(
-    const std::vector<std::shared_ptr<internal_forces::muscles::State>>& emg,
+    const std::vector<std::shared_ptr<State>>& emg,
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& Qdot,
     int updateKin) {
@@ -210,7 +210,7 @@ utils::Vector internal_forces::muscles::Muscles::activationDot(
 }
 
 utils::Vector internal_forces::muscles::Muscles::muscleForces(
-    const std::vector<std::shared_ptr<internal_forces::muscles::State>>& emg) {
+    const std::vector<std::shared_ptr<State>>& emg) {
   // Output variable
   utils::Vector forces(nbMuscleTotal());
 
@@ -229,7 +229,7 @@ utils::Vector internal_forces::muscles::Muscles::muscleForces(
 
 utils::Vector internal_forces::muscles::Muscles::muscleForces(
     rigidbody::Joints& updatedModel,
-    const std::vector<std::shared_ptr<internal_forces::muscles::State>>& emg,
+    const std::vector<std::shared_ptr<State>>& emg,
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& Qdot,
     bool updateMuscleParameters) {
@@ -239,7 +239,7 @@ utils::Vector internal_forces::muscles::Muscles::muscleForces(
 }
 
 utils::Vector internal_forces::muscles::Muscles::muscleForces(
-    const std::vector<std::shared_ptr<internal_forces::muscles::State>>& emg,
+    const std::vector<std::shared_ptr<State>>& emg,
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& Qdot,
     int updateKin) {

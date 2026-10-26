@@ -85,8 +85,7 @@ internal_forces::muscles::Muscle::Muscle(
       m_characteristics(other.m_characteristics),
       m_state(other.m_state) {}
 
-internal_forces::muscles::Muscle::Muscle(
-    const std::shared_ptr<internal_forces::muscles::Muscle> other)
+internal_forces::muscles::Muscle::Muscle(const std::shared_ptr<Muscle> other)
     : internal_forces::Compound(other),
       m_position(other->m_position),
       m_type(other->m_type),

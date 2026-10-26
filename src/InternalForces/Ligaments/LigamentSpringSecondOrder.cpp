@@ -98,8 +98,7 @@ internal_forces::ligaments::LigamentSpringSecondOrder::
 }
 
 internal_forces::ligaments::LigamentSpringSecondOrder::
-    LigamentSpringSecondOrder(
-        const std::shared_ptr<internal_forces::ligaments::Ligament> other)
+    LigamentSpringSecondOrder(const std::shared_ptr<Ligament> other)
     : internal_forces::ligaments::Ligament(other) {
   const std::shared_ptr<internal_forces::ligaments::LigamentSpringSecondOrder>
       ligament_tp(

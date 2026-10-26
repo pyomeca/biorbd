@@ -61,7 +61,7 @@ class BIORBD_API Path {
       const String& path,
       String& folder,
       String& filename,
-      String& ext);
+      String& extension);
 
 #ifndef SWIG
   ///

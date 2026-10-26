@@ -18,8 +18,7 @@ internal_forces::passive_torques::PassiveTorque::PassiveTorque(
       m_jointName(other.m_jointName),
       m_dofIdx(other.m_dofIdx) {}
 internal_forces::passive_torques::PassiveTorque::PassiveTorque(
-    const std::shared_ptr<internal_forces::passive_torques::PassiveTorque>
-        other)
+    const std::shared_ptr<PassiveTorque> other)
     : m_type(other->m_type),
       m_jointName(other->m_jointName),
       m_dofIdx(other->m_dofIdx) {}
