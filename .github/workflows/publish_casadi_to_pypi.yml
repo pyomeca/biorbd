@@ -53,7 +53,10 @@ jobs:
           CIBW_ENVIRONMENT: MATH_LIBRARY_BACKEND=Casadi BIORBD_EIGEN3_ARCHIVE=.eigen_cache/eigen-3.4.0.tar.gz
           CIBW_TEST_COMMAND: python -c "import biorbd_casadi; print(biorbd_casadi.__file__)"
           CIBW_REPAIR_WHEEL_COMMAND_LINUX: auditwheel repair --exclude "libcasadi.so.*" -w {dest_dir} {wheel}
-          CIBW_REPAIR_WHEEL_COMMAND_MACOS: delocate-wheel --require-archs {delocate_archs} --exclude libcasadi -w {dest_dir} -v {wheel}
+          # On macOS, libcasadi is found through the relative rpaths set in CMakeLists.txt, which must therefore be kept
+          CIBW_REPAIR_WHEEL_COMMAND_MACOS: >-
+            delocate-wheel --require-archs {delocate_archs} --exclude libcasadi --ignore-missing-dependencies
+            --no-sanitize-rpaths -w {dest_dir} -v {wheel}
 
       - name: Store the wheels
         uses: actions/upload-artifact@v7

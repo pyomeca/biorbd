@@ -41,6 +41,10 @@ function(FindOrBuildEigen3)
             -DCMAKE_INSTALL_PREFIX=${EIGEN3_INSTALL_DIR}
             -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
             -DCMAKE_POSITION_INDEPENDENT_CODE=ON
+            # Only the headers are needed. Eigen's tests, blas and lapack folders enable Fortran when a Fortran
+            # compiler is found, which fails on the Windows CI where MinGW's gfortran is mixed with the MSVC flags
+            -DBUILD_TESTING=OFF
+            -DCMAKE_Fortran_COMPILER=CMAKE_Fortran_COMPILER-NOTFOUND
             -DCMAKE_EXPORT_PACKAGE_REGISTRY=OFF
             -DCMAKE_EXPORT_NO_PACKAGE_REGISTRY=ON
         BUILD_BYPRODUCTS "${EIGEN3_INSTALL_DIR}/include/eigen3/Eigen/Core"

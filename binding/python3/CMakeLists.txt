@@ -148,6 +148,10 @@ set_target_properties(${PYTHON_PROJECT_NAME} PROPERTIES
     INSTALL_RPATH "${${BIORBD_NAME}_BIN_FOLDER}"
     INSTALL_RPATH_USE_LINK_PATH TRUE
 )
+if(DEFINED BIORBD_CASADI_WHEEL_RPATH)
+    # See the main CMakeLists.txt
+    set_property(TARGET ${PYTHON_PROJECT_NAME} APPEND PROPERTY INSTALL_RPATH ${BIORBD_CASADI_WHEEL_RPATH})
+endif()
 
 # Define the python install
 # Priority:
