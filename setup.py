@@ -36,7 +36,7 @@ if math_library_backend == "Eigen3":
 else:
     package_name = "biorbd_casadi"
     try:
-        # casadi is a build requirement of this backend (see _build_backend.py)
+        # casadi is a build requirement of this backend (see build_backend/biorbd_build_backend.py)
         import casadi
     except ImportError:
         # This happens when the build requirements are being determined, that is before casadi is installed

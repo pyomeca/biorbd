@@ -10,9 +10,11 @@ requires = [
     "numpy",
     "scipy",
 ]
-# The setuptools backend, plus the build requirements of the selected MATH_LIBRARY_BACKEND (see _build_backend.py)
-build-backend = "_build_backend"
-backend-path = ["."]
+# The setuptools backend, plus the build requirements of the selected MATH_LIBRARY_BACKEND. It is in a folder of its own
+# because pip's hook runner reports the package metadata found in the backend path (e.g. the biorbd.egg-info created
+# at the root of biorbd) when looking for a package, which breaks the build (e.g. "import cmake" fails in skbuild)
+build-backend = "biorbd_build_backend"
+backend-path = ["build_backend"]
 
 # The project metadata are defined in setup.py, as the name of the package depends on MATH_LIBRARY_BACKEND
 # (biorbd or biorbd_casadi), which cannot be expressed in a [project] table
