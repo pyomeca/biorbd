@@ -64,9 +64,8 @@ jobs:
                 -DBUILD_TESTS=ON \
                 -DBUILD_EXAMPLE=OFF
           cp -r test/models/ .
+          # The coverage target runs the tests and produces coverage.info (see modules/CodeCoverage.cmake)
           make biorbd_eigen_coverage -j${{ steps.cpu-cores.outputs.count }}
-          lcov --directory . --capture --output-file coverage.info
-          lcov --remove coverage.info '/usr/*' --output-file coverage.info
           lcov --list coverage.info
           cd $BIORBD_FOLDER
 

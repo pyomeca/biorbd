@@ -38,3 +38,8 @@ IMPLICIT_DIR_DOCS      = NO
 # Resolve the GitHub-style anchors used in the README table of contents
 MARKDOWN_ID_STYLE      = GITHUB
 TOC_INCLUDE_HEADINGS   = 5
+
+# Only the HTML documentation is used. Without LaTeX output (and with formulas rendered by MathJax),
+# no TeX installation is needed. Otherwise, the "Problems running epstopdf" error fails the build on Windows
+GENERATE_LATEX         = NO
+USE_MATHJAX            = YES
