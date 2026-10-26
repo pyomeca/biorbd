@@ -89,6 +89,7 @@ class BIORBD_API StateDynamicsBuchanan : public StateDynamics {
   /// \brief Set the muscle activation
   /// \param notUsed the activation is computed from the neuralCommand and
   /// excitation
+  /// \param turnOffWarnings If the warnings should be OFF or ON.
   ///
   virtual void setActivation(
       const utils::Scalar& notUsed,

@@ -225,7 +225,8 @@ class BIORBD_API Muscles {
   /// \param updatedModel The model previously updated to proper kinematic level
   /// \param Q The generalized coordinates
   /// \param Qdot The generalized velocities
-  /// \param updatedModel The model previously updated to proper kinematic level
+  /// \param updateMuscleParameters Update the kinematic related parameters of
+  /// the muscles
   ///
   /// This function updates the muscles and then performs the computation for
   /// the muscular joint torque is done from virtual power:

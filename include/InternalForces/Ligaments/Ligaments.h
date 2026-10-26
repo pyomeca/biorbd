@@ -230,7 +230,6 @@ class BIORBD_API Ligaments {
 
   ///
   /// \brief Compute and return the ligament length Jacobian
-  /// \param updatedModel The joint model updated to the proper kinematics level
   /// \param Q The generalized coordinates
   /// \param updateKin If the kinematics should be updated (0 => no update
   /// required, 1 => Only ligament parameters, 2 => Joints model and ligaments)
@@ -266,6 +265,7 @@ class BIORBD_API Ligaments {
 
   ///
   /// \brief Compute and return the ligament forces
+  /// \param updatedModel The joint model updated to the proper kinematics level
   /// \param Q The generalized coordinates
   /// \param Qdot The generalized velocities
   /// \param updateLigamentKinematics If the kinematics parameters of the
@@ -306,7 +306,7 @@ class BIORBD_API Ligaments {
 
   ///
   /// \brief Add a ligament to the set of ligaments
-  /// \param torque The ligament to add
+  /// \param ligament The ligament to add
   ///
   void addLigament(const Ligament& ligament);
 

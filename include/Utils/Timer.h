@@ -32,8 +32,7 @@ class BIORBD_API Timer {
   bool isStarted();
 
   ///
-  /// \brief Return if the timer is paused
-  /// \return If the timer is paused
+  /// \brief Pause the timer
   ///
   void pause();
 

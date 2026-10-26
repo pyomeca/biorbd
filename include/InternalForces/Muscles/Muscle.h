@@ -341,7 +341,8 @@ class BIORBD_API Muscle : public Compound {
   virtual void setType();
 
   std::shared_ptr<MUSCLE_TYPE> m_type;  ///< The type of the muscle
-  std::shared_ptr<internal_forces::muscles::MuscleGeometry> m_position;
+  std::shared_ptr<internal_forces::muscles::MuscleGeometry>
+      m_position;  ///< The geometry (position of the nodes) of the muscle
   std::shared_ptr<Characteristics>
       m_characteristics;           ///< The muscle characteristics
   std::shared_ptr<State> m_state;  ///< The dynamic state

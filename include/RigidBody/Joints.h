@@ -619,7 +619,7 @@ class BIORBD_API Joints : public RigidBodyDynamics::Model
   /// \brief Return the jacobian matrix of the projected markers for a marker
   /// from the model
   /// \param Q The generalized coordinates
-  /// \param p A reference to a marker from the model
+  /// \param node A reference to a marker from the model
   /// \param updateKin If the kinematics of the model should be computed
   /// \return The jacobian matrix of the projected marker
   ///
@@ -1062,6 +1062,7 @@ class BIORBD_API Joints : public RigidBodyDynamics::Model
   /// \brief Return the angular velocity of the segment
   /// \param Q The generalized coordinates
   /// \param Qdot The generalized velocities
+  /// \param idx The index of the segment
   /// \param updateKin If the model should be updated
   /// \return The angular velocity of the segment
   ///
@@ -1075,6 +1076,7 @@ class BIORBD_API Joints : public RigidBodyDynamics::Model
   /// \brief Interface for the Kinetic Energy of RBDL
   /// \param Q The Generalized Coordinates
   /// \param Qdot The Generalized Velocities
+  /// \param updateKin If the model should be updated
   /// \return The Kinetic Energy
   ///
   ///
@@ -1086,6 +1088,7 @@ class BIORBD_API Joints : public RigidBodyDynamics::Model
   ///
   /// \brief Interface for the Potential Energy of RBDL
   /// \param Q The Generalized Coordinates
+  /// \param updateKin If the model should be updated
   /// \return The Potential Energy
   ///
   ///
@@ -1097,6 +1100,7 @@ class BIORBD_API Joints : public RigidBodyDynamics::Model
   /// \brief Compute the Lagrangian of the system
   /// \param Q The Generalized Coordinates
   /// \param Qdot The Generalized Velocities
+  /// \param updateKin If the model should be updated
   /// \return The Lagrangian:  kinetic - potential energy
   ///
   ///
@@ -1109,6 +1113,7 @@ class BIORBD_API Joints : public RigidBodyDynamics::Model
   /// \brief Compute the Total Energy of System
   /// \param Q The Generalized Coordinates
   /// \param Qdot The Generalized Velocities
+  /// \param updateKin If the model should be updated
   /// \return The total energy: kinetic + potential energy
   ///
   ///

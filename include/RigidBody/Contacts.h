@@ -62,8 +62,8 @@ class BIORBD_API Contacts : public RigidBodyDynamics::ConstraintSet
   /// \param worldNormal The normal along the constraint acts (in base
   /// coordinates)
   /// \param name A human readable name
-  /// \param name A human readable name of the parent (should correspond to the
-  /// body_id)
+  /// \param parentName A human readable name of the parent (should correspond
+  /// to the body_id)
   ///
   size_t AddConstraint(
       size_t bodyId,
@@ -79,8 +79,8 @@ class BIORBD_API Contacts : public RigidBodyDynamics::ConstraintSet
   /// body
   /// \param axis The axis along which the constraint acts
   /// \param name A human readable name
-  /// \param name A human readable name of the parent (should correspond to the
-  /// body_id)
+  /// \param parentName A human readable name of the parent (should correspond
+  /// to the body_id)
   ///
 
   size_t AddConstraint(
@@ -225,7 +225,7 @@ class BIORBD_API Contacts : public RigidBodyDynamics::ConstraintSet
 
   ///
   /// \brief Return the index of rigid contacts for a specified segment index
-  /// \param idx The index of the segment
+  /// \param segment_idx The index of the segment
   /// \return the index of rigid contacts for the specified segment idx
   ///
   std::vector<size_t> segmentRigidContactIdx(int segment_idx) const;
@@ -290,7 +290,7 @@ class BIORBD_API Contacts : public RigidBodyDynamics::ConstraintSet
   /// \brief Return the velocities of all the contacts
   /// \param Q The generalized coordinates
   /// \param Qdot The generalized velocities
-  /// \param Qddot The generalized velocities
+  /// \param updateKin If the model should be updated
   /// \return The velocities of all the contacts
   ///
   std::vector<utils::Vector3d> rigidContactsVelocity(
@@ -302,7 +302,7 @@ class BIORBD_API Contacts : public RigidBodyDynamics::ConstraintSet
   /// \brief Return the acceleration of the chosen contact
   /// \param Q The generalized coordinates
   /// \param Qdot The generalized velocities
-  /// \param Qddot The generalized velocities
+  /// \param dQdot The generalized accelerations
   /// \param idx The index of the contact
   /// \param updateKin If the model should be updated
   /// \return The acceleration of the chosen contact
@@ -318,7 +318,8 @@ class BIORBD_API Contacts : public RigidBodyDynamics::ConstraintSet
   /// \brief Return the acceleration of all the contacts
   /// \param Q The generalized coordinates
   /// \param Qdot The generalized velocities
-  /// \param Qddot The generalized velocities
+  /// \param dQdot The generalized accelerations
+  /// \param updateKin If the model should be updated
   /// \return The acceleration of all the contacts
   ///
   std::vector<utils::Vector3d> rigidContactsAcceleration(

@@ -31,9 +31,9 @@ class BIORBD_API LigamentCharacteristics {
 
   ///
   /// \brief Construct characteristics
-  /// \param rate The rate of the spring like ligament
   /// \param ligamentSlackLength The ligament slack length
-  /// \param useDamping Use damping (default: false)
+  /// \param cste_damping The ligament damping parameter (0 for no damping)
+  /// \param cste_maxShorteningSpeed The ligament maximal shortening speed
   ///
   LigamentCharacteristics(
       const utils::Scalar& ligamentSlackLength,

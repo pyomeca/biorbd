@@ -22,6 +22,7 @@ class BIORBD_API LigamentConstant : public Ligament {
 
   ///
   /// \brief Construct a ligament constant
+  /// \param force The constant force of the ligament
   /// \param name The ligament name
   /// \param geometry The ligament geometry
   /// \param characteristics The ligament characteristics
@@ -34,6 +35,7 @@ class BIORBD_API LigamentConstant : public Ligament {
 
   ///
   /// \brief Construct a ligament constant
+  /// \param force The constant force of the ligament
   /// \param name The ligament name
   /// \param geometry The ligament geometry
   /// \param characteristics The ligament characteristics
