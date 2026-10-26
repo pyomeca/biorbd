@@ -51,7 +51,7 @@ jobs:
       - name: Install extra common dependencies
         run: | 
           conda install -cconda-forge rbdl>=3.3.1 
-          conda install -cconda-forge cmake git pkgconfig swig pytest numpy
+          conda install -cconda-forge cmake git pkgconfig "swig<4.4.0" pytest numpy
           conda list
 
       - name: Install MATLAB on WINDOWS LINUX and MACOS
