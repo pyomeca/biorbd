@@ -8,6 +8,13 @@ if(MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMPILE_FLAGS}")
 endif()
 
+# The python headers of Windows are written for MSVC. With MinGW (used for the casadi backend, as the casadi
+# package on PyPI is compiled with it), MS_WIN64 must be defined by hand (otherwise the python types have the
+# wrong size) and _hypot (used by pyconfig.h) does not exist in std
+if(MINGW)
+    add_compile_definitions(MS_WIN64 _hypot=hypot)
+endif()
+
 # Sometimes find_package finds one include folder short, so check if "rbdl-casadi" subdirectory exists
 set(RBDLCasadi_INCLUDE_DIR_PYTHON ${RBDLCasadi_INCLUDE_DIR})
 if(EXISTS "${RBDLCasadi_INCLUDE_DIR_PYTHON}/rbdl-casadi")
