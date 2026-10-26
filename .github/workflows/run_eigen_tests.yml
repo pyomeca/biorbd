@@ -88,6 +88,31 @@ jobs:
           cmake --build . --config Release --target install --parallel ${{ steps.cpu-cores.outputs.count }}
           cd $BIORBD_FOLDER
 
+      # TODO: Remove this step once the Linux "double free or corruption" crash is understood
+      - name: Diagnostics (Linux)
+        continue-on-error: true
+        run: |
+          echo "::group::Packages"
+          conda list | grep -E "^(rbdl|eigen|eigen-abi|casadi|libstdcxx|libgcc|python|tinyxml2|ipopt) "
+          echo "::endgroup::"
+          echo "::group::Compiler"
+          which c++ g++ cmake
+          c++ --version
+          echo "CFLAGS=$CFLAGS CXXFLAGS=$CXXFLAGS CPPFLAGS=$CPPFLAGS LDFLAGS=$LDFLAGS"
+          echo | c++ -dM -E -x c++ - | grep -E "__AVX|__SSE|__FMA|__cplusplus"
+          grep -E "CXX_FLAGS|CXX_DEFINES" $BUILD_FOLDER/CMakeFiles/biorbd_eigen.dir/flags.make || true
+          grep -E "RBDL|Eigen3_DIR|EIGEN3" $BUILD_FOLDER/CMakeCache.txt | head -20
+          echo "::endgroup::"
+          echo "::group::Loaded libraries"
+          ldd $BUILD_FOLDER/test/biorbd_eigen_tests | grep -E "rbdl|biorbd|stdc|tinyxml|ipopt"
+          echo "::endgroup::"
+          echo "::group::Crash backtrace"
+          command -v gdb || sudo apt-get install -y gdb > /dev/null
+          cd $BUILD_FOLDER/test
+          gdb -batch -ex run -ex bt --args ./biorbd_eigen_tests --gtest_filter=FileIO.openModelWithActuators 2>&1 | tail -60
+          echo "::endgroup::"
+        if: matrix.label == 'linux-64'
+
       - name: Run tests
         run: |
           BIORBD_FOLDER=`pwd`
