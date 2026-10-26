@@ -156,7 +156,7 @@ void utils::Path::parseFileName(
 
   // Stocker l'extension
   size_t ext(pathSep.rfind("."));
-  if (ext != SIZE_MAX) {
+  if (ext != std::string::npos) {
     extension = pathSep.substr(ext + 1);
   } else {
     extension = "";

@@ -49,16 +49,6 @@ def get_install_base():
     return f"{current_folder}/_skbuild/{platform_name}/cmake-install"
 
 
-def get_install_site_packages():
-    # Keep the Python package install path inside the scikit-build install prefix.
-    # On Windows, site-packages lives under Lib/site-packages (without pythonX.Y).
-    if platform.system().lower() == "windows":
-        return Path("Lib/site-packages")
-
-    python_version = f"python{sys.version_info.major}.{sys.version_info.minor}"
-    return Path(f"lib/{python_version}/site-packages")
-
-
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
 
@@ -109,7 +99,11 @@ setup(
         "-DCMAKE_INSTALL_LIBDIR=biorbd",
         f"-DMATH_LIBRARY_BACKEND={math_library_backend}",
         f"-DINSTALL_DEPENDENCIES_PREFIX={get_install_base()}",
-        f"-DPython3_SITELIB_INSTALL={get_install_site_packages()}",
+        # Install the python package at the root of the cmake-install folder so scikit-build packages it as a
+        # regular package (and not as wheel data, which breaks the relative RPATH set by auditwheel/delocate)
+        "-DPython3_SITELIB_INSTALL=.",
         f"-DOVERRIDE_LIB_SUFFIX=''",
+        # Do not pick up dependencies registered by previous builds (e.g. a deleted _skbuild folder)
+        "-DCMAKE_FIND_USE_PACKAGE_REGISTRY=OFF",
     ],
 )

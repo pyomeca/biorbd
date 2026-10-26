@@ -411,7 +411,7 @@ utils::Matrix BIORBD_NAMESPACE::rigidbody::Contacts::projectContactJacobian(
   size_t r = 0;
   for (size_t i = 0; i < 3; ++i) {
     if (axes[i]) {
-      Jout.row(r++) = J.row(i);
+      Jout.block(r++, 0, 1, J.cols()) = J.block(i, 0, 1, J.cols());
     }
   }
 
