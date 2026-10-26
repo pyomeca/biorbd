@@ -119,6 +119,9 @@ if (BINDER_PYTHON3)
         "${CMAKE_SOURCE_DIR}/test/binding/python3/*.py")
     file(COPY ${BIORBD_PYTHON3_TEST_FILES}
         DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/binding/python3")
+    file(COPY "${CMAKE_SOURCE_DIR}/test/binding/python3/tests_wrapper"
+        DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/binding/python3"
+        PATTERN "__pycache__" EXCLUDE)
 endif()
 
 # This is so you can do 'make test' to see all your tests run, instead of

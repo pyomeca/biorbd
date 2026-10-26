@@ -10,24 +10,12 @@ requires = [
     "numpy",
     "scipy",
 ]
-build-backend = "setuptools.build_meta"
+# The setuptools backend, plus the build requirements of the selected MATH_LIBRARY_BACKEND (see _build_backend.py)
+build-backend = "_build_backend"
+backend-path = ["."]
 
-[project]
-name = "biorbd"
-dynamic = ["version"]
-dependencies = [
-    "numpy",
-    "scipy"
-]
-description = "Biomechanical add-ons to the RigidBody Dynamics Library"
-readme = "README.md"  # This links to your README file
-authors = [
-    {name = "Michaud, Benjamin"},
-    {name = "Begon, Mickaël"}
-]
-license = "MIT"
-urls = { "Homepage" = "https://github.com/pyomeca/biorbd" }
-requires-python = ">=3.10"
+# The project metadata are defined in setup.py, as the name of the package depends on MATH_LIBRARY_BACKEND
+# (biorbd or biorbd_casadi), which cannot be expressed in a [project] table
 
 [tool.cibuildwheel]
 build-frontend = "build"
