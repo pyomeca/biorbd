@@ -377,6 +377,14 @@ class BIORBD_API Ligaments {
       std::vector<utils::Matrix>& jacoPointsInGlobal);
 
  protected:
+  ///
+  /// \brief Assemble the ligament length jacobian using the provided model
+  /// \param model The joint model updated to the proper kinematics level
+  /// \return The ligament length jacobian
+  ///
+  utils::Matrix computeLigamentsLengthJacobian(
+      const rigidbody::Joints& model) const;
+
   std::shared_ptr<std::vector<std::shared_ptr<Ligament>>>
       m_ligaments;  ///< Holder for ligament groups
 };
