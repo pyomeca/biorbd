@@ -154,6 +154,8 @@ function(FindOrBuildRBDL MATH_BACKEND)
         DEPENDS  ${RBDL_DEPENDS}
         CMAKE_ARGS
             -DCMAKE_INSTALL_PREFIX=${RBDL_INSTALL_DIR}
+            # Some distributions (e.g. the manylinux images) default to lib64, while lib is expected below
+            -DCMAKE_INSTALL_LIBDIR=lib
             -DCMAKE_INSTALL_INCLUDEDIR=${RBDL_INSTALL_INCLUDEDIR}
             -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
             -DRBDL_BUILD_STATIC=${RBDL_TARGET_STATIC}

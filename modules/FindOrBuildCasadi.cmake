@@ -108,6 +108,8 @@ function(FindOrBuildCasadi)
         GIT_TAG 3.7.0
         CMAKE_ARGS
             -DCMAKE_INSTALL_PREFIX=${Casadi_INSTALL_DIR}
+            # Some distributions (e.g. the manylinux images) default to lib64, while lib is expected below
+            -DCMAKE_INSTALL_LIBDIR=lib
             -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
             -DENABLE_SHARED=${Casadi_BUILD_SHARED_LIBS}
             -DENABLE_STATIC=${Casadi_BUILD_STATIC_LIBS}
