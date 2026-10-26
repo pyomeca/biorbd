@@ -17,6 +17,9 @@ jobs:
         include:
           - os: ubuntu-latest
             label: linux-64
+            # Ubuntu's GCC now targets AVX2 by default, which changes Eigen's memory alignment and makes
+            # biorbd incompatible with the conda-forge RBDL binaries. Build with conda-forge's compiler instead
+            conda_compiler: cxx-compiler
           - os: macos-latest
             label: osx-arm64
           - os: windows-latest
@@ -47,7 +50,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          conda install "rbdl>=3.3.1" tinyxml2 ipopt "swig<4.4.0" python numpy scipy pytest doxygen
+          conda install "rbdl>=3.3.1" tinyxml2 ipopt "swig<4.4.0" python numpy scipy pytest doxygen ${{ matrix.conda_compiler }}
           conda list
 
       - name: Setup Linux dependencies

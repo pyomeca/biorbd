@@ -18,6 +18,9 @@ jobs:
         include:
           - os: ubuntu-latest
             label: linux-64
+            # Ubuntu's GCC now targets AVX2 by default, which changes Eigen's memory alignment and makes
+            # biorbd incompatible with the conda-forge RBDL binaries. Build with conda-forge's compiler instead
+            conda_compiler: cxx-compiler
           - os: macos-latest
             label: osx-arm64
           - os: windows-latest
@@ -53,7 +56,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          conda install "rbdl>=3.3.1" cmake git pkgconfig
+          conda install "rbdl>=3.3.1" cmake git pkgconfig ${{ matrix.conda_compiler }}
           conda list
 
       - name: Install MATLAB
