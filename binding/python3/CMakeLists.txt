@@ -8,6 +8,13 @@ if(MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMPILE_FLAGS}")
 endif()
 
+# The python headers of Windows are written for MSVC. With MinGW (used for the casadi backend, as the casadi
+# package on PyPI is compiled with it), MS_WIN64 must be defined by hand (otherwise the python types have the
+# wrong size) and _hypot (used by pyconfig.h) does not exist in std
+if(MINGW)
+    add_compile_definitions(MS_WIN64 _hypot=hypot)
+endif()
+
 # Sometimes find_package finds one include folder short, so check if "rbdl-casadi" subdirectory exists
 set(RBDLCasadi_INCLUDE_DIR_PYTHON ${RBDLCasadi_INCLUDE_DIR})
 if(EXISTS "${RBDLCasadi_INCLUDE_DIR_PYTHON}/rbdl-casadi")
@@ -148,6 +155,10 @@ set_target_properties(${PYTHON_PROJECT_NAME} PROPERTIES
     INSTALL_RPATH "${${BIORBD_NAME}_BIN_FOLDER}"
     INSTALL_RPATH_USE_LINK_PATH TRUE
 )
+if(DEFINED BIORBD_CASADI_WHEEL_RPATH)
+    # See the main CMakeLists.txt
+    set_property(TARGET ${PYTHON_PROJECT_NAME} APPEND PROPERTY INSTALL_RPATH ${BIORBD_CASADI_WHEEL_RPATH})
+endif()
 
 # Define the python install
 # Priority:
@@ -195,13 +206,47 @@ else()
     message( FATAL_ERROR "Swig must be version 3 or 4" )
 endif()
 
-# The currently built Casadi binding in conda is incompatible with SWIG 4.4.0 and later,
-# so, for saving a lot of headaches, we simply block it for now
-if(${MATH_LIBRARY_BACKEND} STREQUAL "Casadi" AND SWIG_VERSION VERSION_GREATER_EQUAL "4.4.0")
-    message(FATAL_ERROR
-        "CasADi Python bindings are currently incompatible with SWIG ${SWIG_VERSION} in biorbd. "
-        "Please use SWIG < 4.4.0 when building biorbd with MATH_LIBRARY_BACKEND=Casadi."
+# biorbd_casadi exchanges casadi objects with the casadi python module. Both SWIG modules must therefore
+# share the same SWIG runtime (same runtime version and same type table), otherwise casadi objects are
+# not recognized. As this differs between casadi distributions (e.g. conda uses runtime 4 with the default
+# table, pip uses runtime 5 with the "casadi" table), ask the installed casadi which one it uses
+if(${MATH_LIBRARY_BACKEND} STREQUAL "Casadi")
+    execute_process(
+        COMMAND "${Python3_EXECUTABLE}" -c
+            "import sys, casadi\nfor name in [m for m in sys.modules if m.startswith('swig_runtime_data')]:\n    for attr in [a for a in dir(sys.modules[name]) if a.startswith('type_pointer_capsule')]:\n        print(name[len('swig_runtime_data'):] + ';' + attr[len('type_pointer_capsule'):])"
+        OUTPUT_VARIABLE CASADI_SWIG_RUNTIME
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+        RESULT_VARIABLE CASADI_SWIG_RUNTIME_RESULT
     )
+    if(NOT CASADI_SWIG_RUNTIME_RESULT EQUAL 0 OR CASADI_SWIG_RUNTIME STREQUAL "")
+        message(FATAL_ERROR
+            "Could not determine the SWIG runtime of the casadi python module using ${Python3_EXECUTABLE}. "
+            "Make sure casadi is installed for that python."
+        )
+    endif()
+    list(GET CASADI_SWIG_RUNTIME 0 CASADI_SWIG_RUNTIME_VERSION)
+    list(LENGTH CASADI_SWIG_RUNTIME CASADI_SWIG_RUNTIME_LENGTH)
+    if(CASADI_SWIG_RUNTIME_LENGTH GREATER 1)
+        list(GET CASADI_SWIG_RUNTIME 1 CASADI_SWIG_TYPE_TABLE)
+    else()
+        set(CASADI_SWIG_TYPE_TABLE "")
+    endif()
+
+    file(STRINGS "${SWIG_DIR}/swigrun.swg" SWIG_RUNTIME_VERSION_LINE
+        REGEX "^#define SWIG_RUNTIME_VERSION \"[0-9]+\"")
+    string(REGEX MATCH "[0-9]+" SWIG_RUNTIME_VERSION "${SWIG_RUNTIME_VERSION_LINE}")
+    if(NOT SWIG_RUNTIME_VERSION STREQUAL CASADI_SWIG_RUNTIME_VERSION)
+        message(FATAL_ERROR
+            "The casadi python module uses the SWIG runtime version ${CASADI_SWIG_RUNTIME_VERSION}, but SWIG "
+            "${SWIG_VERSION} generates runtime version ${SWIG_RUNTIME_VERSION}. Please use a SWIG version "
+            "with the same runtime (runtime 4 is SWIG < 4.4.0, runtime 5 is SWIG >= 4.4.0)."
+        )
+    endif()
+    if(NOT CASADI_SWIG_TYPE_TABLE STREQUAL "")
+        target_compile_definitions(${PYTHON_PROJECT_NAME} PRIVATE SWIG_TYPE_TABLE=${CASADI_SWIG_TYPE_TABLE})
+    endif()
+    message(STATUS "Using the SWIG runtime ${CASADI_SWIG_RUNTIME_VERSION} of casadi "
+        "(type table: '${CASADI_SWIG_TYPE_TABLE}')")
 endif()
 
 # Install the library

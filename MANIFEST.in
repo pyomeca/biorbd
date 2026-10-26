@@ -6,8 +6,7 @@ include README.md
 # Include shared libraries or compiled files (if needed for runtime).
 recursive-include biorbd *.so *.dll *.dylib *.pyd *.lib *.py
 
-# Exclude source and development files
-exclude CMakeLists.txt *.cmake.in
+# Exclude development files (CMakeLists.txt and *.cmake.in are needed to build from the sdist)
 prune .github
 prune external
 prune _skbuild
@@ -22,3 +21,4 @@ global-exclude *.git*
 global-exclude __pycache__/*
 global-exclude *.py[co]
 
+include build_backend/biorbd_build_backend.py

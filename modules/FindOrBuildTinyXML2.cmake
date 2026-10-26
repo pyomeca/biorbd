@@ -25,11 +25,9 @@ function(FindOrBuildTinyXML2)
 
     # Detect correct static library extension (OS-independent)
     set(TynyXML2_BUILD_SHARED_LIBS OFF)
-    if(WIN32)
+    if(MSVC)
         set(TinyXML2_LIB_NAME "tinyxml2.lib")
-    elseif(LINUX)
-        set(TinyXML2_LIB_NAME "libtinyxml2.a")
-    elseif(APPLE)
+    elseif(LINUX OR APPLE OR MINGW)
         set(TinyXML2_LIB_NAME "libtinyxml2.a")
     else()
         message(FATAL_ERROR "Unsupported OS")
@@ -40,6 +38,8 @@ function(FindOrBuildTinyXML2)
         GIT_TAG 10.1.0
         CMAKE_ARGS
             -DCMAKE_INSTALL_PREFIX=${TinyXML2_INSTALL_DIR}
+            # Some distributions (e.g. the manylinux images) default to lib64, while lib is expected below
+            -DCMAKE_INSTALL_LIBDIR=lib
             -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
             -DBUILD_SHARED_LIBS=${TynyXML2_BUILD_SHARED_LIBS}
             -DCMAKE_POSITION_INDEPENDENT_CODE=ON

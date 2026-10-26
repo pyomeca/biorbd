@@ -37,7 +37,7 @@ class BIORBD_API FatigueModel {
   FatigueModel(const FatigueModel& other);
 
   ///
-  /// \brief Construct a fatigable muscle model from another muscle
+  /// \brief Construct a fatigue model from another fatigue model
   /// \param other The other fatigue model
   ///
   FatigueModel(const std::shared_ptr<FatigueModel> other);

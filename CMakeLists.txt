@@ -1,9 +1,13 @@
 cmake_minimum_required(VERSION 3.17)
 
-project(biorbd VERSION 1.12.3)
+project(biorbd VERSION 1.12.4)
 set(BIORBD_ROOT_FOLDER ${PROJECT_SOURCE_DIR})
 set (BIORBD_NAME_NO_SUFFIX ${PROJECT_NAME})
-set (CMAKE_CXX_STANDARD 11)
+set (CMAKE_CXX_STANDARD 17)
+if(MINGW)
+    # The object files of the casadi backend (and of the python binder) exceed the default number of sections
+    add_compile_options(-Wa,-mbig-obj)
+endif()
 
 # Set some variables
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/modules")
@@ -182,7 +186,8 @@ else()
     set(${BIORBD_NAME}_CMAKECONFIG_DIR "lib/cmake/${LIB_SUFFIX}")
 endif()
 set_target_properties(${BIORBD_NAME} PROPERTIES
-    INSTALL_RPATH "${${BIORBD_NAME}_BIN_FOLDER}:${INSTALL_DEPENDENCIES_PREFIX}/lib"
+    # This is a CMake list (";"), which CMake writes properly for each platform (a ":" only works on Linux)
+    INSTALL_RPATH "${${BIORBD_NAME}_BIN_FOLDER};${INSTALL_DEPENDENCIES_PREFIX}/lib"
     INSTALL_RPATH_USE_LINK_PATH TRUE
 )
 
@@ -220,6 +225,16 @@ endif()
 if (MODULE_ACTUATORS)
     add_subdirectory("src/InternalForces/Actuators")
     list(APPEND BIORBD_MODULE_NAMES "${ACTUATORS_MODULE_NAME}")
+endif()
+
+# In the biorbd_casadi wheel, the casadi library is not bundled: the one of the casadi python package is used.
+# On macOS, it is found relative to the python module (biorbd_casadi/) and to the libraries that delocate moves
+# to biorbd_casadi/.dylibs/. These paths are harmless when they do not exist (e.g. with conda)
+if(APPLE AND BIORBD_USE_CASADI_MATH)
+    set(BIORBD_CASADI_WHEEL_RPATH "@loader_path/../casadi;@loader_path/../../casadi")
+    foreach(BIORBD_TARGET ${BIORBD_NAME} ${BIORBD_MODULE_NAMES})
+        set_property(TARGET ${BIORBD_TARGET} APPEND PROPERTY INSTALL_RPATH ${BIORBD_CASADI_WHEEL_RPATH})
+    endforeach()
 endif()
 
 # Add linker

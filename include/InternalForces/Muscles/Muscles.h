@@ -225,7 +225,8 @@ class BIORBD_API Muscles {
   /// \param updatedModel The model previously updated to proper kinematic level
   /// \param Q The generalized coordinates
   /// \param Qdot The generalized velocities
-  /// \param updatedModel The model previously updated to proper kinematic level
+  /// \param updateMuscleParameters Update the kinematic related parameters of
+  /// the muscles
   ///
   /// This function updates the muscles and then performs the computation for
   /// the muscular joint torque is done from virtual power:
@@ -287,8 +288,10 @@ class BIORBD_API Muscles {
   /// \brief Compute the muscular joint torque
   /// \param updatedModel The model previously updated to proper kinematic level
   /// \param emg The dynamic state to compute the force vector
-  /// \param Q The generalized coordinates (not needed if updateKin is false)
-  /// \param Qdot The generalized velocities (not needed if updateKin is false)
+  /// \param Q The generalized coordinates (not needed if updateMuscleParameters
+  /// is false)
+  /// \param Qdot The generalized velocities (not needed if
+  /// updateMuscleParameters is false)
   /// \param updateMuscleParameters Update the kinematic related parameters of
   /// the muscles
   ///
@@ -309,8 +312,8 @@ class BIORBD_API Muscles {
   ///
   /// \brief Compute the muscular joint torque
   /// \param emg The dynamic state to compute the force vector
-  /// \param Q The generalized coordinates (not needed if updateKin is false)
-  /// \param Qdot The generalized velocities (not needed if updateKin is false)
+  /// \param Q The generalized coordinates (not needed if updateKin is 0)
+  /// \param Qdot The generalized velocities (not needed if updateKin is 0)
   /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2:
   /// both kinematics and muscles])
   ///
@@ -428,6 +431,13 @@ class BIORBD_API Muscles {
   size_t nbMuscles() const;
 
  protected:
+  ///
+  /// \brief Assemble the muscle length jacobian using the provided model
+  /// \param model The joint model updated to the proper kinematics level
+  /// \return The muscle length jacobian
+  ///
+  utils::Matrix computeMusclesLengthJacobian(const rigidbody::Joints& model);
+
   std::shared_ptr<std::vector<MuscleGroup>>
       m_mus;  ///< Holder for muscle groups
 };

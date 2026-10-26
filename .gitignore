@@ -132,3 +132,6 @@ sandbox
 
 # Qt creator autosave
 *.autosave
+
+# Eigen archive cached by the PyPI workflows
+.eigen_cache/

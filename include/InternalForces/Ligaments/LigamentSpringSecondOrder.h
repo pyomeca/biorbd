@@ -6,17 +6,17 @@
 #include "InternalForces/Ligaments/Ligament.h"
 #include "Utils/Scalar.h"
 
+namespace BIORBD_NAMESPACE {
+namespace internal_forces {
+class Geometry;
+namespace ligaments {
+
 ///
 /// \brief Class LigamentSpringSecondOrder is a ligament with same behavior than
 /// second order spring defined by: (k/2) * ((l-l0) + sqrt((l-l0)*(l-l0) +
 /// epsilon*epsilon)) with k is the stiffness and espilon a small parameter to
 /// avoid negative values. https://ieeexplore.ieee.org/abstract/document/6755458
 ///
-namespace BIORBD_NAMESPACE {
-namespace internal_forces {
-class Geometry;
-namespace ligaments {
-
 class BIORBD_API LigamentSpringSecondOrder : public Ligament {
  public:
   ///

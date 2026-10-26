@@ -86,7 +86,7 @@ void rigidbody::KalmanReconsMarkers::reconstructFrame(
 
 void rigidbody::KalmanReconsMarkers::reconstructFrame(
     Model &model,
-    const std::vector<rigidbody::NodeSegment> &Tobs,
+    const std::vector<NodeSegment> &Tobs,
     rigidbody::GeneralizedCoordinates *Q,
     rigidbody::GeneralizedVelocity *Qdot,
     rigidbody::GeneralizedAcceleration *Qddot,

@@ -1,90 +1,71 @@
 name: Publish to PyPI
 
-on: 
-  release: 
+on:
+  release:
     types: [published]
+  workflow_dispatch:
 
-env:
-  BUILD_FOLDER: build
-  MATH_LIBRARY_BACKEND: Eigen3
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false  # Never interrupt a publication
 
 jobs:
-  build:
+  build_wheels:
     strategy:
       matrix:
         include:
           - os: ubuntu-latest
             label: linux-64
-          # - os: macos-latest
-          #   label: osx-64
+          - os: macos-latest
+            label: osx-arm64
           - os: windows-latest
             label: win-64
-    name: ${{ matrix.label }}
+    name: Wheels ${{ matrix.label }}
     runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        shell: bash -l {0}
-        
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Get number of CPU cores
-        uses: SimenB/github-actions-cpu-cores@v1
-        id: cpu-cores
+        uses: actions/checkout@v7
 
-      - name: Setup environment
-        uses: conda-incubator/setup-miniconda@v3
+      # Eigen is downloaded once (and cached between runs) rather than by each build. The archive is verified
+      # against its hash when used (see modules/FindOrBuildEigen3.cmake)
+      - name: Cache the Eigen archive
+        id: cache-eigen
+        uses: actions/cache@v6
         with:
-          miniforge-version: latest
-          activate-environment: biorbd
-        
-      - name: Install build packages
-        run: | 
-          conda install pip swig "eigen<4.0.0" -c conda-forge
-          conda list
-          pip install build cibuildwheel==2.21.3
+          path: .eigen_cache
+          key: eigen-3.4.0-8586084f71f9bde5
 
-      - name: Print conda info
-        run: | 
-          conda info
-          conda list
-            
+      - name: Download the Eigen archive
+        if: steps.cache-eigen.outputs.cache-hit != 'true'
+        shell: bash
+        run: |
+          mkdir -p .eigen_cache
+          curl -fsSL --retry 10 --retry-all-errors --retry-delay 15 -o .eigen_cache/eigen-3.4.0.tar.gz \
+            https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.gz
+
+      # The cibuildwheel options are in the [tool.cibuildwheel] section of pyproject.toml
       - name: Build wheels
-        uses: pypa/cibuildwheel@v2.21.3
-        with:
-          config-file: "pyproject.toml"
+        uses: pypa/cibuildwheel@v4.3.4
         env:
-          MATH_LIBRARY_BACKEND: "Eigen3"
-          CIBW_SKIP: "pp*-manylinux_i686"
-          CIBW_BEFORE_BUILD: >-
-            rm -rf _skbuild
-          CIBW_ENVIRONMENT: MATH_LIBRARY_BACKEND=${{ env.MATH_LIBRARY_BACKEND }}
+          CIBW_ENVIRONMENT: MATH_LIBRARY_BACKEND=Eigen3 BIORBD_EIGEN3_ARCHIVE=.eigen_cache/eigen-3.4.0.tar.gz
 
       - name: Store the wheels
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
-          name: python-package-distributions-${{ matrix.label }}
+          name: python-package-wheels-${{ matrix.label }}
           path: ./wheelhouse/*.whl
           if-no-files-found: error
 
-      - name: Make the source distribution (only on one platform)
-        run: python -m build --sdist --wheel
-        if: matrix.label == 'linux-64'
-
-      - name: Upload the source distribution (only on one platform)
-        uses: actions/upload-artifact@v4
-        with:
-          name: python-package-sdist-${{ matrix.label }}
-          path: dist/*.tar.gz
-        if: matrix.label == 'linux-64'
-                  
   publish-to-pypi:
     name: Publish to PyPI
+    # The sdist is not published as it cannot produce a working install yet (the shared
+    # libraries are only bundled into the wheels by the cibuildwheel repair step)
     needs:
-    - build
-
+      - build_wheels
+    if: github.event_name == 'release'
     runs-on: ubuntu-latest
+
     environment:
       name: pypi
       url: https://pypi.org/p/biorbd
@@ -93,20 +74,22 @@ jobs:
       id-token: write  # IMPORTANT: mandatory for trusted publishing
 
     steps:
-    - name: Download all the dists
-      uses: actions/download-artifact@v4
-      with:
-        pattern: python-package-*
-        path: dist/
-        merge-multiple: true
+      - name: Download all the dists
+        uses: actions/download-artifact@v8
+        with:
+          pattern: python-package-wheels-*
+          path: dist/
+          merge-multiple: true
 
-    - name: Publish distribution to PyPI
-      uses: pypa/gh-action-pypi-publish@release/v1
+      - name: Publish distribution to PyPI
+        uses: pypa/gh-action-pypi-publish@v1.14.3
 
   publish-to-testpypi:
     name: Publish to TestPyPI
+    # The sdist is not published as it cannot produce a working install yet (the shared
+    # libraries are only bundled into the wheels by the cibuildwheel repair step)
     needs:
-    - build
+      - build_wheels
     runs-on: ubuntu-latest
 
     environment:
@@ -117,14 +100,15 @@ jobs:
       id-token: write  # IMPORTANT: mandatory for trusted publishing
 
     steps:
-    - name: Download all the dists
-      uses: actions/download-artifact@v4
-      with:
-        pattern: python-package-distributions-*
-        path: dist/
-        merge-multiple: true
+      - name: Download all the dists
+        uses: actions/download-artifact@v8
+        with:
+          pattern: python-package-wheels-*
+          path: dist/
+          merge-multiple: true
 
-    - name: Publish distribution to TestPyPI
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        repository-url: https://test.pypi.org/legacy/
+      - name: Publish distribution to TestPyPI
+        uses: pypa/gh-action-pypi-publish@v1.14.3
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          skip-existing: true

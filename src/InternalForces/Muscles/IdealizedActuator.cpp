@@ -62,7 +62,7 @@ internal_forces::muscles::IdealizedActuator::IdealizedActuator(
     : internal_forces::muscles::Muscle(other) {}
 
 internal_forces::muscles::IdealizedActuator::IdealizedActuator(
-    const std::shared_ptr<internal_forces::muscles::Muscle> other)
+    const std::shared_ptr<Muscle> other)
     : internal_forces::muscles::Muscle(other) {}
 
 internal_forces::muscles::IdealizedActuator

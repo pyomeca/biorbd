@@ -3,7 +3,7 @@ All contributions, bug reports, bug fixes, documentation improvements, enhanceme
 We recommend going through the list of [`issues`](https://github.com/pyomeca/biorbd/issues) to find issues that interest you, preferable those tagged with `good first issue`.
 You can then get your development environment setup with the following instructions.
 
-## Forking `biorbd
+## Forking `biorbd`
 
 You will need your own fork to work on the code.
 Go to the [biorbd project page](https://github.com/pyomeca/biorbd/) and hit the `Fork` button.

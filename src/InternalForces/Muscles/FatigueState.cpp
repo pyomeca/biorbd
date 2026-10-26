@@ -38,7 +38,7 @@ internal_forces::muscles::FatigueState::FatigueState(
       m_type(other.m_type) {}
 
 internal_forces::muscles::FatigueState::FatigueState(
-    const std::shared_ptr<internal_forces::muscles::FatigueState> other)
+    const std::shared_ptr<FatigueState> other)
     : m_activeFibers(other->m_activeFibers),
       m_fatiguedFibers(other->m_fatiguedFibers),
       m_restingFibers(other->m_restingFibers),

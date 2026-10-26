@@ -32,9 +32,17 @@ class BIORBD_API PassiveTorqueExponential : public PassiveTorque {
   PassiveTorqueExponential(const PassiveTorqueExponential& other);
 
   ///
-  /// \brief Construct a linear passive torque
-  /// \param T0 The maximal torque isometric
-  /// \param slope The slope
+  /// \brief Construct an exponential passive torque
+  /// \param k1 The stiffness coefficient of the first exponential
+  /// \param k2 The stiffness coefficient of the second exponential
+  /// \param b1 The scaling coefficient of the first exponential
+  /// \param b2 The scaling coefficient of the second exponential
+  /// \param qMid The midpoint angle of the exponentials
+  /// \param tauEq The torque offset (tau_eq)
+  /// \param pBeta The velocity damping factor (p_beta)
+  /// \param wMax The maximal angular velocity (omega_max)
+  /// \param sV The velocity scaling factor (s_v)
+  /// \param delatP The angle offset (delta_p)
   /// \param dofIdx Index of the DoF associated with passive torque
   ///
   PassiveTorqueExponential(
@@ -51,9 +59,17 @@ class BIORBD_API PassiveTorqueExponential : public PassiveTorque {
       size_t dofIdx);
 
   ///
-  /// \brief Construct a linear passive torque
-  /// \param T0  The maximal torque isometric
-  /// \param slope The slope
+  /// \brief Construct an exponential passive torque
+  /// \param k1 The stiffness coefficient of the first exponential
+  /// \param k2 The stiffness coefficient of the second exponential
+  /// \param b1 The scaling coefficient of the first exponential
+  /// \param b2 The scaling coefficient of the second exponential
+  /// \param qMid The midpoint angle of the exponentials
+  /// \param tauEq The torque offset (tau_eq)
+  /// \param pBeta The velocity damping factor (p_beta)
+  /// \param wMax The maximal angular velocity (omega_max)
+  /// \param sV The velocity scaling factor (s_v)
+  /// \param delatP The angle offset (delta_p)
   /// \param dofIdx Index of the DoF associated with passive torque
   /// \param jointName The name of the parent joint
   ///
@@ -91,15 +107,16 @@ class BIORBD_API PassiveTorqueExponential : public PassiveTorque {
   void DeepCopy(const PassiveTorqueExponential& other);
 
   ///
-  /// \brief Return the maximal torque at a given Q
-  /// \param Q The generalized coordinates of the passive torque
-  /// \return The maximal torque
+  /// \brief Return the passive torque (not available for this type, Q and
+  /// QDot must be provided)
+  /// \return The passive torque
   ///
   virtual utils::Scalar passiveTorque();
 
   ///
   /// \brief Return the maximal torque at a given Q
   /// \param Q The generalized coordinates of the passive torque
+  /// \param QDot The generalized velocities of the passive torque
   /// \return The maximal torque
   ///
   virtual utils::Scalar passiveTorque(
@@ -112,16 +129,16 @@ class BIORBD_API PassiveTorqueExponential : public PassiveTorque {
   ///
   virtual void setType();
 
-  std::shared_ptr<utils::Scalar> m_k1;
-  std::shared_ptr<utils::Scalar> m_k2;
-  std::shared_ptr<utils::Scalar> m_b1;
-  std::shared_ptr<utils::Scalar> m_b2;
-  std::shared_ptr<utils::Scalar> m_qMid;
-  std::shared_ptr<utils::Scalar> m_tauEq;
-  std::shared_ptr<utils::Scalar> m_pBeta;
-  std::shared_ptr<utils::Scalar> m_wMax;
-  std::shared_ptr<utils::Scalar> m_sV;
-  std::shared_ptr<utils::Scalar> m_deltaP;
+  std::shared_ptr<utils::Scalar> m_k1;     ///< Stiffness of the 1st exponential
+  std::shared_ptr<utils::Scalar> m_k2;     ///< Stiffness of the 2nd exponential
+  std::shared_ptr<utils::Scalar> m_b1;     ///< Scaling of the 1st exponential
+  std::shared_ptr<utils::Scalar> m_b2;     ///< Scaling of the 2nd exponential
+  std::shared_ptr<utils::Scalar> m_qMid;   ///< Midpoint angle
+  std::shared_ptr<utils::Scalar> m_tauEq;  ///< Torque offset
+  std::shared_ptr<utils::Scalar> m_pBeta;  ///< Velocity damping factor
+  std::shared_ptr<utils::Scalar> m_wMax;   ///< Maximal angular velocity
+  std::shared_ptr<utils::Scalar> m_sV;     ///< Velocity scaling factor
+  std::shared_ptr<utils::Scalar> m_deltaP;  ///< Angle offset
 };
 
 }  // namespace passive_torques

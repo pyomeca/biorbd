@@ -55,13 +55,13 @@ class BIORBD_API Path {
   /// \param path The path to parse
   /// \param folder The folder of the file
   /// \param filename The file name
-  /// \param ext The extension of the file
+  /// \param extension The extension of the file
   ///
   static void parseFileName(
       const String& path,
       String& folder,
       String& filename,
-      String& ext);
+      String& extension);
 
 #ifndef SWIG
   ///

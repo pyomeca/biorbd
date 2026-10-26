@@ -49,7 +49,7 @@ internal_forces::ligaments::LigamentSpringLinear::LigamentSpringLinear(
 }
 
 internal_forces::ligaments::LigamentSpringLinear::LigamentSpringLinear(
-    const std::shared_ptr<internal_forces::ligaments::Ligament> other)
+    const std::shared_ptr<Ligament> other)
     : internal_forces::ligaments::Ligament(other) {
   const std::shared_ptr<internal_forces::ligaments::LigamentSpringLinear>
       ligament_tp(

@@ -79,7 +79,7 @@ internal_forces::muscles::HillThelenTypeFatigable::HillThelenTypeFatigable(
 }
 
 internal_forces::muscles::HillThelenTypeFatigable::HillThelenTypeFatigable(
-    const std::shared_ptr<internal_forces::muscles::Muscle> other)
+    const std::shared_ptr<Muscle> other)
     : internal_forces::muscles::HillThelenType(other),
       internal_forces::muscles::FatigueModel(
           std::dynamic_pointer_cast<internal_forces::muscles::FatigueModel>(

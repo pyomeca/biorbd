@@ -1,62 +1,8 @@
 from skbuild import setup
+from skbuild.constants import CMAKE_INSTALL_DIR
 from pathlib import Path
 import re
 import os
-import sys
-import platform
-
-
-def get_install_base():
-    current_folder = Path(__file__).parent
-    platform_name = platform.system().lower()
-
-    if platform_name == "linux":
-        architecture = platform.architecture()[0]
-        if architecture == "64bit":
-            architecture = "x86_64"
-        elif architecture == "32bit":
-            architecture = "i686"
-        else:
-            raise RuntimeError(f"Unsupported architecture: {architecture}")
-
-        python_version = f"{sys.version_info.major}.{sys.version_info.minor}"
-        platform_name = f"linux-{architecture}-{python_version}"
-
-    elif platform_name == "darwin":
-        # Get the number of macos version (e.g. 13.0)
-        version = platform.mac_ver()[0].split(".")
-        version = f"{version[0]}.0"
-
-        architecture = platform.architecture()[0]
-        if architecture == "64bit":
-            architecture = "x86_64"
-        else:
-            raise RuntimeError(f"Unsupported architecture: {architecture}")
-
-        python_version = f"{sys.version_info.major}.{sys.version_info.minor}"
-        platform_name = f"macosx-{version}-x86_64-{python_version}"
-
-    elif platform_name == "windows":
-        architecture = platform.architecture()[0]
-        if architecture == "64bit":
-            architecture = "amd64"
-        else:
-            raise RuntimeError(f"Unsupported architecture: {architecture}")
-
-        python_version = f"{sys.version_info.major}.{sys.version_info.minor}"
-        platform_name = f"win-{architecture}-{python_version}"
-
-    return f"{current_folder}/_skbuild/{platform_name}/cmake-install"
-
-
-def get_install_site_packages():
-    # Keep the Python package install path inside the scikit-build install prefix.
-    # On Windows, site-packages lives under Lib/site-packages (without pythonX.Y).
-    if platform.system().lower() == "windows":
-        return Path("Lib/site-packages")
-
-    python_version = f"python{sys.version_info.major}.{sys.version_info.minor}"
-    return Path(f"lib/{python_version}/site-packages")
 
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -78,22 +24,35 @@ with open(f"{dir_path}/CMakeLists.txt") as file:
     else:
         raise RuntimeError("Version not found")
 
-# Create an empty 'biorbd' folder if it doesn't exist (stub for setup.py)
-Path("biorbd").mkdir(exist_ok=True)
-
 # Get the MATH_LIBRARY_BACKEND from environment variable
 math_library_backend = os.environ.get("MATH_LIBRARY_BACKEND")
 if math_library_backend not in ["Casadi", "Eigen3"]:
     raise RuntimeError("MATH_LIBRARY_BACKEND environment variable must be set to either 'Casadi' or 'Eigen3'")
 
-if math_library_backend == "Casadi":
-    raise RuntimeError(
-        "Casadi backend is not supported via pip install in this workspace. Use the CMake/dev build instead."
-    )
+install_requires = ["numpy", "scipy"]
+backend_cmake_args = []
+if math_library_backend == "Eigen3":
+    package_name = "biorbd"
+else:
+    package_name = "biorbd_casadi"
+    try:
+        # casadi is a build requirement of this backend (see build_backend/biorbd_build_backend.py)
+        import casadi
+    except ImportError:
+        # This happens when the build requirements are being determined, that is before casadi is installed
+        casadi = None
+
+    if casadi is not None:
+        backend_cmake_args.append(f"-DCasadi_DIR={Path(casadi.__file__).parent / 'cmake'}")
+        # The casadi library is not bundled in the wheel, the one of the casadi package is used instead. As casadi
+        # does not guarantee binary compatibility between versions, the exact version compiled against is required
+        install_requires.append(f"casadi=={casadi.__version__}")
+
+# Create an empty package folder if it doesn't exist (stub for setup.py)
+Path(package_name).mkdir(exist_ok=True)
 
 setup(
-    # NOTE: Could still add stuff like homepage or author mail, but since this isn't used to redistribute, not important
-    name="biorbd",
+    name=package_name,
     version=version,
     author="Michaud, Benjamin and Begon, Mickaël",
     description="Biomechanical add-ons to the RigidBody Dynamics Library",
@@ -101,15 +60,22 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/pyomeca/biorbd",
     license="MIT",
-    packages=["biorbd"],
+    python_requires=">=3.10",
+    install_requires=install_requires,
+    packages=[package_name],
     cmake_args=[
         "-DBUILD_EXAMPLE:BOOL=OFF",
         "-DBINDER_PYTHON3:BOOL=ON",
-        "-DCMAKE_INSTALL_BINDIR=biorbd",
-        "-DCMAKE_INSTALL_LIBDIR=biorbd",
+        f"-DCMAKE_INSTALL_BINDIR={package_name}",
+        f"-DCMAKE_INSTALL_LIBDIR={package_name}",
         f"-DMATH_LIBRARY_BACKEND={math_library_backend}",
-        f"-DINSTALL_DEPENDENCIES_PREFIX={get_install_base()}",
-        f"-DPython3_SITELIB_INSTALL={get_install_site_packages()}",
+        f"-DINSTALL_DEPENDENCIES_PREFIX={dir_path}/{CMAKE_INSTALL_DIR()}",
+        # Install the python package at the root of the cmake-install folder so scikit-build packages it as a
+        # regular package (and not as wheel data, which breaks the relative RPATH set by auditwheel/delocate)
+        "-DPython3_SITELIB_INSTALL=.",
         f"-DOVERRIDE_LIB_SUFFIX=''",
+        # Do not pick up dependencies registered by previous builds (e.g. a deleted _skbuild folder)
+        "-DCMAKE_FIND_USE_PACKAGE_REGISTRY=OFF",
+        *backend_cmake_args,
     ],
 )

@@ -78,7 +78,7 @@ internal_forces::ligaments::Ligament::Ligament(
       m_damping(other.m_damping) {}
 
 internal_forces::ligaments::Ligament::Ligament(
-    const std::shared_ptr<internal_forces::ligaments::Ligament> other)
+    const std::shared_ptr<Ligament> other)
     : internal_forces::Compound(other),
       m_position(other->m_position),
       m_type(other->m_type),

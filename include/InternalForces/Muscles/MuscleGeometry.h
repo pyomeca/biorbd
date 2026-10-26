@@ -62,6 +62,7 @@ class BIORBD_API MuscleGeometry : public Geometry {
   ///
   /// \brief Updates the position and dynamic elements of the muscles.
   /// \param updatedModel The joint model previously updated to the proper level
+  /// \param characteristics The muscle characteristics
   /// \param Q The generalized coordinates of the joints (not needed if
   /// updateKinLevel is less than 2)
   /// \param Qdot The generalized velocities of the joints (not needed if
@@ -106,6 +107,7 @@ class BIORBD_API MuscleGeometry : public Geometry {
   /// \brief Updates the position and dynamic elements of the muscles by hand.
   /// \param musclePointsInGlobal Position of all the points in global
   /// \param jacoPointsInGlobal Position of all the Jacobian points in global
+  /// \param characteristics The muscle characteristics
   /// \param Qdot The generalized velocities of the joints
   ///
   /// updateKinematics MUST be called before retreiving data that are dependent
@@ -133,6 +135,7 @@ class BIORBD_API MuscleGeometry : public Geometry {
   ///
   /// \brief Actual function that implements the update of the kinematics
   /// \param Qdot The generalized velocities
+  /// \param characteristics The muscle characteristics
   /// \param pathModifiers The set of path modifiers
   ///
   void _updateKinematics(

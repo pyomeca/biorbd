@@ -10,24 +10,19 @@ requires = [
     "numpy",
     "scipy",
 ]
-build-backend = "setuptools.build_meta"
+# The setuptools backend, plus the build requirements of the selected MATH_LIBRARY_BACKEND. It is in a folder of its own
+# because pip's hook runner reports the package metadata found in the backend path (e.g. the biorbd.egg-info created
+# at the root of biorbd) when looking for a package, which breaks the build (e.g. "import cmake" fails in skbuild)
+build-backend = "biorbd_build_backend"
+backend-path = ["build_backend"]
 
-[project]
-name = "biorbd"
-dynamic = ["version"]
-dependencies = [
-    "numpy",
-    "scipy"
-]
-description = "Biomechanical add-ons to the RigidBody Dynamics Library"
-readme = "README.md"  # This links to your README file
-authors = [
-    {name = "Michaud, Benjamin"},
-    {name = "Begon, Mickaël"}
-]
-license = "MIT"
-urls = { "Homepage" = "https://github.com/pyomeca/biorbd" }
-requires-python = ">=3.10"
+# The project metadata are defined in setup.py, as the name of the package depends on MATH_LIBRARY_BACKEND
+# (biorbd or biorbd_casadi), which cannot be expressed in a [project] table
 
 [tool.cibuildwheel]
 build-frontend = "build"
+archs = ["auto64"]
+# musllinux and free-threaded Python are not supported yet
+skip = ["*-musllinux_*", "cp3??t-*"]
+before-build = "python -c \"import shutil; shutil.rmtree('_skbuild', ignore_errors=True)\""
+test-command = "python -c \"import biorbd; print(biorbd.__file__)\""

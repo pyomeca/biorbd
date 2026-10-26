@@ -1,128 +1,145 @@
-# name: Publish to PyPI
+name: Publish biorbd_casadi to PyPI
 
-# on: 
-#   release: 
-#     types: [published]
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
 
-# env:
-#   BUILD_FOLDER: build
-#   MATH_LIBRARY_BACKEND: Casadi
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false  # Never interrupt a publication
 
-# jobs:
-#   build:
-#     strategy:
-#       matrix:
-#         include:
-#           - os: ubuntu-latest
-#             label: linux-64
-#           - os: macos-latest
-#             label: osx-64
-#           - os: windows-latest
-#             label: win-64
-#     name: ${{ matrix.label }}
-#     runs-on: ${{ matrix.os }}
-#     defaults:
-#       run:
-#         shell: bash -l {0}
-        
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v4
-      
-#       - name: Get number of CPU cores
-#         uses: SimenB/github-actions-cpu-cores@v1
-#         id: cpu-cores
+jobs:
+  build_wheels:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            label: linux-64
+          - os: macos-latest
+            label: osx-arm64
+          - os: windows-latest
+            label: win-64
+    name: Wheels ${{ matrix.label }}
+    runs-on: ${{ matrix.os }}
 
-#       - name: Setup environment
-#         uses: conda-incubator/setup-miniconda@v3
-#         with:
-#           miniforge-version: latest
-#           activate-environment: biorbd
-        
-#       - name: Install build packages
-#         run: | 
-#           conda install pip swig -cconda-forge
-#           conda list
-#           pip install build cibuildwheel==2.21.3
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
 
-#       - name: Print conda info
-#         run: | 
-#           conda info
-#           conda list
-            
-#       - name: Build wheels
-#         uses: pypa/cibuildwheel@v2.21.3
-#         with:
-#           config-file: "pyproject.toml"
-#         env:
-#           CIBW_SKIP: "pp*-manylinux_i686"
-#           CIBW_BEFORE_BUILD: >-
-#             rm -rf _skbuild
+      # Eigen is downloaded once (and cached between runs) rather than by each build. The archive is verified
+      # against its hash when used (see modules/FindOrBuildEigen3.cmake)
+      - name: Cache the Eigen archive
+        id: cache-eigen
+        uses: actions/cache@v6
+        with:
+          path: .eigen_cache
+          key: eigen-3.4.0-8586084f71f9bde5
 
-#       - name: Store the wheels
-#         uses: actions/upload-artifact@v4
-#         with:
-#           name: python-package-distributions-${{ matrix.label }}
-#           path: ./wheelhouse/*.whl
-#           if-no-files-found: error
+      - name: Download the Eigen archive
+        if: steps.cache-eigen.outputs.cache-hit != 'true'
+        shell: bash
+        run: |
+          mkdir -p .eigen_cache
+          curl -fsSL --retry 10 --retry-all-errors --retry-delay 15 -o .eigen_cache/eigen-3.4.0.tar.gz \
+            https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.gz
 
-#       - name: Make the source distribution (only on one platform)
-#         run: python -m build --sdist --wheel
-#         if: matrix.label == 'linux-64'
+      # On Windows, the casadi package on PyPI is compiled with MinGW (GCC 11.2 of MXE, posix threads, SEH, msvcrt), so its
+      # C++ API cannot be linked with MSVC. biorbd_casadi is therefore compiled with the matching MinGW-w64 toolchain.
+      # Its runtime (libstdc++-6.dll, etc.) is not bundled: the one shipped with casadi (loaded by "import casadi") is
+      # used, so the compiler must not be newer than the one of casadi
+      - name: Install the MinGW-w64 toolchain of casadi
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          curl -fsSL --retry 10 --retry-all-errors --retry-delay 15 -o mingw.7z \
+            https://github.com/niXman/mingw-builds-binaries/releases/download/11.2.0-rt_v9-rev1/x86_64-11.2.0-release-posix-seh-rt_v9-rev1.7z
+          echo "2c943b1a9231ce09f227b0c8fc6cabc61da3581f4ef2f7682f9393f5a1d70ae8  mingw.7z" | sha256sum --check
+          7z x -y -oC:/mingw-casadi mingw.7z > /dev/null
+          rm mingw.7z
+          C:/mingw-casadi/mingw64/bin/g++.exe --version
 
-#       - name: Upload the source distribution (only on one platform)
-#         uses: actions/upload-artifact@v4
-#         with:
-#           name: python-package-sdist-${{ matrix.label }}
-#           path: dist/*.tar.gz
-#         if: matrix.label == 'linux-64'
-                  
-#   publish-to-pypi:
-#     name: Publish to PyPI
-#     needs:
-#     - build
+      # The other cibuildwheel options are in the [tool.cibuildwheel] section of pyproject.toml.
+      # The casadi library must not be bundled in the wheels: biorbd_casadi exchanges casadi objects with the casadi
+      # python package, so it must use the library of that package (the exact version is pinned by setup.py)
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v4.3.4
+        env:
+          CIBW_ENVIRONMENT: MATH_LIBRARY_BACKEND=Casadi BIORBD_EIGEN3_ARCHIVE=.eigen_cache/eigen-3.4.0.tar.gz
+          # scikit-build only accepts MSVC with its default generators on Windows, hence the MinGW Makefiles generator
+          CIBW_ENVIRONMENT_WINDOWS: >-
+            MATH_LIBRARY_BACKEND=Casadi BIORBD_EIGEN3_ARCHIVE=.eigen_cache/eigen-3.4.0.tar.gz
+            PATH="C:/mingw-casadi/mingw64/bin;$PATH" CC=C:/mingw-casadi/mingw64/bin/gcc.exe
+            CXX=C:/mingw-casadi/mingw64/bin/g++.exe CMAKE_GENERATOR="MinGW Makefiles" CMAKE_BUILD_PARALLEL_LEVEL=4
+          CIBW_TEST_COMMAND: python -c "import biorbd_casadi; print(biorbd_casadi.__file__)"
+          CIBW_REPAIR_WHEEL_COMMAND_LINUX: auditwheel repair --exclude "libcasadi.so.*" -w {dest_dir} {wheel}
+          # On macOS, libcasadi is found through the relative rpaths set in CMakeLists.txt, which must therefore be kept
+          CIBW_REPAIR_WHEEL_COMMAND_MACOS: >-
+            delocate-wheel --require-archs {delocate_archs} --exclude libcasadi --ignore-missing-dependencies
+            --no-sanitize-rpaths -w {dest_dir} -v {wheel}
+          # On Windows, the only libraries needed (casadi and the MinGW runtime) are those of the casadi package, which
+          # are found as they are already loaded by "import casadi". delvewheel would bundle a second copy of them
+          CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: ""
 
-#     runs-on: ubuntu-latest
-#     environment:
-#       name: pypi
-#       url: https://pypi.org/p/biorbd
+      - name: Store the wheels
+        uses: actions/upload-artifact@v7
+        with:
+          name: python-package-wheels-${{ matrix.label }}
+          path: ./wheelhouse/*.whl
+          if-no-files-found: error
 
-#     permissions:
-#       id-token: write  # IMPORTANT: mandatory for trusted publishing
+  publish-to-pypi:
+    name: Publish to PyPI
+    # The sdist is not published as it cannot produce a working install yet (the shared
+    # libraries are only bundled into the wheels by the cibuildwheel repair step)
+    needs:
+      - build_wheels
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
 
-#     steps:
-#     - name: Download all the dists
-#       uses: actions/download-artifact@v4
-#       with:
-#         pattern: python-package-*
-#         path: dist/
-#         merge-multiple: true
+    environment:
+      name: pypi
+      url: https://pypi.org/p/biorbd_casadi
 
-#     - name: Publish distribution to PyPI
-#       uses: pypa/gh-action-pypi-publish@release/v1
+    permissions:
+      id-token: write  # IMPORTANT: mandatory for trusted publishing
 
-#   publish-to-testpypi:
-#     name: Publish to TestPyPI
-#     needs:
-#     - build
-#     runs-on: ubuntu-latest
+    steps:
+      - name: Download all the dists
+        uses: actions/download-artifact@v8
+        with:
+          pattern: python-package-wheels-*
+          path: dist/
+          merge-multiple: true
 
-#     environment:
-#       name: testpypi
-#       url: https://test.pypi.org/p/biorbd
+      - name: Publish distribution to PyPI
+        uses: pypa/gh-action-pypi-publish@v1.14.3
 
-#     permissions:
-#       id-token: write  # IMPORTANT: mandatory for trusted publishing
+  publish-to-testpypi:
+    name: Publish to TestPyPI
+    # The sdist is not published as it cannot produce a working install yet (the shared
+    # libraries are only bundled into the wheels by the cibuildwheel repair step)
+    needs:
+      - build_wheels
+    runs-on: ubuntu-latest
 
-#     steps:
-#     - name: Download all the dists
-#       uses: actions/download-artifact@v4
-#       with:
-#         pattern: python-package-distributions-*
-#         path: dist/
-#         merge-multiple: true
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/p/biorbd_casadi
 
-#     - name: Publish distribution to TestPyPI
-#       uses: pypa/gh-action-pypi-publish@release/v1
-#       with:
-#         repository-url: https://test.pypi.org/legacy/
+    permissions:
+      id-token: write  # IMPORTANT: mandatory for trusted publishing
+
+    steps:
+      - name: Download all the dists
+        uses: actions/download-artifact@v8
+        with:
+          pattern: python-package-wheels-*
+          path: dist/
+          merge-multiple: true
+
+      - name: Publish distribution to TestPyPI
+        uses: pypa/gh-action-pypi-publish@v1.14.3
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          skip-existing: true
