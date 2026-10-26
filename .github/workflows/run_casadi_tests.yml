@@ -2,6 +2,10 @@ name: Run the Casadi tests
 
 on: [pull_request]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   BUILD_FOLDER: build
   EXAMPLES_FOLDER: examples
@@ -10,17 +14,18 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
         include:
           - os: ubuntu-latest
             label: linux-64
-            prefix: /usr/share/miniconda3/envs/biorbd
+            # Ubuntu's GCC now targets AVX2 by default, which changes Eigen's memory alignment and makes
+            # biorbd incompatible with the conda-forge RBDL binaries. Build with conda-forge's compiler instead
+            conda_compiler: cxx-compiler
           - os: macos-latest
             label: osx-arm64
-            prefix: /Users/runner/miniconda3/envs/biorbd
           - os: windows-latest
             label: win-64
-            prefix: C:\Miniconda3\envs\biorbd
+            cmake_generator: -G"Visual Studio 18 2026" -Ax64
+            bin_folder: Release/
     name: ${{ matrix.label }}
     runs-on: ${{ matrix.os }}
     defaults:
@@ -28,120 +33,64 @@ jobs:
         shell: bash -l {0}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
-      
+        uses: actions/checkout@v7
+
       - name: Get number of CPU cores
-        uses: SimenB/github-actions-cpu-cores@v1
+        uses: SimenB/github-actions-cpu-cores@v3
         id: cpu-cores
-  
+
       - name: Setup environment
-        uses: conda-incubator/setup-miniconda@v3
+        uses: conda-incubator/setup-miniconda@v4
         with:
-          miniforge-version: latest
+          # TODO: Go back to "latest" when https://github.com/conda-incubator/setup-miniconda/issues/589 is fixed
+          miniforge-version: 26.7.2-0
           activate-environment: biorbd
+          channels: conda-forge
+          conda-remove-defaults: "true"
 
       - name: Install dependencies
         run: |
-          conda install -cconda-forge rbdl tinyxml2 ipopt 
-          conda install -cconda-forge "swig<4.4.0" python numpy scipy pytest
+          conda install "rbdl>=3.3.1" tinyxml2 ipopt "swig<4.4.0" python numpy scipy pytest ${{ matrix.conda_compiler }}
           conda list
 
       - name: Setup Linux dependencies
-        run:   |
-         sudo apt update
-         sudo apt install libstdc++-11-dev
+        run: |
+          sudo apt update
+          sudo apt install libstdc++-11-dev
         if: matrix.label == 'linux-64'
 
-      - name: Build biorbd UNIX
+      # MODULE_KALMAN, MODULE_STATIC_OPTIM, BINDER_C and BINDER_MATLAB are not compatible with Casadi
+      - name: Build biorbd
         run: |
           BIORBD_FOLDER=`pwd`
           CONDA_ENV_PATH=$CONDA/envs/biorbd
           mkdir -p $BIORBD_FOLDER/$BUILD_FOLDER
           cd $BIORBD_FOLDER/$BUILD_FOLDER
-          cmake .. \
+          cmake .. ${{ matrix.cmake_generator }} \
                 -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH \
                 -DMATH_LIBRARY_BACKEND="Casadi" \
                 -DCMAKE_BUILD_TYPE=Release \
-                -DBUILD_TESTS=ON \
                 -DMODULE_ACTUATORS=ON \
-                -DMODULE_KALMAN=ON \
+                -DMODULE_KALMAN=OFF \
+                -DMODULE_LIGAMENTS=ON \
                 -DMODULE_MUSCLES=ON \
-                -DBUILD_EXAMPLE=ON \
-                -DBINDER_PYTHON3=ON
-          make install -j${{ steps.cpu-cores.outputs.count }}
-          cd $BIORBD_FOLDER
-        if: matrix.label != 'win-64'
-
-      - name: Run tests UNIX
-        run: |
-          BIORBD_FOLDER=`pwd`
-          cd $BIORBD_FOLDER/$BUILD_FOLDER/test
-          ./biorbd_casadi_tests
-          cd $BIORBD_FOLDER
-        if: matrix.label != 'win-64'
-
-      - name: Test installed version on UNIX
-        run: |
-          BIORBD_FOLDER=`pwd`
-          CONDA_ENV_PATH=$CONDA/envs/biorbd
-          cd $BIORBD_FOLDER/$EXAMPLES_FOLDER/cpp_casadi_installed
-          mkdir -p $BUILD_FOLDER
-          cd $BUILD_FOLDER
-          cmake -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DCMAKE_BUILD_TYPE=Release ..
-          make -j${{ steps.cpu-cores.outputs.count }}
-          ./forwardDynamicsExample
-          cd $BIORBD_FOLDER
-        if: matrix.label != 'win-64'
-  
-      - name: Build biorbd WINDOWS
-        run: |
-          BIORBD_FOLDER=`pwd`
-          CONDA_ENV_PATH=$CONDA/envs/biorbd
-          mkdir -p $BUILD_FOLDER
-          cd $BUILD_FOLDER
-          cmake .. \
-                -G"Visual Studio 18 2026" \
-                -Ax64 -DMATH_LIBRARY_BACKEND="Casadi" \
-                -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH \
-                -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON \
-                -DMODULE_ACTUATORS=ON \
                 -DMODULE_PASSIVE_TORQUES=ON \
-                -DMODULE_KALMAN=ON \
-                -DMODULE_MUSCLES=ON \
+                -DMODULE_STATIC_OPTIM=OFF \
+                -DMODULE_VTP_FILES_READER=ON \
+                -DBUILD_TESTS=ON \
                 -DBUILD_EXAMPLE=ON \
                 -DBINDER_PYTHON3=ON
-          cmake --build . --config Release --target install -j${{ steps.cpu-cores.outputs.count }}
+          cmake --build . --config Release --target install --parallel ${{ steps.cpu-cores.outputs.count }}
           cd $BIORBD_FOLDER
-        if: matrix.label == 'win-64'
 
-      - name: Run tests WINDOWS
+      - name: Run tests
         run: |
           BIORBD_FOLDER=`pwd`
           cd $BIORBD_FOLDER/$BUILD_FOLDER/test
-          cp Release/biorbd_casadi_tests.exe .
-          ./biorbd_casadi_tests.exe
+          ./${{ matrix.bin_folder }}biorbd_casadi_tests
           cd $BIORBD_FOLDER
-        if: matrix.label == 'win-64'
 
-      - name: Test installed version on WINDOWS
-        run: |
-          BIORBD_FOLDER=`pwd`
-          CONDA_ENV_PATH=$CONDA/envs/biorbd
-          cd $BIORBD_FOLDER/$EXAMPLES_FOLDER/cpp_casadi_installed
-          mkdir -p $BUILD_FOLDER
-          cd $BUILD_FOLDER
-          cmake .. \
-                -G"Visual Studio 18 2026" \
-                -Ax64 \
-                -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH \
-                -DCMAKE_BUILD_TYPE=Release
-          cmake --build . --config Release -j${{ steps.cpu-cores.outputs.count }}
-          cp Release/forwardDynamicsExample.exe .
-          ./forwardDynamicsExample.exe
-          cd $BIORBD_FOLDER
-        if: matrix.label == 'win-64'
-
-      - name: Run python binder tests 
+      - name: Run python binder tests
         run: |
           BIORBD_FOLDER=`pwd`
           cd $BIORBD_FOLDER/$BUILD_FOLDER/test/binding/python3
@@ -149,8 +98,22 @@ jobs:
           pytest .
           cd $BIORBD_FOLDER
 
+      - name: Test installed version of C++
+        run: |
+          BIORBD_FOLDER=`pwd`
+          CONDA_ENV_PATH=$CONDA/envs/biorbd
+          cd $BIORBD_FOLDER/$EXAMPLES_FOLDER/cpp_casadi_installed
+          mkdir -p $BUILD_FOLDER
+          cd $BUILD_FOLDER
+          cmake .. ${{ matrix.cmake_generator }} \
+                -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH \
+                -DCMAKE_BUILD_TYPE=Release
+          cmake --build . --config Release --parallel ${{ steps.cpu-cores.outputs.count }}
+          ./${{ matrix.bin_folder }}forwardDynamicsExample
+          cd $BIORBD_FOLDER
+
       - name: Test installed version of python
-        run: | 
+        run: |
           BIORBD_FOLDER=`pwd`
           cd
           python -c "import biorbd_casadi"

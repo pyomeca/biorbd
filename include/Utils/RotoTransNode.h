@@ -57,8 +57,9 @@ class BIORBD_API RotoTransNode : public RotoTrans, public Node {
 #ifndef SWIG
 
   ///
-  /// \brief operator= Matrix multiplication
-  /// \return Rotated matrix
+  /// \brief Assign a RotoTrans to this RotoTransNode (name and parent are
+  /// reset)
+  /// \param other The RotoTrans to copy
   ///
   void operator=(const RotoTrans& other);
 

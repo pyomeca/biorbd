@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.17)
 project(biorbd VERSION 1.12.3)
 set(BIORBD_ROOT_FOLDER ${PROJECT_SOURCE_DIR})
 set (BIORBD_NAME_NO_SUFFIX ${PROJECT_NAME})
-set (CMAKE_CXX_STANDARD 11)
+set (CMAKE_CXX_STANDARD 17)
 
 # Set some variables
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/modules")

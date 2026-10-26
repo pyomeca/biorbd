@@ -82,7 +82,7 @@ internal_forces::muscles::HillDeGrooteTypeFatigable::HillDeGrooteTypeFatigable(
 }
 
 internal_forces::muscles::HillDeGrooteTypeFatigable::HillDeGrooteTypeFatigable(
-    const std::shared_ptr<internal_forces::muscles::Muscle> other)
+    const std::shared_ptr<Muscle> other)
     : internal_forces::muscles::HillDeGrooteType(other),
       internal_forces::muscles::FatigueModel(
           std::dynamic_pointer_cast<internal_forces::muscles::FatigueModel>(

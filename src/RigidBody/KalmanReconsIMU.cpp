@@ -57,7 +57,7 @@ bool rigidbody::KalmanReconsIMU::first() { return *m_firstIteration; }
 
 void rigidbody::KalmanReconsIMU::reconstructFrame(
     Model &m,
-    const std::vector<rigidbody::IMU> &IMUobs,
+    const std::vector<IMU> &IMUobs,
     rigidbody::GeneralizedCoordinates *Q,
     rigidbody::GeneralizedVelocity *Qdot,
     rigidbody::GeneralizedAcceleration *Qddot) {

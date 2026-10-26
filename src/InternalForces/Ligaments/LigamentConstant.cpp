@@ -45,7 +45,7 @@ internal_forces::ligaments::LigamentConstant::LigamentConstant(
 }
 
 internal_forces::ligaments::LigamentConstant::LigamentConstant(
-    const std::shared_ptr<internal_forces::ligaments::Ligament> other)
+    const std::shared_ptr<Ligament> other)
     : internal_forces::ligaments::Ligament(other) {
   const std::shared_ptr<internal_forces::ligaments::LigamentConstant>
       ligament_tp(

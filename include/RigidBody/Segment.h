@@ -284,7 +284,7 @@ class BIORBD_API Segment : public utils::Node {
 
   ///
   /// \brief set the joint coordinate system (JCS) in the parent reference frame
-  /// \param The model, it's need to update the underlying rbdl model
+  /// \param model The model, it's need to update the underlying rbdl model
   /// \param rototrans The rototranslation object
   ///
   /// Warning: This function doesn't work for segments that have no degree of

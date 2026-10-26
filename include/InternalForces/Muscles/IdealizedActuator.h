@@ -104,7 +104,7 @@ class BIORBD_API IdealizedActuator : public Muscle {
 
   ///
   /// \brief Return the muscle force vector at origin and insertion
-  /// \param updatedModel The joint model previously updated to the proper level
+  /// \param model The joint model previously updated to the proper level
   /// \param Q The generalized coordinates
   /// \param Qdot The generalized velocities
   /// \param emg The EMG data
@@ -121,7 +121,7 @@ class BIORBD_API IdealizedActuator : public Muscle {
 
   ///
   /// \brief Return the muscle force vector at origin and insertion
-  /// \param updatedModel The joint model previously updated to the proper level
+  /// \param model The joint model previously updated to the proper level
   /// \param Q The generalized coordinates
   /// \param emg The EMG data
   /// \param updateMuscleParameters Update the kinematic related parameters of

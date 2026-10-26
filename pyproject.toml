@@ -31,3 +31,8 @@ requires-python = ">=3.10"
 
 [tool.cibuildwheel]
 build-frontend = "build"
+archs = ["auto64"]
+# musllinux and free-threaded Python are not supported yet
+skip = ["*-musllinux_*", "cp3??t-*"]
+before-build = "python -c \"import shutil; shutil.rmtree('_skbuild', ignore_errors=True)\""
+test-command = "python -c \"import biorbd; print(biorbd.__file__)\""

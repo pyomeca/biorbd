@@ -535,7 +535,7 @@ utils::Matrix rigidbody::Joints::CalcPointJacobian(
 
 std::vector<rigidbody::NodeSegment> rigidbody::Joints::projectPoint(
     const rigidbody::GeneralizedCoordinates &Q,
-    const std::vector<rigidbody::NodeSegment> &v,
+    const std::vector<NodeSegment> &v,
     bool updateKin) {
   // Assuming that this is also a marker type (via BiorbdModel)
   const rigidbody::Markers &marks = dynamic_cast<rigidbody::Markers &>(*this);
@@ -681,7 +681,7 @@ utils::Matrix rigidbody::Joints::projectPointJacobian(
 
 std::vector<utils::Matrix> rigidbody::Joints::projectPointJacobian(
     const rigidbody::GeneralizedCoordinates &Q,
-    const std::vector<rigidbody::NodeSegment> &v,
+    const std::vector<NodeSegment> &v,
     bool updateKin) {
 #ifdef BIORBD_USE_CASADI_MATH
   rigidbody::Joints

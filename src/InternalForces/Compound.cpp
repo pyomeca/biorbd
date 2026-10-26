@@ -31,8 +31,7 @@ internal_forces::Compound::Compound(const internal_forces::Compound &other)
       m_pathChanger(other.m_pathChanger),
       m_force(other.m_force) {}
 
-internal_forces::Compound::Compound(
-    std::shared_ptr<internal_forces::Compound> other)
+internal_forces::Compound::Compound(std::shared_ptr<Compound> other)
     : m_name(other->m_name),
       m_pathChanger(other->m_pathChanger),
       m_force(other->m_force) {}

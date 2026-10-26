@@ -2,25 +2,21 @@ name: Run PIP tests
 
 on: [pull_request]
 
-env:
-  BUILD_FOLDER: build
-  EXAMPLES_FOLDER: examples
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
         include:
           - os: ubuntu-latest
             label: linux-64
-            prefix: /usr/share/miniconda3/envs/biorbd
-          # - os: macos-latest
-          #   label: osx-arm64
-          #   prefix: /Users/runner/miniconda3/envs/biorbd
+          - os: macos-latest
+            label: osx-arm64
           - os: windows-latest
             label: win-64
-            prefix: C:\Miniconda3\envs\biorbd
     name: ${{ matrix.label }}
     runs-on: ${{ matrix.os }}
     defaults:
@@ -28,47 +24,37 @@ jobs:
         shell: bash -l {0}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
-  
+        uses: actions/checkout@v7
+
       - name: Setup environment
-        uses: conda-incubator/setup-miniconda@v3
+        uses: conda-incubator/setup-miniconda@v4
         with:
-          miniforge-version: latest
+          # TODO: Go back to "latest" when https://github.com/conda-incubator/setup-miniconda/issues/589 is fixed
+          miniforge-version: 26.7.2-0
           activate-environment: biorbd
+          channels: conda-forge
+          conda-remove-defaults: "true"
 
       - name: Install dependencies
         run: |
-          conda install -cconda-forge swig pip "eigen<4.0.0"
+          conda install "swig<4.4.0" pip "eigen<4.0.0"
           conda list
 
       - name: Setup Linux dependencies
-        run:   |
-         sudo apt update
-         sudo apt install libstdc++-11-dev
+        run: |
+          sudo apt update
+          sudo apt install libstdc++-11-dev
         if: matrix.label == 'linux-64'
-  
+
       - name: Build biorbd
         run: |
           rm -rf _skbuild
           export MATH_LIBRARY_BACKEND=Eigen3
           pip install .
-  
+
       - name: Test installed version of biorbd
-        run: | 
+        run: |
           BIORBD_FOLDER=`pwd`
           cd
           python -c "import biorbd"
           cd $BIORBD_FOLDER
-
-      # - name: Biorbd biorbd_casadi
-      #   run: |
-      #     rm -rf _skbuild
-      #     export MATH_LIBRARY_BACKEND=Casadi
-      #     pip install .
-
-      # - name: Test installed version of biorbd_casadi
-      #   run: | 
-      #     BIORBD_FOLDER=`pwd`
-      #     cd
-      #     python -c "import biorbd_casadi"
-      #     cd $BIORBD_FOLDER

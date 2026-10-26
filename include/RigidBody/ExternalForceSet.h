@@ -37,6 +37,11 @@ class BIORBD_API ExternalForceSet {
   /// structure that was holding the spatial vector as well.
   class LocalForcesInternal {
    public:
+    ///
+    /// \brief Add a force vector and its point of application
+    /// \param vector The spatial vector of the force
+    /// \param node The point of application in the local reference frame
+    ///
     void addNode(
         const utils::SpatialVector& vector,
         utils::RotoTransNode node) {
@@ -52,14 +57,22 @@ class BIORBD_API ExternalForceSet {
           m_vectors[index], m_nodes[index]);
     }
 
+    ///
+    /// \brief Return the number of forces stored
+    /// \return The number of forces stored
+    ///
     size_t size() const { return m_nodes.size(); }
 
+    ///
+    /// \brief Remove all the forces stored
+    ///
     void clear() {
       m_nodes.clear();
       m_vectors.clear();
     }
 
-    std::vector<utils::RotoTransNode> m_nodes;
+    std::vector<utils::RotoTransNode>
+        m_nodes;  ///< All the points of application of the forces
     std::vector<utils::SpatialVector>
         m_vectors;  ///< All the force vectors, the size of which should always
                     ///< match the size of m_nodes
@@ -138,9 +151,9 @@ class BIORBD_API ExternalForceSet {
 
   ///
   /// \brief Add a pure force at a specific point on the kinematic chain.
-  /// \param forces The pure forces to apply on the body
-  /// \param position The position of the force in reference frame of the node.
-  /// Note that the [parentName] of must have been set
+  /// \param force The pure forces to apply on the body
+  /// \param pointOfApplication The position of the force in reference frame of
+  /// the node. Note that the [parentName] of must have been set
   ///
   void addTranslationalForce(
       const utils::Vector3d& force,

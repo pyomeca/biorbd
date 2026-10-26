@@ -259,8 +259,7 @@ class BIORBD_API Ligament : public Compound {
 
  protected:
   ///
-  /// \brief Computer the forces from a specific emg
-  /// \param emg EMG data
+  /// \brief Compute the force of the ligament
   ///
   virtual void computeForce();
 
@@ -278,10 +277,9 @@ class BIORBD_API Ligament : public Compound {
   std::shared_ptr<utils::Scalar> m_damping;  ///< The ligament damping term
 
   ///
-  /// \brief Function allowing modification of the way the multiplication is
-  /// done in computeForce(EMG)
-  /// \param emg The EMG data
-  /// \return The force from activation
+  /// \brief Function allowing modification of the way the force is computed
+  /// in computeForce()
+  /// \return The force of the ligament
   ///
   virtual utils::Scalar getForce();
 

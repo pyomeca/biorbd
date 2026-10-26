@@ -17,7 +17,7 @@ internal_forces::muscles::FatigueDynamicState::FatigueDynamicState(
 }
 
 internal_forces::muscles::FatigueDynamicState::FatigueDynamicState(
-    const std::shared_ptr<internal_forces::muscles::FatigueState> other)
+    const std::shared_ptr<FatigueState> other)
     : internal_forces::muscles::FatigueState(other) {
   std::shared_ptr<internal_forces::muscles::FatigueDynamicState> muscle_tp(
       std::dynamic_pointer_cast<internal_forces::muscles::FatigueDynamicState>(

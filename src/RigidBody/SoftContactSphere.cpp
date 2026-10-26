@@ -56,7 +56,7 @@ rigidbody::SoftContactSphere::SoftContactSphere(
 }
 
 rigidbody::SoftContactSphere::SoftContactSphere(
-    const Vector3d &other,
+    const utils::Vector3d &other,
     const utils::Scalar &radius,
     const utils::Scalar &stiffness,
     const utils::Scalar &damping,
@@ -99,7 +99,7 @@ rigidbody::SoftContactSphere::SoftContactSphere(
 }
 
 rigidbody::SoftContactSphere::SoftContactSphere(
-    const Vector3d &node,
+    const utils::Vector3d &node,
     const utils::Scalar &radius,
     const utils::Scalar &stiffness,
     const utils::Scalar &damping,
@@ -249,7 +249,7 @@ utils::Vector3d rigidbody::SoftContactSphere::computeForce(
 }
 
 utils::Vector3d rigidbody::SoftContactSphere::applicationPoint(
-    const Vector3d &x) const {
+    const utils::Vector3d &x) const {
   const utils::Vector3d &plane(m_contactPlane->first);
   const utils::Vector3d &normal(m_contactPlane->second);
   utils::Scalar delta = -((x - plane).dot(normal) - *m_radius);

@@ -1,62 +1,8 @@
 from skbuild import setup
+from skbuild.constants import CMAKE_INSTALL_DIR
 from pathlib import Path
 import re
 import os
-import sys
-import platform
-
-
-def get_install_base():
-    current_folder = Path(__file__).parent
-    platform_name = platform.system().lower()
-
-    if platform_name == "linux":
-        architecture = platform.architecture()[0]
-        if architecture == "64bit":
-            architecture = "x86_64"
-        elif architecture == "32bit":
-            architecture = "i686"
-        else:
-            raise RuntimeError(f"Unsupported architecture: {architecture}")
-
-        python_version = f"{sys.version_info.major}.{sys.version_info.minor}"
-        platform_name = f"linux-{architecture}-{python_version}"
-
-    elif platform_name == "darwin":
-        # Get the number of macos version (e.g. 13.0)
-        version = platform.mac_ver()[0].split(".")
-        version = f"{version[0]}.0"
-
-        architecture = platform.architecture()[0]
-        if architecture == "64bit":
-            architecture = "x86_64"
-        else:
-            raise RuntimeError(f"Unsupported architecture: {architecture}")
-
-        python_version = f"{sys.version_info.major}.{sys.version_info.minor}"
-        platform_name = f"macosx-{version}-x86_64-{python_version}"
-
-    elif platform_name == "windows":
-        architecture = platform.architecture()[0]
-        if architecture == "64bit":
-            architecture = "amd64"
-        else:
-            raise RuntimeError(f"Unsupported architecture: {architecture}")
-
-        python_version = f"{sys.version_info.major}.{sys.version_info.minor}"
-        platform_name = f"win-{architecture}-{python_version}"
-
-    return f"{current_folder}/_skbuild/{platform_name}/cmake-install"
-
-
-def get_install_site_packages():
-    # Keep the Python package install path inside the scikit-build install prefix.
-    # On Windows, site-packages lives under Lib/site-packages (without pythonX.Y).
-    if platform.system().lower() == "windows":
-        return Path("Lib/site-packages")
-
-    python_version = f"python{sys.version_info.major}.{sys.version_info.minor}"
-    return Path(f"lib/{python_version}/site-packages")
 
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -108,8 +54,12 @@ setup(
         "-DCMAKE_INSTALL_BINDIR=biorbd",
         "-DCMAKE_INSTALL_LIBDIR=biorbd",
         f"-DMATH_LIBRARY_BACKEND={math_library_backend}",
-        f"-DINSTALL_DEPENDENCIES_PREFIX={get_install_base()}",
-        f"-DPython3_SITELIB_INSTALL={get_install_site_packages()}",
+        f"-DINSTALL_DEPENDENCIES_PREFIX={dir_path}/{CMAKE_INSTALL_DIR()}",
+        # Install the python package at the root of the cmake-install folder so scikit-build packages it as a
+        # regular package (and not as wheel data, which breaks the relative RPATH set by auditwheel/delocate)
+        "-DPython3_SITELIB_INSTALL=.",
         f"-DOVERRIDE_LIB_SUFFIX=''",
+        # Do not pick up dependencies registered by previous builds (e.g. a deleted _skbuild folder)
+        "-DCMAKE_FIND_USE_PACKAGE_REGISTRY=OFF",
     ],
 )

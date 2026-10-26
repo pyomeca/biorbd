@@ -41,7 +41,7 @@
         
 #       - name: Install build packages
 #         run: | 
-#           conda install pip swig -cconda-forge
+#           conda install pip "swig<4.4.0" -cconda-forge
 #           conda list
 #           pip install build cibuildwheel==2.21.3
 

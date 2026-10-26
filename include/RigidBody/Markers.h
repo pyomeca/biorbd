@@ -377,7 +377,7 @@ class BIORBD_API Markers {
   /// \param updatedModel The joint model updated to the proper kinematics level
   /// \param Q The generalized coordinates
   /// \param Qdot The generalized velocities
-  /// \param Qddot The generalized velocities
+  /// \param dQdot The generalized accelerations
   /// \param removeAxis If there are axis to remove from the position variables
   /// \return The acceleration of all the markers
   ///
@@ -392,7 +392,7 @@ class BIORBD_API Markers {
   /// \brief Return the acceleration of all the markers
   /// \param Q The generalized coordinates
   /// \param Qdot The generalized velocities
-  /// \param Qddot The generalized velocities
+  /// \param dQdot The generalized accelerations
   /// \param updateKin If the model should be updated
   /// \param removeAxis If there are axis to remove from the position variables
   /// \return The acceleration of all the markers

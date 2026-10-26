@@ -2,6 +2,7 @@
 #include "Utils/Path.h"
 
 #include <fstream>
+#include <limits>
 #include <regex>
 
 #include "Utils/Error.h"
@@ -25,7 +26,7 @@ utils::Path::Path()
       m_filename(std::make_shared<utils::String>()),
       m_extension(std::make_shared<utils::String>()) {}
 
-utils::Path::Path(const char *path)
+utils::Path::Path(const char* path)
     : m_originalPath(std::make_shared<utils::String>(path)),
       m_folder(std::make_shared<utils::String>()),
       m_isFolderAbsolute(std::make_shared<bool>()),
@@ -35,7 +36,7 @@ utils::Path::Path(const char *path)
   setIsFolderAbsolute();
 }
 
-utils::Path::Path(const utils::String &path)
+utils::Path::Path(const utils::String& path)
     : m_originalPath(std::make_shared<utils::String>(path)),
       m_folder(std::make_shared<utils::String>()),
       m_isFolderAbsolute(std::make_shared<bool>()),
@@ -45,7 +46,7 @@ utils::Path::Path(const utils::String &path)
   setIsFolderAbsolute();
 }
 
-utils::Path::Path(const std::basic_string<char> &path)
+utils::Path::Path(const std::basic_string<char>& path)
     : m_originalPath(std::make_shared<utils::String>(path)),
       m_folder(std::make_shared<utils::String>()),
       m_isFolderAbsolute(std::make_shared<bool>()),
@@ -61,7 +62,7 @@ utils::Path utils::Path::DeepCopy() const {
   return copy;
 }
 
-void utils::Path::DeepCopy(const Path &other) {
+void utils::Path::DeepCopy(const Path& other) {
   *m_originalPath = *other.m_originalPath;
   *m_folder = *other.m_folder;
   *m_isFolderAbsolute = *other.m_isFolderAbsolute;
@@ -70,11 +71,11 @@ void utils::Path::DeepCopy(const Path &other) {
 }
 
 bool utils::Path::isFileExist() const { return isFileExist(absolutePath()); }
-bool utils::Path::isFileExist(const Path &path) {
+bool utils::Path::isFileExist(const Path& path) {
   return isFileExist(path.absolutePath());
 }
-bool utils::Path::isFileExist(const utils::String &path) {
-  if (FILE *file = fopen(
+bool utils::Path::isFileExist(const utils::String& path) {
+  if (FILE* file = fopen(
 #ifdef _WIN32
           toWindowsFormat(path).c_str(),
 #else
@@ -103,11 +104,11 @@ bool utils::Path::isFileReadable() const {
 
 bool utils::Path::isFolderExist() const { return isFolderExist(*this); }
 
-bool utils::Path::isFolderExist(const Path &path) {
+bool utils::Path::isFolderExist(const Path& path) {
   return isFolderExist(path.folder());
 }
 
-bool utils::Path::isFolderExist(const utils::String &path) {
+bool utils::Path::isFolderExist(const utils::String& path) {
 #ifdef _WIN32
   if (GetFileAttributesA(toWindowsFormat(path).c_str()) ==
       INVALID_FILE_ATTRIBUTES) {
@@ -131,10 +132,10 @@ bool utils::Path::isFolderExist(const utils::String &path) {
 }
 
 void utils::Path::parseFileName(
-    const utils::String &path,
-    utils::String &folder,
-    utils::String &filename,
-    utils::String &extension) {
+    const utils::String& path,
+    utils::String& folder,
+    utils::String& filename,
+    utils::String& extension) {
   utils::String pathSep(toUnixFormat(path));
 
   size_t sepPos(pathSep.rfind("/"));
@@ -155,7 +156,7 @@ void utils::Path::parseFileName(
 
   // Stocker l'extension
   size_t ext(pathSep.rfind("."));
-  if (ext != SIZE_MAX) {
+  if (ext != std::string::npos) {
     extension = pathSep.substr(ext + 1);
   } else {
     extension = "";
@@ -169,13 +170,13 @@ utils::String utils::Path::relativePath() const {
   return relativePath(*this, currentDir());
 }
 
-utils::String utils::Path::relativePath(const utils::String &relativeTo) const {
+utils::String utils::Path::relativePath(const utils::String& relativeTo) const {
   return relativePath(*this, relativeTo);
 }
 
 utils::String utils::Path::relativePath(
-    const utils::Path &path,
-    const utils::String &relativeTo) {
+    const utils::Path& path,
+    const utils::String& relativeTo) {
   utils::String me(path.absolutePath());
   utils::String currentDir(relativeTo);
 
@@ -231,7 +232,7 @@ utils::String utils::Path::relativePath(
   return outPath;
 }
 
-utils::String utils::Path::absoluteFolder(const utils::Path &path) {
+utils::String utils::Path::absoluteFolder(const utils::Path& path) {
   if (*path.m_isFolderAbsolute) {
     return path.folder();
   }
@@ -273,7 +274,7 @@ utils::String utils::Path::absolutePath() const {
   }
 }
 
-utils::String utils::Path::toUnixFormat(const utils::String &path) {
+utils::String utils::Path::toUnixFormat(const utils::String& path) {
   utils::String pathOut(path);
 
   // Depending on the string origin, "\\" is either the character "\"
@@ -294,7 +295,7 @@ utils::String utils::Path::toUnixFormat(const utils::String &path) {
   return pathOut;
 }
 
-utils::String utils::Path::toWindowsFormat(const utils::String &path) {
+utils::String utils::Path::toWindowsFormat(const utils::String& path) {
   utils::String pathOut(path);
   size_t pos(pathOut.rfind("/"));
   while (pos != std::string::npos) {
@@ -304,24 +305,24 @@ utils::String utils::Path::toWindowsFormat(const utils::String &path) {
   return pathOut;
 }
 
-const utils::String &utils::Path::originalPath() const {
+const utils::String& utils::Path::originalPath() const {
   return *m_originalPath;
 }
 
-void utils::Path::setFolder(const utils::String &folder) {
+void utils::Path::setFolder(const utils::String& folder) {
   *m_folder = folder + "/";
   setIsFolderAbsolute();
 }
 
-const utils::String &utils::Path::folder() const { return *m_folder; }
+const utils::String& utils::Path::folder() const { return *m_folder; }
 
-void utils::Path::setFilename(const utils::String &name) { *m_filename = name; }
+void utils::Path::setFilename(const utils::String& name) { *m_filename = name; }
 
-const utils::String &utils::Path::filename() const { return *m_filename; }
+const utils::String& utils::Path::filename() const { return *m_filename; }
 
-void utils::Path::setExtension(const utils::String &ext) { *m_extension = ext; }
+void utils::Path::setExtension(const utils::String& ext) { *m_extension = ext; }
 
-const utils::String &utils::Path::extension() const { return *m_extension; }
+const utils::String& utils::Path::extension() const { return *m_extension; }
 
 void utils::Path::setIsFolderAbsolute() {
   utils::String base;
@@ -358,7 +359,7 @@ utils::String utils::Path::currentDir() {
 }
 
 void utils::Path::createFolder() const {
-  const utils::String &tp(folder());
+  const utils::String& tp(folder());
   utils::String tp2(tp);
 
   size_t sep = std::string::npos;
