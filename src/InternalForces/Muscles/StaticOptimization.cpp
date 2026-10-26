@@ -75,8 +75,7 @@ internal_forces::muscles::StaticOptimization::StaticOptimization(
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& Qdot,
     const rigidbody::GeneralizedTorque& torqueTarget,
-    const std::vector<internal_forces::muscles::StateDynamics>&
-        initialActivationGuess,
+    const std::vector<StateDynamics>& initialActivationGuess,
     unsigned int pNormFactor,
     bool useResidualTorque,
     int verbose)
@@ -160,8 +159,7 @@ internal_forces::muscles::StaticOptimization::StaticOptimization(
     const std::vector<rigidbody::GeneralizedCoordinates>& allQ,
     const std::vector<rigidbody::GeneralizedVelocity>& allQdot,
     const std::vector<rigidbody::GeneralizedTorque>& allTorqueTarget,
-    const std::vector<internal_forces::muscles::StateDynamics>&
-        initialActivationGuess,
+    const std::vector<StateDynamics>& initialActivationGuess,
     unsigned int pNormFactor,
     bool useResidualTorque,
     int verbose)

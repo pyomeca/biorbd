@@ -2,73 +2,98 @@ name: Run PIP tests
 
 on: [pull_request]
 
-env:
-  BUILD_FOLDER: build
-  EXAMPLES_FOLDER: examples
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        backend: [Eigen3, Casadi]
         include:
           - os: ubuntu-latest
             label: linux-64
-            prefix: /usr/share/miniconda3/envs/biorbd
-          # - os: macos-latest
-          #   label: osx-arm64
-          #   prefix: /Users/runner/miniconda3/envs/biorbd
+          - os: macos-latest
+            label: osx-arm64
           - os: windows-latest
             label: win-64
-            prefix: C:\Miniconda3\envs\biorbd
-    name: ${{ matrix.label }}
+          - backend: Eigen3
+            module: biorbd
+          - backend: Casadi
+            module: biorbd_casadi
+    name: ${{ matrix.label }}-${{ matrix.backend }}
     runs-on: ${{ matrix.os }}
     defaults:
       run:
         shell: bash -l {0}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
-  
+        uses: actions/checkout@v7
+
       - name: Setup environment
-        uses: conda-incubator/setup-miniconda@v3
+        uses: conda-incubator/setup-miniconda@v4
         with:
-          miniforge-version: latest
+          # TODO: Go back to "latest" when https://github.com/conda-incubator/setup-miniconda/issues/589 is fixed
+          miniforge-version: 26.7.2-0
           activate-environment: biorbd
+          channels: conda-forge
+          conda-remove-defaults: "true"
 
       - name: Install dependencies
         run: |
-          conda install -cconda-forge "swig<4.4.0" pip eigen
+          conda install "swig<4.4.0" pip "eigen<4.0.0"
           conda list
 
       - name: Setup Linux dependencies
-        run:   |
-         sudo apt update
-         sudo apt install libstdc++-11-dev
+        run: |
+          sudo apt update
+          sudo apt install libstdc++-11-dev
         if: matrix.label == 'linux-64'
-  
+
+      # The casadi package on PyPI is compiled with MinGW on Windows, so its C++ API cannot be linked with MSVC
+      # (see .github/workflows/publish_casadi_to_pypi.yml)
+      - name: Install the MinGW-w64 toolchain of casadi
+        run: |
+          curl -fsSL --retry 10 --retry-all-errors --retry-delay 15 -o mingw.7z \
+            https://github.com/niXman/mingw-builds-binaries/releases/download/11.2.0-rt_v9-rev1/x86_64-11.2.0-release-posix-seh-rt_v9-rev1.7z
+          echo "2c943b1a9231ce09f227b0c8fc6cabc61da3581f4ef2f7682f9393f5a1d70ae8  mingw.7z" | sha256sum --check
+          7z x -y -oC:/mingw-casadi mingw.7z > /dev/null
+          rm mingw.7z
+        if: matrix.os == 'windows-latest' && matrix.backend == 'Casadi'
+
       - name: Build biorbd
         run: |
           rm -rf _skbuild
-          export MATH_LIBRARY_BACKEND=Eigen3
+          export MATH_LIBRARY_BACKEND=${{ matrix.backend }}
+          if [ -d C:/mingw-casadi ]; then
+            export PATH="/c/mingw-casadi/mingw64/bin:$PATH"
+            export CC=C:/mingw-casadi/mingw64/bin/gcc.exe CXX=C:/mingw-casadi/mingw64/bin/g++.exe
+            export CMAKE_GENERATOR="MinGW Makefiles" CMAKE_BUILD_PARALLEL_LEVEL=4
+          fi
           pip install .
-  
-      - name: Test installed version of biorbd
-        run: | 
+
+      - name: Test installed version of ${{ matrix.module }}
+        run: |
           BIORBD_FOLDER=`pwd`
           cd
-          python -c "import biorbd"
+          python -c "import ${{ matrix.module }}"
           cd $BIORBD_FOLDER
 
-      # - name: Biorbd biorbd_casadi
-      #   run: |
-      #     rm -rf _skbuild
-      #     export MATH_LIBRARY_BACKEND=Casadi
-      #     pip install .
-
-      # - name: Test installed version of biorbd_casadi
-      #   run: | 
-      #     BIORBD_FOLDER=`pwd`
-      #     cd
-      #     python -c "import biorbd_casadi"
-      #     cd $BIORBD_FOLDER
+      # The casadi objects must be exchanged with the casadi package installed from pip (see binding/python3/CMakeLists.txt)
+      - name: Test symbolic computation with biorbd_casadi
+        run: |
+          # Run from outside the repository so the installed biorbd_casadi is used (not the stub folder of setup.py)
+          cp test/models/pyomecaman.bioMod ~/
+          cd
+          python -c "
+          import casadi, biorbd_casadi
+          model = biorbd_casadi.Model('pyomecaman.bioMod')
+          q = casadi.MX.sym('q', model.nbQ())
+          qdot = casadi.MX.sym('qdot', model.nbQ())
+          tau = casadi.MX.sym('tau', model.nbQ())
+          func = casadi.Function('fd', [q, qdot, tau], [model.ForwardDynamics(q, qdot, tau).to_mx()])
+          print(func([0.1] * model.nbQ(), [0] * model.nbQ(), [0] * model.nbQ()))
+          "
+        if: matrix.backend == 'Casadi'

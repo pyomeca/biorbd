@@ -74,8 +74,7 @@ internal_forces::muscles::HillDeGrooteActiveOnlyType::
     : internal_forces::muscles::HillDeGrooteType(other) {}
 
 internal_forces::muscles::HillDeGrooteActiveOnlyType::
-    HillDeGrooteActiveOnlyType(
-        const std::shared_ptr<internal_forces::muscles::Muscle> other)
+    HillDeGrooteActiveOnlyType(const std::shared_ptr<Muscle> other)
     : internal_forces::muscles::HillDeGrooteType(other) {}
 
 internal_forces::muscles::HillDeGrooteActiveOnlyType

@@ -26,7 +26,7 @@ rigidbody::Mesh::Mesh(const std::vector<utils::Vector3d> &other)
 
 rigidbody::Mesh::Mesh(
     const std::vector<utils::Vector3d> &vertex,
-    const std::vector<rigidbody::MeshFace> &faces)
+    const std::vector<MeshFace> &faces)
     : m_rotation(std::make_shared<utils::RotoTrans>()),
       m_vertex(std::make_shared<std::vector<utils::Vector3d>>(vertex)),
       m_faces(std::make_shared<std::vector<rigidbody::MeshFace>>(faces)),

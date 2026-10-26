@@ -42,7 +42,6 @@ class BIORBD_API Reader {
   /// \brief Create a biorbd model from a bioMod file
   /// \param path The path of the file
   /// \param model The model to fill
-  /// \return Returns the model to fill
   ///
   static void readModelFile(const utils::Path &path, Model *model);
 
@@ -208,8 +207,7 @@ class BIORBD_API Reader {
   /// \param file A reference to the current file being read pointing to the RT
   /// \param variable The variable set
   /// \param RTinMatrix If the RT is in matrix or in Euler format
-  /// \param RT_R The Rotation part to fill
-  /// \param RT_T The translation part to fill
+  /// \param RT The RotoTrans matrix to fill
   ///
   static void readRtMatrix(
       utils::IfStream &file,

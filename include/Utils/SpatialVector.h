@@ -34,7 +34,7 @@ class BIORBD_API SpatialVector : public RigidBodyDynamics::Math::SpatialVector
   ///
   /// \brief Construct SpatialVector from Casadi SpatialVector
   /// \param moment The vector for the moment
-  /// \param forceThe vector for the force
+  /// \param force The vector for the force
   ///
   SpatialVector(const Vector3d& moment, const Vector3d& force);
 

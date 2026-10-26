@@ -27,7 +27,7 @@ internal_forces::muscles::FatigueModel::FatigueModel(
     : m_fatigueState(other.m_fatigueState) {}
 
 internal_forces::muscles::FatigueModel::FatigueModel(
-    const std::shared_ptr<internal_forces::muscles::FatigueModel> other)
+    const std::shared_ptr<FatigueModel> other)
     : m_fatigueState(other->m_fatigueState) {}
 
 internal_forces::muscles::FatigueModel::~FatigueModel() {}

@@ -6,6 +6,7 @@
 
 #include <rbdl/Dynamics.h>
 #include <rbdl/rbdl_math.h>
+#include <rbdl/rbdl_utils.h>
 
 #include "BiorbdModel.h"
 #include "RigidBody/ExternalForceSet.h"
@@ -1465,6 +1466,64 @@ TEST(CoM, kinematics) {
         expectedComDdot[i],
         requiredPrecision);
   }
+}
+
+TEST(CoM, zeroMomentPoint) {
+  Model model(modelPathForGeneralTesting);
+  Model expectedModel(modelPathForGeneralTesting);
+  rigidbody::GeneralizedCoordinates Q(model);
+  rigidbody::GeneralizedVelocity Qdot(model);
+  rigidbody::GeneralizedAcceleration Qddot(model);
+  for (size_t i = 0; i < model.nbQ(); ++i) {
+    Q(i, 0) = QtestPyomecaman[i];
+    Qdot(i, 0) = QtestPyomecaman[i] * 10;
+    Qddot(i, 0) = QtestPyomecaman[i] * 100;
+  }
+
+  utils::Vector3d normal(0, 0, 1);
+  utils::Vector3d point(0, 0, 0);
+  utils::Vector3d zeroMomentPoint(
+      model.CalcZeroMomentPoint(Q, Qdot, Qddot, normal, point));
+  utils::Vector3d expectedZeroMomentPoint;
+  RigidBodyDynamics::Utils::CalcZeroMomentPoint(
+      expectedModel, Q, Qdot, Qddot, &expectedZeroMomentPoint, normal, point);
+
+  for (size_t i = 0; i < 3; ++i) {
+    SCALAR_TO_DOUBLE(zeroMomentPointValue, zeroMomentPoint(i, 0));
+    SCALAR_TO_DOUBLE(
+        expectedZeroMomentPointValue, expectedZeroMomentPoint(i, 0));
+    EXPECT_NEAR(
+        zeroMomentPointValue,
+        expectedZeroMomentPointValue,
+        requiredPrecision);
+  }
+
+  utils::Vector3d shiftedPoint(0, 0, 0.1);
+  utils::Vector3d shiftedZeroMomentPoint(
+      model.CalcZeroMomentPoint(Q, Qdot, Qddot, normal, shiftedPoint));
+
+  SCALAR_TO_DOUBLE(
+      shiftedPlaneDistance,
+      (shiftedZeroMomentPoint - shiftedPoint).dot(normal));
+  SCALAR_TO_DOUBLE(shiftedZeroMomentPointX, shiftedZeroMomentPoint(0, 0));
+  SCALAR_TO_DOUBLE(zeroMomentPointX, zeroMomentPoint(0, 0));
+  SCALAR_TO_DOUBLE(shiftedZeroMomentPointY, shiftedZeroMomentPoint(1, 0));
+  SCALAR_TO_DOUBLE(zeroMomentPointY, zeroMomentPoint(1, 0));
+  EXPECT_NEAR(shiftedPlaneDistance, 0., requiredPrecision);
+  EXPECT_NEAR(
+      shiftedZeroMomentPointX, zeroMomentPointX, requiredPrecision);
+  EXPECT_NEAR(
+      shiftedZeroMomentPointY, zeroMomentPointY, requiredPrecision);
+
+  utils::Vector3d sagittalNormal(0, 1, 0);
+  utils::Vector3d sagittalPoint(0, 0.2, 0);
+  utils::Vector3d sagittalZeroMomentPoint(model.CalcZeroMomentPoint(
+      Q, Qdot, Qddot, sagittalNormal, sagittalPoint));
+
+  SCALAR_TO_DOUBLE(
+      sagittalPlaneDistance,
+      (sagittalZeroMomentPoint - sagittalPoint).dot(sagittalNormal));
+  EXPECT_NEAR(sagittalPlaneDistance, 0., requiredPrecision);
 }
 
 TEST(Segment, copy) {

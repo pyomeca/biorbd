@@ -4,6 +4,18 @@ segment segment1
     rt 0.1 0.2 0.3 xyz 1 2 3
     translations    xy
     rotations	z
+    rangesQ
+        -1.5 2.5
+        -1.6 2.6
+        -1.7 2.7
+    rangesQdot
+        -20.1 25.1
+        -20.2 25.2
+        -20.3 25.3
+    rangesQddot
+        -300.1 350.1
+        -300.2 350.2
+        -300.3 350.3
 	jointdampings 1 2 3
 endsegment
 
@@ -11,6 +23,12 @@ segment segment2
     parent segment1
     rt 0.1 0.2 0.3 xyz 1 2 3
     rotations	z
+    rangesQ
+        -0.5 0.6
+    rangesQdot
+        -12.5 13.5
+    rangesQddot
+        -140.5 150.5
 endsegment
 
     marker mark_seg2

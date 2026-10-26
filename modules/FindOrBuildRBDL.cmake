@@ -115,7 +115,7 @@ function(FindOrBuildRBDL MATH_BACKEND)
         set(RBDL_TARGET_STATIC ON)
     endif()
 
-    if(WIN32)
+    if(MSVC)
         set(RBDL_LIB_NAME "rbdl${RBDL_LIBRARY_SUFFIX}.lib") 
     else()
         if(${RBDL_TARGET_STATIC})
@@ -132,6 +132,13 @@ function(FindOrBuildRBDL MATH_BACKEND)
     endif()
 
     set(RBDL_INSTALL_DIR "${CUSTOM_RBDL_PATH}")
+    if(${MATH_BACKEND} STREQUAL "CASADI")
+        # RBDL also installs its Eigen flavor (include/rbdl) which, if installed in the include folder shared
+        # with the other dependencies ("${INSTALL_DEPENDENCIES_PREFIX}/include"), shadows include/rbdl-casadi
+        set(RBDL_INSTALL_INCLUDEDIR "include/rbdl_casadi_headers")
+    else()
+        set(RBDL_INSTALL_INCLUDEDIR "include")
+    endif()
     set(RBDL_LIBRARY "${RBDL_INSTALL_DIR}/lib/${RBDL_LIB_NAME}")
     set(RBDL_DEPENDS "")
     if(TARGET Eigen3_external)
@@ -147,6 +154,9 @@ function(FindOrBuildRBDL MATH_BACKEND)
         DEPENDS  ${RBDL_DEPENDS}
         CMAKE_ARGS
             -DCMAKE_INSTALL_PREFIX=${RBDL_INSTALL_DIR}
+            # Some distributions (e.g. the manylinux images) default to lib64, while lib is expected below
+            -DCMAKE_INSTALL_LIBDIR=lib
+            -DCMAKE_INSTALL_INCLUDEDIR=${RBDL_INSTALL_INCLUDEDIR}
             -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
             -DRBDL_BUILD_STATIC=${RBDL_TARGET_STATIC}
             -DRBDL_BUILD_CASADI=${RBDL_BUILD_CASADI}
@@ -160,9 +170,9 @@ function(FindOrBuildRBDL MATH_BACKEND)
 
     # Define include and library paths
     if(${MATH_BACKEND} STREQUAL "CASADI")
-        set(RBDL_INCLUDE_DIR "${RBDL_INSTALL_DIR}/include/rbdl-casadi")
+        set(RBDL_INCLUDE_DIR "${RBDL_INSTALL_DIR}/${RBDL_INSTALL_INCLUDEDIR}/rbdl-casadi")
     else()
-        set(RBDL_INCLUDE_DIR "${RBDL_INSTALL_DIR}/include")
+        set(RBDL_INCLUDE_DIR "${RBDL_INSTALL_DIR}/${RBDL_INSTALL_INCLUDEDIR}")
     endif()
 
     # Define imported target

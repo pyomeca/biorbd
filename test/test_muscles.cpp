@@ -52,7 +52,7 @@ TEST(Muscles, size) {
     }
   }
 
-  EXPECT_THROW(model.muscle(cmp).name().c_str(), std::runtime_error);
+  EXPECT_THROW(model.muscle(cmp).name(), std::runtime_error);
 }
 
 TEST(IdealizedActuator, unitTest) {

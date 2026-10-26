@@ -1,15 +1,20 @@
 OUTPUT_DIRECTORY       = @CMAKE_CURRENT_BINARY_DIR@/
 INPUT                  += @CMAKE_SOURCE_DIR@/include/ 
-INPUT                  += @CMAKE_SOURCE_DIR@/include/ 
 INPUT                  += @CMAKE_SOURCE_DIR@/include/Utils
 INPUT                  += @CMAKE_SOURCE_DIR@/include/RigidBody
-INPUT                  += @CMAKE_SOURCE_DIR@/include/Muscles
-INPUT                  += @CMAKE_SOURCE_DIR@/include/Actuators
+INPUT                  += @CMAKE_SOURCE_DIR@/include/InternalForces
+INPUT                  += @CMAKE_SOURCE_DIR@/include/InternalForces/Actuators
+INPUT                  += @CMAKE_SOURCE_DIR@/include/InternalForces/Ligaments
+INPUT                  += @CMAKE_SOURCE_DIR@/include/InternalForces/Muscles
+INPUT                  += @CMAKE_SOURCE_DIR@/include/InternalForces/PassiveTorques
 INPUT                  += @CMAKE_SOURCE_DIR@/src/ 
 INPUT                  += @CMAKE_SOURCE_DIR@/src/Utils
 INPUT                  += @CMAKE_SOURCE_DIR@/src/RigidBody
-INPUT                  += @CMAKE_SOURCE_DIR@/src/Muscles
-INPUT                  += @CMAKE_SOURCE_DIR@/src/Actuators
+INPUT                  += @CMAKE_SOURCE_DIR@/src/InternalForces
+INPUT                  += @CMAKE_SOURCE_DIR@/src/InternalForces/Actuators
+INPUT                  += @CMAKE_SOURCE_DIR@/src/InternalForces/Ligaments
+INPUT                  += @CMAKE_SOURCE_DIR@/src/InternalForces/Muscles
+INPUT                  += @CMAKE_SOURCE_DIR@/src/InternalForces/PassiveTorques
 INPUT                  += @CMAKE_SOURCE_DIR@/doc
 
 # Remove dll_export that confuses Doxygen
@@ -28,3 +33,13 @@ EXTRA_PACKAGES         = amsmath
 
 # Add the Readme file
 INPUT                  += @CMAKE_SOURCE_DIR@/README.md
+# Do not use the README.md as the documentation of the root directory
+IMPLICIT_DIR_DOCS      = NO
+# Resolve the GitHub-style anchors used in the README table of contents
+MARKDOWN_ID_STYLE      = GITHUB
+TOC_INCLUDE_HEADINGS   = 5
+
+# Only the HTML documentation is used. Without LaTeX output (and with formulas rendered by MathJax),
+# no TeX installation is needed. Otherwise, the "Problems running epstopdf" error fails the build on Windows
+GENERATE_LATEX         = NO
+USE_MATHJAX            = YES
