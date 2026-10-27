@@ -1,4 +1,4 @@
-from .biorbd import currentLinearAlgebraBackend
+from ...biorbd import currentLinearAlgebraBackend
 
 import numpy as np
 
