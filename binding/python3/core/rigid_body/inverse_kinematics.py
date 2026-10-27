@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from scipy import optimize
 import numpy as np
 
-from .utils import get_range_q
+from ..utils import get_range_q
 
 try:
     import proxsuite
