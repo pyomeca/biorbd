@@ -65,7 +65,6 @@ jobs:
 
       - name: Build biorbd
         run: |
-          rm -rf _skbuild
           export MATH_LIBRARY_BACKEND=${{ matrix.backend }}
           if [ -d C:/mingw-casadi ]; then
             export PATH="/c/mingw-casadi/mingw64/bin:$PATH"
@@ -84,7 +83,7 @@ jobs:
       # The casadi objects must be exchanged with the casadi package installed from pip (see binding/python3/CMakeLists.txt)
       - name: Test symbolic computation with biorbd_casadi
         run: |
-          # Run from outside the repository so the installed biorbd_casadi is used (not the stub folder of setup.py)
+          # Run from outside the repository so the installed biorbd_casadi is used (not the source folder)
           cp test/models/pyomecaman.bioMod ~/
           cd
           python -c "

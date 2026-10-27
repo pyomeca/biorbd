@@ -162,11 +162,14 @@ endif()
 
 # Define the python install
 # Priority:
-# 1) Python3_SITELIB_INSTALL from setup.py (relative path for scikit-build staging)
-# 2) Python3_SITELIB from CMake FindPython (native CMake installs, platform-specific)
-# 3) Generic relative fallback for environments that don't expose either variable
+# 1) Python3_SITELIB_INSTALL if provided by the user
+# 2) SKBUILD_PLATLIB_DIR from scikit-build-core (root of the wheel, see pyproject.toml)
+# 3) Python3_SITELIB from CMake FindPython (native CMake installs, platform-specific)
+# 4) Generic relative fallback for environments that don't expose either variable
 if(DEFINED Python3_SITELIB_INSTALL AND NOT "${Python3_SITELIB_INSTALL}" STREQUAL "")
     set(PYTHON_INSTALL_PREFIX "${Python3_SITELIB_INSTALL}")
+elseif(DEFINED SKBUILD_PLATLIB_DIR AND NOT "${SKBUILD_PLATLIB_DIR}" STREQUAL "")
+    set(PYTHON_INSTALL_PREFIX "${SKBUILD_PLATLIB_DIR}")
 elseif(DEFINED Python3_SITELIB AND NOT "${Python3_SITELIB}" STREQUAL "")
     set(PYTHON_INSTALL_PREFIX "${Python3_SITELIB}")
 else()
@@ -186,13 +189,13 @@ INSTALL(FILES "${CMAKE_CURRENT_BINARY_DIR}/${BIORBD_NAME_NO_SUFFIX}.py"
     DESTINATION "${PYTHON_INSTALL_PREFIX}/${BIORBD_PYTHON_DIR}"
 )
 
-file(GLOB PYTHON_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.py")
-INSTALL(FILES ${PYTHON_FILES}
+# Install all the python files of the binder, keeping the folder structure (the trailing slash
+# copies the content of the folder instead of the folder itself)
+INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/"
     DESTINATION "${PYTHON_INSTALL_PREFIX}/${BIORBD_PYTHON_DIR}"
-)
-file(GLOB PYTHON_FILES "${CMAKE_CURRENT_SOURCE_DIR}/wrapper/*.py")
-INSTALL(FILES ${PYTHON_FILES}
-    DESTINATION "${PYTHON_INSTALL_PREFIX}/${BIORBD_PYTHON_DIR}/wrapper"
+    FILES_MATCHING
+    PATTERN "*.py"
+    PATTERN "__pycache__" EXCLUDE
 )
 
 # Check SWIG behavior to choose where to install the extension module.
@@ -247,6 +250,14 @@ if(${MATH_LIBRARY_BACKEND} STREQUAL "Casadi")
     endif()
     message(STATUS "Using the SWIG runtime ${CASADI_SWIG_RUNTIME_VERSION} of casadi "
         "(type table: '${CASADI_SWIG_TYPE_TABLE}')")
+endif()
+
+# In a python wheel, find the libraries of biorbd relatively to the python module (see the main CMakeLists.txt)
+if(DEFINED BIORBD_WHEEL_RPATH)
+    file(RELATIVE_PATH BIORBD_WHEEL_LIB_RELATIVE_DIR
+        "${PYTHON_PROJECT_INSTALL_DESTINATION}" "${${BIORBD_NAME}_BIN_FOLDER}")
+    set_property(TARGET ${PYTHON_PROJECT_NAME} APPEND PROPERTY
+        INSTALL_RPATH "${BIORBD_WHEEL_RPATH}/${BIORBD_WHEEL_LIB_RELATIVE_DIR}")
 endif()
 
 # Install the library

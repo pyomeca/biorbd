@@ -61,12 +61,12 @@ jobs:
 
       # The other cibuildwheel options are in the [tool.cibuildwheel] section of pyproject.toml.
       # The casadi library must not be bundled in the wheels: biorbd_casadi exchanges casadi objects with the casadi
-      # python package, so it must use the library of that package (the exact version is pinned by setup.py)
+      # python package, so it must use the library of that package (the exact version is pinned by build_backend/biorbd_build_backend.py)
       - name: Build wheels
         uses: pypa/cibuildwheel@v4.3.4
         env:
           CIBW_ENVIRONMENT: MATH_LIBRARY_BACKEND=Casadi BIORBD_EIGEN3_ARCHIVE=.eigen_cache/eigen-3.4.0.tar.gz
-          # scikit-build only accepts MSVC with its default generators on Windows, hence the MinGW Makefiles generator
+          # On Windows, the default generator is MSVC, hence the MinGW Makefiles generator
           CIBW_ENVIRONMENT_WINDOWS: >-
             MATH_LIBRARY_BACKEND=Casadi BIORBD_EIGEN3_ARCHIVE=.eigen_cache/eigen-3.4.0.tar.gz
             PATH="C:/mingw-casadi/mingw64/bin;$PATH" CC=C:/mingw-casadi/mingw64/bin/gcc.exe

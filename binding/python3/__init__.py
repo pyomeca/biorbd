@@ -1,11 +1,9 @@
 import sys
 
 from . import biorbd  # This is created while installing using CMake
+from .core import *
 from .biorbd import *
 from ._version import __version__
-from .surface_max_torque_actuator import *
-from .rigid_body import *
-from .utils import *
 
 if sys.version_info >= (3, 12):
     from .wrapper import *
