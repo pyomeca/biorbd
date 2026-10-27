@@ -1,14 +1,6 @@
 import numpy as np
 
 from . import biorbd
-from .inverse_kinematics import (
-    DifferentialInverseKinematics,
-    DifferentialInverseKinematicsResult,
-    InverseKinematics,
-    InverseKinematicsProxQP,
-    MarkerLoopClosureConstraint,
-    has_proxsuite,
-)
 
 
 def marker_index(model, marker_name: str) -> int:
@@ -32,6 +24,7 @@ def marker_index(model, marker_name: str) -> int:
     except ValueError:
         raise ValueError(f"{marker_name} is not in the biorbd model")
 
+
 def contact_index(model, contact_name: str) -> int:
     """
     Return the index in the model of the desired contact point.
@@ -52,6 +45,7 @@ def contact_index(model, contact_name: str) -> int:
         return [n.to_string() for n in model.contactNames()].index(contact_name)
     except ValueError:
         raise ValueError(f"{contact_name} is not in the biorbd model")
+
 
 def segment_index(model, segment_name):
     """
@@ -130,7 +124,9 @@ def extended_kalman_filter(
 
     index_in_c3d = np.array(tuple(labels.index(name) if name in labels else -1 for name in marker_names))
     markers_in_c3d = np.ndarray((3, len(index_in_c3d), n_frames)) * np.nan
-    markers_in_c3d[:, index_in_c3d[index_in_c3d >= 0], :] = data[:3, index_in_c3d[index_in_c3d >= 0], frames] / 1000  # To meter
+    markers_in_c3d[:, index_in_c3d[index_in_c3d >= 0], :] = (
+        data[:3, index_in_c3d[index_in_c3d >= 0], frames] / 1000
+    )  # To meter
 
     # Create a Kalman filter structure
     freq = c3d["parameters"]["POINT"]["RATE"]["value"][0]

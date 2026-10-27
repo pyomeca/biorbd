@@ -186,13 +186,13 @@ INSTALL(FILES "${CMAKE_CURRENT_BINARY_DIR}/${BIORBD_NAME_NO_SUFFIX}.py"
     DESTINATION "${PYTHON_INSTALL_PREFIX}/${BIORBD_PYTHON_DIR}"
 )
 
-file(GLOB PYTHON_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.py")
-INSTALL(FILES ${PYTHON_FILES}
+# Install all the python files of the binder, keeping the folder structure (the trailing slash
+# copies the content of the folder instead of the folder itself)
+INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/"
     DESTINATION "${PYTHON_INSTALL_PREFIX}/${BIORBD_PYTHON_DIR}"
-)
-file(GLOB PYTHON_FILES "${CMAKE_CURRENT_SOURCE_DIR}/wrapper/*.py")
-INSTALL(FILES ${PYTHON_FILES}
-    DESTINATION "${PYTHON_INSTALL_PREFIX}/${BIORBD_PYTHON_DIR}/wrapper"
+    FILES_MATCHING
+    PATTERN "*.py"
+    PATTERN "__pycache__" EXCLUDE
 )
 
 # Check SWIG behavior to choose where to install the extension module.
