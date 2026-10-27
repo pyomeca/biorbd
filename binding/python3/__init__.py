@@ -1,6 +1,7 @@
 import sys
 
 from . import biorbd  # This is created while installing using CMake
+from .core import *
 from .biorbd import *
 from ._version import __version__
 

@@ -1,6 +1,6 @@
 import numpy as np
 
-from . import biorbd
+from .. import biorbd
 
 
 def marker_index(model, marker_name: str) -> int:
