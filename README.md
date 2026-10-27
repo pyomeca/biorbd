@@ -8,6 +8,7 @@
 # Table of contents
 - [Table of contents](#table-of-contents)
 - [How to install](#how-to-install)
+    - [pip](#pip)
   - [Anaconda (For Windows, Linux and Mac)](#anaconda-for-windows-linux-and-mac)
   - [Download binaries (For MATLAB users on Windows, Linux and Mac)](#download-binaries-for-matlab-users-on-windows-linux-and-mac)
   - [Compiling (For Windows, Linux and Mac)](#compiling-for-windows-linux-and-mac)
@@ -27,6 +28,7 @@
   - [*bioMod* files](#biomod-files)
     - [Header](#header)
       - [version](#version)
+      - [mesh\_folder\_prefix](#mesh_folder_prefix)
       - [gravity](#gravity)
       - [variables / endvariables](#variables--endvariables)
     - [Definition of the model](#definition-of-the-model)
@@ -55,12 +57,21 @@ So, without further ado, let's begin our investigation of BIORBD!
 
 You can get the online version of the paper for BIORBD here: [![DOI](https://joss.theoj.org/papers/10.21105/joss.02562/status.svg)](https://doi.org/10.21105/joss.02562)
 
-Futhermore, anyone can play with bioptim with a working (but slightly limited in terms of graphics) MyBinder by clicking the following badge
+Futhermore, anyone can play with BIORBD with a working (but slightly limited in terms of graphics) MyBinder by clicking the following badge
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/pyomeca/biorbd-tutorial/HEAD?urlpath=lab)
 
 # How to install
 There are two main ways to install BIORBD on your computer: installing the binaries from Anaconda (easiest, but limited to C++ and Python3) or compiling the source code yourself (more versatile and up to date; for C++, Python3 and MATLAB).
+
+
+### pip
+The Python interface can also be compiled and installed with `pip` (CMake, SWIG and the other build tools are fetched automatically). The math library backend is chosen with the `backend` option, which installs either the `biorbd` (`eigen`, default) or the `biorbd_casadi` (`casadi`) package:
+```bash
+pip install .
+pip install . -C backend=casadi
+```
+The backend can also be set using the `MATH_LIBRARY_BACKEND` environment variable (`Eigen3` or `Casadi`). Any other CMake variable can be passed as well, for instance `-C cmake.define.MODULE_KALMAN=OFF`.
 
 ## Anaconda (For Windows, Linux and Mac)
 The easiest way to install BIORBD is to download the binaries from Anaconda (https://anaconda.org/) repositories (binaries are not available though for MATLAB). The project is hosted on the conda-forge channel (https://anaconda.org/conda-forge/biorbd).
@@ -75,9 +86,9 @@ Please note that because of the way `Ipopt` is compiled on conda-forge, it was n
 
 The current building status for Anaconda release is as follow.
 
-| License | Name | Downloads | Version | Platforms |
-| --- | --- | --- | --- | --- |
-|   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-success" alt="License"/></a> | [![Conda Recipe](https://img.shields.io/badge/recipe-biorbd-green.svg)](https://anaconda.org/conda-forge/biorbd) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/biorbd.svg)](https://anaconda.org/conda-forge/biorbd) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/biorbd.svg)](https://anaconda.org/conda-forge/biorbd) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/biorbd.svg)](https://anaconda.org/conda-forge/biorbd) |
+| License                                                                                                                       | Name                                                                                                             | Downloads                                                                                                             | Version                                                                                                             | Platforms                                                                                                             |
+| ----------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-success" alt="License"/></a> | [![Conda Recipe](https://img.shields.io/badge/recipe-biorbd-green.svg)](https://anaconda.org/conda-forge/biorbd) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/biorbd.svg)](https://anaconda.org/conda-forge/biorbd) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/biorbd.svg)](https://anaconda.org/conda-forge/biorbd) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/biorbd.svg)](https://anaconda.org/conda-forge/biorbd) |
 
 ## Download binaries (For MATLAB users on Windows, Linux and Mac)
 
@@ -90,11 +101,11 @@ The main drawback with downloading the pre-compiled version from Anaconda is tha
 
 The building status for the current BIORBD branches is as follow
 
-| Name | Status |
-| --- | --- |
-| master | [![Build status](https://ci.appveyor.com/api/projects/status/fegqut6bypvix8ex/branch/master?svg=true)](https://ci.appveyor.com/project/pariterre/biorbd/branch/master) |
-| Code coverage | [![codecov](https://codecov.io/gh/pyomeca/biorbd/branch/master/graph/badge.svg)](https://codecov.io/gh/pyomeca/biorbd) |
-| DOI | [![DOI](https://zenodo.org/badge/124423173.svg)](https://zenodo.org/badge/latestdoi/124423173) |
+| Name          | Status                                                                                                                                                                 |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| master        | [![Build status](https://ci.appveyor.com/api/projects/status/fegqut6bypvix8ex/branch/master?svg=true)](https://ci.appveyor.com/project/pariterre/biorbd/branch/master) |
+| Code coverage | [![codecov](https://codecov.io/gh/pyomeca/biorbd/branch/master/graph/badge.svg)](https://codecov.io/gh/pyomeca/biorbd)                                                 |
+| DOI           | [![DOI](https://zenodo.org/badge/124423173.svg)](https://zenodo.org/badge/latestdoi/124423173)                                                                         |
 
 ### Dependencies
 BIORBD relies on several libraries (namely eigen ([http://eigen.tuxfamily.org] up to version 3.4.0) or CasADi ([https://web.casadi.org/]), rbdl-casadi (https://github.com/pyomeca/rbdl-casadi), tinyxml2(https://github.com/leethomason/tinyxml2) and Ipopt (https://github.com/coin-or/Ipopt)) that one must install prior to compiling. Fortunately, all these dependencies are also hosted on the *conda-forge* channel of Anaconda or will automatically be compiled when building BIORBD. Therefore the following command will install everything you need to compile BIORBD:

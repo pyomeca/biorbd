@@ -33,7 +33,13 @@ option(BUILD_DOC
     "Build documentation" OFF)
 option(BUILD_TESTS 
     "Build all tests." OFF)
-set(INSTALL_DEPENDENCIES_PREFIX "" CACHE PATH
+# In a python wheel (built by scikit-build-core), the dependencies built from source are shipped alongside biorbd
+if(SKBUILD)
+    set(INSTALL_DEPENDENCIES_PREFIX_DEFAULT "${CMAKE_INSTALL_PREFIX}")
+else()
+    set(INSTALL_DEPENDENCIES_PREFIX_DEFAULT "")
+endif()
+set(INSTALL_DEPENDENCIES_PREFIX "${INSTALL_DEPENDENCIES_PREFIX_DEFAULT}" CACHE PATH
     "Where to install the dependencies")
 
 
@@ -234,6 +240,19 @@ if(APPLE AND BIORBD_USE_CASADI_MATH)
     set(BIORBD_CASADI_WHEEL_RPATH "@loader_path/../casadi;@loader_path/../../casadi")
     foreach(BIORBD_TARGET ${BIORBD_NAME} ${BIORBD_MODULE_NAMES})
         set_property(TARGET ${BIORBD_TARGET} APPEND PROPERTY INSTALL_RPATH ${BIORBD_CASADI_WHEEL_RPATH})
+    endforeach()
+endif()
+
+# In a python wheel (built by scikit-build-core), the libraries are installed in the same folder of the python
+# package, which is moved once installed. They must therefore find each other relatively to their own location
+if(SKBUILD AND NOT WIN32)
+    if(APPLE)
+        set(BIORBD_WHEEL_RPATH "@loader_path")
+    else()
+        set(BIORBD_WHEEL_RPATH "$ORIGIN")
+    endif()
+    foreach(BIORBD_TARGET ${BIORBD_NAME} ${BIORBD_MODULE_NAMES})
+        set_property(TARGET ${BIORBD_TARGET} APPEND PROPERTY INSTALL_RPATH ${BIORBD_WHEEL_RPATH})
     endforeach()
 endif()
 

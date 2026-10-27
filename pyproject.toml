@@ -1,33 +1,86 @@
 [build-system]
 requires = [
-    "setuptools>=61.0",
-    "setuptools-scm>=8",
-    "wheel",
-    "scikit-build",
-    "cmake",
-    "ninja",
+    "scikit-build-core>=0.11",
     "swig",
     "numpy",
-    "scipy",
 ]
-# The setuptools backend, plus the build requirements of the selected MATH_LIBRARY_BACKEND. It is in a folder of its own
-# because pip's hook runner reports the package metadata found in the backend path (e.g. the biorbd.egg-info created
-# at the root of biorbd) when looking for a package, which breaks the build (e.g. "import cmake" fails in skbuild)
+# scikit-build-core, plus the selection of the math library backend (Eigen3 or Casadi), which changes the name of the
+# package (biorbd or biorbd_casadi) and its requirements (see build_backend/biorbd_build_backend.py). The backend is
+# chosen with "pip install . -C backend=casadi" (or the MATH_LIBRARY_BACKEND environment variable), default is Eigen3
 build-backend = "biorbd_build_backend"
 backend-path = ["build_backend"]
 
-# The project metadata are defined in setup.py, as the name of the package depends on MATH_LIBRARY_BACKEND
-# (biorbd or biorbd_casadi), which cannot be expressed in a [project] table
+[project]
+# This is the name of the Eigen3 backend, it is replaced by biorbd_casadi for the Casadi backend
+name = "biorbd"
+dynamic = ["version"]
+description = "Biomechanical add-ons to the RigidBody Dynamics Library"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+    { name = "Benjamin Michaud" },
+    { name = "Mickaël Begon" },
+]
+requires-python = ">=3.10"
+# The Casadi backend also requires the exact version of casadi it was compiled against
+dependencies = [
+    "numpy",
+    "scipy",
+]
 
 [project.optional-dependencies]
 proxqp = [
     "proxsuite"
 ]
 
+[project.urls]
+Homepage = "https://github.com/pyomeca/biorbd"
+
+[tool.scikit-build]
+minimum-version = "build-system.requires"
+# The python package is installed by CMake (see binding/python3/CMakeLists.txt)
+wheel.packages = []
+# Only the python package and the shared libraries are needed at runtime
+wheel.exclude = [
+    "include/",
+    "**/lib/cmake/",
+    "**/Lib/cmake/",
+    "**/lib/pkgconfig/",
+    "cmake/",
+    "share/",
+    "*.a",
+    "*.lib",
+]
+# The build backend is needed to build from the sdist, but it is ignored by the "build*" pattern of .gitignore
+sdist.include = ["build_backend/biorbd_build_backend.py"]
+sdist.exclude = [
+    ".github/",
+    ".vscode/",
+    "external/",
+    "doc/",
+    "test/",
+    "examples/",
+    "build/",
+    "_skbuild/",
+]
+
+[tool.scikit-build.metadata.version]
+provider = "scikit_build_core.metadata.regex"
+input = "CMakeLists.txt"
+regex = 'project\(biorbd VERSION (?P<value>\d+\.\d+\.\d+)\)'
+
+[tool.scikit-build.cmake.define]
+BINDER_PYTHON3 = "ON"
+BUILD_EXAMPLE = "OFF"
+# All the libraries are installed in the lib folder of the python package
+OVERRIDE_LIB_SUFFIX = ""
+# Do not pick up dependencies registered by previous builds
+CMAKE_FIND_USE_PACKAGE_REGISTRY = "OFF"
+
 [tool.cibuildwheel]
 build-frontend = "build"
 archs = ["auto64"]
 # musllinux and free-threaded Python are not supported yet
 skip = ["*-musllinux_*", "cp3??t-*"]
-before-build = "python -c \"import shutil; shutil.rmtree('_skbuild', ignore_errors=True)\""
 test-command = "python -c \"import biorbd; print(biorbd.__file__)\""
