@@ -45,6 +45,10 @@ function(FindOrBuildEigen3)
             # compiler is found, which fails on the Windows CI where MinGW's gfortran is mixed with the MSVC flags
             -DBUILD_TESTING=OFF
             -DCMAKE_Fortran_COMPILER=CMAKE_Fortran_COMPILER-NOTFOUND
+            # Since Eigen 5, the blas and lapack libraries are built and installed by default. They are not needed and,
+            # as they are installed in the wheel without a proper RPATH, they make auditwheel fail
+            -DEIGEN_BUILD_BLAS=OFF
+            -DEIGEN_BUILD_LAPACK=OFF
             -DCMAKE_EXPORT_PACKAGE_REGISTRY=OFF
             -DCMAKE_EXPORT_NO_PACKAGE_REGISTRY=ON
         BUILD_BYPRODUCTS "${EIGEN3_INSTALL_DIR}/include/eigen3/Eigen/Core"
