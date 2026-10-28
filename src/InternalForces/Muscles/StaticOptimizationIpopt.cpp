@@ -17,11 +17,11 @@ using namespace BIORBD_NAMESPACE;
 using namespace internal_forces;
 
 internal_forces::muscles::StaticOptimizationIpopt::StaticOptimizationIpopt(
-    Model &model,
-    const rigidbody::GeneralizedCoordinates &Q,
-    const rigidbody::GeneralizedVelocity &Qdot,
-    const rigidbody::GeneralizedTorque &torqueTarget,
-    const utils::Vector &activationInit,
+    Model& model,
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& Qdot,
+    const rigidbody::GeneralizedTorque& torqueTarget,
+    const utils::Vector& activationInit,
     bool useResidual,
     unsigned int pNormFactor,
     int verbose,
@@ -49,14 +49,15 @@ internal_forces::muscles::StaticOptimizationIpopt::StaticOptimizationIpopt(
       m_pNormFactor(std::make_shared<unsigned int>(pNormFactor)),
       m_verbose(std::make_shared<int>(verbose)),
       m_finalSolution(std::make_shared<utils::Vector>(utils::Vector(*m_nbMus))),
-      m_finalResidual(std::make_shared<utils::Vector>(utils::Vector(*m_nbQ))) {
+      m_finalResidual(
+          std::make_shared<utils::Vector>(utils::Vector(*m_nbTorque))) {
   if (*m_eps < 1e-12) {
     utils::Error::raise(
         "epsilon for partial derivates approximation is too small ! \nLimit "
         "for epsilon is 1e-12");
   }
 
-  for (auto &s : *m_states) {
+  for (auto& s : *m_states) {
     s = std::make_shared<internal_forces::muscles::State>();
   }
 
@@ -71,11 +72,11 @@ internal_forces::muscles::StaticOptimizationIpopt::StaticOptimizationIpopt(
 internal_forces::muscles::StaticOptimizationIpopt::~StaticOptimizationIpopt() {}
 
 bool internal_forces::muscles::StaticOptimizationIpopt::get_nlp_info(
-    Ipopt::Index &n,
-    Ipopt::Index &m,
-    Ipopt::Index &nnz_jac_g,
-    Ipopt::Index &nnz_h_lag,
-    IndexStyleEnum &index_style) {
+    Ipopt::Index& n,
+    Ipopt::Index& m,
+    Ipopt::Index& nnz_jac_g,
+    Ipopt::Index& nnz_h_lag,
+    IndexStyleEnum& index_style) {
   index_style = TNLP::C_STYLE;
 
   // variables
@@ -100,11 +101,11 @@ bool internal_forces::muscles::StaticOptimizationIpopt::get_nlp_info(
 
 bool internal_forces::muscles::StaticOptimizationIpopt::get_bounds_info(
     Ipopt::Index n,
-    Ipopt::Number *x_l,
-    Ipopt::Number *x_u,
+    Ipopt::Number* x_l,
+    Ipopt::Number* x_u,
     Ipopt::Index m,
-    Ipopt::Number *g_l,
-    Ipopt::Number *g_u) {
+    Ipopt::Number* g_l,
+    Ipopt::Number* g_u) {
   // Should not be necessary?
   assert(static_cast<unsigned int>(n) == *m_nbMus + *m_nbTorqueResidual);
   assert(static_cast<unsigned int>(m) == *m_nbTorque);
@@ -130,13 +131,13 @@ bool internal_forces::muscles::StaticOptimizationIpopt::get_bounds_info(
 bool internal_forces::muscles::StaticOptimizationIpopt::get_starting_point(
     Ipopt::Index,
     bool init_x,
-    Ipopt::Number *x,
+    Ipopt::Number* x,
     bool init_z,
-    Ipopt::Number *,
-    Ipopt::Number *,
+    Ipopt::Number*,
+    Ipopt::Number*,
     Ipopt::Index,
     bool init_lambda,
-    Ipopt::Number *) {
+    Ipopt::Number*) {
   assert(init_x == true);
   assert(init_z == false);
   assert(init_lambda == false);
@@ -162,9 +163,9 @@ bool internal_forces::muscles::StaticOptimizationIpopt::get_starting_point(
 
 bool internal_forces::muscles::StaticOptimizationIpopt::eval_f(
     Ipopt::Index n,
-    const Ipopt::Number *x,
+    const Ipopt::Number* x,
     bool new_x,
-    Ipopt::Number &obj_value) {
+    Ipopt::Number& obj_value) {
   assert(static_cast<unsigned int>(n) == *m_nbMus + *m_nbTorqueResidual);
 
   if (new_x) {
@@ -181,9 +182,9 @@ bool internal_forces::muscles::StaticOptimizationIpopt::eval_f(
 
 bool internal_forces::muscles::StaticOptimizationIpopt::eval_grad_f(
     Ipopt::Index n,
-    const Ipopt::Number *x,
+    const Ipopt::Number* x,
     bool new_x,
-    Ipopt::Number *grad_f) {
+    Ipopt::Number* grad_f) {
   assert(static_cast<unsigned int>(n) == *m_nbMus + *m_nbTorqueResidual);
 
   if (new_x) {
@@ -204,17 +205,17 @@ bool internal_forces::muscles::StaticOptimizationIpopt::eval_grad_f(
 
 bool internal_forces::muscles::StaticOptimizationIpopt::eval_g(
     Ipopt::Index n,
-    const Ipopt::Number *x,
+    const Ipopt::Number* x,
     bool new_x,
     Ipopt::Index m,
-    Ipopt::Number *g) {
+    Ipopt::Number* g) {
   assert(static_cast<unsigned int>(n) == *m_nbMus + *m_nbTorqueResidual);
   assert(static_cast<unsigned int>(m) == *m_nbTorque);
   if (new_x) {
     dispatch(x);
   }
 
-  const rigidbody::GeneralizedTorque &GeneralizedTorqueMusc(
+  const rigidbody::GeneralizedTorque& GeneralizedTorqueMusc(
       m_model.muscularJointTorque(*m_states));
 
   for (unsigned int i = 0; i < static_cast<unsigned int>(m); i++) {
@@ -233,13 +234,13 @@ bool internal_forces::muscles::StaticOptimizationIpopt::eval_g(
 
 bool internal_forces::muscles::StaticOptimizationIpopt::eval_jac_g(
     Ipopt::Index n,
-    const Ipopt::Number *x,
+    const Ipopt::Number* x,
     bool new_x,
     Ipopt::Index m,
     Ipopt::Index,
-    Ipopt::Index *iRow,
-    Ipopt::Index *jCol,
-    Ipopt::Number *values) {
+    Ipopt::Index* iRow,
+    Ipopt::Index* jCol,
+    Ipopt::Number* values) {
   if (values == nullptr) {
     // Setup non-zeros values
     Ipopt::Index k(0);
@@ -258,7 +259,7 @@ bool internal_forces::muscles::StaticOptimizationIpopt::eval_jac_g(
     if (new_x) {
       dispatch(x);
     }
-    const rigidbody::GeneralizedTorque &GeneralizedTorqueMusc(
+    const rigidbody::GeneralizedTorque& GeneralizedTorqueMusc(
         m_model.muscularJointTorque(*m_states));
     unsigned int k(0);
     for (unsigned int j = 0; j < *m_nbMus; ++j) {
@@ -274,7 +275,7 @@ bool internal_forces::muscles::StaticOptimizationIpopt::eval_jac_g(
                 internal_forces::muscles::State(
                     0, (*m_activations)[i] + delta * *m_eps)));
       }
-      const rigidbody::GeneralizedTorque &GeneralizedTorqueCalculEpsilon(
+      const rigidbody::GeneralizedTorque& GeneralizedTorqueCalculEpsilon(
           m_model.muscularJointTorque(stateEpsilon));
       for (unsigned int i = 0; i < static_cast<unsigned int>(m); i++) {
         values[k++] =
@@ -315,15 +316,15 @@ bool internal_forces::muscles::StaticOptimizationIpopt::eval_jac_g(
 void internal_forces::muscles::StaticOptimizationIpopt::finalize_solution(
     Ipopt::SolverReturn,
     Ipopt::Index,
-    const Ipopt::Number *x,
-    const Ipopt::Number *,  // z_L,
-    const Ipopt::Number *,  // z_U,
+    const Ipopt::Number* x,
+    const Ipopt::Number*,  // z_L,
+    const Ipopt::Number*,  // z_U,
     Ipopt::Index,
-    const Ipopt::Number *,
-    const Ipopt::Number *,
+    const Ipopt::Number*,
+    const Ipopt::Number*,
     Ipopt::Number obj_value,
-    const Ipopt::IpoptData *,
-    Ipopt::IpoptCalculatedQuantities *) {
+    const Ipopt::IpoptData*,
+    Ipopt::IpoptCalculatedQuantities*) {
   // Storing to solution
   dispatch(x);
   *m_finalSolution = *m_activations;
@@ -362,7 +363,7 @@ utils::Vector internal_forces::muscles::StaticOptimizationIpopt::finalResidual()
 }
 
 void internal_forces::muscles::StaticOptimizationIpopt::dispatch(
-    const Ipopt::Number *x) {
+    const Ipopt::Number* x) {
   for (unsigned int i = 0; i < *m_nbMus; i++) {
     (*m_activations)[i] = x[i];
     (*m_states)[i]->setActivation((*m_activations)[i]);

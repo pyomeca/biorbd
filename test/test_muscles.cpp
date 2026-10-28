@@ -3591,6 +3591,14 @@ TEST(StaticOptim, OneFrameNoActivations) {
     EXPECT_NEAR(muscleActivations(i), expectedActivations[i], 1e-5);
   }
 
+  auto muscleResiduals = optim.finalResidual()[0];
+  std::vector<double> expectedResiduals = {
+      9.0012950314106357e-08, -2.74704942834651e-08};
+  for (size_t i = 0; i < expectedResiduals.size(); ++i) {
+    EXPECT_NEAR(muscleResiduals[i], expectedResiduals[i], 1e-5);
+    EXPECT_NEAR(optim.finalResidual(0)[i], expectedResiduals[i], 1e-5);
+  }
+
 #endif
 }
 
@@ -3626,6 +3634,14 @@ TEST(StaticOptim, OneFrameOneActivationDouble) {
       0.00010877907171798182};
   for (size_t i = 0; i < expectedActivations.size(); ++i) {
     EXPECT_NEAR(muscleActivations(i), expectedActivations[i], 1e-5);
+  }
+
+  auto muscleResiduals = optim.finalResidual()[0];
+  std::vector<double> expectedResiduals = {
+      9.0012950314106357e-08, -2.74704942834651e-08};
+  for (size_t i = 0; i < expectedResiduals.size(); ++i) {
+    EXPECT_NEAR(muscleResiduals[i], expectedResiduals[i], 1e-5);
+    EXPECT_NEAR(optim.finalResidual(0)[i], expectedResiduals[i], 1e-5);
   }
 
 #endif
@@ -3666,6 +3682,14 @@ TEST(StaticOptim, OneFrameOneActivationVector) {
       0.00010877907171798182};
   for (size_t i = 0; i < expectedActivations.size(); ++i) {
     EXPECT_NEAR(muscleActivations(i), expectedActivations[i], 1e-5);
+  }
+
+  auto muscleResiduals = optim.finalResidual()[0];
+  std::vector<double> expectedResiduals = {
+      9.0012950314106357e-08, -2.74704942834651e-08};
+  for (size_t i = 0; i < expectedResiduals.size(); ++i) {
+    EXPECT_NEAR(muscleResiduals[i], expectedResiduals[i], 1e-5);
+    EXPECT_NEAR(optim.finalResidual(0)[i], expectedResiduals[i], 1e-5);
   }
 
 #endif
@@ -3718,6 +3742,14 @@ TEST(StaticOptim, MultiFrameNoActivation) {
     }
   }
 
+  auto muscleResiduals = optim.finalResidual()[0];
+  std::vector<double> expectedResiduals = {
+      9.0012950314106357e-08, -2.74704942834651e-08};
+  for (size_t i = 0; i < expectedResiduals.size(); ++i) {
+    EXPECT_NEAR(muscleResiduals[i], expectedResiduals[i], 1e-5);
+    EXPECT_NEAR(optim.finalResidual(0)[i], expectedResiduals[i], 1e-5);
+  }
+
 #endif
 }
 
@@ -3767,6 +3799,14 @@ TEST(StaticOptim, MultiFrameActivationDouble) {
     for (size_t i = 0; i < expectedActivations.size(); ++i) {
       EXPECT_NEAR(muscleActivations(i), expectedActivations[i], 1e-5);
     }
+  }
+
+  auto muscleResiduals = optim.finalResidual()[0];
+  std::vector<double> expectedResiduals = {
+      9.0012950314106357e-08, -2.74704942834651e-08};
+  for (size_t i = 0; i < expectedResiduals.size(); ++i) {
+    EXPECT_NEAR(muscleResiduals[i], expectedResiduals[i], 1e-5);
+    EXPECT_NEAR(optim.finalResidual(0)[i], expectedResiduals[i], 1e-5);
   }
 
 #endif
@@ -3821,6 +3861,14 @@ TEST(StaticOptim, MultiFrameNoActivationVector) {
     for (size_t i = 0; i < expectedActivations.size(); ++i) {
       EXPECT_NEAR(muscleActivations(i), expectedActivations[i], 1e-5);
     }
+  }
+
+  auto muscleResiduals = optim.finalResidual()[0];
+  std::vector<double> expectedResiduals = {
+      9.0012950314106357e-08, -2.74704942834651e-08};
+  for (size_t i = 0; i < expectedResiduals.size(); ++i) {
+    EXPECT_NEAR(muscleResiduals[i], expectedResiduals[i], 1e-5);
+    EXPECT_NEAR(optim.finalResidual(0)[i], expectedResiduals[i], 1e-5);
   }
 
 #endif
