@@ -41,6 +41,9 @@ class BIORBD_API StaticOptimization {
   /// \param useResidualTorque If use residual torque, if set to false, the
   /// optimization will fail if the model is not strong enough
   /// \param verbose Level of IPOPT verbose you want
+  /// \param objectiveScaling The scaling factor applied to the objective
+  /// function. If it is negative, it is automatically estimated from the
+  /// muscle capacity
   ///
   StaticOptimization(
       Model& model,
@@ -50,7 +53,8 @@ class BIORBD_API StaticOptimization {
       double initialActivationGuess = 0.01,
       unsigned int pNormFactor = 2,
       bool useResidualTorque = true,
-      int verbose = 0);
+      int verbose = 0,
+      double objectiveScaling = -1);
 
   ///
   /// \brief Construct static optimization
@@ -64,6 +68,9 @@ class BIORBD_API StaticOptimization {
   /// \param useResidualTorque If use residual torque, if set to false, the
   /// optimization will fail if the model is not strong enough
   /// \param verbose Level of IPOPT verbose you want
+  /// \param objectiveScaling The scaling factor applied to the objective
+  /// function. If it is negative, it is automatically estimated from the
+  /// muscle capacity
   ///
   StaticOptimization(
       Model& model,
@@ -73,7 +80,8 @@ class BIORBD_API StaticOptimization {
       const utils::Vector& initialActivationGuess,
       unsigned int pNormFactor = 2,
       bool useResidualTorque = true,
-      int verbose = 0);
+      int verbose = 0,
+      double objectiveScaling = -1);
 
   ///
   /// \brief Construct static optimization
@@ -87,6 +95,9 @@ class BIORBD_API StaticOptimization {
   /// \param useResidualTorque If use residual torque, if set to false, the
   /// optimization will fail if the model is not strong enough
   /// \param verbose Level of IPOPT verbose you want
+  /// \param objectiveScaling The scaling factor applied to the objective
+  /// function. If it is negative, it is automatically estimated from the
+  /// muscle capacity
   ///
   StaticOptimization(
       Model& model,
@@ -96,7 +107,8 @@ class BIORBD_API StaticOptimization {
       const std::vector<StateDynamics>& initialActivationGuess,
       unsigned int pNormFactor = 2,
       bool useResidualTorque = true,
-      int verbose = 0);
+      int verbose = 0,
+      double objectiveScaling = -1);
 
   ///
   /// \brief Construct static optimization for multiple frames
@@ -110,6 +122,9 @@ class BIORBD_API StaticOptimization {
   /// \param useResidualTorque If use residual torque, if set to false, the
   /// optimization will fail if the model is not strong enough
   /// \param verbose Level of IPOPT verbose you want
+  /// \param objectiveScaling The scaling factor applied to the objective
+  /// function. If it is negative, it is automatically estimated from the
+  /// muscle capacity
   ///
   StaticOptimization(
       Model& model,
@@ -119,7 +134,8 @@ class BIORBD_API StaticOptimization {
       double initialActivationGuess = 0.01,
       unsigned int pNormFactor = 2,
       bool useResidualTorque = true,
-      int verbose = 0);
+      int verbose = 0,
+      double objectiveScaling = -1);
 
   ///
   /// \brief Construct static optimization for multiple frames
@@ -133,6 +149,9 @@ class BIORBD_API StaticOptimization {
   /// \param useResidualTorque If use residual torque, if set to false, the
   /// optimization will fail if the model is not strong enough
   /// \param verbose Level of IPOPT verbose you want
+  /// \param objectiveScaling The scaling factor applied to the objective
+  /// function. If it is negative, it is automatically estimated from the
+  /// muscle capacity
   ///
   StaticOptimization(
       Model& model,
@@ -142,7 +161,8 @@ class BIORBD_API StaticOptimization {
       const utils::Vector& initialActivationGuess,
       unsigned int pNormFactor = 2,
       bool useResidualTorque = true,
-      int verbose = 0);
+      int verbose = 0,
+      double objectiveScaling = -1);
 
   ///
   /// \brief Construct static optimization for multiple frames
@@ -156,6 +176,9 @@ class BIORBD_API StaticOptimization {
   /// \param useResidualTorque If use residual torque, if set to false, the
   /// optimization will fail if the model is not strong enough
   /// \param verbose Level of IPOPT verbose you want
+  /// \param objectiveScaling The scaling factor applied to the objective
+  /// function. If it is negative, it is automatically estimated from the
+  /// muscle capacity
   ///
   StaticOptimization(
       Model& model,
@@ -165,7 +188,8 @@ class BIORBD_API StaticOptimization {
       const std::vector<StateDynamics>& initialActivationGuess,
       unsigned int pNormFactor = 2,
       bool useResidualTorque = true,
-      int verbose = 0);
+      int verbose = 0,
+      double objectiveScaling = -1);
 
   ///
   /// \brief Run the static optimization
@@ -212,6 +236,7 @@ class BIORBD_API StaticOptimization {
       m_initialActivationGuess;  ///< Initial activation guess
   unsigned int m_pNormFactor;    ///< The p-norm factor
   int m_verbose;                 ///< Verbose level
+  double m_objectiveScaling;  ///< Scaling of the objective (negative is auto)
   std::vector<Ipopt::SmartPtr<Ipopt::TNLP>>
       m_staticOptimProblem;  ///< The static optimization problem
   bool m_alreadyRun;         ///< If already ran the static optimization

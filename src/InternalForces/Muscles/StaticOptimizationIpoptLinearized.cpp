@@ -19,7 +19,8 @@ internal_forces::muscles::StaticOptimizationIpoptLinearized::
         bool useResidual,
         unsigned int pNormFactor,
         int verbose,
-        double eps)
+        double eps,
+        double objectiveScaling)
     : internal_forces::muscles::StaticOptimizationIpopt(
           model,
           Q,
@@ -29,8 +30,10 @@ internal_forces::muscles::StaticOptimizationIpoptLinearized::
           useResidual,
           pNormFactor,
           verbose,
-          eps),
-      m_jacobian(std::make_shared<utils::Matrix>(*m_nbDof, *m_nbMus)) {
+          eps,
+          objectiveScaling),
+      m_jacobian(std::make_shared<utils::Matrix>(*m_nbDof, *m_nbMus)),
+      m_torquePassive(std::make_shared<utils::Vector>(*m_nbDof)) {
   prepareJacobian();
 }
 
@@ -45,6 +48,7 @@ void internal_forces::muscles::StaticOptimizationIpoptLinearized::
   }
   const rigidbody::GeneralizedTorque &GeneralizedTorque_zero(
       m_model.muscularJointTorque(state_zero));
+  *m_torquePassive = GeneralizedTorque_zero;
   for (unsigned int i = 0; i < *m_nbMus; ++i) {
     std::vector<std::shared_ptr<internal_forces::muscles::State>> state;
     for (unsigned int j = 0; j < *m_nbMus; ++j) {
@@ -88,7 +92,8 @@ bool internal_forces::muscles::StaticOptimizationIpoptLinearized::eval_g(
     for (unsigned int j = 0; j < *m_nbMus; j++) {
       res[i] += (*m_jacobian)(i, j) * x[j];
     }
-    g[i] = res[i] + (*m_torqueResidual)[i];
+    g[i] = (*m_torquePassive)[i] + res[i] + (*m_torqueResidual)[i] -
+           (*m_torqueTarget)[i];
   }
   if (*m_verbose >= 2) {
     std::cout << "GeneralizedTorque_musc_approximated = " << res.transpose()

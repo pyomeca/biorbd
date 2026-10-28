@@ -165,10 +165,10 @@ def test_static_optimization(brbd):
         muscle_activations.append(value)
     assert len(muscle_activations) == n_frames
     np.testing.assert_almost_equal(
-        muscle_activations[0], [0.00012686, 0.00012018, 0.00089968, 0.00010025, 0.00010027, 0.00010081], decimal=5
+        muscle_activations[0], [0.02240889, 0.00009999, 0.00009999, 0.03246783, 0.02984055, 0.00952308], decimal=5
     )
     np.testing.assert_almost_equal(
-        muscle_activations[-1], [0.00012686, 0.00012018, 0.00089968, 0.00010025, 0.00010027, 0.00010081], decimal=5
+        muscle_activations[-1], [0.02240889, 0.00009999, 0.00009999, 0.03246783, 0.02984055, 0.00952308], decimal=5
     )
 
 

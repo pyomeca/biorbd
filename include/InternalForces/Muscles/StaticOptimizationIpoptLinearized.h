@@ -36,6 +36,8 @@ class BIORBD_API StaticOptimizationIpoptLinearized
   /// \param pNormFactor The p-norm to perform
   /// \param verbose Level of IPOPT verbose you want
   /// \param eps The precision to perform the finite diffentiation
+  /// \param objectiveScaling The scaling factor applied to the objective
+  /// function. If it is negative, it is automatically estimated
   ///
   StaticOptimizationIpoptLinearized(
       Model& model,
@@ -46,7 +48,8 @@ class BIORBD_API StaticOptimizationIpoptLinearized
       bool useResidual = true,
       unsigned int pNormFactor = 2,
       int verbose = 0,
-      double eps = 1e-10);
+      double eps = 1e-8,
+      double objectiveScaling = -1);
 
   ///
   /// \brief Destroy class properly
@@ -93,6 +96,8 @@ class BIORBD_API StaticOptimizationIpoptLinearized
 
  protected:
   std::shared_ptr<utils::Matrix> m_jacobian;  ///< The constraints jacobian
+  std::shared_ptr<utils::Vector>
+      m_torquePassive;  ///< The muscle torque when not activated
   void prepareJacobian();  ///< Setup the constant constraints jacobian
 };
 
