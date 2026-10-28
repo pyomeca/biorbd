@@ -35,6 +35,8 @@ internal_forces::muscles::StaticOptimization::StaticOptimization(
       m_objectiveScaling(objectiveScaling),
       m_staticOptimProblem(),
       m_alreadyRun(false) {
+  utils::Error::check(
+      m_objectiveScaling > 0, "The objective scaling must be positive");
   m_allQ.push_back(Q);
   m_allQdot.push_back(Qdot);
   m_allTorqueTarget.push_back(torqueTarget);
@@ -62,6 +64,8 @@ internal_forces::muscles::StaticOptimization::StaticOptimization(
       m_objectiveScaling(objectiveScaling),
       m_staticOptimProblem(),
       m_alreadyRun(false) {
+  utils::Error::check(
+      m_objectiveScaling > 0, "The objective scaling must be positive");
   m_allQ.push_back(Q);
   m_allQdot.push_back(Qdot);
   m_allTorqueTarget.push_back(torqueTarget);
@@ -92,6 +96,8 @@ internal_forces::muscles::StaticOptimization::StaticOptimization(
       m_verbose(verbose),
       m_objectiveScaling(objectiveScaling),
       m_alreadyRun(false) {
+  utils::Error::check(
+      m_objectiveScaling > 0, "The objective scaling must be positive");
   m_allQ.push_back(Q);
   m_allQdot.push_back(Qdot);
   m_allTorqueTarget.push_back(torqueTarget);
@@ -130,6 +136,8 @@ internal_forces::muscles::StaticOptimization::StaticOptimization(
       m_verbose(verbose),
       m_objectiveScaling(objectiveScaling),
       m_alreadyRun(false) {
+  utils::Error::check(
+      m_objectiveScaling > 0, "The objective scaling must be positive");
   for (unsigned int i = 0; i < m_model.nbMuscles(); ++i) {
     (*m_initialActivationGuess)[i] = initialActivationGuess;
   }
@@ -156,6 +164,8 @@ internal_forces::muscles::StaticOptimization::StaticOptimization(
       m_verbose(verbose),
       m_objectiveScaling(objectiveScaling),
       m_alreadyRun(false) {
+  utils::Error::check(
+      m_objectiveScaling > 0, "The objective scaling must be positive");
   if (initialActivationGuess.size() != m_model.nbMuscles()) {
     utils::Error::raise(
         "Initial guess must either be a single value or a vector "
@@ -185,6 +195,8 @@ internal_forces::muscles::StaticOptimization::StaticOptimization(
       m_verbose(verbose),
       m_objectiveScaling(objectiveScaling),
       m_alreadyRun(false) {
+  utils::Error::check(
+      m_objectiveScaling > 0, "The objective scaling must be positive");
   if (initialActivationGuess.size() != m_model.nbMuscles()) {
     utils::Error::raise(
         "Initial guess must either be a single value or a vector "
@@ -206,9 +218,7 @@ void internal_forces::muscles::StaticOptimization::run(
   app->Options()->SetStringValue("mu_strategy", "adaptive");
   // app->Options()->SetStringValue("output_file", "ipopt.out");
   app->Options()->SetStringValue("hessian_approximation", "limited-memory");
-  // The scaling is provided by the problem itself (see
-  // StaticOptimizationIpopt::get_scaling_parameters)
-  app->Options()->SetStringValue("nlp_scaling_method", "user-scaling");
+  app->Options()->SetNumericValue("obj_scaling_factor", m_objectiveScaling);
   app->Options()->SetStringValue("derivative_test", "first-order");
   app->Options()->SetIntegerValue("max_iter", 10000);
   app->Options()->SetIntegerValue("print_level", 5);
@@ -229,9 +239,7 @@ void internal_forces::muscles::StaticOptimization::run(
               *m_initialActivationGuess,
               m_useResidualTorque,
               m_pNormFactor,
-              m_verbose,
-              1e-8,
-              m_objectiveScaling));
+              m_verbose));
     else
       m_staticOptimProblem.push_back(
           new internal_forces::muscles::StaticOptimizationIpopt(
@@ -242,9 +250,7 @@ void internal_forces::muscles::StaticOptimization::run(
               *m_initialActivationGuess,
               m_useResidualTorque,
               m_pNormFactor,
-              m_verbose,
-              1e-8,
-              m_objectiveScaling));
+              m_verbose));
     // Optimize!
     status = app->OptimizeTNLP(m_staticOptimProblem[i]);
     utils::Error::warning(

@@ -1,7 +1,6 @@
 #define BIORBD_API_EXPORTS
 #include "InternalForces/Muscles/StaticOptimizationIpopt.h"
 
-#include <cmath>
 #include <iomanip>
 #include <iostream>
 
@@ -21,8 +20,6 @@ const double internal_forces::muscles::StaticOptimizationIpopt::
     m_activationLowerBound = 0.0001;
 const double internal_forces::muscles::StaticOptimizationIpopt::
     m_activationUpperBound = 0.9999;
-const double internal_forces::muscles::StaticOptimizationIpopt::
-    m_capacityThreshold = 1e-10;
 
 internal_forces::muscles::StaticOptimizationIpopt::StaticOptimizationIpopt(
     Model& model,
@@ -33,8 +30,7 @@ internal_forces::muscles::StaticOptimizationIpopt::StaticOptimizationIpopt(
     bool useResidual,
     unsigned int pNormFactor,
     int verbose,
-    double eps,
-    double objectiveScaling)
+    double eps)
     : m_model(model),
       m_nbQ(std::make_shared<unsigned int>(model.nbQ())),
       m_nbQdot(std::make_shared<unsigned int>(model.nbQdot())),
@@ -43,7 +39,6 @@ internal_forces::muscles::StaticOptimizationIpopt::StaticOptimizationIpopt(
       m_nbTorque(std::make_shared<unsigned int>(model.nbGeneralizedTorque())),
       m_nbTorqueResidual(std::make_shared<unsigned int>(*m_nbQ)),
       m_eps(std::make_shared<double>(eps)),
-      m_objectiveScaling(std::make_shared<double>(objectiveScaling)),
       m_activations(std::make_shared<utils::Vector>(activationInit)),
       m_Q(std::make_shared<rigidbody::GeneralizedCoordinates>(Q)),
       m_Qdot(std::make_shared<rigidbody::GeneralizedVelocity>(Qdot)),
@@ -135,66 +130,6 @@ bool internal_forces::muscles::StaticOptimizationIpopt::get_bounds_info(
     g_l[i] = g_u[i] = 0;
   }
 
-  return true;
-}
-
-bool internal_forces::muscles::StaticOptimizationIpopt::get_scaling_parameters(
-    Ipopt::Number& obj_scaling,
-    bool& use_x_scaling,
-    Ipopt::Index,
-    Ipopt::Number*,
-    bool& use_g_scaling,
-    Ipopt::Index m,
-    Ipopt::Number* g_scaling) {
-  use_x_scaling = false;
-  if (*m_objectiveScaling > 0) {
-    obj_scaling = *m_objectiveScaling;
-    use_g_scaling = false;
-    return true;
-  }
-
-  // Torque produced by the muscles when not activated (passive) and when fully
-  // activated
-  std::vector<std::shared_ptr<internal_forces::muscles::State>> statePassive;
-  std::vector<std::shared_ptr<internal_forces::muscles::State>> stateActive;
-  for (unsigned int i = 0; i < *m_nbMus; ++i) {
-    statePassive.push_back(
-        std::make_shared<internal_forces::muscles::State>(0, 0));
-    stateActive.push_back(
-        std::make_shared<internal_forces::muscles::State>(0, 1));
-  }
-  const rigidbody::GeneralizedTorque torquePassive(
-      m_model.muscularJointTorque(statePassive, *m_Q, *m_Qdot));
-  const rigidbody::GeneralizedTorque torqueActive(
-      m_model.muscularJointTorque(stateActive, *m_Q, *m_Qdot));
-
-  // Estimate the activation and the residual torques at the solution
-  double activationEstimate(m_activationLowerBound);
-  double residualEstimate(0);
-  use_g_scaling = true;
-  for (unsigned int k = 0; k < static_cast<unsigned int>(m); ++k) {
-    double need(std::fabs((*m_torqueTarget)[k] - torquePassive[k]));
-    double capacity(std::fabs(torqueActive[k] - torquePassive[k]));
-    if (capacity > m_capacityThreshold) {
-      activationEstimate = std::max(activationEstimate, need / capacity);
-      g_scaling[k] = 1 / capacity;
-    } else {
-      // No muscle can act on that DoF
-      g_scaling[k] = 1;
-    }
-    residualEstimate += std::pow(std::max(0.0, need - capacity), 2);
-  }
-  activationEstimate = std::min(activationEstimate, m_activationUpperBound);
-
-  double objectiveEstimate(
-      *m_nbMus * std::pow(activationEstimate, *m_pNormFactor) +
-      *m_torquePonderation * residualEstimate);
-  obj_scaling = 1 / objectiveEstimate;
-
-  if (*m_verbose >= 1) {
-    std::cout << "Estimated activation = " << activationEstimate << std::endl;
-    std::cout << "Estimated objective = " << objectiveEstimate << std::endl;
-  }
   return true;
 }
 

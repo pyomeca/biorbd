@@ -42,8 +42,7 @@ class BIORBD_API StaticOptimization {
   /// optimization will fail if the model is not strong enough
   /// \param verbose Level of IPOPT verbose you want
   /// \param objectiveScaling The scaling factor applied to the objective
-  /// function. If it is negative, it is automatically estimated from the
-  /// muscle capacity
+  /// function, on top of the scaling computed by IPOPT (must be positive)
   ///
   StaticOptimization(
       Model& model,
@@ -54,7 +53,7 @@ class BIORBD_API StaticOptimization {
       unsigned int pNormFactor = 2,
       bool useResidualTorque = true,
       int verbose = 0,
-      double objectiveScaling = -1);
+      double objectiveScaling = 1);
 
   ///
   /// \brief Construct static optimization
@@ -69,8 +68,7 @@ class BIORBD_API StaticOptimization {
   /// optimization will fail if the model is not strong enough
   /// \param verbose Level of IPOPT verbose you want
   /// \param objectiveScaling The scaling factor applied to the objective
-  /// function. If it is negative, it is automatically estimated from the
-  /// muscle capacity
+  /// function, on top of the scaling computed by IPOPT (must be positive)
   ///
   StaticOptimization(
       Model& model,
@@ -81,7 +79,7 @@ class BIORBD_API StaticOptimization {
       unsigned int pNormFactor = 2,
       bool useResidualTorque = true,
       int verbose = 0,
-      double objectiveScaling = -1);
+      double objectiveScaling = 1);
 
   ///
   /// \brief Construct static optimization
@@ -96,8 +94,7 @@ class BIORBD_API StaticOptimization {
   /// optimization will fail if the model is not strong enough
   /// \param verbose Level of IPOPT verbose you want
   /// \param objectiveScaling The scaling factor applied to the objective
-  /// function. If it is negative, it is automatically estimated from the
-  /// muscle capacity
+  /// function, on top of the scaling computed by IPOPT (must be positive)
   ///
   StaticOptimization(
       Model& model,
@@ -108,7 +105,7 @@ class BIORBD_API StaticOptimization {
       unsigned int pNormFactor = 2,
       bool useResidualTorque = true,
       int verbose = 0,
-      double objectiveScaling = -1);
+      double objectiveScaling = 1);
 
   ///
   /// \brief Construct static optimization for multiple frames
@@ -123,8 +120,7 @@ class BIORBD_API StaticOptimization {
   /// optimization will fail if the model is not strong enough
   /// \param verbose Level of IPOPT verbose you want
   /// \param objectiveScaling The scaling factor applied to the objective
-  /// function. If it is negative, it is automatically estimated from the
-  /// muscle capacity
+  /// function, on top of the scaling computed by IPOPT (must be positive)
   ///
   StaticOptimization(
       Model& model,
@@ -135,7 +131,7 @@ class BIORBD_API StaticOptimization {
       unsigned int pNormFactor = 2,
       bool useResidualTorque = true,
       int verbose = 0,
-      double objectiveScaling = -1);
+      double objectiveScaling = 1);
 
   ///
   /// \brief Construct static optimization for multiple frames
@@ -150,8 +146,7 @@ class BIORBD_API StaticOptimization {
   /// optimization will fail if the model is not strong enough
   /// \param verbose Level of IPOPT verbose you want
   /// \param objectiveScaling The scaling factor applied to the objective
-  /// function. If it is negative, it is automatically estimated from the
-  /// muscle capacity
+  /// function, on top of the scaling computed by IPOPT (must be positive)
   ///
   StaticOptimization(
       Model& model,
@@ -162,7 +157,7 @@ class BIORBD_API StaticOptimization {
       unsigned int pNormFactor = 2,
       bool useResidualTorque = true,
       int verbose = 0,
-      double objectiveScaling = -1);
+      double objectiveScaling = 1);
 
   ///
   /// \brief Construct static optimization for multiple frames
@@ -177,8 +172,7 @@ class BIORBD_API StaticOptimization {
   /// optimization will fail if the model is not strong enough
   /// \param verbose Level of IPOPT verbose you want
   /// \param objectiveScaling The scaling factor applied to the objective
-  /// function. If it is negative, it is automatically estimated from the
-  /// muscle capacity
+  /// function, on top of the scaling computed by IPOPT (must be positive)
   ///
   StaticOptimization(
       Model& model,
@@ -189,7 +183,7 @@ class BIORBD_API StaticOptimization {
       unsigned int pNormFactor = 2,
       bool useResidualTorque = true,
       int verbose = 0,
-      double objectiveScaling = -1);
+      double objectiveScaling = 1);
 
   ///
   /// \brief Run the static optimization
@@ -236,7 +230,7 @@ class BIORBD_API StaticOptimization {
       m_initialActivationGuess;  ///< Initial activation guess
   unsigned int m_pNormFactor;    ///< The p-norm factor
   int m_verbose;                 ///< Verbose level
-  double m_objectiveScaling;  ///< Scaling of the objective (negative is auto)
+  double m_objectiveScaling;  ///< Scaling factor of the objective
   std::vector<Ipopt::SmartPtr<Ipopt::TNLP>>
       m_staticOptimProblem;  ///< The static optimization problem
   bool m_alreadyRun;         ///< If already ran the static optimization

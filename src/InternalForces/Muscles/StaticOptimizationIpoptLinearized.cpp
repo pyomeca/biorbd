@@ -1,6 +1,8 @@
 #define BIORBD_API_EXPORTS
 #include "InternalForces/Muscles/StaticOptimizationIpoptLinearized.h"
 
+#include <algorithm>
+
 #include "BiorbdModel.h"
 #include "InternalForces/Muscles/State.h"
 #include "RigidBody/GeneralizedTorque.h"
@@ -19,8 +21,7 @@ internal_forces::muscles::StaticOptimizationIpoptLinearized::
         bool useResidual,
         unsigned int pNormFactor,
         int verbose,
-        double eps,
-        double objectiveScaling)
+        double eps)
     : internal_forces::muscles::StaticOptimizationIpopt(
           model,
           Q,
@@ -30,8 +31,7 @@ internal_forces::muscles::StaticOptimizationIpoptLinearized::
           useResidual,
           pNormFactor,
           verbose,
-          eps,
-          objectiveScaling),
+          eps),
       m_jacobian(std::make_shared<utils::Matrix>(*m_nbDof, *m_nbMus)),
       m_torquePassive(std::make_shared<utils::Vector>(*m_nbDof)) {
   prepareJacobian();
@@ -49,23 +49,26 @@ void internal_forces::muscles::StaticOptimizationIpoptLinearized::
   const rigidbody::GeneralizedTorque &GeneralizedTorque_zero(
       m_model.muscularJointTorque(state_zero));
   *m_torquePassive = GeneralizedTorque_zero;
+  // Linearize each muscle between no activation and its reference activation
+  // (the initial guess, e.g. the solution of the previous frame). The active
+  // torque is then rescaled to a full activation so it is exact at the
+  // reference activation
   for (unsigned int i = 0; i < *m_nbMus; ++i) {
+    utils::Scalar activationReference(std::min(
+        std::max((*m_activations)[i], m_activationLowerBound), 1.0));
     std::vector<std::shared_ptr<internal_forces::muscles::State>> state;
     for (unsigned int j = 0; j < *m_nbMus; ++j) {
-      unsigned int delta;
-      if (j == i) {
-        delta = 1;
-      } else {
-        delta = 0;
-      }
       state.push_back(
           std::make_shared<internal_forces::muscles::State>(
-              internal_forces::muscles::State(0, delta * 1)));
+              internal_forces::muscles::State(
+                  0, j == i ? activationReference : 0)));
     }
     const rigidbody::GeneralizedTorque &GeneralizedTorque(
         m_model.muscularJointTorque(state, *m_Q.get(), *m_Qdot.get()));
     for (unsigned int j = 0; j < *m_nbTorque; ++j) {
-      (*m_jacobian)(j, i) = GeneralizedTorque(j) - GeneralizedTorque_zero(j);
+      (*m_jacobian)(j, i) =
+          (GeneralizedTorque(j) - GeneralizedTorque_zero(j)) /
+          activationReference;
     }
   }
 }

@@ -40,9 +40,6 @@ class BIORBD_API StaticOptimizationIpopt : public Ipopt::TNLP {
   /// \param pNormFactor The p-norm to perform
   /// \param verbose Level of IPOPT verbose you want
   /// \param eps The precision to perform the finite diffentiation
-  /// \param objectiveScaling The scaling factor applied to the objective
-  /// function. If it is negative, it is automatically estimated from the
-  /// muscle capacity (see get_scaling_parameters)
   ///
   StaticOptimizationIpopt(
       Model& model,
@@ -53,8 +50,7 @@ class BIORBD_API StaticOptimizationIpopt : public Ipopt::TNLP {
       bool useResidual = true,
       unsigned int pNormFactor = 2,
       int verbose = 0,
-      double eps = 1e-8,
-      double objectiveScaling = -1);
+      double eps = 1e-8);
 
   ///
   /// \brief Destroy class properly
@@ -94,36 +90,6 @@ class BIORBD_API StaticOptimizationIpopt : public Ipopt::TNLP {
       Ipopt::Index m,
       Ipopt::Number* g_l,
       Ipopt::Number* g_u);
-
-  ///
-  /// \brief Return the scaling of the problem (used when the IPOPT option
-  /// nlp_scaling_method is set to user-scaling).
-  ///
-  /// If the objective scaling is automatic, the muscle capacity is evaluated
-  /// for each DoF (C_k when all the muscles are fully activated, P_k when
-  /// they are not activated). From this, the activation needed to produce
-  /// the torque target is estimated (a_est = max_k |tau_k - P_k| / |C_k -
-  /// P_k|) as well as the residual torques when the target exceeds the
-  /// capacity (r_k = max(0, |tau_k - P_k| - |C_k - P_k|)). The objective is
-  /// then scaled by the inverse of its estimated value at the solution and
-  /// each constraint is scaled by the inverse of the capacity of its DoF
-  /// \param obj_scaling The scaling factor of the objective (output)
-  /// \param use_x_scaling If the variables are scaled (output)
-  /// \param n Number of variables
-  /// \param x_scaling The scaling factors of the variables (output)
-  /// \param use_g_scaling If the constraints are scaled (output)
-  /// \param m Number of constraints
-  /// \param g_scaling The scaling factors of the constraints (output)
-  /// \return Return the presence of that function
-  ///
-  virtual bool get_scaling_parameters(
-      Ipopt::Number& obj_scaling,
-      bool& use_x_scaling,
-      Ipopt::Index n,
-      Ipopt::Number* x_scaling,
-      bool& use_g_scaling,
-      Ipopt::Index m,
-      Ipopt::Number* g_scaling);
 
   ///
   /// \brief Return the starting point for the algorithm
@@ -259,9 +225,6 @@ class BIORBD_API StaticOptimizationIpopt : public Ipopt::TNLP {
  protected:
   static const double m_activationLowerBound;  ///< Minimal muscle activation
   static const double m_activationUpperBound;  ///< Maximal muscle activation
-  static const double
-      m_capacityThreshold;  ///< Torque capacity under which a DoF is
-                            ///< considered as not actuated by muscles
 
   Model& m_model;  ///< The model
   std::shared_ptr<unsigned int>
@@ -274,8 +237,6 @@ class BIORBD_API StaticOptimizationIpopt : public Ipopt::TNLP {
   std::shared_ptr<unsigned int>
       m_nbTorqueResidual;         ///< The number of torque residual
   std::shared_ptr<double> m_eps;  ///< Precision of the finite differentiate
-  std::shared_ptr<double>
-      m_objectiveScaling;  ///< Scaling of the objective (negative is automatic)
   std::shared_ptr<utils::Vector> m_activations;  ///< The activations
   std::shared_ptr<rigidbody::GeneralizedCoordinates>
       m_Q;  ///< The generalized coordinates
