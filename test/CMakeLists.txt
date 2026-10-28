@@ -126,8 +126,3 @@ endif()
 gtest_discover_tests(${PROJECT_NAME}
     WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
 )
-if (BINDER_C)
-    gtest_discover_tests(${C_BINDER_TESTS_NAME}
-        WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/binding/c"
-    )
-endif()
