@@ -17,7 +17,7 @@ function(FindOrBuildEigen3)
     # The release archive (rather than a git clone) is downloaded and verified against its hash. The archive can
     # also be provided locally (e.g. from a CI cache) using the BIORBD_EIGEN3_ARCHIVE environment variable (an
     # absolute path, or a path relative to the root of biorbd)
-    set(EIGEN3_ARCHIVE_URL "https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.gz")
+    set(EIGEN3_ARCHIVE_URL "https://gitlab.com/libeigen/eigen/-/archive/5.0.1/eigen-5.0.1.tar.gz")
     if(DEFINED ENV{BIORBD_EIGEN3_ARCHIVE})
         get_filename_component(EIGEN3_LOCAL_ARCHIVE "$ENV{BIORBD_EIGEN3_ARCHIVE}" ABSOLUTE
             BASE_DIR "${CMAKE_SOURCE_DIR}")
@@ -25,7 +25,7 @@ function(FindOrBuildEigen3)
             set(EIGEN3_ARCHIVE_URL "${EIGEN3_LOCAL_ARCHIVE}")
         endif()
     endif()
-    message(STATUS "EIGEN3 not found, using version 3.4.0 from ${EIGEN3_ARCHIVE_URL}")
+    message(STATUS "EIGEN3 not found, using version 5.0.1 from ${EIGEN3_ARCHIVE_URL}")
     include(ExternalProject)
 
     if (NOT INSTALL_DEPENDENCIES_PREFIX OR INSTALL_DEPENDENCIES_PREFIX STREQUAL "")
@@ -36,7 +36,7 @@ function(FindOrBuildEigen3)
 
     ExternalProject_Add(Eigen3_external
         URL "${EIGEN3_ARCHIVE_URL}"
-        URL_HASH SHA256=8586084f71f9bde545ee7fa6d00288b264a2b7ac3607b974e54d13e7162c1c72
+        URL_HASH SHA256=e9c326dc8c05cd1e044c71f30f1b2e34a6161a3b6ecf445d56b53ff1669e3dec
         CMAKE_ARGS
             -DCMAKE_INSTALL_PREFIX=${EIGEN3_INSTALL_DIR}
             -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}

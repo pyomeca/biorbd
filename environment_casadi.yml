@@ -6,7 +6,7 @@ channels:
 dependencies:
 - python >=3.10
 - casadi
-- rbdl >=3.3.0
+- rbdl >=3.4.0
 - scipy
 - ezc3d
 - ipopt

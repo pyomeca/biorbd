@@ -27,28 +27,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v7
 
-      # Eigen is downloaded once (and cached between runs) rather than by each build. The archive is verified
-      # against its hash when used (see modules/FindOrBuildEigen3.cmake)
-      - name: Cache the Eigen archive
-        id: cache-eigen
-        uses: actions/cache@v6
-        with:
-          path: .eigen_cache
-          key: eigen-3.4.0-8586084f71f9bde5
-
+      # Eigen is downloaded once rather than by each build (GitLab blocks the repeated downloads). The archive is
+      # verified against its hash when used (see modules/FindOrBuildEigen3.cmake)
       - name: Download the Eigen archive
-        if: steps.cache-eigen.outputs.cache-hit != 'true'
         shell: bash
         run: |
           mkdir -p .eigen_cache
-          curl -fsSL --retry 10 --retry-all-errors --retry-delay 15 -o .eigen_cache/eigen-3.4.0.tar.gz \
-            https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.gz
+          curl -fsSL --retry 10 --retry-all-errors --retry-delay 15 -o .eigen_cache/eigen-5.0.1.tar.gz \
+            https://gitlab.com/libeigen/eigen/-/archive/5.0.1/eigen-5.0.1.tar.gz
 
       # The cibuildwheel options are in the [tool.cibuildwheel] section of pyproject.toml
       - name: Build wheels
         uses: pypa/cibuildwheel@v4.3.4
         env:
-          CIBW_ENVIRONMENT: MATH_LIBRARY_BACKEND=Eigen3 BIORBD_EIGEN3_ARCHIVE=.eigen_cache/eigen-3.4.0.tar.gz
+          CIBW_ENVIRONMENT: MATH_LIBRARY_BACKEND=Eigen3 BIORBD_EIGEN3_ARCHIVE=.eigen_cache/eigen-5.0.1.tar.gz
 
       - name: Store the wheels
         uses: actions/upload-artifact@v7
