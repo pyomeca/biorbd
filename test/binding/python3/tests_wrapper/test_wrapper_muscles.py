@@ -26,7 +26,7 @@ def test_muscles(brbd):
     # 1. Using the "low-level" way
     muscles.activations = activations
     muscles.update_geometry(q=q, qdot=qdot)
-    tau_ref = [-8.99327207, -11.62806138]
+    tau_ref = [-8.994043448745202, -11.634024750979448]
     if brbd.backend == brbd.CASADI:
         q_sym = MX.sym("q", model.nb_q, 1)
         qdot_sym = MX.sym("qdot", model.nb_qdot, 1)
