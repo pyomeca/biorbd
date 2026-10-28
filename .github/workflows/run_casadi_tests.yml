@@ -50,7 +50,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          conda install "rbdl>=3.3.1" tinyxml2 ipopt "swig<4.4.0" python numpy scipy pytest ${{ matrix.conda_compiler }}
+          conda install "rbdl>=3.4.0" tinyxml2 ipopt "swig<4.4.0" python numpy scipy pytest ${{ matrix.conda_compiler }}
           conda list
 
       - name: Setup Linux dependencies
