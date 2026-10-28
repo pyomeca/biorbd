@@ -123,6 +123,9 @@ if (BINDER_PYTHON3)
 endif()
 
 # Register each gtest individually so they show up in 'ctest' and IDE test explorers
+# Discovery is deferred to ctest time (PRE_TEST) because, on Windows, the executable cannot run
+# at build time: the biorbd DLLs are only reachable once installed
 gtest_discover_tests(${PROJECT_NAME}
     WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+    DISCOVERY_MODE PRE_TEST
 )

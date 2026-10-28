@@ -30,4 +30,5 @@ file(COPY "${CMAKE_SOURCE_DIR}/test/models/"
 # Register each gtest individually (must be called in the directory that creates the target)
 gtest_discover_tests(${PROJECT_NAME}
     WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+    DISCOVERY_MODE PRE_TEST
 )
