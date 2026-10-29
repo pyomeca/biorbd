@@ -219,9 +219,11 @@ void internal_forces::muscles::StaticOptimization::run(
   // app->Options()->SetStringValue("output_file", "ipopt.out");
   app->Options()->SetStringValue("hessian_approximation", "limited-memory");
   app->Options()->SetNumericValue("obj_scaling_factor", m_objectiveScaling);
-  app->Options()->SetStringValue("derivative_test", "first-order");
+  // The "derivative_test" is for debug, change "none" to "second-order" to
+  // confirm the derivative of the program
+  app->Options()->SetStringValue("derivative_test", "none");
   app->Options()->SetIntegerValue("max_iter", 10000);
-  app->Options()->SetIntegerValue("print_level", 5);
+  app->Options()->SetIntegerValue("print_level", m_verbose);
 
   Ipopt::ApplicationReturnStatus status;
   status = app->Initialize();
@@ -307,36 +309,35 @@ utils::Vector internal_forces::muscles::StaticOptimization::finalSolution(
 
 std::vector<utils::Vector>
 internal_forces::muscles::StaticOptimization::finalResidual() {
-    std::vector<utils::Vector> res;
-    if (!m_alreadyRun) {
-        utils::Error::raise(
-            "Problem has not been run through the optimization process "
-            "yet, you should optimize it first to get "
-            "the residual solution");
-    } else {
-        for (unsigned int i = 0; i < m_allQ.size(); ++i) {
-            res.push_back(
-                static_cast<internal_forces::muscles::StaticOptimizationIpopt*>(
-                    Ipopt::GetRawPtr(m_staticOptimProblem[i]))
-                    ->finalResidual());
-        }
+  std::vector<utils::Vector> res;
+  if (!m_alreadyRun) {
+    utils::Error::raise(
+        "Problem has not been run through the optimization process "
+        "yet, you should optimize it first to get "
+        "the residual solution");
+  } else {
+    for (unsigned int i = 0; i < m_allQ.size(); ++i) {
+      res.push_back(
+          static_cast<internal_forces::muscles::StaticOptimizationIpopt*>(
+              Ipopt::GetRawPtr(m_staticOptimProblem[i]))
+              ->finalResidual());
     }
-    return res;
+  }
+  return res;
 }
 
-utils::Vector
-internal_forces::muscles::StaticOptimization::finalResidual(unsigned int index) {
-    utils::Vector res;
-    if (!m_alreadyRun) {
-        utils::Error::raise(
-            "Problem has not been run through the optimization process "
-            "yet, you should optimize it first to get "
-            "the residual solution");
-    } else {
-        res = static_cast<internal_forces::muscles::StaticOptimizationIpopt*>(
-                  Ipopt::GetRawPtr(m_staticOptimProblem[index]))
-                  ->finalResidual();
-    }
-    return res;
+utils::Vector internal_forces::muscles::StaticOptimization::finalResidual(
+    unsigned int index) {
+  utils::Vector res;
+  if (!m_alreadyRun) {
+    utils::Error::raise(
+        "Problem has not been run through the optimization process "
+        "yet, you should optimize it first to get "
+        "the residual solution");
+  } else {
+    res = static_cast<internal_forces::muscles::StaticOptimizationIpopt*>(
+              Ipopt::GetRawPtr(m_staticOptimProblem[index]))
+              ->finalResidual();
+  }
+  return res;
 }
-

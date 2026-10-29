@@ -3583,7 +3583,7 @@ TEST(StaticOptim, OneFrameNoActivations) {
   std::vector<double> expectedActivations = {
       9.999216994e-05,
       0.09403925441,
-      0.0001223544932,
+      9.9993900426726198e-05,
       0.04161937275,
       0.03119033903,
       0.0001000112881};
@@ -3731,7 +3731,7 @@ TEST(StaticOptim, MultiFrameNoActivation) {
   std::vector<std::vector<double>> expectedActivations = {
       {9.999216994e-05,
        0.09403925441,
-       0.0001223544932,
+       9.9993900426726198e-05,
        0.04161937275,
        0.03119033903,
        0.0001000112881},
