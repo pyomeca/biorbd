@@ -680,7 +680,7 @@ The second way is to open issues to report bugs or to ask for new features. I am
 For now, there is no GUI for the C++ interface and the MATLAB one is so poor I decided not to release it. However, there is a Python interface that worths to have a look at. Installation procedure and documentation can be found at the GitHub repository (https://github.com/pyomeca/biorbd-viz).
 
 # Documentation
-The documentation is automatically generated using Doxygen (http://www.doxygen.org/). You can compile it yourself if you want (by setting `BUILD_DOC` to `ON`). Otherwise, you can access a copy of it that I try to keep up-to-date in the Documentation project of pyomeca (https://pyomeca.github.io/Documentation/) by selecting `biorbd`. 
+The documentation is automatically generated using Doxygen (http://www.doxygen.org/). You can compile it yourself if you want (by setting `BUILD_DOC` to `ON`). Otherwise, the documentation of the latest release is published automatically in the Documentation project of pyomeca (https://pyomeca.github.io/Documentation/biorbd/index.html). 
 
 # Troubleshoots
 Despite my efforts to make a bug-free library, BIORBD may fails sometimes. If it does, please refer to the section below to know what to do. I will fill this section with the issue over time.
