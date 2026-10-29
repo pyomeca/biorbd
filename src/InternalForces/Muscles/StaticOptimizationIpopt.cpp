@@ -53,9 +53,11 @@ internal_forces::muscles::StaticOptimizationIpopt::StaticOptimizationIpopt(
               *m_nbMus)),
       m_pNormFactor(std::make_shared<unsigned int>(pNormFactor)),
       m_verbose(std::make_shared<int>(verbose)),
-      m_finalSolution(std::make_shared<utils::Vector>(utils::Vector(*m_nbMus))),
+      // Default to the initial guess in case Ipopt aborts before
+      // finalize_solution is called
+      m_finalSolution(std::make_shared<utils::Vector>(activationInit)),
       m_finalResidual(
-          std::make_shared<utils::Vector>(utils::Vector(*m_nbTorque))) {
+          std::make_shared<utils::Vector>(utils::Vector::Zero(*m_nbTorque))) {
   if (*m_eps < 1e-12) {
     utils::Error::raise(
         "epsilon for partial derivates approximation is too small ! \nLimit "

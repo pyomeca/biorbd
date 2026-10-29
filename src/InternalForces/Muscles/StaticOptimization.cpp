@@ -108,10 +108,8 @@ internal_forces::muscles::StaticOptimization::StaticOptimization(
         "of dimension nbMuscles");
   }
 
-  if (initialActivationGuess.size() == 0) {
-    for (unsigned int i = 0; i < m_model.nbMuscles(); i++) {
-      (*m_initialActivationGuess)[i] = initialActivationGuess[i].activation();
-    }
+  for (unsigned int i = 0; i < m_model.nbMuscles(); i++) {
+    (*m_initialActivationGuess)[i] = initialActivationGuess[i].activation();
   }
 }
 
@@ -203,10 +201,8 @@ internal_forces::muscles::StaticOptimization::StaticOptimization(
         "of dimension nbMuscles");
   }
 
-  if (initialActivationGuess.size() == 0) {
-    for (unsigned int i = 0; i < m_model.nbMuscles(); i++) {
-      (*m_initialActivationGuess)[i] = initialActivationGuess[i].activation();
-    }
+  for (unsigned int i = 0; i < m_model.nbMuscles(); i++) {
+    (*m_initialActivationGuess)[i] = initialActivationGuess[i].activation();
   }
 }
 
@@ -232,6 +228,10 @@ void internal_forces::muscles::StaticOptimization::run(
   utils::Error::check(
       status == Ipopt::Solve_Succeeded, "Ipopt initialization failed");
 
+  // Start from scratch so running multiple times gives the same results
+  m_staticOptimProblem.clear();
+  m_alreadyRun = false;
+  utils::Vector activationGuess(*m_initialActivationGuess);
   for (unsigned int i = 0; i < m_allQ.size(); ++i) {
     if (useLinearizedState)
       m_staticOptimProblem.push_back(
@@ -240,7 +240,7 @@ void internal_forces::muscles::StaticOptimization::run(
               m_allQ[i],
               m_allQdot[i],
               m_allTorqueTarget[i],
-              *m_initialActivationGuess,
+              activationGuess,
               m_useResidualTorque,
               m_pNormFactor,
               m_verbose));
@@ -251,7 +251,7 @@ void internal_forces::muscles::StaticOptimization::run(
               m_allQ[i],
               m_allQdot[i],
               m_allTorqueTarget[i],
-              *m_initialActivationGuess,
+              activationGuess,
               m_useResidualTorque,
               m_pNormFactor,
               m_verbose));
@@ -265,7 +265,7 @@ void internal_forces::muscles::StaticOptimization::run(
 
     // Take the solution of the previous optimization as the solution for the
     // next optimization
-    *m_initialActivationGuess =
+    activationGuess =
         static_cast<internal_forces::muscles::StaticOptimizationIpopt*>(
             Ipopt::GetRawPtr(m_staticOptimProblem[i]))
             ->finalSolution();

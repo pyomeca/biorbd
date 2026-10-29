@@ -65,15 +65,16 @@ utils::Vector utils::Vector::normGradient(size_t p, bool skipRoot) {
     }
   } else {
     utils::Vector res(static_cast<size_t>(size()));
-    utils::Scalar normalized(
-        std::pow(norm(), static_cast<unsigned int>(p - 1)));
     for (unsigned int i = 0; i < static_cast<unsigned int>(size()); ++i) {
       res[i] = (*this)[i] *
                std::pow(fabs((*this)[i]), static_cast<unsigned int>(p - 2));
     }
-    res /= normalized;
     if (skipRoot) {
-      utils::Error::raise("skip root not implemented for p > 2");
+      // d(sum |x_i|^p)/dx_i = p * x_i * |x_i|^(p-2)
+      res *= static_cast<double>(p);
+    } else {
+      // d(sum |x_i|^p)^(1/p)/dx_i = x_i * |x_i|^(p-2) / norm_p^(p-1)
+      res /= std::pow(norm(p), static_cast<unsigned int>(p - 1));
     }
     return res;
   }
