@@ -223,7 +223,7 @@ void internal_forces::muscles::StaticOptimization::run(
   app->Options()->SetStringValue("hessian_approximation", "limited-memory");
   app->Options()->SetNumericValue("obj_scaling_factor", m_objectiveScaling);
   app->Options()->SetStringValue(
-      "derivative_test", checkDerivative ? "second-order" : "none");
+      "derivative_test", checkDerivative ? "first-order" : "none");
   app->Options()->SetIntegerValue("max_iter", maxIter);
   app->Options()->SetIntegerValue("print_level", m_verbose);
 

@@ -4014,4 +4014,631 @@ TEST(StaticOptim, ObjectiveScaling) {
 #endif
 }
 
+TEST(StaticOptim, CheckDerivatives) {
+#ifdef BIORBD_USE_CASADI_MATH
+  std::cout << "StaticOptim is not tested for CasADi backend" << std::endl;
+
+#else
+  Model model(modelPathForMuscleForce);
+
+  rigidbody::GeneralizedCoordinates Q(model);
+  rigidbody::GeneralizedVelocity Qdot(model);
+  rigidbody::GeneralizedTorque Tau(model);
+  for (size_t i = 0; i < Q.size(); ++i) {
+    Q[i] = static_cast<double>(i) * 1.1;
+    Qdot[i] = static_cast<double>(i) * 1.1;
+    Tau[i] = static_cast<double>(i) * 1.1;
+  }
+
+  // Run the derivative checker of Ipopt on both formulations. As the values
+  // depend on the convergence path, only the satisfaction of the constraints
+  // is tested
+  for (bool useLinearizedState : {true, false}) {
+    auto optim = internal_forces::muscles::StaticOptimization(
+        model, Q, Qdot, Tau, 0.01, 2, true, 0, 100);
+    optim.run(useLinearizedState, 1e-7, 1000, true);
+    auto muscleActivations = optim.finalSolution(0);
+    auto muscleResiduals = optim.finalResidual(0);
+
+    std::vector<std::shared_ptr<internal_forces::muscles::State>> states;
+    for (size_t i = 0; i < model.nbMuscles(); ++i) {
+      EXPECT_GE(muscleActivations[i], 0.0001 - 1e-8);
+      EXPECT_LE(muscleActivations[i], 0.9999 + 1e-8);
+      states.push_back(
+          std::make_shared<internal_forces::muscles::State>(
+              0, muscleActivations[i]));
+    }
+    if (!useLinearizedState) {
+      rigidbody::GeneralizedTorque muscleTorque(
+          model.muscularJointTorque(states, Q, Qdot));
+      for (size_t i = 0; i < Tau.size(); ++i) {
+        EXPECT_NEAR(muscleTorque[i] + muscleResiduals[i], Tau[i], 1e-6);
+      }
+    }
+  }
+
+#endif
+}
+
+TEST(StaticOptim, MaxIterationAndTolerance) {
+#ifdef BIORBD_USE_CASADI_MATH
+  std::cout << "StaticOptim is not tested for CasADi backend" << std::endl;
+
+#else
+  Model model(modelPathForMuscleForce);
+
+  rigidbody::GeneralizedCoordinates Q(model);
+  rigidbody::GeneralizedVelocity Qdot(model);
+  rigidbody::GeneralizedTorque Tau(model);
+  for (size_t i = 0; i < Q.size(); ++i) {
+    Q[i] = static_cast<double>(i) * 1.1;
+    Qdot[i] = static_cast<double>(i) * 1.1;
+    Tau[i] = static_cast<double>(i) * 1.1;
+  }
+
+  // Not reaching convergence should only warn and still give a solution
+  auto optim = internal_forces::muscles::StaticOptimization(
+      model, Q, Qdot, Tau, 0.01, 2, true, 0, 100);
+  EXPECT_NO_THROW(optim.run(true, 1e-12, 1));
+  auto muscleActivations = optim.finalSolution(0);
+  EXPECT_EQ(muscleActivations.size(), model.nbMuscles());
+  for (size_t i = 0; i < model.nbMuscles(); ++i) {
+    EXPECT_GE(muscleActivations[i], 0.0001 - 1e-8);
+    EXPECT_LE(muscleActivations[i], 0.9999 + 1e-8);
+  }
+
+#endif
+}
+
+#ifndef BIORBD_USE_CASADI_MATH
+static void fillStaticOptimStates(
+    Model& model,
+    rigidbody::GeneralizedCoordinates& Q,
+    rigidbody::GeneralizedVelocity& Qdot,
+    rigidbody::GeneralizedTorque& Tau,
+    utils::Vector& activations) {
+  for (size_t i = 0; i < Q.size(); ++i) {
+    Q[i] = static_cast<double>(i) * 1.1;
+    Qdot[i] = static_cast<double>(i) * 1.1;
+    Tau[i] = static_cast<double>(i) * 1.1;
+  }
+  activations = utils::Vector(model.nbMuscles());
+  for (size_t i = 0; i < model.nbMuscles(); ++i) {
+    activations[i] = 0.1 + 0.1 * static_cast<double>(i);
+  }
+}
+
+static std::vector<double> staticOptimTestPoint(
+    const utils::Vector& activations,
+    const std::vector<double>& residuals) {
+  std::vector<double> x;
+  for (size_t i = 0; i < static_cast<size_t>(activations.size()); ++i) {
+    x.push_back(activations[i]);
+  }
+  x.insert(x.end(), residuals.begin(), residuals.end());
+  return x;
+}
+
+static rigidbody::GeneralizedTorque staticOptimMuscleTorque(
+    Model& model,
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& Qdot,
+    const std::vector<double>& x) {
+  std::vector<std::shared_ptr<internal_forces::muscles::State>> states;
+  for (size_t i = 0; i < model.nbMuscles(); ++i) {
+    states.push_back(
+        std::make_shared<internal_forces::muscles::State>(0, x[i]));
+  }
+  return model.muscularJointTorque(states, Q, Qdot);
+}
+
+// Compare the jacobian of the constraints given by the problem to central
+// finite differences of the constraints
+static void checkStaticOptimJacobian(
+    internal_forces::muscles::StaticOptimizationIpopt& problem,
+    const std::vector<double>& x,
+    double tolerance) {
+  Ipopt::Index n, m, nnzJac, nnzHess;
+  Ipopt::TNLP::IndexStyleEnum indexStyle;
+  problem.get_nlp_info(n, m, nnzJac, nnzHess, indexStyle);
+
+  std::vector<Ipopt::Index> iRow(nnzJac), jCol(nnzJac);
+  std::vector<double> values(nnzJac);
+  problem.eval_jac_g(
+      n, x.data(), true, m, nnzJac, iRow.data(), jCol.data(), nullptr);
+  problem.eval_jac_g(
+      n, x.data(), true, m, nnzJac, nullptr, nullptr, values.data());
+
+  utils::Matrix jacobian(utils::Matrix::Zero(m, n));
+  for (Ipopt::Index k = 0; k < nnzJac; ++k) {
+    jacobian(iRow[k], jCol[k]) = values[k];
+  }
+
+  double h(1e-6);
+  std::vector<double> gPlus(m), gMinus(m);
+  for (Ipopt::Index j = 0; j < n; ++j) {
+    std::vector<double> xPlus(x), xMinus(x);
+    xPlus[j] += h;
+    xMinus[j] -= h;
+    problem.eval_g(n, xPlus.data(), true, m, gPlus.data());
+    problem.eval_g(n, xMinus.data(), true, m, gMinus.data());
+    for (Ipopt::Index i = 0; i < m; ++i) {
+      double expected((gPlus[i] - gMinus[i]) / (2 * h));
+      EXPECT_NEAR(
+          jacobian(i, j),
+          expected,
+          tolerance * std::max(1.0, std::fabs(expected)));
+    }
+  }
+}
+#endif
+
+TEST(StaticOptimIpopt, NlpInfo) {
+#ifdef BIORBD_USE_CASADI_MATH
+  std::cout << "StaticOptim is not tested for CasADi backend" << std::endl;
+
+#else
+  Model model(modelPathForMuscleForce);
+  rigidbody::GeneralizedCoordinates Q(model);
+  rigidbody::GeneralizedVelocity Qdot(model);
+  rigidbody::GeneralizedTorque Tau(model);
+  utils::Vector activations;
+  fillStaticOptimStates(model, Q, Qdot, Tau, activations);
+
+  Ipopt::Index nbMus(static_cast<Ipopt::Index>(model.nbMuscles()));
+  Ipopt::Index nbTau(static_cast<Ipopt::Index>(model.nbGeneralizedTorque()));
+  for (bool useResidual : {true, false}) {
+    internal_forces::muscles::StaticOptimizationIpopt problem(
+        model, Q, Qdot, Tau, activations, useResidual);
+    Ipopt::Index n, m, nnzJac, nnzHess;
+    Ipopt::TNLP::IndexStyleEnum indexStyle;
+    EXPECT_TRUE(problem.get_nlp_info(n, m, nnzJac, nnzHess, indexStyle));
+    EXPECT_EQ(indexStyle, Ipopt::TNLP::C_STYLE);
+    EXPECT_EQ(m, nbTau);
+    if (useResidual) {
+      EXPECT_EQ(n, nbMus + static_cast<Ipopt::Index>(model.nbQ()));
+      EXPECT_EQ(nnzJac, (nbMus + 1) * nbTau);
+    } else {
+      EXPECT_EQ(n, nbMus);
+      EXPECT_EQ(nnzJac, nbMus * nbTau);
+    }
+  }
+
+#endif
+}
+
+TEST(StaticOptimIpopt, BoundsInfo) {
+#ifdef BIORBD_USE_CASADI_MATH
+  std::cout << "StaticOptim is not tested for CasADi backend" << std::endl;
+
+#else
+  Model model(modelPathForMuscleForce);
+  rigidbody::GeneralizedCoordinates Q(model);
+  rigidbody::GeneralizedVelocity Qdot(model);
+  rigidbody::GeneralizedTorque Tau(model);
+  utils::Vector activations;
+  fillStaticOptimStates(model, Q, Qdot, Tau, activations);
+
+  internal_forces::muscles::StaticOptimizationIpopt problem(
+      model, Q, Qdot, Tau, activations);
+  Ipopt::Index n, m, nnzJac, nnzHess;
+  Ipopt::TNLP::IndexStyleEnum indexStyle;
+  problem.get_nlp_info(n, m, nnzJac, nnzHess, indexStyle);
+
+  std::vector<double> xL(n), xU(n), gL(m), gU(m);
+  EXPECT_TRUE(problem.get_bounds_info(
+      n, xL.data(), xU.data(), m, gL.data(), gU.data()));
+  for (size_t i = 0; i < model.nbMuscles(); ++i) {
+    EXPECT_DOUBLE_EQ(xL[i], 0.0001);
+    EXPECT_DOUBLE_EQ(xU[i], 0.9999);
+  }
+  for (size_t i = model.nbMuscles(); i < static_cast<size_t>(n); ++i) {
+    EXPECT_DOUBLE_EQ(xL[i], -1000.0);
+    EXPECT_DOUBLE_EQ(xU[i], 1000.0);
+  }
+  for (Ipopt::Index i = 0; i < m; ++i) {
+    EXPECT_DOUBLE_EQ(gL[i], 0.0);
+    EXPECT_DOUBLE_EQ(gU[i], 0.0);
+  }
+
+#endif
+}
+
+TEST(StaticOptimIpopt, StartingPoint) {
+#ifdef BIORBD_USE_CASADI_MATH
+  std::cout << "StaticOptim is not tested for CasADi backend" << std::endl;
+
+#else
+  Model model(modelPathForMuscleForce);
+  rigidbody::GeneralizedCoordinates Q(model);
+  rigidbody::GeneralizedVelocity Qdot(model);
+  rigidbody::GeneralizedTorque Tau(model);
+  utils::Vector activations;
+  fillStaticOptimStates(model, Q, Qdot, Tau, activations);
+
+  internal_forces::muscles::StaticOptimizationIpopt problem(
+      model, Q, Qdot, Tau, activations);
+  Ipopt::Index n, m, nnzJac, nnzHess;
+  Ipopt::TNLP::IndexStyleEnum indexStyle;
+  problem.get_nlp_info(n, m, nnzJac, nnzHess, indexStyle);
+
+  std::vector<double> x(n, -1.0);
+  EXPECT_TRUE(problem.get_starting_point(
+      n, true, x.data(), false, nullptr, nullptr, m, false, nullptr));
+  for (size_t i = 0; i < model.nbMuscles(); ++i) {
+    EXPECT_DOUBLE_EQ(x[i], activations[i]);
+  }
+  for (size_t i = model.nbMuscles(); i < static_cast<size_t>(n); ++i) {
+    EXPECT_DOUBLE_EQ(x[i], 0.0);
+  }
+
+#endif
+}
+
+TEST(StaticOptimIpopt, Objective) {
+#ifdef BIORBD_USE_CASADI_MATH
+  std::cout << "StaticOptim is not tested for CasADi backend" << std::endl;
+
+#else
+  Model model(modelPathForMuscleForce);
+  rigidbody::GeneralizedCoordinates Q(model);
+  rigidbody::GeneralizedVelocity Qdot(model);
+  rigidbody::GeneralizedTorque Tau(model);
+  utils::Vector activations;
+  fillStaticOptimStates(model, Q, Qdot, Tau, activations);
+
+  double activationNorm(0);
+  for (size_t i = 0; i < model.nbMuscles(); ++i) {
+    activationNorm += activations[i] * activations[i];
+  }
+
+  {
+    // With residuals, they are weighted by 1000
+    internal_forces::muscles::StaticOptimizationIpopt problem(
+        model, Q, Qdot, Tau, activations);
+    std::vector<double> x(staticOptimTestPoint(activations, {0.3, -0.7}));
+    double obj;
+    EXPECT_TRUE(problem.eval_f(
+        static_cast<Ipopt::Index>(x.size()), x.data(), true, obj));
+    EXPECT_NEAR(obj, activationNorm + 1000 * (0.3 * 0.3 + 0.7 * 0.7), 1e-10);
+
+    // Without new_x, the previously dispatched values are used
+    std::vector<double> xOther(x.size(), 0.5);
+    EXPECT_TRUE(problem.eval_f(
+        static_cast<Ipopt::Index>(x.size()), xOther.data(), false, obj));
+    EXPECT_NEAR(obj, activationNorm + 1000 * (0.3 * 0.3 + 0.7 * 0.7), 1e-10);
+  }
+  {
+    internal_forces::muscles::StaticOptimizationIpopt problem(
+        model, Q, Qdot, Tau, activations, false);
+    std::vector<double> x(staticOptimTestPoint(activations, {}));
+    double obj;
+    EXPECT_TRUE(problem.eval_f(
+        static_cast<Ipopt::Index>(x.size()), x.data(), true, obj));
+    EXPECT_NEAR(obj, activationNorm, 1e-10);
+  }
+
+#endif
+}
+
+TEST(StaticOptimIpopt, ObjectiveGradient) {
+#ifdef BIORBD_USE_CASADI_MATH
+  std::cout << "StaticOptim is not tested for CasADi backend" << std::endl;
+
+#else
+  Model model(modelPathForMuscleForce);
+  rigidbody::GeneralizedCoordinates Q(model);
+  rigidbody::GeneralizedVelocity Qdot(model);
+  rigidbody::GeneralizedTorque Tau(model);
+  utils::Vector activations;
+  fillStaticOptimStates(model, Q, Qdot, Tau, activations);
+
+  internal_forces::muscles::StaticOptimizationIpopt problem(
+      model, Q, Qdot, Tau, activations);
+  std::vector<double> x(staticOptimTestPoint(activations, {0.3, -0.7}));
+  Ipopt::Index n(static_cast<Ipopt::Index>(x.size()));
+
+  std::vector<double> grad(n);
+  EXPECT_TRUE(problem.eval_grad_f(n, x.data(), true, grad.data()));
+  for (size_t i = 0; i < model.nbMuscles(); ++i) {
+    EXPECT_NEAR(grad[i], 2 * activations[i], 1e-10);
+  }
+  EXPECT_NEAR(grad[model.nbMuscles()], 2000 * 0.3, 1e-10);
+  EXPECT_NEAR(grad[model.nbMuscles() + 1], -2000 * 0.7, 1e-10);
+
+  // The objective is quadratic, so central finite differences are exact up to
+  // the round-off errors
+  double h(1e-6);
+  for (Ipopt::Index j = 0; j < n; ++j) {
+    std::vector<double> xPlus(x), xMinus(x);
+    xPlus[j] += h;
+    xMinus[j] -= h;
+    double fPlus, fMinus;
+    problem.eval_f(n, xPlus.data(), true, fPlus);
+    problem.eval_f(n, xMinus.data(), true, fMinus);
+    EXPECT_NEAR(grad[j], (fPlus - fMinus) / (2 * h), 1e-4);
+  }
+
+#endif
+}
+
+TEST(StaticOptimIpopt, Constraints) {
+#ifdef BIORBD_USE_CASADI_MATH
+  std::cout << "StaticOptim is not tested for CasADi backend" << std::endl;
+
+#else
+  Model model(modelPathForMuscleForce);
+  rigidbody::GeneralizedCoordinates Q(model);
+  rigidbody::GeneralizedVelocity Qdot(model);
+  rigidbody::GeneralizedTorque Tau(model);
+  utils::Vector activations;
+  fillStaticOptimStates(model, Q, Qdot, Tau, activations);
+
+  internal_forces::muscles::StaticOptimizationIpopt problem(
+      model, Q, Qdot, Tau, activations);
+  std::vector<double> x(staticOptimTestPoint(activations, {0.3, -0.7}));
+  Ipopt::Index n(static_cast<Ipopt::Index>(x.size()));
+  Ipopt::Index m(static_cast<Ipopt::Index>(Tau.size()));
+
+  std::vector<double> g(m);
+  EXPECT_TRUE(problem.eval_g(n, x.data(), true, m, g.data()));
+  rigidbody::GeneralizedTorque muscleTorque(
+      staticOptimMuscleTorque(model, Q, Qdot, x));
+  for (Ipopt::Index i = 0; i < m; ++i) {
+    EXPECT_NEAR(
+        g[i], muscleTorque[i] + x[model.nbMuscles() + i] - Tau[i], 1e-10);
+  }
+
+#endif
+}
+
+TEST(StaticOptimIpopt, ConstraintsJacobian) {
+#ifdef BIORBD_USE_CASADI_MATH
+  std::cout << "StaticOptim is not tested for CasADi backend" << std::endl;
+
+#else
+  Model model(modelPathForMuscleForce);
+  rigidbody::GeneralizedCoordinates Q(model);
+  rigidbody::GeneralizedVelocity Qdot(model);
+  rigidbody::GeneralizedTorque Tau(model);
+  utils::Vector activations;
+  fillStaticOptimStates(model, Q, Qdot, Tau, activations);
+
+  for (bool useResidual : {true, false}) {
+    internal_forces::muscles::StaticOptimizationIpopt problem(
+        model, Q, Qdot, Tau, activations, useResidual);
+    Ipopt::Index n, m, nnzJac, nnzHess;
+    Ipopt::TNLP::IndexStyleEnum indexStyle;
+    problem.get_nlp_info(n, m, nnzJac, nnzHess, indexStyle);
+
+    // The structure is dense for the muscles and diagonal for the residuals
+    std::vector<Ipopt::Index> iRow(nnzJac), jCol(nnzJac);
+    std::vector<double> x(n, 0.5);
+    EXPECT_TRUE(problem.eval_jac_g(
+        n, x.data(), true, m, nnzJac, iRow.data(), jCol.data(), nullptr));
+    Ipopt::Index k(0);
+    for (Ipopt::Index j = 0; j < static_cast<Ipopt::Index>(model.nbMuscles());
+         ++j) {
+      for (Ipopt::Index i = 0; i < m; ++i) {
+        EXPECT_EQ(iRow[k], i);
+        EXPECT_EQ(jCol[k++], j);
+      }
+    }
+    for (Ipopt::Index i = 0; k < nnzJac; ++i) {
+      EXPECT_EQ(iRow[k], i);
+      EXPECT_EQ(jCol[k++], static_cast<Ipopt::Index>(model.nbMuscles()) + i);
+    }
+
+    std::vector<double> residuals;
+    if (useResidual) {
+      residuals = {0.3, -0.7};
+    }
+    checkStaticOptimJacobian(
+        problem, staticOptimTestPoint(activations, residuals), 1e-5);
+  }
+
+#endif
+}
+
+TEST(StaticOptimIpopt, FinalizeSolution) {
+#ifdef BIORBD_USE_CASADI_MATH
+  std::cout << "StaticOptim is not tested for CasADi backend" << std::endl;
+
+#else
+  Model model(modelPathForMuscleForce);
+  rigidbody::GeneralizedCoordinates Q(model);
+  rigidbody::GeneralizedVelocity Qdot(model);
+  rigidbody::GeneralizedTorque Tau(model);
+  utils::Vector activations;
+  fillStaticOptimStates(model, Q, Qdot, Tau, activations);
+
+  internal_forces::muscles::StaticOptimizationIpopt problem(
+      model, Q, Qdot, Tau, activations);
+  std::vector<double> x(staticOptimTestPoint(activations, {0.3, -0.7}));
+  problem.finalize_solution(
+      Ipopt::SUCCESS,
+      static_cast<Ipopt::Index>(x.size()),
+      x.data(),
+      nullptr,
+      nullptr,
+      static_cast<Ipopt::Index>(Tau.size()),
+      nullptr,
+      nullptr,
+      0,
+      nullptr,
+      nullptr);
+
+  utils::Vector solution(problem.finalSolution());
+  utils::Vector residual(problem.finalResidual());
+  EXPECT_EQ(solution.size(), model.nbMuscles());
+  for (size_t i = 0; i < model.nbMuscles(); ++i) {
+    EXPECT_DOUBLE_EQ(solution[i], activations[i]);
+  }
+  EXPECT_EQ(residual.size(), Tau.size());
+  EXPECT_DOUBLE_EQ(residual[0], 0.3);
+  EXPECT_DOUBLE_EQ(residual[1], -0.7);
+
+#endif
+}
+
+TEST(StaticOptimIpopt, InvalidEpsilon) {
+#ifdef BIORBD_USE_CASADI_MATH
+  std::cout << "StaticOptim is not tested for CasADi backend" << std::endl;
+
+#else
+  Model model(modelPathForMuscleForce);
+  rigidbody::GeneralizedCoordinates Q(model);
+  rigidbody::GeneralizedVelocity Qdot(model);
+  rigidbody::GeneralizedTorque Tau(model);
+  utils::Vector activations;
+  fillStaticOptimStates(model, Q, Qdot, Tau, activations);
+
+  EXPECT_THROW(
+      internal_forces::muscles::StaticOptimizationIpopt(
+          model, Q, Qdot, Tau, activations, true, 2, 0, 1e-13),
+      std::runtime_error);
+  EXPECT_THROW(
+      internal_forces::muscles::StaticOptimizationIpoptLinearized(
+          model, Q, Qdot, Tau, activations, true, 2, 0, 1e-13),
+      std::runtime_error);
+
+#endif
+}
+
+TEST(StaticOptimIpoptLinearized, Constraints) {
+#ifdef BIORBD_USE_CASADI_MATH
+  std::cout << "StaticOptim is not tested for CasADi backend" << std::endl;
+
+#else
+  Model model(modelPathForMuscleForce);
+  rigidbody::GeneralizedCoordinates Q(model);
+  rigidbody::GeneralizedVelocity Qdot(model);
+  rigidbody::GeneralizedTorque Tau(model);
+  utils::Vector activations;
+  fillStaticOptimStates(model, Q, Qdot, Tau, activations);
+
+  internal_forces::muscles::StaticOptimizationIpoptLinearized problem(
+      model, Q, Qdot, Tau, activations);
+  Ipopt::Index m(static_cast<Ipopt::Index>(Tau.size()));
+  std::vector<double> g(m);
+
+  // At the reference activations (the initial guess) and at no activation,
+  // the linearized torques are exact
+  std::vector<double> residuals = {0.3, -0.7};
+  utils::Vector noActivation(utils::Vector::Zero(model.nbMuscles()));
+  for (const auto& reference : {activations, noActivation}) {
+    std::vector<double> x(staticOptimTestPoint(reference, residuals));
+    Ipopt::Index n(static_cast<Ipopt::Index>(x.size()));
+    EXPECT_TRUE(problem.eval_g(n, x.data(), true, m, g.data()));
+    rigidbody::GeneralizedTorque muscleTorque(
+        staticOptimMuscleTorque(model, Q, Qdot, x));
+    for (Ipopt::Index i = 0; i < m; ++i) {
+      EXPECT_NEAR(g[i], muscleTorque[i] + residuals[i] - Tau[i], 1e-8);
+    }
+  }
+
+  // The constraints are affine with respect to the activations
+  std::vector<double> x0(staticOptimTestPoint(noActivation, {0, 0}));
+  std::vector<double> x1(staticOptimTestPoint(activations, {0, 0}));
+  std::vector<double> xHalf(x0.size());
+  for (size_t i = 0; i < x0.size(); ++i) {
+    xHalf[i] = 0.5 * (x0[i] + x1[i]);
+  }
+  Ipopt::Index n(static_cast<Ipopt::Index>(x0.size()));
+  std::vector<double> g0(m), g1(m), gHalf(m);
+  problem.eval_g(n, x0.data(), true, m, g0.data());
+  problem.eval_g(n, x1.data(), true, m, g1.data());
+  problem.eval_g(n, xHalf.data(), true, m, gHalf.data());
+  for (Ipopt::Index i = 0; i < m; ++i) {
+    EXPECT_NEAR(gHalf[i], 0.5 * (g0[i] + g1[i]), 1e-10);
+  }
+
+#endif
+}
+
+TEST(StaticOptimIpoptLinearized, ConstraintsJacobian) {
+#ifdef BIORBD_USE_CASADI_MATH
+  std::cout << "StaticOptim is not tested for CasADi backend" << std::endl;
+
+#else
+  Model model(modelPathForMuscleForce);
+  rigidbody::GeneralizedCoordinates Q(model);
+  rigidbody::GeneralizedVelocity Qdot(model);
+  rigidbody::GeneralizedTorque Tau(model);
+  utils::Vector activations;
+  fillStaticOptimStates(model, Q, Qdot, Tau, activations);
+
+  for (bool useResidual : {true, false}) {
+    internal_forces::muscles::StaticOptimizationIpoptLinearized problem(
+        model, Q, Qdot, Tau, activations, useResidual);
+    Ipopt::Index n, m, nnzJac, nnzHess;
+    Ipopt::TNLP::IndexStyleEnum indexStyle;
+    problem.get_nlp_info(n, m, nnzJac, nnzHess, indexStyle);
+
+    // The structure is dense for the muscles and diagonal for the residuals
+    std::vector<Ipopt::Index> iRow(nnzJac), jCol(nnzJac);
+    std::vector<double> x(n, 0.5);
+    EXPECT_TRUE(problem.eval_jac_g(
+        n, x.data(), true, m, nnzJac, iRow.data(), jCol.data(), nullptr));
+    Ipopt::Index k(0);
+    for (Ipopt::Index j = 0; j < static_cast<Ipopt::Index>(model.nbMuscles());
+         ++j) {
+      for (Ipopt::Index i = 0; i < m; ++i) {
+        EXPECT_EQ(iRow[k], i);
+        EXPECT_EQ(jCol[k++], j);
+      }
+    }
+    for (Ipopt::Index i = 0; k < nnzJac; ++i) {
+      EXPECT_EQ(iRow[k], i);
+      EXPECT_EQ(jCol[k++], static_cast<Ipopt::Index>(model.nbMuscles()) + i);
+    }
+
+    // The jacobian is the slope of each muscle between no activation and its
+    // reference activation, whatever the point it is evaluated at
+    std::vector<double> values(nnzJac), valuesOther(nnzJac);
+    problem.eval_jac_g(
+        n, x.data(), true, m, nnzJac, nullptr, nullptr, values.data());
+    std::vector<double> xOther(n, 0.1);
+    problem.eval_jac_g(
+        n,
+        xOther.data(),
+        true,
+        m,
+        nnzJac,
+        nullptr,
+        nullptr,
+        valuesOther.data());
+    std::vector<double> zero(n, 0.0);
+    rigidbody::GeneralizedTorque torqueZero(
+        staticOptimMuscleTorque(model, Q, Qdot, zero));
+    k = 0;
+    for (size_t j = 0; j < model.nbMuscles(); ++j) {
+      std::vector<double> xMuscle(n, 0.0);
+      xMuscle[j] = activations[j];
+      rigidbody::GeneralizedTorque torqueMuscle(
+          staticOptimMuscleTorque(model, Q, Qdot, xMuscle));
+      for (Ipopt::Index i = 0; i < m; ++i) {
+        EXPECT_NEAR(
+            values[k],
+            (torqueMuscle[i] - torqueZero[i]) / activations[j],
+            1e-8);
+        EXPECT_DOUBLE_EQ(values[k], valuesOther[k]);
+        ++k;
+      }
+    }
+    for (; k < nnzJac; ++k) {
+      EXPECT_DOUBLE_EQ(values[k], 1.0);
+    }
+
+    std::vector<double> residuals;
+    if (useResidual) {
+      residuals = {0.3, -0.7};
+    }
+    checkStaticOptimJacobian(
+        problem, staticOptimTestPoint(activations, residuals), 1e-6);
+  }
+
+#endif
+}
+
 #endif
