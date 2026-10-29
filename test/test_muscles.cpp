@@ -3575,8 +3575,8 @@ TEST(StaticOptim, OneFrameNoActivations) {
   }
 
   // Proceed with the static optimization
-  auto optim =
-      internal_forces::muscles::StaticOptimization(model, Q, Qdot, Tau);
+  auto optim = internal_forces::muscles::StaticOptimization(
+      model, Q, Qdot, Tau, 0.01, 2, true, 0, 100);
   optim.run();
   auto muscleActivations = optim.finalSolution()[0];
 
@@ -3592,9 +3592,7 @@ TEST(StaticOptim, OneFrameNoActivations) {
   }
 
   auto muscleResiduals = optim.finalResidual()[0];
-  std::vector<double> expectedResiduals = {
-      1.684193518e-05,
-      -2.996892531e-06};
+  std::vector<double> expectedResiduals = {1.684193518e-05, -2.996892531e-06};
   for (size_t i = 0; i < expectedResiduals.size(); ++i) {
     EXPECT_NEAR(muscleResiduals[i], expectedResiduals[i], 1e-6);
     EXPECT_NEAR(optim.finalResidual(0)[i], expectedResiduals[i], 1e-6);
@@ -3622,7 +3620,7 @@ TEST(StaticOptim, OneFrameOneActivationDouble) {
   // Proceed with the static optimization
   double initialActivationGuess = 0.5;
   auto optim = internal_forces::muscles::StaticOptimization(
-      model, Q, Qdot, Tau, initialActivationGuess);
+      model, Q, Qdot, Tau, initialActivationGuess, 2, true, 0, 100);
   optim.run();
   auto muscleActivations = optim.finalSolution()[0];
 
@@ -3638,9 +3636,7 @@ TEST(StaticOptim, OneFrameOneActivationDouble) {
   }
 
   auto muscleResiduals = optim.finalResidual()[0];
-  std::vector<double> expectedResiduals = {
-      1.616486747e-05,
-      -2.86732263e-06};
+  std::vector<double> expectedResiduals = {1.616486747e-05, -2.86732263e-06};
   for (size_t i = 0; i < expectedResiduals.size(); ++i) {
     EXPECT_NEAR(muscleResiduals[i], expectedResiduals[i], 1e-6);
     EXPECT_NEAR(optim.finalResidual(0)[i], expectedResiduals[i], 1e-6);
@@ -3671,7 +3667,7 @@ TEST(StaticOptim, OneFrameOneActivationVector) {
     initialActivationGuess[i] = 0.5;
   }
   auto optim = internal_forces::muscles::StaticOptimization(
-      model, Q, Qdot, Tau, initialActivationGuess);
+      model, Q, Qdot, Tau, initialActivationGuess, 2, true, 0, 100);
   optim.run();
   auto muscleActivations = optim.finalSolution()[0];
 
@@ -3687,9 +3683,7 @@ TEST(StaticOptim, OneFrameOneActivationVector) {
   }
 
   auto muscleResiduals = optim.finalResidual()[0];
-  std::vector<double> expectedResiduals = {
-      1.616486747e-05,
-      -2.86732263e-06};
+  std::vector<double> expectedResiduals = {1.616486747e-05, -2.86732263e-06};
   for (size_t i = 0; i < expectedResiduals.size(); ++i) {
     EXPECT_NEAR(muscleResiduals[i], expectedResiduals[i], 1e-6);
     EXPECT_NEAR(optim.finalResidual(0)[i], expectedResiduals[i], 1e-6);
@@ -3728,7 +3722,7 @@ TEST(StaticOptim, MultiFrameNoActivation) {
 
   // Proceed with the static optimization
   auto optim = internal_forces::muscles::StaticOptimization(
-      model, allQ, allQdot, allTau);
+      model, allQ, allQdot, allTau, 0.01, 2, true, 0, 100);
   optim.run();
   auto allMuscleActivations = optim.finalSolution();
   EXPECT_EQ(allMuscleActivations.size(), allQ.size());
@@ -3755,15 +3749,12 @@ TEST(StaticOptim, MultiFrameNoActivation) {
        0.000100011332}};
   for (size_t f = 0; f < allMuscleActivations.size(); ++f) {
     for (size_t i = 0; i < expectedActivations[f].size(); ++i) {
-      EXPECT_NEAR(
-          allMuscleActivations[f](i), expectedActivations[f][i], 1e-5);
+      EXPECT_NEAR(allMuscleActivations[f](i), expectedActivations[f][i], 1e-5);
     }
   }
 
   auto muscleResiduals = optim.finalResidual()[0];
-  std::vector<double> expectedResiduals = {
-      1.684193518e-05,
-      -2.996892531e-06};
+  std::vector<double> expectedResiduals = {1.684193518e-05, -2.996892531e-06};
   for (size_t i = 0; i < expectedResiduals.size(); ++i) {
     EXPECT_NEAR(muscleResiduals[i], expectedResiduals[i], 1e-6);
     EXPECT_NEAR(optim.finalResidual(0)[i], expectedResiduals[i], 1e-6);
@@ -3803,7 +3794,7 @@ TEST(StaticOptim, MultiFrameActivationDouble) {
   // Proceed with the static optimization
   double initialActivationGuess = 0.5;
   auto optim = internal_forces::muscles::StaticOptimization(
-      model, allQ, allQdot, allTau, initialActivationGuess);
+      model, allQ, allQdot, allTau, initialActivationGuess, 2, true, 0, 100);
   optim.run();
   auto allMuscleActivations = optim.finalSolution();
   EXPECT_EQ(allMuscleActivations.size(), allQ.size());
@@ -3830,15 +3821,12 @@ TEST(StaticOptim, MultiFrameActivationDouble) {
        0.0001000113323}};
   for (size_t f = 0; f < allMuscleActivations.size(); ++f) {
     for (size_t i = 0; i < expectedActivations[f].size(); ++i) {
-      EXPECT_NEAR(
-          allMuscleActivations[f](i), expectedActivations[f][i], 1e-5);
+      EXPECT_NEAR(allMuscleActivations[f](i), expectedActivations[f][i], 1e-5);
     }
   }
 
   auto muscleResiduals = optim.finalResidual()[0];
-  std::vector<double> expectedResiduals = {
-      1.616486747e-05,
-      -2.86732263e-06};
+  std::vector<double> expectedResiduals = {1.616486747e-05, -2.86732263e-06};
   for (size_t i = 0; i < expectedResiduals.size(); ++i) {
     EXPECT_NEAR(muscleResiduals[i], expectedResiduals[i], 1e-6);
     EXPECT_NEAR(optim.finalResidual(0)[i], expectedResiduals[i], 1e-6);
@@ -3881,7 +3869,7 @@ TEST(StaticOptim, MultiFrameNoActivationVector) {
     initialActivationGuess[i] = 0.5;
   }
   auto optim = internal_forces::muscles::StaticOptimization(
-      model, allQ, allQdot, allTau, initialActivationGuess);
+      model, allQ, allQdot, allTau, initialActivationGuess, 2, true, 0, 100);
   optim.run();
   auto allMuscleActivations = optim.finalSolution();
   EXPECT_EQ(allMuscleActivations.size(), allQ.size());
@@ -3908,15 +3896,12 @@ TEST(StaticOptim, MultiFrameNoActivationVector) {
        0.0001000113323}};
   for (size_t f = 0; f < allMuscleActivations.size(); ++f) {
     for (size_t i = 0; i < expectedActivations[f].size(); ++i) {
-      EXPECT_NEAR(
-          allMuscleActivations[f](i), expectedActivations[f][i], 1e-5);
+      EXPECT_NEAR(allMuscleActivations[f](i), expectedActivations[f][i], 1e-5);
     }
   }
 
   auto muscleResiduals = optim.finalResidual()[0];
-  std::vector<double> expectedResiduals = {
-      1.616486747e-05,
-      -2.86732263e-06};
+  std::vector<double> expectedResiduals = {1.616486747e-05, -2.86732263e-06};
   for (size_t i = 0; i < expectedResiduals.size(); ++i) {
     EXPECT_NEAR(muscleResiduals[i], expectedResiduals[i], 1e-6);
     EXPECT_NEAR(optim.finalResidual(0)[i], expectedResiduals[i], 1e-6);
@@ -3924,7 +3909,6 @@ TEST(StaticOptim, MultiFrameNoActivationVector) {
 
 #endif
 }
-
 
 TEST(StaticOptim, OneFrameNonLinearized) {
 #ifdef BIORBD_USE_CASADI_MATH
@@ -3960,16 +3944,13 @@ TEST(StaticOptim, OneFrameNonLinearized) {
   }
 
   auto muscleResiduals = optim.finalResidual()[0];
-  std::vector<double> expectedResiduals = {
-      1.669578312e-05,
-      -2.986397445e-06};
+  std::vector<double> expectedResiduals = {1.669578312e-05, -2.986397445e-06};
   for (size_t i = 0; i < expectedResiduals.size(); ++i) {
     EXPECT_NEAR(muscleResiduals[i], expectedResiduals[i], 1e-6);
   }
 
 #endif
 }
-
 
 TEST(StaticOptim, InvalidObjectiveScaling) {
 #ifdef BIORBD_USE_CASADI_MATH
@@ -3994,7 +3975,6 @@ TEST(StaticOptim, InvalidObjectiveScaling) {
 
 #endif
 }
-
 
 TEST(StaticOptim, ObjectiveScaling) {
 #ifdef BIORBD_USE_CASADI_MATH
