@@ -189,6 +189,16 @@ class BIORBD_API StaticOptimization {
   /// \brief Run the static optimization
   /// \param useLinearizedState If use the algorithm should be run with the
   /// linearized approach (faster but less precise)
+  /// \param tolerance The convergence tolerance of IPOPT ("tol" option)
+  /// \param maxIter The maximum number of iterations of IPOPT for each frame.
+  /// If it is reached, a warning is issued and the last iterate is kept
+  /// \param checkDerivatives If the first order derivatives should be checked
+  /// by IPOPT against finite differences (for debug purposes, the results are
+  /// printed if verbose is high enough)
+  ///
+  /// Each frame uses the solution of the previous frame as initial guess.
+  /// Running more than once restarts from the initial guess given at
+  /// construction and replaces the previous results.
   ///
   void run(
       bool useLinearizedState = true,
@@ -204,6 +214,7 @@ class BIORBD_API StaticOptimization {
 
   ///
   /// \brief Return the final solution at a specific index
+  /// \param index The index of the frame
   /// \return The final solution at a specific index
   ///
   utils::Vector finalSolution(unsigned int index);
@@ -216,6 +227,7 @@ class BIORBD_API StaticOptimization {
 
   ///
   /// \brief Return the final residuals at a specific index
+  /// \param index The index of the frame
   /// \return The final residuals at a specific index
   ///
   utils::Vector finalResidual(unsigned int index);

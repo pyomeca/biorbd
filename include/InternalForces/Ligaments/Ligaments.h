@@ -96,6 +96,7 @@ class BIORBD_API Ligaments {
   ///
   /// \brief Compute the ligament joint torque
   /// \param F The force vector of all the ligaments
+  /// \return The ligament joint torque
   ///
   /// The computation for the ligament joint torque is done from virtual power:
   ///
@@ -117,6 +118,7 @@ class BIORBD_API Ligaments {
   /// \param Qdot The generalized velocities
   /// \param updateLigamentKinematics If the ligament kinematics parameters
   /// should be updated
+  /// \return The ligament joint torque
   ///
   /// This function updates the ligaments and then performs the computation for
   /// the ligament joint torque is done from virtual power:
@@ -143,6 +145,7 @@ class BIORBD_API Ligaments {
   /// \param Qdot The generalized velocities
   /// \param updateKin If the kinematics should be updated (0 => no update
   /// required, 1 => Only ligament parameters, 2 => Joints model and ligaments)
+  /// \return The ligament joint torque
   ///
   /// This function updates the ligaments and then performs the computation for
   /// the ligament joint torque is done from virtual power:
@@ -168,6 +171,7 @@ class BIORBD_API Ligaments {
   /// \param Qdot The generalized velocities
   /// \param updateLigamentKinematics If the ligament kinematics parameters
   /// should be updated
+  /// \return The ligament joint torque
   ///
   /// This function updates the ligaments and then performs the computation for
   /// the ligament joint torque is done from virtual power:
@@ -192,6 +196,7 @@ class BIORBD_API Ligaments {
   /// \param Qdot The generalized velocities
   /// \param updateKin If the kinematics should be updated (0 => no update
   /// required, 1 => Only ligament parameters, 2 => Joints model and ligaments)
+  /// \return The ligament joint torque
   ///
   /// This function updates the ligaments and then performs the computation for
   /// the ligament joint torque is done from virtual power:

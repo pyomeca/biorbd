@@ -212,13 +212,15 @@ class BIORBD_API StaticOptimizationIpopt : public Ipopt::TNLP {
 
   ///
   /// \brief Return the final solution
-  /// \return The final solution
+  /// \return The final solution (the initial activations if finalize_solution was not
+  /// called, e.g. if IPOPT aborted)
   ///
   utils::Vector finalSolution() const;
 
   ///
   /// \brief Return the final residual
-  /// \return The final residual
+  /// \return The final residual (zeros if finalize_solution was not
+  /// called, e.g. if IPOPT aborted)
   ///
   utils::Vector finalResidual() const;
 

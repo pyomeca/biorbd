@@ -99,6 +99,7 @@ class BIORBD_API Equation : public String {
   /// \brief Resolve the equation
   /// \param eq The equation to resolve
   /// \param math The mathematical symbol that is being evaluated now
+  /// \return The value of the equation
   ///
   static double evaluateEquation(std::vector<Equation> eq, size_t math);
 

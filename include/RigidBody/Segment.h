@@ -237,6 +237,7 @@ class BIORBD_API Segment : public utils::Node {
 
   ///
   /// \brief Return the index of a specified DoF
+  /// \param dofName The name of the DoF
   /// \return The index of a specified DoF
   ///
   size_t getDofIdx(const utils::String &dofName) const;
@@ -245,6 +246,7 @@ class BIORBD_API Segment : public utils::Node {
   /// \brief Traverse the model hierarchy until it gets to a segment with a dof.
   /// If the current segment has at least one dof, the current segment is
   /// returned
+  /// \param model The joint model
   /// \return The first the first segment with a dof in the hierarchy
   const rigidbody::Segment &findFirstSegmentWithDof(
       const rigidbody::Joints &model) const;
@@ -252,6 +254,7 @@ class BIORBD_API Segment : public utils::Node {
   ///
   /// \brief Returns the first index of the segment in the Generalized
   /// Coordinates vector
+  /// \param model The joint model
   /// \return The index of the first dof in the Generalized Coordinates vector
   ///
   /// Warning: if the current segment does not have any dof, it returns the
@@ -262,6 +265,7 @@ class BIORBD_API Segment : public utils::Node {
   ///
   /// \brief Returns the last index of the segment in the Generalized
   /// Coordinates vector
+  /// \param model The joint model
   /// \return The index of the last dof in the Generalized Coordinates vector
   ///
   /// Warning: if the current segment does not have any dof, it returns the last
@@ -271,6 +275,7 @@ class BIORBD_API Segment : public utils::Node {
 
   ///
   /// \brief Return the name of the specified DoF
+  /// \param i The index of the DoF
   /// \return The name of the specified DoF
   ///
   const utils::String &nameDof(const size_t i) const;

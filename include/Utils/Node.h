@@ -59,11 +59,13 @@ class BIORBD_API Node {
 
   ///
   /// \brief Return the name of the node
+  /// \return The name of the node
   ///
   const String &name() const;
 
   ///
   /// \brief Return the parent name of the node
+  /// \return The parent name of the node
   ///
   const String &parent() const;
 
@@ -75,6 +77,7 @@ class BIORBD_API Node {
 
   ///
   /// \brief Return the type of node
+  /// \return The type of node
   ///
   NODE_TYPE typeOfNode() const;
 

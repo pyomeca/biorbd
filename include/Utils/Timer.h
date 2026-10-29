@@ -50,6 +50,7 @@ class BIORBD_API Timer {
 
   ///
   /// \brief Stop the timer and return the lap time
+  /// \return The lap time
   ///
   double stop();
 

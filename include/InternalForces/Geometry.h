@@ -190,7 +190,7 @@ class BIORBD_API Geometry {
 
   ///
   /// \brief Return the gradient of the jacobian for the via specified node
-  /// \brief idxViaPoint the index of the via point (0 being the the origin)
+  /// \param idxViaPoint the index of the via point (0 being the the origin)
   /// \return The via point's node jacobian
   ///
   utils::Matrix jacobian(size_t idxViaPoint) const;

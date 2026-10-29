@@ -15,6 +15,8 @@ class BIORBD_API Range {
  public:
   ///
   /// \brief Construct generalized coordinates range
+  /// \param min The minimal value of the range
+  /// \param max The maximal value of the range
   ///
   Range(double min = -M_PI, double max = M_PI);
 

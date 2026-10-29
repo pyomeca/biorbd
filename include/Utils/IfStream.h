@@ -131,10 +131,11 @@ class BIORBD_API IfStream {
   bool readFromBinary(float& result);
 
   ///
-  /// \brief Read a float in binary file
+  /// \brief Read a 3d vector (three floats) in binary file
+  /// \param v The vector to put the result into
   /// \return True on success
   ///
-  bool readFromBinary(Vector3d& result);
+  bool readFromBinary(Vector3d& v);
 
   ///
   /// \brief Advance in the file to a specific tag
@@ -173,6 +174,7 @@ class BIORBD_API IfStream {
 
   ///
   /// \brief Close the file
+  /// \return True on success
   ///
   bool close();
 

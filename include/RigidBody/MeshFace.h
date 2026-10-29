@@ -39,6 +39,7 @@ class BIORBD_API MeshFace {
   ///
   /// \brief Allows to assign/get using ()
   /// \param idx The index in the vector
+  /// \return A reference to the vertex index
   ///
   int& operator()(size_t idx);
 

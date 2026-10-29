@@ -24,12 +24,14 @@ class BIORBD_API WrappingHalfCylinder : public WrappingObject {
 
   ///
   /// \brief Construct a wrapping half cylinder
+  /// \param other The position of the wrapping half cylinder
   ///
   WrappingHalfCylinder(const utils::Vector3d& other);
 
 #ifndef SWIG
   ///
   /// \brief Construct a wrapping half cylinder
+  /// \param other The position of the wrapping half cylinder
   ///
   WrappingHalfCylinder(const utils::Vector3d* other);
 #endif

@@ -64,6 +64,7 @@ class BIORBD_API Contacts : public RigidBodyDynamics::ConstraintSet
   /// \param name A human readable name
   /// \param parentName A human readable name of the parent (should correspond
   /// to the body_id)
+  /// \return The index of the new constraint
   ///
   size_t AddConstraint(
       size_t bodyId,
@@ -81,6 +82,7 @@ class BIORBD_API Contacts : public RigidBodyDynamics::ConstraintSet
   /// \param name A human readable name
   /// \param parentName A human readable name of the parent (should correspond
   /// to the body_id)
+  /// \return The index of the new constraint
   ///
 
   size_t AddConstraint(
@@ -104,6 +106,7 @@ class BIORBD_API Contacts : public RigidBodyDynamics::ConstraintSet
   /// \param name A human readable name
   /// \param enableStabilization Whether stabilization should be enabled or not
   /// \param stabilizationParam The value used for stabilization
+  /// \return The index of the new constraint
   ///
   size_t AddLoopConstraint(
       size_t body_id_predecessor,
@@ -380,6 +383,7 @@ class BIORBD_API Contacts : public RigidBodyDynamics::ConstraintSet
   /// it is not there and remove them otherwise. This effectively transform an
   /// allowed axes set to a axes to remove set, or vice versa.
   /// \param axesToSwap a vector of up to three values (being "x", "y" or "z")
+  /// \return The swapped axes
   ///
   utils::String swapAxes(const utils::String& axesToSwap) const;
 

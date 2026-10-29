@@ -224,6 +224,7 @@ class BIORBD_API IMUs {
   /// \param Q The generalized coordinates
   /// \param updateKin If the model should be updated
   /// \param lookForTechnical If true, only computes for the technical IMU
+  /// \return The jacobian of all the IMUs
   ///
   std::vector<utils::Matrix> IMUJacobian(
       const GeneralizedCoordinates& Q,

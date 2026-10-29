@@ -142,18 +142,21 @@ class BIORBD_API NodeSegment : public utils::Vector3d {
 
   ///
   /// \brief Check if axis is removed
+  /// \param i The index of the axis (X=0, Y=1, Z=2)
   /// \return If axis is removed or not
   ///
-  bool isAxisRemoved(size_t) const;
+  bool isAxisRemoved(size_t i) const;
 
   ///
   /// \brief Check if axis is kept
+  /// \param i The index of the axis (X=0, Y=1, Z=2)
   /// \return If axis is kept or not
   ///
-  bool isAxisKept(size_t) const;
+  bool isAxisKept(size_t i) const;
 
   ///
   /// \brief Get all the indices of the axes to keep (X=0, Y=1, Z=2)
+  /// \return The indices of the axes to keep
   ///
   std::vector<int> availableAxesIndices() const;
 

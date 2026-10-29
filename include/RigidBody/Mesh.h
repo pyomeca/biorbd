@@ -28,7 +28,7 @@ class BIORBD_API Mesh {
 
   ///
   /// \brief Construct mesh from another mesh
-  /// \brief other The other mesh
+  /// \param other The other mesh
   ///
   Mesh(const std::vector<utils::Vector3d> &other);
 

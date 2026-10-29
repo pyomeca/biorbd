@@ -147,6 +147,7 @@ class BIORBD_API HillType : public Muscle {
 
   ///
   /// \brief Return the Force-Length of the contractile element
+  /// \param emg The muscle state
   /// \return The Force-Length of the contractile element
   ///
   const utils::Scalar& FlCE(const State& emg);
@@ -182,6 +183,7 @@ class BIORBD_API HillType : public Muscle {
 
   ///
   /// \brief Compute the Force-length of the contractile element
+  /// \param emg The muscle state
   ///
   virtual void computeFlCE(const State& emg);
 

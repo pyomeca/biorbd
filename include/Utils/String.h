@@ -44,6 +44,7 @@ class BIORBD_API String : public std::string
   ///
   /// \brief Allow to use operator=
   /// \param other The other string
+  /// \return The string
   ///
   String& operator=(const String& other);
 #endif
@@ -51,30 +52,35 @@ class BIORBD_API String : public std::string
   ///
   /// \brief Append an unsigned int to the string
   /// \param val The unsinged int to add
+  /// \return The appended string
   ///
   String operator+(size_t val);
 
   ///
   /// \brief Append an int to the string
   /// \param val The int to add
+  /// \return The appended string
   ///
   String operator+(int val);
 
   ///
   /// \brief Append a double to the string
   /// \param val The double to add
+  /// \return The appended string
   ///
   String operator+(double val);
 
   ///
   /// \brief Append a char to the string
   /// \param text The char to add
+  /// \return The appended string
   ///
   String operator+(const char* text);
 
   ///
   /// \brief Get a specific character in the string
   /// \param idx The index of the character
+  /// \return The character
   ///
   String operator()(size_t idx) const;
 
@@ -82,6 +88,7 @@ class BIORBD_API String : public std::string
   /// \brief Extract a portion of the string
   /// \param startIdx The index of the first character
   /// \param lastIdx The index of the last character
+  /// \return The portion of the string
   ///
   String operator()(size_t startIdx, size_t lastIdx) const;
 

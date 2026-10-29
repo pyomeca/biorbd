@@ -116,6 +116,7 @@ class BIORBD_API Rotation : public Matrix3d
   /// \brief Create a Rotation from Euler angles
   /// \param rot The Euler angles vector
   /// \param seq The rotation sequence
+  /// \return The rotation matrix
   ///
   /// The number of rotation must match the number of axes in the rotation
   /// sequence
