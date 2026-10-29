@@ -1430,6 +1430,29 @@ TEST(Vector, normGradient)
             EXPECT_NEAR(val, expectednG[i], requiredPrecision);
         }
     }
+    {
+        // p > 2, with and without the root
+        std::vector<double> values({1.1, -1.2, 1.3, 1.4});
+        DECLARE_VECTOR(v, 4);
+        FILL_VECTOR(v, values);
+
+        double sumCube(0);
+        for (double value : values) {
+            sumCube += std::pow(std::fabs(value), 3);
+        }
+        double norm3(std::pow(sumCube, 1.0 / 3.0));
+
+        utils::Vector nGRoot(v.normGradient(3, false));
+        utils::Vector nGNoRoot(v.normGradient(3, true));
+        for (size_t i = 0; i < 4; ++i)
+        {
+            double xAbsX(values[i] * std::fabs(values[i]));
+            SCALAR_TO_DOUBLE(valRoot, nGRoot(i));
+            SCALAR_TO_DOUBLE(valNoRoot, nGNoRoot(i));
+            EXPECT_NEAR(valRoot, xAbsX / (norm3 * norm3), requiredPrecision);
+            EXPECT_NEAR(valNoRoot, 3 * xAbsX, requiredPrecision);
+        }
+    }
 }
 
 #endif

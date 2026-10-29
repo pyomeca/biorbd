@@ -76,6 +76,7 @@ class BIORBD_API ViaPoint : public utils::Vector3d {
   /// \brief To be able to use operator "=" when assigning a ViaPoint to a 3D
   /// node
   /// \param other The 3D node to assign to ViaPoint
+  /// \return The via point
   ///
   template <typename OtherDerived>
   ViaPoint& operator=(const utils::Vector3d& other) {

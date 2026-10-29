@@ -135,18 +135,21 @@ class BIORBD_API Quaternion : public RigidBodyDynamics::Math::Vector4d
   ///
   /// \brief Quaternion multiplication
   /// \param other The other quaternion
+  /// \return The multiplied quaternion
   ///
   Quaternion operator*(const Quaternion& other) const;
 
   ///
   /// \brief Multiply the quaternion with a scalar
   /// \param scalar The scalar to multiply with
+  /// \return The multiplied quaternion
   ///
   Quaternion operator*(const Scalar& scalar) const;
 
   ///
   /// \brief Multiply the quaternion with a scalar
   /// \param scalar The scalar to multiply with
+  /// \return The multiplied quaternion
   ///
   Quaternion operator*(float scalar) const;
 
@@ -161,12 +164,14 @@ class BIORBD_API Quaternion : public RigidBodyDynamics::Math::Vector4d
   ///
   /// \brief Add the quaternion to another
   /// \param other The other quaternion to add
+  /// \return The added quaternion
   ///
   Quaternion operator+(const Quaternion& other) const;
 
   ///
   /// \brief Subtract the quaternion to another
   /// \param other Other quaternion to substract
+  /// \return The subtracted quaternion
   ///
   Quaternion operator-(const Quaternion& other) const;
 
@@ -177,6 +182,7 @@ class BIORBD_API Quaternion : public RigidBodyDynamics::Math::Vector4d
   /// \param y The Y-Component of quaternion
   /// \param z The Z-Component of quaternion
   /// \param kStab The value of the kstabilizer
+  /// \return The quaternion
   ///
   static Quaternion fromGLRotate(
       const Scalar& angle,
@@ -190,6 +196,7 @@ class BIORBD_API Quaternion : public RigidBodyDynamics::Math::Vector4d
   /// \param angle The angle in radians
   /// \param axis The 3d vector of the axis
   /// \param kStab The value of the kstabilizer
+  /// \return The quaternion
   ///
   static Quaternion fromAxisAngle(
       const Scalar& angle,
@@ -200,6 +207,7 @@ class BIORBD_API Quaternion : public RigidBodyDynamics::Math::Vector4d
   /// \brief Construct Quaternion from a RotoTrans matrix
   /// \param rt RotoTrans matrix
   /// \param kStab The value of the kstabilizer
+  /// \return The quaternion
   ///
   static Quaternion fromMatrix(const RotoTrans& rt, const Scalar& kStab = 1);
 
@@ -207,6 +215,7 @@ class BIORBD_API Quaternion : public RigidBodyDynamics::Math::Vector4d
   /// \brief Construct Quaternion from a Rotation matrix
   /// \param mat The rotation matrix
   /// \param kStab The value of the kstabilizer
+  /// \return The quaternion
   ///
   static Quaternion fromMatrix(const Rotation& mat, const Scalar& kStab = 1);
 
@@ -215,6 +224,7 @@ class BIORBD_API Quaternion : public RigidBodyDynamics::Math::Vector4d
   /// \param zyx_angles The Euler angles in a sequence where the first element
   /// is the Z-component
   /// \param kStab The value of the kstabilizer
+  /// \return The quaternion
   ///
   static Quaternion fromZYXAngles(
       const Vector3d& zyx_angles,
@@ -225,6 +235,7 @@ class BIORBD_API Quaternion : public RigidBodyDynamics::Math::Vector4d
   /// \param yxz_angles The Euler angles in a sequence where the first element
   /// is the Y-component
   /// \param kStab The value of the kstabilizer
+  /// \return The quaternion
   ///
   static Quaternion fromYXZAngles(
       const Vector3d& yxz_angles,
@@ -235,6 +246,7 @@ class BIORBD_API Quaternion : public RigidBodyDynamics::Math::Vector4d
   /// \param xyz_angles The Euler angles in a sequence where the first element
   /// is the X-component
   /// \param kStab The value of the kstabilizer
+  /// \return The quaternion
   ///
   static Quaternion fromXYZAngles(
       const Vector3d& xyz_angles,
@@ -257,6 +269,7 @@ class BIORBD_API Quaternion : public RigidBodyDynamics::Math::Vector4d
   /// \brief Interpolation of the quaternion between to position
   /// \param alpha The proportion of the rotation
   /// \param quat The quaternion to targe
+  /// \return The interpolated quaternion
   ///
   Quaternion slerp(double alpha, const Quaternion& quat) const;
 #endif

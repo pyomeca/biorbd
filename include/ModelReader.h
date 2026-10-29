@@ -35,6 +35,7 @@ class BIORBD_API Reader {
   ///
   /// \brief Create a biorbd model from a bioMod file
   /// \param path The path of the file
+  /// \return The biorbd model
   ///
   static Model readModelFile(const utils::Path &path);
 
@@ -113,6 +114,7 @@ class BIORBD_API Reader {
   /// \brief Read a Vicon ASCII marker file (CSV formated)
   /// \param path The path of the file
   /// \param nFramesToGet The number of frames
+  /// \return The markers for each frame
   ///
   /// If the number of frame asked is less than the total number of frames,
   /// frames are evenly skip while reading. To get all frames, nFramesToGet

@@ -206,6 +206,7 @@ class BIORBD_API Muscles {
   ///
   /// \brief Compute the muscular joint torque
   /// \param F The force vector of all the muscles
+  /// \return The muscular joint torque
   ///
   /// The computation for the muscular joint torque is done from virtual power:
   ///
@@ -227,6 +228,7 @@ class BIORBD_API Muscles {
   /// \param Qdot The generalized velocities
   /// \param updateMuscleParameters Update the kinematic related parameters of
   /// the muscles
+  /// \return The muscular joint torque
   ///
   /// This function updates the muscles and then performs the computation for
   /// the muscular joint torque is done from virtual power:
@@ -250,6 +252,7 @@ class BIORBD_API Muscles {
   /// \param Qdot The generalized velocities
   /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2:
   /// both kinematics and muscles])
+  /// \return The muscular joint torque
   ///
   /// This function updates the muscles and then performs the computation for
   /// the muscular joint torque is done from virtual power:
@@ -268,6 +271,7 @@ class BIORBD_API Muscles {
   ///
   /// \brief Compute the muscular joint torque
   /// \param emg The dynamic state to compute the force vector
+  /// \return The muscular joint torque
   ///
   /// This functions converts muscle activations into muscle forces and then
   /// performs the computation for the muscular joint torque is done from
@@ -294,6 +298,7 @@ class BIORBD_API Muscles {
   /// updateMuscleParameters is false)
   /// \param updateMuscleParameters Update the kinematic related parameters of
   /// the muscles
+  /// \return The muscular joint torque
   ///
   /// The computation for the muscular joint torque is done from virtual power:
   ///
@@ -316,6 +321,7 @@ class BIORBD_API Muscles {
   /// \param Qdot The generalized velocities (not needed if updateKin is 0)
   /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2:
   /// both kinematics and muscles])
+  /// \return The muscular joint torque
   ///
   /// The computation for the muscular joint torque is done from virtual power:
   ///

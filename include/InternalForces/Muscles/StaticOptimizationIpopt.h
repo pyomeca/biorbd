@@ -50,7 +50,7 @@ class BIORBD_API StaticOptimizationIpopt : public Ipopt::TNLP {
       bool useResidual = true,
       unsigned int pNormFactor = 2,
       int verbose = 0,
-      double eps = 1e-10);
+      double eps = 1e-8);
 
   ///
   /// \brief Destroy class properly
@@ -212,17 +212,22 @@ class BIORBD_API StaticOptimizationIpopt : public Ipopt::TNLP {
 
   ///
   /// \brief Return the final solution
-  /// \return The final solution
+  /// \return The final solution (the initial activations if finalize_solution was not
+  /// called, e.g. if IPOPT aborted)
   ///
   utils::Vector finalSolution() const;
 
   ///
   /// \brief Return the final residual
-  /// \return The final residual
+  /// \return The final residual (zeros if finalize_solution was not
+  /// called, e.g. if IPOPT aborted)
   ///
   utils::Vector finalResidual() const;
 
  protected:
+  static const double m_activationLowerBound;  ///< Minimal muscle activation
+  static const double m_activationUpperBound;  ///< Maximal muscle activation
+
   Model& m_model;  ///< The model
   std::shared_ptr<unsigned int>
       m_nbQ;  ///< The number of generalized coordinates

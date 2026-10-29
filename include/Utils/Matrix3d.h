@@ -90,6 +90,7 @@ class BIORBD_API Matrix3d : public RigidBodyDynamics::Math::Matrix3d
   ///
   /// \brief Creates a base 3d matrix from a euler sequence of exactly 3
   /// elements
+  /// \param seq The euler sequence
   /// \return The base matrix
   ///
   static utils::Matrix3d fromEulerSequence(const utils::String& seq);

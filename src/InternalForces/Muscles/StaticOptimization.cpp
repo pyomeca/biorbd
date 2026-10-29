@@ -24,15 +24,19 @@ internal_forces::muscles::StaticOptimization::StaticOptimization(
     double initialActivationGuess,
     unsigned int pNormFactor,
     bool useResidualTorque,
-    int verbose)
+    int verbose,
+    double objectiveScaling)
     : m_model(model),
       m_useResidualTorque(useResidualTorque),
       m_initialActivationGuess(
           std::make_shared<utils::Vector>(m_model.nbMuscles())),
       m_pNormFactor(pNormFactor),
       m_verbose(verbose),
+      m_objectiveScaling(objectiveScaling),
       m_staticOptimProblem(),
       m_alreadyRun(false) {
+  utils::Error::check(
+      m_objectiveScaling > 0, "The objective scaling must be positive");
   m_allQ.push_back(Q);
   m_allQdot.push_back(Qdot);
   m_allTorqueTarget.push_back(torqueTarget);
@@ -49,15 +53,19 @@ internal_forces::muscles::StaticOptimization::StaticOptimization(
     const utils::Vector& initialActivationGuess,
     unsigned int pNormFactor,
     bool useResidualTorque,
-    int verbose)
+    int verbose,
+    double objectiveScaling)
     : m_model(model),
       m_useResidualTorque(useResidualTorque),
       m_initialActivationGuess(
           std::make_shared<utils::Vector>(m_model.nbMuscles())),
       m_pNormFactor(pNormFactor),
       m_verbose(verbose),
+      m_objectiveScaling(objectiveScaling),
       m_staticOptimProblem(),
       m_alreadyRun(false) {
+  utils::Error::check(
+      m_objectiveScaling > 0, "The objective scaling must be positive");
   m_allQ.push_back(Q);
   m_allQdot.push_back(Qdot);
   m_allTorqueTarget.push_back(torqueTarget);
@@ -78,14 +86,18 @@ internal_forces::muscles::StaticOptimization::StaticOptimization(
     const std::vector<StateDynamics>& initialActivationGuess,
     unsigned int pNormFactor,
     bool useResidualTorque,
-    int verbose)
+    int verbose,
+    double objectiveScaling)
     : m_model(model),
       m_useResidualTorque(useResidualTorque),
       m_initialActivationGuess(
           std::make_shared<utils::Vector>(m_model.nbMuscles())),
       m_pNormFactor(pNormFactor),
       m_verbose(verbose),
+      m_objectiveScaling(objectiveScaling),
       m_alreadyRun(false) {
+  utils::Error::check(
+      m_objectiveScaling > 0, "The objective scaling must be positive");
   m_allQ.push_back(Q);
   m_allQdot.push_back(Qdot);
   m_allTorqueTarget.push_back(torqueTarget);
@@ -96,10 +108,8 @@ internal_forces::muscles::StaticOptimization::StaticOptimization(
         "of dimension nbMuscles");
   }
 
-  if (initialActivationGuess.size() == 0) {
-    for (unsigned int i = 0; i < m_model.nbMuscles(); i++) {
-      (*m_initialActivationGuess)[i] = initialActivationGuess[i].activation();
-    }
+  for (unsigned int i = 0; i < m_model.nbMuscles(); i++) {
+    (*m_initialActivationGuess)[i] = initialActivationGuess[i].activation();
   }
 }
 
@@ -111,7 +121,8 @@ internal_forces::muscles::StaticOptimization::StaticOptimization(
     double initialActivationGuess,
     unsigned int pNormFactor,
     bool useResidualTorque,
-    int verbose)
+    int verbose,
+    double objectiveScaling)
     : m_model(model),
       m_useResidualTorque(useResidualTorque),
       m_allQ(allQ),
@@ -121,7 +132,10 @@ internal_forces::muscles::StaticOptimization::StaticOptimization(
           std::make_shared<utils::Vector>(m_model.nbMuscles())),
       m_pNormFactor(pNormFactor),
       m_verbose(verbose),
+      m_objectiveScaling(objectiveScaling),
       m_alreadyRun(false) {
+  utils::Error::check(
+      m_objectiveScaling > 0, "The objective scaling must be positive");
   for (unsigned int i = 0; i < m_model.nbMuscles(); ++i) {
     (*m_initialActivationGuess)[i] = initialActivationGuess;
   }
@@ -135,7 +149,8 @@ internal_forces::muscles::StaticOptimization::StaticOptimization(
     const utils::Vector& initialActivationGuess,
     unsigned int pNormFactor,
     bool useResidualTorque,
-    int verbose)
+    int verbose,
+    double objectiveScaling)
     : m_model(model),
       m_useResidualTorque(useResidualTorque),
       m_allQ(allQ),
@@ -145,7 +160,10 @@ internal_forces::muscles::StaticOptimization::StaticOptimization(
           std::make_shared<utils::Vector>(m_model.nbMuscles())),
       m_pNormFactor(pNormFactor),
       m_verbose(verbose),
+      m_objectiveScaling(objectiveScaling),
       m_alreadyRun(false) {
+  utils::Error::check(
+      m_objectiveScaling > 0, "The objective scaling must be positive");
   if (initialActivationGuess.size() != m_model.nbMuscles()) {
     utils::Error::raise(
         "Initial guess must either be a single value or a vector "
@@ -162,7 +180,8 @@ internal_forces::muscles::StaticOptimization::StaticOptimization(
     const std::vector<StateDynamics>& initialActivationGuess,
     unsigned int pNormFactor,
     bool useResidualTorque,
-    int verbose)
+    int verbose,
+    double objectiveScaling)
     : m_model(model),
       m_useResidualTorque(useResidualTorque),
       m_allQ(allQ),
@@ -172,37 +191,47 @@ internal_forces::muscles::StaticOptimization::StaticOptimization(
           std::make_shared<utils::Vector>(m_model.nbMuscles())),
       m_pNormFactor(pNormFactor),
       m_verbose(verbose),
+      m_objectiveScaling(objectiveScaling),
       m_alreadyRun(false) {
+  utils::Error::check(
+      m_objectiveScaling > 0, "The objective scaling must be positive");
   if (initialActivationGuess.size() != m_model.nbMuscles()) {
     utils::Error::raise(
         "Initial guess must either be a single value or a vector "
         "of dimension nbMuscles");
   }
 
-  if (initialActivationGuess.size() == 0) {
-    for (unsigned int i = 0; i < m_model.nbMuscles(); i++) {
-      (*m_initialActivationGuess)[i] = initialActivationGuess[i].activation();
-    }
+  for (unsigned int i = 0; i < m_model.nbMuscles(); i++) {
+    (*m_initialActivationGuess)[i] = initialActivationGuess[i].activation();
   }
 }
 
 void internal_forces::muscles::StaticOptimization::run(
-    bool useLinearizedState) {
+    bool useLinearizedState,
+    double tolerance,
+    int maxIter,
+    bool checkDerivative) {
   // Setup the Ipopt problem
   Ipopt::SmartPtr<Ipopt::IpoptApplication> app = IpoptApplicationFactory();
-  app->Options()->SetNumericValue("tol", 1e-7);
+  app->Options()->SetNumericValue("tol", tolerance);
   app->Options()->SetStringValue("mu_strategy", "adaptive");
   // app->Options()->SetStringValue("output_file", "ipopt.out");
   app->Options()->SetStringValue("hessian_approximation", "limited-memory");
-  app->Options()->SetStringValue("derivative_test", "first-order");
-  app->Options()->SetIntegerValue("max_iter", 10000);
-  app->Options()->SetIntegerValue("print_level", 5);
+  app->Options()->SetNumericValue("obj_scaling_factor", m_objectiveScaling);
+  app->Options()->SetStringValue(
+      "derivative_test", checkDerivative ? "first-order" : "none");
+  app->Options()->SetIntegerValue("max_iter", maxIter);
+  app->Options()->SetIntegerValue("print_level", m_verbose);
 
   Ipopt::ApplicationReturnStatus status;
   status = app->Initialize();
   utils::Error::check(
       status == Ipopt::Solve_Succeeded, "Ipopt initialization failed");
 
+  // Start from scratch so running multiple times gives the same results
+  m_staticOptimProblem.clear();
+  m_alreadyRun = false;
+  utils::Vector activationGuess(*m_initialActivationGuess);
   for (unsigned int i = 0; i < m_allQ.size(); ++i) {
     if (useLinearizedState)
       m_staticOptimProblem.push_back(
@@ -211,7 +240,7 @@ void internal_forces::muscles::StaticOptimization::run(
               m_allQ[i],
               m_allQdot[i],
               m_allTorqueTarget[i],
-              *m_initialActivationGuess,
+              activationGuess,
               m_useResidualTorque,
               m_pNormFactor,
               m_verbose));
@@ -222,16 +251,21 @@ void internal_forces::muscles::StaticOptimization::run(
               m_allQ[i],
               m_allQdot[i],
               m_allTorqueTarget[i],
-              *m_initialActivationGuess,
+              activationGuess,
               m_useResidualTorque,
               m_pNormFactor,
               m_verbose));
     // Optimize!
     status = app->OptimizeTNLP(m_staticOptimProblem[i]);
+    utils::Error::warning(
+        status == Ipopt::Solve_Succeeded ||
+            status == Ipopt::Solved_To_Acceptable_Level,
+        "Static optimization failed to converge for frame " +
+            std::to_string(i));
 
     // Take the solution of the previous optimization as the solution for the
     // next optimization
-    *m_initialActivationGuess =
+    activationGuess =
         static_cast<internal_forces::muscles::StaticOptimizationIpopt*>(
             Ipopt::GetRawPtr(m_staticOptimProblem[i]))
             ->finalSolution();
@@ -271,6 +305,41 @@ utils::Vector internal_forces::muscles::StaticOptimization::finalSolution(
     res = static_cast<internal_forces::muscles::StaticOptimizationIpopt*>(
               Ipopt::GetRawPtr(m_staticOptimProblem[index]))
               ->finalSolution();
+  }
+  return res;
+}
+
+std::vector<utils::Vector>
+internal_forces::muscles::StaticOptimization::finalResidual() {
+  std::vector<utils::Vector> res;
+  if (!m_alreadyRun) {
+    utils::Error::raise(
+        "Problem has not been run through the optimization process "
+        "yet, you should optimize it first to get "
+        "the residual solution");
+  } else {
+    for (unsigned int i = 0; i < m_allQ.size(); ++i) {
+      res.push_back(
+          static_cast<internal_forces::muscles::StaticOptimizationIpopt*>(
+              Ipopt::GetRawPtr(m_staticOptimProblem[i]))
+              ->finalResidual());
+    }
+  }
+  return res;
+}
+
+utils::Vector internal_forces::muscles::StaticOptimization::finalResidual(
+    unsigned int index) {
+  utils::Vector res;
+  if (!m_alreadyRun) {
+    utils::Error::raise(
+        "Problem has not been run through the optimization process "
+        "yet, you should optimize it first to get "
+        "the residual solution");
+  } else {
+    res = static_cast<internal_forces::muscles::StaticOptimizationIpopt*>(
+              Ipopt::GetRawPtr(m_staticOptimProblem[index]))
+              ->finalResidual();
   }
   return res;
 }

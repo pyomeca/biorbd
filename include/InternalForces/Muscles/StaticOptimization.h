@@ -41,6 +41,8 @@ class BIORBD_API StaticOptimization {
   /// \param useResidualTorque If use residual torque, if set to false, the
   /// optimization will fail if the model is not strong enough
   /// \param verbose Level of IPOPT verbose you want
+  /// \param objectiveScaling The scaling factor applied to the objective
+  /// function, on top of the scaling computed by IPOPT (must be positive)
   ///
   StaticOptimization(
       Model& model,
@@ -50,7 +52,8 @@ class BIORBD_API StaticOptimization {
       double initialActivationGuess = 0.01,
       unsigned int pNormFactor = 2,
       bool useResidualTorque = true,
-      int verbose = 0);
+      int verbose = 0,
+      double objectiveScaling = 1);
 
   ///
   /// \brief Construct static optimization
@@ -64,6 +67,8 @@ class BIORBD_API StaticOptimization {
   /// \param useResidualTorque If use residual torque, if set to false, the
   /// optimization will fail if the model is not strong enough
   /// \param verbose Level of IPOPT verbose you want
+  /// \param objectiveScaling The scaling factor applied to the objective
+  /// function, on top of the scaling computed by IPOPT (must be positive)
   ///
   StaticOptimization(
       Model& model,
@@ -73,7 +78,8 @@ class BIORBD_API StaticOptimization {
       const utils::Vector& initialActivationGuess,
       unsigned int pNormFactor = 2,
       bool useResidualTorque = true,
-      int verbose = 0);
+      int verbose = 0,
+      double objectiveScaling = 1);
 
   ///
   /// \brief Construct static optimization
@@ -87,6 +93,8 @@ class BIORBD_API StaticOptimization {
   /// \param useResidualTorque If use residual torque, if set to false, the
   /// optimization will fail if the model is not strong enough
   /// \param verbose Level of IPOPT verbose you want
+  /// \param objectiveScaling The scaling factor applied to the objective
+  /// function, on top of the scaling computed by IPOPT (must be positive)
   ///
   StaticOptimization(
       Model& model,
@@ -96,7 +104,8 @@ class BIORBD_API StaticOptimization {
       const std::vector<StateDynamics>& initialActivationGuess,
       unsigned int pNormFactor = 2,
       bool useResidualTorque = true,
-      int verbose = 0);
+      int verbose = 0,
+      double objectiveScaling = 1);
 
   ///
   /// \brief Construct static optimization for multiple frames
@@ -110,6 +119,8 @@ class BIORBD_API StaticOptimization {
   /// \param useResidualTorque If use residual torque, if set to false, the
   /// optimization will fail if the model is not strong enough
   /// \param verbose Level of IPOPT verbose you want
+  /// \param objectiveScaling The scaling factor applied to the objective
+  /// function, on top of the scaling computed by IPOPT (must be positive)
   ///
   StaticOptimization(
       Model& model,
@@ -119,7 +130,8 @@ class BIORBD_API StaticOptimization {
       double initialActivationGuess = 0.01,
       unsigned int pNormFactor = 2,
       bool useResidualTorque = true,
-      int verbose = 0);
+      int verbose = 0,
+      double objectiveScaling = 1);
 
   ///
   /// \brief Construct static optimization for multiple frames
@@ -133,6 +145,8 @@ class BIORBD_API StaticOptimization {
   /// \param useResidualTorque If use residual torque, if set to false, the
   /// optimization will fail if the model is not strong enough
   /// \param verbose Level of IPOPT verbose you want
+  /// \param objectiveScaling The scaling factor applied to the objective
+  /// function, on top of the scaling computed by IPOPT (must be positive)
   ///
   StaticOptimization(
       Model& model,
@@ -142,7 +156,8 @@ class BIORBD_API StaticOptimization {
       const utils::Vector& initialActivationGuess,
       unsigned int pNormFactor = 2,
       bool useResidualTorque = true,
-      int verbose = 0);
+      int verbose = 0,
+      double objectiveScaling = 1);
 
   ///
   /// \brief Construct static optimization for multiple frames
@@ -156,6 +171,8 @@ class BIORBD_API StaticOptimization {
   /// \param useResidualTorque If use residual torque, if set to false, the
   /// optimization will fail if the model is not strong enough
   /// \param verbose Level of IPOPT verbose you want
+  /// \param objectiveScaling The scaling factor applied to the objective
+  /// function, on top of the scaling computed by IPOPT (must be positive)
   ///
   StaticOptimization(
       Model& model,
@@ -165,14 +182,29 @@ class BIORBD_API StaticOptimization {
       const std::vector<StateDynamics>& initialActivationGuess,
       unsigned int pNormFactor = 2,
       bool useResidualTorque = true,
-      int verbose = 0);
+      int verbose = 0,
+      double objectiveScaling = 1);
 
   ///
   /// \brief Run the static optimization
   /// \param useLinearizedState If use the algorithm should be run with the
   /// linearized approach (faster but less precise)
+  /// \param tolerance The convergence tolerance of IPOPT ("tol" option)
+  /// \param maxIter The maximum number of iterations of IPOPT for each frame.
+  /// If it is reached, a warning is issued and the last iterate is kept
+  /// \param checkDerivatives If the first order derivatives should be checked
+  /// by IPOPT against finite differences (for debug purposes, the results are
+  /// printed if verbose is high enough)
   ///
-  void run(bool useLinearizedState = true);
+  /// Each frame uses the solution of the previous frame as initial guess.
+  /// Running more than once restarts from the initial guess given at
+  /// construction and replaces the previous results.
+  ///
+  void run(
+      bool useLinearizedState = true,
+      double tolerance = 1e-7,
+      int maxIter = 1000,
+      bool checkDerivatives = false);
 
   ///
   /// \brief Return the final solution
@@ -182,9 +214,23 @@ class BIORBD_API StaticOptimization {
 
   ///
   /// \brief Return the final solution at a specific index
+  /// \param index The index of the frame
   /// \return The final solution at a specific index
   ///
   utils::Vector finalSolution(unsigned int index);
+
+  ///
+  /// \brief Return the final residuals
+  /// \return The final residuals
+  ///
+  std::vector<utils::Vector> finalResidual();
+
+  ///
+  /// \brief Return the final residuals at a specific index
+  /// \param index The index of the frame
+  /// \return The final residuals at a specific index
+  ///
+  utils::Vector finalResidual(unsigned int index);
 
  protected:
   Model& m_model;            ///< A reference to the model
@@ -199,6 +245,7 @@ class BIORBD_API StaticOptimization {
       m_initialActivationGuess;  ///< Initial activation guess
   unsigned int m_pNormFactor;    ///< The p-norm factor
   int m_verbose;                 ///< Verbose level
+  double m_objectiveScaling;     ///< Scaling factor of the objective
   std::vector<Ipopt::SmartPtr<Ipopt::TNLP>>
       m_staticOptimProblem;  ///< The static optimization problem
   bool m_alreadyRun;         ///< If already ran the static optimization

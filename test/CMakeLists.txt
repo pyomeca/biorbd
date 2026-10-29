@@ -50,7 +50,7 @@ add_subdirectory(
 ##############
 # Unit Tests
 ##############
-enable_testing()
+include(GoogleTest)
 
 set(TEST_SRC_FILES
     "${CMAKE_SOURCE_DIR}/test/test_biorbd.cpp"
@@ -102,10 +102,8 @@ endif() #CMAKE_BUILD_TYPE STREQUAL "Coverage"
 file(COPY "${CMAKE_SOURCE_DIR}/test/models/"
   DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/models/")
 
-set(ALL_TESTS "${PROJECT_NAME}")
 if (BINDER_C)
     add_subdirectory("binding/c")
-    list(APPEND ALL_TESTS "${ALL_TESTS}" "${C_BINDER_TESTS_NAME}")
 endif()
 
 if (BINDER_PYTHON3)
@@ -124,6 +122,10 @@ if (BINDER_PYTHON3)
         PATTERN "__pycache__" EXCLUDE)
 endif()
 
-# This is so you can do 'make test' to see all your tests run, instead of
-# manually running the executable runUnitTests to see those specific tests.
-add_test(UnitTests "${ALL_TESTS}")
+# Register each gtest individually so they show up in 'ctest' and IDE test explorers
+# Discovery is deferred to ctest time (PRE_TEST) because, on Windows, the executable cannot run
+# at build time: the biorbd DLLs are only reachable once installed
+gtest_discover_tests(${PROJECT_NAME}
+    WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+    DISCOVERY_MODE PRE_TEST
+)

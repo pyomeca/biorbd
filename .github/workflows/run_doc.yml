@@ -1,0 +1,55 @@
+name: Build the documentation
+
+on:
+  pull_request:
+    paths:
+      - "include/**"
+      - "src/**"
+      - "doc/**"
+      - "README.md"
+      - ".github/workflows/run_doc.yml"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  doc:
+    name: doxygen
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      # The doxygen from apt is too old for some of the options used in the Doxyfile
+      - name: Setup environment
+        uses: conda-incubator/setup-miniconda@v4
+        with:
+          # TODO: Go back to "latest" when https://github.com/conda-incubator/setup-miniconda/issues/589 is fixed
+          miniforge-version: 26.7.2-0
+          activate-environment: biorbd
+          channels: conda-forge
+          conda-remove-defaults: "true"
+
+      - name: Install dependencies
+        run: |
+          conda install doxygen
+          doxygen --version
+
+      # The Doxyfile is normally configured by CMake (BUILD_DOC=ON), but that requires all the dependencies of biorbd.
+      # Since the documentation only needs the sources, the CMake variables are substituted directly.
+      # The Doxyfile sets WARN_AS_ERROR, so any undocumented member, parameter or return value fails this step
+      - name: Build documentation
+        run: |
+          BIORBD_FOLDER=`pwd`
+          DOC_FOLDER=$BIORBD_FOLDER/doc_build
+          mkdir -p $DOC_FOLDER
+          sed -e "s|@CMAKE_SOURCE_DIR@|$BIORBD_FOLDER|g" \
+              -e "s|@CMAKE_CURRENT_BINARY_DIR@|$DOC_FOLDER|g" \
+              doc/Doxyfile.in > $DOC_FOLDER/Doxyfile
+          cd $DOC_FOLDER
+          doxygen Doxyfile
+          cd $BIORBD_FOLDER

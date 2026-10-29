@@ -67,6 +67,7 @@ class BIORBD_API RotoTransNode : public RotoTrans, public Node {
 
   ///
   /// \brief operator* Matrix multiplication
+  /// \param other The other RotoTrans to multiply with
   /// \return Rotated matrix
   ///
   RotoTrans operator*(const RotoTransNode& other) const;

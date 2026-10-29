@@ -21,8 +21,9 @@ class BIORBD_API SoftContactSphere : public rigidbody::SoftContactNode {
 
   ///
   /// \brief Construct a contact node
+  /// \param other The contact node to copy
   ///
-  SoftContactSphere(const rigidbody::SoftContactNode&);
+  SoftContactSphere(const rigidbody::SoftContactNode& other);
 
   ///
   /// \brief Construct a contact node

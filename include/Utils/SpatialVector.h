@@ -110,11 +110,13 @@ class BIORBD_API SpatialVector : public RigidBodyDynamics::Math::SpatialVector
 
   ///
   /// \brief Return the force part of the vector (last three elements)
+  /// \return The force part of the vector
   ///
   utils::Vector3d force() const;
 
   ///
   /// \brief Return the moment part of the vector (first three elements)
+  /// \return The moment part of the vector
   ///
   utils::Vector3d moment() const;
 

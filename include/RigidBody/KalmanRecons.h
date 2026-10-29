@@ -37,16 +37,19 @@ class KalmanParam {
 
   ///
   /// \brief Return the acquisition frequency
+  /// \return The acquisition frequency
   ///
   double acquisitionFrequency() const;
 
   ///
   /// \brief Return the noise factor
+  /// \return The noise factor
   ///
   double noiseFactor() const;
 
   ///
   /// \brief Return the error factor
+  /// \return The error factor
   ///
   double errorFactor() const;
 

@@ -93,6 +93,7 @@ class BIORBD_API Joints : public RigidBodyDynamics::Model
   /// \param characteristics The characteristics of the semgent (mass, center of
   /// mass, inertia of the segment, etc)
   /// \param referenceFrame Transformation of the parent to child
+  /// \return The index of the new segment
   ///
   size_t AddSegment(
       const utils::String& segmentName,
@@ -123,6 +124,7 @@ class BIORBD_API Joints : public RigidBodyDynamics::Model
   /// \param characteristics The characteristics of the semgent (mass, center of
   /// mass, inertia of the segment, etc)
   /// \param referenceFrame Transformation of the parent to child
+  /// \return The index of the new segment
   ///
   size_t AddSegment(
       const utils::String& segmentName,
@@ -328,6 +330,7 @@ class BIORBD_API Joints : public RigidBodyDynamics::Model
   /// \param Q The generalized coordinates
   /// \param Qdot The generalized velocities
   /// \param Qddot The generalized accelerations
+  /// \return The updated model
   ///
 #ifdef BIORBD_USE_CASADI_MATH
   Joints
@@ -408,6 +411,7 @@ class BIORBD_API Joints : public RigidBodyDynamics::Model
   /// \param pointInLocal The point in the body
   /// \param updateKin If the kinematics of the model should be computed (always
   /// true for casadi)
+  /// \return The position of the point in the global reference frame
   utils::Vector3d CalcBodyToBaseCoordinates(
       const rigidbody::GeneralizedCoordinates& Q,
       utils::String segmentName,
@@ -423,6 +427,7 @@ class BIORBD_API Joints : public RigidBodyDynamics::Model
   /// \param pointInLocal The point in the body
   /// \param updateKin If the kinematics of the model should be computed (always
   /// true for casadi)
+  /// \return The position of the point in the global reference frame
   utils::Vector3d CalcBodyToBaseCoordinates(
       const rigidbody::GeneralizedCoordinates& Q,
       unsigned int bodyId,
@@ -439,6 +444,7 @@ class BIORBD_API Joints : public RigidBodyDynamics::Model
   /// \param pointInLocal The point in the body
   /// \param updateKin If the kinematics of the model should be computed (always
   /// true for casadi)
+  /// \return The velocity of the point in the global reference frame
   utils::Vector3d CalcPointVelocity(
       const rigidbody::GeneralizedCoordinates& Q,
       const rigidbody::GeneralizedVelocity& Qdot,
@@ -456,6 +462,7 @@ class BIORBD_API Joints : public RigidBodyDynamics::Model
   /// \param pointInLocal The point in the body
   /// \param updateKin If the kinematics of the model should be computed (always
   /// true for casadi)
+  /// \return The velocity of the point in the global reference frame
   utils::Vector3d CalcPointVelocity(
       const rigidbody::GeneralizedCoordinates& Q,
       const rigidbody::GeneralizedVelocity& Qdot,
@@ -473,6 +480,7 @@ class BIORBD_API Joints : public RigidBodyDynamics::Model
   /// \param pointInLocal The point in the body
   /// \param updateKin If the kinematics of the model should be computed (always
   /// true for casadi)
+  /// \return The angular and linear velocity of the point in the global reference frame
   utils::SpatialVector CalcPointVelocity6D(
       const rigidbody::GeneralizedCoordinates& Q,
       const rigidbody::GeneralizedVelocity& Qdot,
@@ -490,6 +498,7 @@ class BIORBD_API Joints : public RigidBodyDynamics::Model
   /// \param pointInLocal The point in the body
   /// \param updateKin If the kinematics of the model should be computed (always
   /// true for casadi)
+  /// \return The angular and linear velocity of the point in the global reference frame
   utils::SpatialVector CalcPointVelocity6D(
       const rigidbody::GeneralizedCoordinates& Q,
       const rigidbody::GeneralizedVelocity& Qdot,
@@ -508,6 +517,7 @@ class BIORBD_API Joints : public RigidBodyDynamics::Model
   /// \param pointInLocal The point in the body
   /// \param updateKin If the kinematics of the model should be computed (always
   /// true for casadi)
+  /// \return The acceleration of the point in the global reference frame
   utils::Vector3d CalcPointAcceleration(
       const rigidbody::GeneralizedCoordinates& Q,
       const rigidbody::GeneralizedVelocity& Qdot,
@@ -527,6 +537,7 @@ class BIORBD_API Joints : public RigidBodyDynamics::Model
   /// \param pointInLocal The point in the body
   /// \param updateKin If the kinematics of the model should be computed (always
   /// true for casadi)
+  /// \return The acceleration of the point in the global reference frame
   utils::Vector3d CalcPointAcceleration(
       const rigidbody::GeneralizedCoordinates& Q,
       const rigidbody::GeneralizedVelocity& Qdot,
@@ -545,6 +556,7 @@ class BIORBD_API Joints : public RigidBodyDynamics::Model
   /// \param pointInLocal The point in the body
   /// \param updateKin If the kinematics of the model should be computed (always
   /// true for casadi)
+  /// \return The jacobian of the point
   utils::Matrix CalcPointJacobian(
       const rigidbody::GeneralizedCoordinates& Q,
       utils::String segmentName,
@@ -561,6 +573,7 @@ class BIORBD_API Joints : public RigidBodyDynamics::Model
   /// \param pointInLocal The point in the body
   /// \param updateKin If the kinematics of the model should be computed (always
   /// true for casadi)
+  /// \return The jacobian of the point
   utils::Matrix CalcPointJacobian(
       const rigidbody::GeneralizedCoordinates& Q,
       unsigned int bodyId,
@@ -1071,6 +1084,7 @@ class BIORBD_API Joints : public RigidBodyDynamics::Model
   /// \param Q The generalized coordinates
   /// \param segmentIdx The index of the segment
   /// \param updateKin If the kinematics of the model should be computed
+  /// \return The jacobian of the rotation matrix of the segment
   ///
   utils::Matrix JacobianSegmentRotMat(
       const rigidbody::GeneralizedCoordinates& Q,

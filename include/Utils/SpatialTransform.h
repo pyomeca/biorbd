@@ -63,16 +63,19 @@ class BIORBD_API SpatialTransform
 
   ///
   /// \brief Return the transformation matrix, i.e. the rototrans matrix
+  /// \return The rototrans matrix
   ///
   utils::RotoTrans rototrans() const;
 
   ///
   /// \brief Return the rotation part of the transform
+  /// \return The rotation matrix
   ///
   utils::Matrix3d rotation() const;
 
   ///
   /// \brief Return the translation part of the transform
+  /// \return The translation vector
   ///
   utils::Vector3d translation() const;
 };

@@ -52,6 +52,8 @@ class BIORBD_API ExternalForceSet {
     ///
     /// \brief Return the pair force vector/point of application in the local
     /// reference frame
+    /// \param index The index of the force
+    /// \return The pair force vector/point of application
     std::pair<utils::SpatialVector, utils::RotoTransNode> get(int index) {
       return std::pair<utils::SpatialVector, utils::RotoTransNode>(
           m_vectors[index], m_nodes[index]);
@@ -170,9 +172,9 @@ class BIORBD_API ExternalForceSet {
 
   ///
   /// \brief The forces in a rbdl compatible format. This won't work if
-  /// useTranslationalForces
+  /// useTranslationalForces or useSoftContacts is set to true
   /// \param updatedModel The joint model that with its kinematics updated
-  /// useSoftContacts is set to true
+  /// \return The external forces in a rbdl compatible format
   ///
   std::vector<RigidBodyDynamics::Math::SpatialVector> computeRbdlSpatialVectors(
       rigidbody::Joints& updatedModel);
@@ -182,6 +184,7 @@ class BIORBD_API ExternalForceSet {
   /// useSoftContacts is set to true
   /// \param updatedModel The joint model that with its kinematics updated
   /// \param Q The generalized coordinates
+  /// \return The external forces in a rbdl compatible format
   ///
   std::vector<RigidBodyDynamics::Math::SpatialVector> computeRbdlSpatialVectors(
       rigidbody::Joints& updatedModel,
@@ -192,6 +195,7 @@ class BIORBD_API ExternalForceSet {
   /// \param updatedModel The joint model that with its kinematics updated
   /// \param Q The generalized coordinates
   /// \param Qdot The generalized velocity
+  /// \return The external forces in a rbdl compatible format
   ///
   std::vector<RigidBodyDynamics::Math::SpatialVector> computeRbdlSpatialVectors(
       rigidbody::Joints& updatedModel,
@@ -202,6 +206,7 @@ class BIORBD_API ExternalForceSet {
   /// \brief The forces in a rbdl compatible format. This won't work if
   /// useTranslationalForces or useSoftContacts is set to true
   /// \param updatedModel The joint model that with its kinematics updated
+  /// \return The external forces as spatial vectors
   ///
   std::vector<utils::SpatialVector> computeSpatialVectors(
       rigidbody::Joints& updatedModel);
@@ -211,6 +216,7 @@ class BIORBD_API ExternalForceSet {
   /// useSoftContacts is set to true
   /// \param updatedModel The joint model that with its kinematics updated
   /// \param Q The generalized coordinates
+  /// \return The external forces as spatial vectors
   ///
   std::vector<utils::SpatialVector> computeSpatialVectors(
       rigidbody::Joints& updatedModel,
@@ -221,6 +227,7 @@ class BIORBD_API ExternalForceSet {
   /// \param updatedModel The joint model that with its kinematics updated
   /// \param Q The generalized coordinates
   /// \param Qdot The generalized velocity
+  /// \return The external forces as spatial vectors
   ///
   std::vector<utils::SpatialVector> computeSpatialVectors(
       rigidbody::Joints& updatedModel,
@@ -232,6 +239,7 @@ class BIORBD_API ExternalForceSet {
   /// \brief Return if there is at least one external force expressed in the
   /// local reference frame. This is important since having this forces to send
   /// Q when computing the force in global reference frame
+  /// \return If there is at least one external force in the local reference frame
   ///
   bool hasExternalForceInLocalReferenceFrame() const;
 

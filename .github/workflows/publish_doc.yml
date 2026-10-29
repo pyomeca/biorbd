@@ -1,0 +1,63 @@
+name: Publish the documentation
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: doxygen
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      # The doxygen from apt is too old for some of the options used in the Doxyfile
+      - name: Setup environment
+        uses: conda-incubator/setup-miniconda@v4
+        with:
+          # TODO: Go back to "latest" when https://github.com/conda-incubator/setup-miniconda/issues/589 is fixed
+          miniforge-version: 26.7.2-0
+          activate-environment: biorbd
+          channels: conda-forge
+          conda-remove-defaults: "true"
+
+      - name: Install dependencies
+        run: |
+          conda install doxygen
+          doxygen --version
+
+      # See run_doc.yml for why the Doxyfile is not configured by CMake
+      - name: Build documentation
+        run: |
+          BIORBD_FOLDER=`pwd`
+          DOC_FOLDER=$BIORBD_FOLDER/doc_build
+          mkdir -p $DOC_FOLDER
+          sed -e "s|@CMAKE_SOURCE_DIR@|$BIORBD_FOLDER|g" \
+              -e "s|@CMAKE_CURRENT_BINARY_DIR@|$DOC_FOLDER|g" \
+              doc/Doxyfile.in > $DOC_FOLDER/Doxyfile
+          echo "PROJECT_NUMBER = ${{ github.event.release.tag_name || github.ref_name }}" >> $DOC_FOLDER/Doxyfile
+          cd $DOC_FOLDER
+          doxygen Doxyfile
+          cd $BIORBD_FOLDER
+
+      # The documentation is hosted with the other pyomeca projects at https://pyomeca.github.io/Documentation/biorbd.
+      # Pushing to that repository requires the DOCUMENTATION_DEPLOY_KEY secret, that is the private part of a deploy
+      # key with write access added to pyomeca/Documentation
+      - name: Publish documentation
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          deploy_key: ${{ secrets.DOCUMENTATION_DEPLOY_KEY }}
+          external_repository: pyomeca/Documentation
+          publish_branch: master
+          publish_dir: doc_build/html
+          destination_dir: biorbd
+          commit_message: "Update biorbd documentation to ${{ github.event.release.tag_name || github.ref_name }}"

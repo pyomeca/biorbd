@@ -17,9 +17,13 @@ namespace muscles {
 /// \brief The actual implementation of the Static Optimization problem using a
 /// linearized approach
 ///
-/// This algo should be much faster than tradition but less precise (Michaud,
-/// 2020)
-///
+/// This algo should be much faster than tradition but less precise. The
+/// torque of each muscle is linearized between no activation and its initial
+/// activation (the solution of the previous frame), so the approximation is
+/// exact at that reference activation (Michaud, "Two efficient static
+/// optimization algorithms that account for muscle-tendon equilibrium:
+/// approaching the constraint Jacobian via a constant or a cubic spline
+/// function")
 ///
 class BIORBD_API StaticOptimizationIpoptLinearized
     : public StaticOptimizationIpopt {
@@ -30,7 +34,8 @@ class BIORBD_API StaticOptimizationIpoptLinearized
   /// \param Q The generalized coordinates
   /// \param Qdot The generalized velocities
   /// \param torqueTarget The generalized torque target
-  /// \param activationInit The initial activation
+  /// \param activationInit The initial activation, also used as the
+  /// reference activation of the linearization
   /// \param useResidual If use residual torque, if set to false, the
   /// optimization will fail if the model is not strong enough
   /// \param pNormFactor The p-norm to perform
@@ -46,7 +51,7 @@ class BIORBD_API StaticOptimizationIpoptLinearized
       bool useResidual = true,
       unsigned int pNormFactor = 2,
       int verbose = 0,
-      double eps = 1e-10);
+      double eps = 1e-8);
 
   ///
   /// \brief Destroy class properly
@@ -93,6 +98,8 @@ class BIORBD_API StaticOptimizationIpoptLinearized
 
  protected:
   std::shared_ptr<utils::Matrix> m_jacobian;  ///< The constraints jacobian
+  std::shared_ptr<utils::Vector>
+      m_torquePassive;  ///< The muscle torque when not activated
   void prepareJacobian();  ///< Setup the constant constraints jacobian
 };
 

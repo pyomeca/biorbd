@@ -26,3 +26,9 @@ target_link_libraries(${PROJECT_NAME}
 # Copy the necessary file for the tests
 file(COPY "${CMAKE_SOURCE_DIR}/test/models/"
   DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/models/")
+
+# Register each gtest individually (must be called in the directory that creates the target)
+gtest_discover_tests(${PROJECT_NAME}
+    WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+    DISCOVERY_MODE PRE_TEST
+)

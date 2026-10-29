@@ -193,6 +193,7 @@ class BIORBD_API RotoTrans : public RigidBodyDynamics::Math::Matrix4d
   /// \param rot The Euler angles vector
   /// \param trans The translation vector
   /// \param seq The rotation sequence
+  /// \return The RotoTrans matrix
   ///
   /// The number of rotation umust match the number of axes in the rotation
   /// sequence
@@ -239,6 +240,7 @@ class BIORBD_API RotoTrans : public RigidBodyDynamics::Math::Matrix4d
   ///
   /// \brief Expand 3D vector to 4D (padding with an extra 1)
   /// \param v1 Vector to expand
+  /// \return The expanded 4D vector
   ///
   RigidBodyDynamics::Math::Vector4d expand3dTo4d(const Vector3d& v1);
 

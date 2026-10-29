@@ -115,6 +115,7 @@ class BIORBD_API Model : public rigidbody::Joints,
   /// \brief Get an external forces set designed for the current model
   /// \param useLinearForces If this force set has external forces
   /// \param useSoftContacts If this force set has soft contacts
+  /// \return The external forces set
   ///
   rigidbody::ExternalForceSet externalForceSet(
       bool useLinearForces = true,

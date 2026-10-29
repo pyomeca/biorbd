@@ -84,7 +84,8 @@ class BIORBD_API Vector : public RigidBodyDynamics::Math::VectorNd
   ///
   /// \brief Return the gradient of the p-norm
   /// \param p the factor of the p-norm
-  /// \param skipRoot To perform or not the sqrt_p()
+  /// \param skipRoot To perform or not the sqrt_p(), that is the gradient of
+  /// \f$\sum |x_i|^p\f$ if true or of \f$(\sum |x_i|^p)^{1/p}\f$ if false
   /// \return The gradient of the norm
   ///
   Vector normGradient(size_t p = 2, bool skipRoot = false);

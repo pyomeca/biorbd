@@ -149,6 +149,7 @@ class BIORBD_API WrappingObject : public utils::Vector3d {
   ///
   /// \brief To be able to use the equal "=" operator to define wrapping object
   /// \param other The 3d node to define the wrapping object
+  /// \return The wrapping object
   WrappingObject& operator=(const utils::Vector3d& other) {
     this->utils::Vector3d::operator=(other);
     return *this;
