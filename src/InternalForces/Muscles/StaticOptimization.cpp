@@ -211,18 +211,20 @@ internal_forces::muscles::StaticOptimization::StaticOptimization(
 }
 
 void internal_forces::muscles::StaticOptimization::run(
-    bool useLinearizedState) {
+    bool useLinearizedState,
+    double tolerance,
+    int maxIter,
+    bool checkDerivative) {
   // Setup the Ipopt problem
   Ipopt::SmartPtr<Ipopt::IpoptApplication> app = IpoptApplicationFactory();
-  app->Options()->SetNumericValue("tol", 1e-7);
+  app->Options()->SetNumericValue("tol", tolerance);
   app->Options()->SetStringValue("mu_strategy", "adaptive");
   // app->Options()->SetStringValue("output_file", "ipopt.out");
   app->Options()->SetStringValue("hessian_approximation", "limited-memory");
   app->Options()->SetNumericValue("obj_scaling_factor", m_objectiveScaling);
-  // The "derivative_test" is for debug, change "none" to "second-order" to
-  // confirm the derivative of the program
-  app->Options()->SetStringValue("derivative_test", "none");
-  app->Options()->SetIntegerValue("max_iter", 10000);
+  app->Options()->SetStringValue(
+      "derivative_test", checkDerivative ? "second-order" : "none");
+  app->Options()->SetIntegerValue("max_iter", maxIter);
   app->Options()->SetIntegerValue("print_level", m_verbose);
 
   Ipopt::ApplicationReturnStatus status;

@@ -190,7 +190,11 @@ class BIORBD_API StaticOptimization {
   /// \param useLinearizedState If use the algorithm should be run with the
   /// linearized approach (faster but less precise)
   ///
-  void run(bool useLinearizedState = true);
+  void run(
+      bool useLinearizedState = true,
+      double tolerance = 1e-7,
+      int maxIter = 1000,
+      bool checkDerivatives = false);
 
   ///
   /// \brief Return the final solution
@@ -204,7 +208,7 @@ class BIORBD_API StaticOptimization {
   ///
   utils::Vector finalSolution(unsigned int index);
 
-    ///
+  ///
   /// \brief Return the final residuals
   /// \return The final residuals
   ///
@@ -215,7 +219,6 @@ class BIORBD_API StaticOptimization {
   /// \return The final residuals at a specific index
   ///
   utils::Vector finalResidual(unsigned int index);
-
 
  protected:
   Model& m_model;            ///< A reference to the model
@@ -230,7 +233,7 @@ class BIORBD_API StaticOptimization {
       m_initialActivationGuess;  ///< Initial activation guess
   unsigned int m_pNormFactor;    ///< The p-norm factor
   int m_verbose;                 ///< Verbose level
-  double m_objectiveScaling;  ///< Scaling factor of the objective
+  double m_objectiveScaling;     ///< Scaling factor of the objective
   std::vector<Ipopt::SmartPtr<Ipopt::TNLP>>
       m_staticOptimProblem;  ///< The static optimization problem
   bool m_alreadyRun;         ///< If already ran the static optimization
