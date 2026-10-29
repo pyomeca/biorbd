@@ -9,40 +9,40 @@
 - [Table of contents](#table-of-contents)
 - [How to install](#how-to-install)
     - [pip](#pip)
-    - [Anaconda (For Windows, Linux and Mac)](#anaconda-for-windows-linux-and-mac)
-    - [Download binaries (For MATLAB users on Windows, Linux and Mac)](#download-binaries-for-matlab-users-on-windows-linux-and-mac)
-    - [Compiling (For Windows, Linux and Mac)](#compiling-for-windows-linux-and-mac)
-        - [Dependencies](#dependencies)
-        - [CMake](#cmake)
+  - [Anaconda (For Windows, Linux and Mac)](#anaconda-for-windows-linux-and-mac)
+  - [Download binaries (For MATLAB users on Windows, Linux and Mac)](#download-binaries-for-matlab-users-on-windows-linux-and-mac)
+  - [Compiling (For Windows, Linux and Mac)](#compiling-for-windows-linux-and-mac)
+    - [Dependencies](#dependencies)
+    - [CMake](#cmake)
 - [How to use](#how-to-use)
-    - [The C++ API](#the-c-api)
-        - [Create an empty yet valid model](#create-an-empty-yet-valid-model)
-        - [Read and write a bioMod file](#read-and-write-a-biomod-file)
-        - [Perform some analyses](#perform-some-analyses)
-    - [MATLAB](#matlab)
-        - [Perform some analyses](#perform-some-analyses-1)
-        - [Help](#help)
-    - [Python 3](#python-3)
-        - [Perform some analyses](#perform-some-analyses-2)
+  - [The C++ API](#the-c-api)
+    - [Create an empty yet valid model](#create-an-empty-yet-valid-model)
+    - [Read and write a bioMod file](#read-and-write-a-biomod-file)
+    - [Perform some analyses](#perform-some-analyses)
+  - [MATLAB](#matlab)
+    - [Perform some analyses](#perform-some-analyses-1)
+    - [Help](#help)
+  - [Python 3](#python-3)
+    - [Perform some analyses](#perform-some-analyses-2)
 - [Model files](#model-files)
-    - [*bioMod* files](#biomod-files)
-        - [Header](#header)
-            - [version](#version)
-            - [mesh_folder_prefix](#mesh_folder_prefix)
-            - [gravity](#gravity)
-            - [variables / endvariables](#variables--endvariables)
-        - [Definition of the model](#definition-of-the-model)
-            - [Segment](#segment)
-            - [Marker](#marker)
-            - [Imu](#imu)
-            - [Loopconstraint](#loopconstraint)
-            - [Actuators](#actuators)
-    - [Convert from OpenSim models](#convert-from-opensim-models)
+  - [*bioMod* files](#biomod-files)
+    - [Header](#header)
+      - [version](#version)
+      - [mesh\_folder\_prefix](#mesh_folder_prefix)
+      - [gravity](#gravity)
+      - [variables / endvariables](#variables--endvariables)
+    - [Definition of the model](#definition-of-the-model)
+      - [Segment](#segment)
+      - [Marker](#marker)
+      - [Imu](#imu)
+      - [Loopconstraint](#loopconstraint)
+      - [Actuators](#actuators)
+  - [Convert from OpenSim models](#convert-from-opensim-models)
 - [How to contribute](#how-to-contribute)
 - [Graphical User Interface (GUI)](#graphical-user-interface-gui)
 - [Documentation](#documentation)
 - [Troubleshoots](#troubleshoots)
-    - [Slow BIORBD](#slow-biorbd)
+  - [Slow BIORBD](#slow-biorbd)
 - [Cite](#cite)
 
 
@@ -99,13 +99,13 @@ Once the folder is download, you simply unzip it, add it to the MATLAB's path an
 ## Compiling (For Windows, Linux and Mac)
 The main drawback with downloading the pre-compiled version from Anaconda is that this version may be out-of-date (even if I do my best to keep the release versions up-to-date). Moreover, since it is already compiled, it doesn't allow you to modify BIORBD if you need to. Therefore, a more versatile way to enjoy BIORBD is to compile it by yourself.
 
-The building status for the current BIORBD branches is as follow
+The building status of the latest release is as follow
 
-| Name          | Status                                                                                                                                                                 |
-| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| master        | [![Build status](https://ci.appveyor.com/api/projects/status/fegqut6bypvix8ex/branch/master?svg=true)](https://ci.appveyor.com/project/pariterre/biorbd/branch/master) |
-| Code coverage | [![codecov](https://codecov.io/gh/pyomeca/biorbd/branch/master/graph/badge.svg)](https://codecov.io/gh/pyomeca/biorbd)                                                 |
-| DOI           | [![DOI](https://zenodo.org/badge/124423173.svg)](https://zenodo.org/badge/latestdoi/124423173)                                                                         |
+| Name           | Status                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Latest release | [![PyPI (Eigen)](https://github.com/pyomeca/biorbd/actions/workflows/publish_eigen_to_pypi.yml/badge.svg?event=release)](https://github.com/pyomeca/biorbd/actions/workflows/publish_eigen_to_pypi.yml) [![PyPI (CasADi)](https://github.com/pyomeca/biorbd/actions/workflows/publish_casadi_to_pypi.yml/badge.svg?event=release)](https://github.com/pyomeca/biorbd/actions/workflows/publish_casadi_to_pypi.yml) [![MATLAB binaries](https://github.com/pyomeca/biorbd/actions/workflows/publish_matlab_eigen_binaries.yml/badge.svg?event=release)](https://github.com/pyomeca/biorbd/actions/workflows/publish_matlab_eigen_binaries.yml) [![Documentation](https://github.com/pyomeca/biorbd/actions/workflows/publish_doc.yml/badge.svg?event=release)](https://github.com/pyomeca/biorbd/actions/workflows/publish_doc.yml) |
+| Code coverage  | [![codecov](https://codecov.io/gh/pyomeca/biorbd/branch/master/graph/badge.svg)](https://codecov.io/gh/pyomeca/biorbd)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| DOI            | [![DOI](https://zenodo.org/badge/124423173.svg)](https://zenodo.org/badge/latestdoi/124423173)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 
 ### Dependencies
 BIORBD relies on several libraries (namely eigen ([http://eigen.tuxfamily.org]) or CasADi ([https://web.casadi.org/]), rbdl-casadi (https://github.com/pyomeca/rbdl-casadi), tinyxml2(https://github.com/leethomason/tinyxml2) and Ipopt (https://github.com/coin-or/Ipopt)) that one must install prior to compiling. Fortunately, all these dependencies are also hosted on the *conda-forge* channel of Anaconda or will automatically be compiled when building BIORBD. Therefore the following command will install everything you need to compile BIORBD:
